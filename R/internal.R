@@ -1,0 +1,27 @@
+.dashSeqviz_js_metadata <- function() {
+deps_metadata <- list(`dash_seqviz` = structure(list(name = "dash_seqviz",
+version = "0.1.0", src = list(href = NULL,
+file = "deps"), meta = NULL,
+script = 'async-SeqViz.js',
+stylesheet = NULL, head = NULL, attachment = NULL, package = "dashSeqviz",
+all_files = FALSE, async = TRUE), class = "html_dependency"),
+`dash_seqviz` = structure(list(name = "dash_seqviz",
+version = "0.1.0", src = list(href = NULL,
+file = "deps"), meta = NULL,
+script = 'async-SeqViz.js.map',
+stylesheet = NULL, head = NULL, attachment = NULL, package = "dashSeqviz",
+all_files = FALSE, dynamic = TRUE), class = "html_dependency"),
+`dash_seqviz` = structure(list(name = "dash_seqviz",
+version = "0.1.0", src = list(href = NULL,
+file = "deps"), meta = NULL,
+script = 'dash_seqviz.min.js',
+stylesheet = NULL, head = NULL, attachment = NULL, package = "dashSeqviz",
+all_files = FALSE), class = "html_dependency"),
+`dash_seqviz` = structure(list(name = "dash_seqviz",
+version = "0.1.0", src = list(href = NULL,
+file = "deps"), meta = NULL,
+script = 'dash_seqviz.min.js.map',
+stylesheet = NULL, head = NULL, attachment = NULL, package = "dashSeqviz",
+all_files = FALSE, dynamic = TRUE), class = "html_dependency"))
+return(deps_metadata)
+}

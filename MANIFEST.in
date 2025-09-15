@@ -1,0 +1,11 @@
+include dash_seqviz/dash_seqviz.min.js
+include dash_seqviz/dash_seqviz.min.js.map
+include dash_seqviz/async-*.js
+include dash_seqviz/async-*.js.map
+include dash_seqviz/*-shared.js
+include dash_seqviz/*-shared.js.map
+include dash_seqviz/metadata.json
+include dash_seqviz/package-info.json
+include README.md
+include LICENSE
+include package.json
