@@ -5,6 +5,7 @@ dependencies:
   - conda-forge::dash>=3
   - conda-forge::nodejs
   - conda-forge::pytest
-  - conda-forge::yaml
   - conda-forge::psutil
   - conda-forge::biopython
+  - conda-forge::yaml
+  - conda-forge::pyyaml
