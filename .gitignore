@@ -302,3 +302,5 @@ dash_seqviz/*
 !dash_seqviz/styles.py
 !dash_seqviz/scripts.py
 usage.py
+
+.pypirc
