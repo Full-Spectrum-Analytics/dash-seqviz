@@ -14,13 +14,13 @@ Dash SeqViz is a Dash component library that provides a Python wrapper for the [
 ## Quick Start
 
 ```python
-import dash_seqviz
+from dash_seqviz import SeqViz
 from dash import Dash, html
 
 app = Dash(__name__)
 
 app.layout = html.Div([
-    dash_seqviz.SeqViz(
+    SeqViz(
         id='my-seqviz',
         seq="TTGACGGCTAGCTCAGTCCTAGGTACAGTGCTAGC",
         name="J23100",
@@ -39,7 +39,7 @@ app.layout = html.Div([
 ])
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run(debug=True)
 ```
 
 ## API Reference
