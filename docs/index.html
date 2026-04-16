@@ -239,7 +239,10 @@
                 </button>
             </div>
         </div>
-        <div id="fetch-status" style="margin-bottom: 8px; font-size: 0.85rem; color: var(--color-text-muted);"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 8px; font-size: 0.85rem;">
+            <div id="fetch-status" style="color: var(--color-text-muted); flex: 1;"></div>
+            <div id="quota-display" style="color: var(--color-text-muted); white-space: nowrap; font-variant-numeric: tabular-nums;"></div>
+        </div>
         <details style="margin-bottom: 16px; font-size: 0.8rem; color: var(--color-text-muted);">
             <summary style="cursor: pointer;">About NCBI requests &amp; your responsibilities</summary>
             <div style="margin-top: 8px; padding: 12px; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border);">
@@ -330,7 +333,12 @@
 
         <h3>Restriction Enzymes (NEB)</h3>
         <div class="enzyme-picker">
-            <input id="enzyme-search" class="enzyme-search" type="text" placeholder="Filter enzymes... (type to search)">
+            <div style="display: flex; gap: 8px; margin-bottom: 6px;">
+                <input id="enzyme-search" class="enzyme-search" type="text" placeholder="Filter enzymes... (type to search)" style="margin-bottom: 0; flex: 1;">
+                <button id="btn-enzyme-clear" type="button" class="btn" style="padding: 6px 14px; font-size: 0.82rem; border: 1px solid var(--color-border); background: #fff;">
+                    Clear all
+                </button>
+            </div>
             <div id="enzyme-list" class="enzyme-list"></div>
             <div id="enzyme-selected" class="enzyme-selected"></div>
         </div>

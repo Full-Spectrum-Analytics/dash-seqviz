@@ -134,15 +134,25 @@
     function parseGenBank(text) {
         var result = { name: "", seq: "", annotations: [], translations: [] };
 
-        // Extract name from LOCUS line
-        var locusMatch = text.match(/^LOCUS\s+(\S+)/m);
-        if (locusMatch) { result.name = locusMatch[1]; }
+        // Prefer short identifiers for the viewer title — seqviz renders it
+        // in the center of the circular view and long names break mid-word.
+        // Priority: ACCESSION -> LOCUS -> DEFINITION (only if very short)
 
-        // Extract DEFINITION for a friendlier name
-        var defMatch = text.match(/^DEFINITION\s+(.+?)(?:\n\S|\n$)/ms);
-        if (defMatch) {
-            var def = defMatch[1].replace(/\s+/g, " ").trim();
-            if (def.length < 80) { result.name = def.replace(/\.$/, ""); }
+        var accMatch = text.match(/^ACCESSION\s+(\S+)/m);
+        if (accMatch) { result.name = accMatch[1]; }
+
+        if (!result.name) {
+            var locusMatch = text.match(/^LOCUS\s+(\S+)/m);
+            if (locusMatch) { result.name = locusMatch[1]; }
+        }
+
+        // Only fall back to DEFINITION for very short ones that render cleanly
+        if (!result.name) {
+            var defMatch = text.match(/^DEFINITION\s+(.+?)(?:\n\S|\n$)/ms);
+            if (defMatch) {
+                var def = defMatch[1].replace(/\s+/g, " ").trim().replace(/\.$/, "");
+                if (def.length <= 30) { result.name = def; }
+            }
         }
 
         // Extract sequence from ORIGIN section
@@ -202,17 +212,22 @@
     // Policy enforcement (client-side):
     // - Require a user-provided email (stored in localStorage, sent per NCBI
     //   usage guidelines at https://www.ncbi.nlm.nih.gov/books/NBK25497/)
+    //   NOTE: email format is regex-validated only. We can't truly verify
+    //   ownership without a backend — real accountability is NCBI's end.
     // - Validate accession format before any network call
     // - Rate limit to 3 requests/second (NCBI unauthenticated cap)
+    // - Per-browser daily quota (UTC rollover) to cap total damage
     // - Cache fetched records in memory to avoid re-hitting NCBI
     // - Retry with exponential backoff on 429/503, honor Retry-After
     // - Cap displayable sequence size with a warning for very large records
 
-    var NCBI_EFETCH   = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi";
+    var NCBI_EFETCH    = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi";
     var MIN_REQ_GAP_MS = 350;          // ~3 req/s
     var MAX_RETRIES    = 3;
     var LARGE_SEQ_WARN = 500000;       // 500 kb
+    var DAILY_QUOTA    = 50;           // requests per browser per UTC day
     var EMAIL_KEY      = "dashSeqviz.email";
+    var QUOTA_KEY      = "dashSeqviz.quota";
 
     // Accession patterns accepted by NCBI nuccore:
     //   1-3 letters + 5-8 digits, optional ".version"
@@ -222,6 +237,41 @@
 
     var fetchCache = {};
     var lastRequestAt = 0;
+
+    // ---- Daily quota ---------------------------------------------------------
+
+    function todayUTC() {
+        var d = new Date();
+        return d.getUTCFullYear() + "-" +
+               String(d.getUTCMonth() + 1).padStart(2, "0") + "-" +
+               String(d.getUTCDate()).padStart(2, "0");
+    }
+
+    function readQuota() {
+        try {
+            var raw = localStorage.getItem(QUOTA_KEY);
+            if (!raw) { return { date: todayUTC(), count: 0 }; }
+            var parsed = JSON.parse(raw);
+            if (parsed.date !== todayUTC()) { return { date: todayUTC(), count: 0 }; }
+            return parsed;
+        } catch (_) {
+            return { date: todayUTC(), count: 0 };
+        }
+    }
+
+    function writeQuota(q) {
+        try { localStorage.setItem(QUOTA_KEY, JSON.stringify(q)); } catch (_) { /* ignore */ }
+    }
+
+    function quotaRemaining() {
+        return Math.max(0, DAILY_QUOTA - readQuota().count);
+    }
+
+    function incrementQuota() {
+        var q = readQuota();
+        q.count += 1;
+        writeQuota(q);
+    }
 
     function parseFasta(text) {
         var lines = text.split("\n");
@@ -308,6 +358,15 @@
                "&email=" + encodeURIComponent(email);
     }
 
+    function updateQuotaDisplay() {
+        var remaining = quotaRemaining();
+        var quotaEl = el("quota-display");
+        if (quotaEl) {
+            quotaEl.textContent = remaining + " / " + DAILY_QUOTA + " NCBI requests left today";
+            quotaEl.style.color = remaining < 10 ? "#b45309" : "var(--color-text-muted)";
+        }
+    }
+
     function fetchAccession(accessionRaw) {
         var statusEl = el("fetch-status");
 
@@ -334,6 +393,7 @@
         }
 
         // Serve from cache if we already fetched this accession this session
+        // (doesn't count against the daily quota)
         if (fetchCache[accession]) {
             statusEl.textContent = "Loading cached " + accession + "...";
             statusEl.style.color = "var(--color-text-muted)";
@@ -341,9 +401,24 @@
             return;
         }
 
+        // Enforce daily quota per browser
+        if (quotaRemaining() <= 0) {
+            statusEl.innerHTML = "Daily NCBI request quota reached (" + DAILY_QUOTA + "/day). " +
+                "Resets at 00:00 UTC. For heavier use, please " +
+                '<a href="https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/" target="_blank" rel="noopener">get an NCBI API key</a> ' +
+                "and run your workload separately.";
+            statusEl.style.color = "#dc2626";
+            return;
+        }
+
         statusEl.textContent = "Fetching " + accession + " from NCBI (GenBank format)...";
         statusEl.style.color = "var(--color-text-muted)";
         el("btn-fetch").disabled = true;
+
+        // Reserve a quota slot before the network call so rapid concurrent
+        // clicks can't exceed the limit.
+        incrementQuota();
+        updateQuotaDisplay();
 
         rateLimitedFetch(buildUrl(accession, "gb", email))
             .then(function (text) {
@@ -356,6 +431,8 @@
             })
             .catch(function (gbErr) {
                 statusEl.textContent = "GenBank fetch failed (" + gbErr.message + "), trying FASTA...";
+                incrementQuota();
+                updateQuotaDisplay();
                 return rateLimitedFetch(buildUrl(accession, "fasta", email))
                     .then(function (text) {
                         if (text.charAt(0) !== ">") { throw new Error("Not a valid FASTA record."); }
@@ -457,6 +534,14 @@
         renderEnzymeList();
     });
 
+    el("btn-enzyme-clear").addEventListener("click", function () {
+        if (state.enzymes.length === 0) { return; }
+        state.enzymes = [];
+        renderEnzymeList();
+        renderEnzymeChips();
+        render();
+    });
+
     // ---- Control wiring ------------------------------------------------------
 
     el("ctrl-viewer").addEventListener("change", function (ev) {
@@ -545,5 +630,6 @@
 
     renderEnzymeList();
     renderEnzymeChips();
+    updateQuotaDisplay();
     render();
 })();
