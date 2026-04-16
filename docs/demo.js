@@ -229,10 +229,13 @@
     var EMAIL_KEY      = "dashSeqviz.email";
     var QUOTA_KEY      = "dashSeqviz.quota";
 
-    // Accession patterns accepted by NCBI nuccore:
-    //   1-3 letters + 5-8 digits, optional ".version"
-    //   e.g. MN623123.1, NC_000913.3, U00096.3, AF123456, NM_001301717.2
-    var ACCESSION_RE = /^[A-Z]{1,3}_?[0-9]{5,9}(?:\.[0-9]+)?$/i;
+    // Accession patterns accepted by NCBI nuccore. Covers:
+    //   Standard:   1-2 letters + 5-6 digits          (U00096, MN623123)
+    //   RefSeq:     2 letters + _ + 6-9 digits         (NC_000913, NM_001301717)
+    //   RefSeq WGS: 2 letters + _ + 2 letters + 6 digits (NZ_CP098790)
+    //   WGS:        4-6 letters + 8-10 digits          (JAAA01000001)
+    //   All with optional .version suffix
+    var ACCESSION_RE = /^[A-Z]{1,6}_?[A-Z]{0,4}[0-9]{5,10}(?:\.[0-9]+)?$/i;
     var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     var fetchCache = {};
