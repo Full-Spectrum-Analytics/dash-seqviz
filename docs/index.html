@@ -216,6 +216,27 @@
             using the <a href="https://github.com/Lattice-Automation/seqviz" target="_blank" rel="noopener">seqviz</a> library loaded from unpkg.
         </p>
 
+        <h3>Load Sequence</h3>
+        <div class="demo-controls" style="grid-template-columns: 1fr auto auto;">
+            <div class="ctrl">
+                <label for="ctrl-accession">NCBI Accession</label>
+                <input id="ctrl-accession" type="text" value="" placeholder="e.g. MN623123.1, NC_000913.3, U00096.3">
+            </div>
+            <div class="ctrl" style="justify-content: end;">
+                <label>&nbsp;</label>
+                <button id="btn-fetch" class="btn btn-light" style="padding: 7px 18px; border: 1px solid var(--color-border);">
+                    Fetch from NCBI
+                </button>
+            </div>
+            <div class="ctrl" style="justify-content: end;">
+                <label>&nbsp;</label>
+                <button id="btn-reset" class="btn" style="padding: 7px 18px; border: 1px solid var(--color-border); background: var(--color-bg);">
+                    Reset demo
+                </button>
+            </div>
+        </div>
+        <div id="fetch-status" style="margin-bottom: 16px; font-size: 0.85rem; color: var(--color-text-muted);"></div>
+
         <h3>Viewer &amp; Display</h3>
         <div class="demo-controls">
             <div class="ctrl">
