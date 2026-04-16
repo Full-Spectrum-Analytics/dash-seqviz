@@ -146,7 +146,9 @@
         var name = target.getAttribute("data-enzyme");
         if (!name) { return; }
         if (target.checked) {
-            if (state.enzymes.indexOf(name) === -1) { state.enzymes.push(name); }
+            if (state.enzymes.indexOf(name) === -1) {
+                state.enzymes = state.enzymes.concat([name]);
+            }
         } else {
             state.enzymes = state.enzymes.filter(function (n) { return n !== name; });
         }
