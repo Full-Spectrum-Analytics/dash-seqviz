@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dash-seqviz &mdash; DNA, RNA &amp; Protein Sequence Viewer for Dash</title>
+    <meta name="description" content="A Dash component for interactive DNA, RNA, and protein sequence visualization. Circular and linear viewers, annotations, primers, restriction enzymes, and more.">
+
+    <style>
+        :root {
+            --color-bg: #f8fafc;
+            --color-surface: #ffffff;
+            --color-primary: #2563eb;
+            --color-primary-dark: #1d4ed8;
+            --color-text: #1e293b;
+            --color-text-muted: #64748b;
+            --color-border: #e2e8f0;
+            --color-code-bg: #1e293b;
+            --color-code-text: #e2e8f0;
+            --radius: 8px;
+            --max-width: 1100px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* ---- Hero ---- */
+        .hero {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+            color: #fff;
+            padding: 64px 24px 48px;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.02em; }
+        .hero p  { font-size: 1.15rem; opacity: 0.88; max-width: 640px; margin: 12px auto 0; }
+
+        .badges { display: flex; gap: 8px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+        .badges img { height: 22px; }
+
+        .hero-actions { margin-top: 28px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            display: inline-block; padding: 10px 22px; border-radius: var(--radius);
+            font-size: 0.95rem; font-weight: 600; text-decoration: none; transition: background 0.15s;
+        }
+        .btn-light  { background: #fff; color: var(--color-primary); }
+        .btn-light:hover { background: #e0e7ff; }
+        .btn-outline { border: 2px solid rgba(255,255,255,0.6); color: #fff; }
+        .btn-outline:hover { background: rgba(255,255,255,0.12); }
+
+        /* ---- Sections ---- */
+        .container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+
+        section { padding: 56px 0; }
+        section h2 { font-size: 1.6rem; margin-bottom: 24px; }
+
+        /* ---- Demo ---- */
+        .demo-section { background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
+        .demo-controls {
+            display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; align-items: end;
+        }
+        .demo-controls label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--color-text-muted); margin-bottom: 4px; }
+        .demo-controls select,
+        .demo-controls input[type="text"],
+        .demo-controls input[type="range"] {
+            font-size: 0.9rem; padding: 6px 10px; border: 1px solid var(--color-border);
+            border-radius: var(--radius); background: var(--color-bg);
+        }
+        .demo-controls input[type="range"] { width: 140px; }
+
+        #seqviz-root {
+            border: 1px solid var(--color-border); border-radius: var(--radius);
+            background: #fff; min-height: 420px; overflow: hidden;
+        }
+
+        /* ---- Install ---- */
+        .install-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .install-card {
+            background: var(--color-surface); border: 1px solid var(--color-border);
+            border-radius: var(--radius); padding: 24px;
+        }
+        .install-card h3 { font-size: 1rem; margin-bottom: 12px; }
+
+        pre {
+            background: var(--color-code-bg); color: var(--color-code-text);
+            padding: 14px 18px; border-radius: var(--radius); overflow-x: auto;
+            font-size: 0.88rem; line-height: 1.5;
+        }
+        code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+        p code {
+            background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.88em;
+        }
+
+        /* ---- Features ---- */
+        .features-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .feature-card {
+            background: var(--color-surface); border: 1px solid var(--color-border);
+            border-radius: var(--radius); padding: 24px;
+        }
+        .feature-card h3 { font-size: 1rem; margin-bottom: 6px; }
+        .feature-card p  { font-size: 0.9rem; color: var(--color-text-muted); }
+        .feature-icon { font-size: 1.4rem; margin-bottom: 8px; }
+
+        /* ---- Example ---- */
+        .example-section { background: var(--color-surface); border-top: 1px solid var(--color-border); }
+
+        /* ---- Footer ---- */
+        footer {
+            text-align: center; padding: 32px 24px; font-size: 0.85rem;
+            color: var(--color-text-muted); border-top: 1px solid var(--color-border);
+        }
+        footer a { color: var(--color-primary); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.7rem; }
+            .hero { padding: 40px 16px 32px; }
+            section { padding: 40px 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero -->
+<header class="hero">
+    <h1>dash-seqviz</h1>
+    <p>Interactive DNA, RNA &amp; protein sequence visualization for <a href="https://dash.plotly.com" style="color:#93c5fd;" target="_blank" rel="noopener">Plotly Dash</a></p>
+    <div class="badges">
+        <a href="https://pypi.org/project/dash-seqviz/" target="_blank" rel="noopener">
+            <img alt="PyPI version" src="https://img.shields.io/pypi/v/dash-seqviz?style=flat-square">
+        </a>
+        <a href="https://www.npmjs.com/package/dash_seqviz" target="_blank" rel="noopener">
+            <img alt="npm version" src="https://img.shields.io/npm/v/dash_seqviz?style=flat-square">
+        </a>
+        <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square">
+    </div>
+    <div class="hero-actions">
+        <a class="btn btn-light" href="#install">Get Started</a>
+        <a class="btn btn-outline" href="https://github.com/Full-Spectrum-Analytics/dash-seqviz" target="_blank" rel="noopener">GitHub</a>
+    </div>
+</header>
+
+<!-- Live Demo -->
+<section class="demo-section" id="demo">
+    <div class="container">
+        <h2>Live Demo</h2>
+        <div class="demo-controls">
+            <div>
+                <label for="ctrl-viewer">Viewer</label>
+                <select id="ctrl-viewer">
+                    <option value="both" selected>Both</option>
+                    <option value="both_flip">Both (flipped)</option>
+                    <option value="circular">Circular</option>
+                    <option value="linear">Linear</option>
+                </select>
+            </div>
+            <div>
+                <label for="ctrl-zoom">Zoom (linear): <span id="zoom-val">50</span></label>
+                <input id="ctrl-zoom" type="range" min="1" max="100" value="50">
+            </div>
+            <div>
+                <label for="ctrl-search">Search motif</label>
+                <input id="ctrl-search" type="text" value="ttnnnaat" placeholder="e.g. GCTAGC">
+            </div>
+            <div>
+                <label for="ctrl-complement">
+                    <input id="ctrl-complement" type="checkbox" checked> Show complement
+                </label>
+            </div>
+        </div>
+        <div id="seqviz-root"></div>
+    </div>
+</section>
+
+<!-- Install -->
+<section id="install">
+    <div class="container">
+        <h2>Installation</h2>
+        <div class="install-grid">
+            <div class="install-card">
+                <h3>Python (PyPI)</h3>
+                <pre><code>pip install dash-seqviz</code></pre>
+            </div>
+            <div class="install-card">
+                <h3>Conda</h3>
+                <pre><code>conda install -c conda-forge dash-seqviz</code></pre>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Example -->
+<section class="example-section">
+    <div class="container">
+        <h2>Quick Example</h2>
+        <pre><code>from dash import Dash, html
+from dash_seqviz import SeqViz
+
+app = Dash(__name__)
+
+app.layout = html.Div([
+    SeqViz(
+        id="my-seqviz",
+        name="pUC19",
+        seq="TTGACGGCTAGCTCAGTCCTAGGTACAGTGCTAGC",
+        viewer="both",
+        annotations=[
+            {"start": 0, "end": 22, "name": "Promoter", "direction": 1, "color": "#3b82f6"},
+        ],
+        enzymes=["PstI", "EcoRI"],
+        style={"height": "500px", "width": "100%"},
+    )
+])
+
+if __name__ == "__main__":
+    app.run(debug=True)</code></pre>
+    </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+    <div class="container">
+        <h2>Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon" aria-hidden="true">&#x1F9EC;</div>
+                <h3>Circular &amp; Linear Views</h3>
+                <p>Toggle between circular plasmid maps, linear sequence views, or display both side by side.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" aria-hidden="true">&#x1F3F7;&#xFE0F;</div>
+                <h3>Annotations &amp; Primers</h3>
+                <p>Overlay named annotations, directional primers, and highlight regions on the sequence.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" aria-hidden="true">&#x2702;&#xFE0F;</div>
+                <h3>Restriction Enzymes</h3>
+                <p>Visualize cut sites for 250+ NEB restriction enzymes or define custom enzymes.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" aria-hidden="true">&#x1F50D;</div>
+                <h3>Motif Search</h3>
+                <p>Search for sequence motifs with configurable mismatch tolerance and highlight all matches.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" aria-hidden="true">&#x1F3A8;</div>
+                <h3>Custom Colors</h3>
+                <p>Color individual base pairs, annotations, translations, and highlights with full control.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" aria-hidden="true">&#x26A1;</div>
+                <h3>Dash Callbacks</h3>
+                <p>React to selection, search, and copy events via standard Dash callbacks.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <p>
+        Built by <a href="https://github.com/Full-Spectrum-Analytics" target="_blank" rel="noopener">Full Spectrum Analytics</a>
+        &middot; Powered by <a href="https://github.com/Lattice-Automation/seqviz" target="_blank" rel="noopener">seqviz</a>
+        &middot; <a href="https://github.com/Full-Spectrum-Analytics/dash-seqviz" target="_blank" rel="noopener">Source on GitHub</a>
+    </p>
+</footer>
+
+<!-- React 18 + seqviz from CDN -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/seqviz@3.10.9/dist/seqviz.umd.js"></script>
+
+<script>
+(function () {
+    "use strict";
+
+    var DEMO_SEQ = "TTGACGGCTAGCTCAGTCCTAGGTACAGTGCTAGCAATTTCTTAAGACCCACTTTCACATTTAAGTTGTTTTTCTAATCCGCATATGATCAATTCAAGGCCGAATAAGAAGGCTGGCTCTGCACCTTGGTGATCAAATAATTCGATAGCTTGTCGTAATAATGGCGGCATACTATCAGTAGTAGGTGTTTCCCTTTCTTCTTTAGCGACTTGATGCTCTTGATCTTCCAATACGCAACCTAAAGTAAAATGCCCCACAGCGCTGAGTGCATATAATGCATTCTCTAGTGAAAAACCTTGTTGGCATAAAAAGGCTAATTGATTTTCGAGAGTTTCATACTGTTTTTCTGTAGGCCGTGTACCTAAATGTACTTTTGCTCCATCGCGATGACTTAGTAAAGCACATCTAAAACTTTTAGCGTTATTACGTAAAAAATCTTGCCAGCTTTCCCCTTCTAAAGGGCAAAAGTGAGTATGGTGCCTATCTAACATCTCAATGGCTAAGGCGTCGAGCAAAGCCCGCTTATTTTTTACATGCCAATACAATGTAGGCTGCTCTACACCTAGCTTCTGGGCGAGTTTACGGGTTGTTAAACCTTCGATTCCGACCTCATTAAGCAGCTCTAATGCGCTGTTAATCACTTTACTTTTATCTAATCTAGACATCATTAATTCCTAATTTTTGTTGACACTCTATCGTTGATAGAGTTATTTTACCACTCCCTATCAGTGATAGAGAAAAGAATTC";
+
+    var DEMO_ANNOTATIONS = [
+        { start: 0, end: 35, name: "J23100 Promoter", direction: 1, color: "#3b82f6" },
+        { start: 36, end: 160, name: "RBS + ORF region", direction: 1, color: "#10b981" },
+        { start: 440, end: 540, name: "Terminator", direction: -1, color: "#f59e0b" }
+    ];
+
+    var DEMO_PRIMERS = [
+        { start: 0, end: 24, name: "Fwd primer", direction: 1, color: "#ef4444" },
+        { start: 500, end: 530, name: "Rev primer", direction: -1, color: "#8b5cf6" }
+    ];
+
+    var DEMO_ENZYMES = ["PstI", "EcoRI", "XbaI", "SpeI"];
+
+    var state = {
+        viewer: "both",
+        zoom: { linear: 50 },
+        search: { query: "ttnnnaat" },
+        showComplement: true
+    };
+
+    var root = ReactDOM.createRoot(document.getElementById("seqviz-root"));
+
+    function render() {
+        var el = React.createElement(seqviz.SeqViz, {
+            name: "p15A-HNS-GFP (demo)",
+            seq: DEMO_SEQ,
+            viewer: state.viewer,
+            annotations: DEMO_ANNOTATIONS,
+            primers: DEMO_PRIMERS,
+            enzymes: DEMO_ENZYMES,
+            search: state.search,
+            zoom: state.zoom,
+            showComplement: state.showComplement,
+            style: { height: "420px", width: "100%" }
+        });
+        root.render(el);
+    }
+
+    // Wire controls
+    document.getElementById("ctrl-viewer").addEventListener("change", function (e) {
+        state.viewer = e.target.value;
+        render();
+    });
+
+    document.getElementById("ctrl-zoom").addEventListener("input", function (e) {
+        var v = Number(e.target.value);
+        document.getElementById("zoom-val").textContent = v;
+        state.zoom = { linear: v };
+        render();
+    });
+
+    document.getElementById("ctrl-search").addEventListener("input", function (e) {
+        state.search = { query: e.target.value };
+        render();
+    });
+
+    document.getElementById("ctrl-complement").addEventListener("change", function (e) {
+        state.showComplement = e.target.checked;
+        render();
+    });
+
+    render();
+})();
+</script>
+</body>
+</html>
