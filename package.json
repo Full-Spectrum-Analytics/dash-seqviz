@@ -11,6 +11,13 @@
   },
   "homepage": "https://github.com/Full-Spectrum-Analytics/dash-seqviz",
   "main": "build/index.js",
+  "files": [
+    "dash_seqviz",
+    "src/lib",
+    "package.json",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "start": "webpack serve --config ./webpack.serve.config.js --open",
     "validate-init": "python _validate_init.py",
