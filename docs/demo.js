@@ -1,15 +1,14 @@
 /**
  * dash-seqviz landing page demo.
- * Mirrors the controls from usage.py, driving the seqviz React component
- * loaded from CDN. No build step required.
+ * Mirrors the controls from usage.py, driving the seqviz Viewer API.
+ * Uses the standalone Viewer() function from seqviz's UMD bundle, which
+ * handles its own React rendering internally — no external React needed.
  */
 (function () {
     "use strict";
 
     // ---- Demo data -----------------------------------------------------------
 
-    // Short plasmid-like sequence derived from tests/MN623123.fasta (truncated
-    // for landing-page performance). The Dash demo uses the full 3.7 kb record.
     var DEMO_SEQ =
         "TTGACGGCTAGCTCAGTCCTAGGTACAGTGCTAGCAATTTCTTAAGACCCACTTTCACATTTAAGTTGTT" +
         "TTTCTAATCCGCATATGATCAATTCAAGGCCGAATAAGAAGGCTGGCTCTGCACCTTGGTGATCAAATAA" +
@@ -59,9 +58,9 @@
     var enzymeListEl = el("enzyme-list");
     var enzymeSelectedEl = el("enzyme-selected");
 
-    // ---- seqviz render -------------------------------------------------------
+    // ---- seqviz Viewer (standalone API — no external React needed) -----------
 
-    var root = ReactDOM.createRoot(el("seqviz-root"));
+    var viewer = null;
 
     function handleSelection(sel) {
         var node = el("selection-readout");
@@ -84,8 +83,8 @@
         el("search-readout").textContent = "searchResults: " + count;
     }
 
-    function render() {
-        var props = {
+    function getProps() {
+        return {
             name: "Demo plasmid",
             seq: DEMO_SEQ,
             viewer: state.viewer,
@@ -102,7 +101,15 @@
             onSearch: handleSearch,
             style: { height: "500px", width: "100%" }
         };
-        root.render(React.createElement(seqviz.SeqViz, props));
+    }
+
+    function render() {
+        if (!viewer) {
+            viewer = seqviz.Viewer("seqviz-root", getProps());
+            viewer.render();
+        } else {
+            viewer.setState(getProps());
+        }
     }
 
     // ---- Enzyme multi-select -------------------------------------------------
