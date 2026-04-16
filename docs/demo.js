@@ -197,10 +197,31 @@
         return null;
     }
 
-    // ---- NCBI eFetch / EBI fallback -------------------------------------------
+    // ---- NCBI eFetch with safeguards -----------------------------------------
+    //
+    // Policy enforcement (client-side):
+    // - Require a user-provided email (stored in localStorage, sent per NCBI
+    //   usage guidelines at https://www.ncbi.nlm.nih.gov/books/NBK25497/)
+    // - Validate accession format before any network call
+    // - Rate limit to 3 requests/second (NCBI unauthenticated cap)
+    // - Cache fetched records in memory to avoid re-hitting NCBI
+    // - Retry with exponential backoff on 429/503, honor Retry-After
+    // - Cap displayable sequence size with a warning for very large records
 
-    var NCBI_EFETCH = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi";
-    var EBI_FETCH   = "https://www.ebi.ac.uk/ena/browser/api/embl/";
+    var NCBI_EFETCH   = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi";
+    var MIN_REQ_GAP_MS = 350;          // ~3 req/s
+    var MAX_RETRIES    = 3;
+    var LARGE_SEQ_WARN = 500000;       // 500 kb
+    var EMAIL_KEY      = "dashSeqviz.email";
+
+    // Accession patterns accepted by NCBI nuccore:
+    //   1-3 letters + 5-8 digits, optional ".version"
+    //   e.g. MN623123.1, NC_000913.3, U00096.3, AF123456, NM_001301717.2
+    var ACCESSION_RE = /^[A-Z]{1,3}_?[0-9]{5,9}(?:\.[0-9]+)?$/i;
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    var fetchCache = {};
+    var lastRequestAt = 0;
 
     function parseFasta(text) {
         var lines = text.split("\n");
@@ -228,11 +249,15 @@
         state.translations = parsed.translations;
         state.primers = [];
 
+        var sizeNote = state.seq.length > LARGE_SEQ_WARN
+            ? ' <em style="color: #b45309;">(large record &mdash; rendering may be slow)</em>'
+            : "";
+
         statusEl.innerHTML = "Loaded <strong>" + escapeHtml(state.name) + "</strong> &mdash; " +
                              state.seq.length.toLocaleString() + " bp" +
                              (state.annotations.length ? ", " + state.annotations.length + " annotations" : "") +
                              (state.translations.length ? ", " + state.translations.length + " CDS translations" : "") +
-                             ".";
+                             "." + sizeNote;
         statusEl.style.color = "#16a34a";
 
         viewer = null;
@@ -240,12 +265,79 @@
         render();
     }
 
-    function fetchAccession(accession) {
+    function sleep(ms) {
+        return new Promise(function (resolve) { setTimeout(resolve, ms); });
+    }
+
+    // Throttled fetch with retry/backoff. Honors Retry-After for 429/503.
+    function rateLimitedFetch(url) {
+        var now = Date.now();
+        var wait = Math.max(0, lastRequestAt + MIN_REQ_GAP_MS - now);
+
+        return sleep(wait).then(function () {
+            lastRequestAt = Date.now();
+
+            var attempt = function (tries) {
+                return fetch(url).then(function (res) {
+                    if (res.status === 429 || res.status === 503) {
+                        if (tries >= MAX_RETRIES) {
+                            throw new Error("NCBI is rate-limiting (HTTP " + res.status + "). Please wait a minute and try again.");
+                        }
+                        var retryAfter = parseFloat(res.headers.get("Retry-After"));
+                        var delay = isNaN(retryAfter)
+                            ? Math.pow(2, tries) * 1000
+                            : retryAfter * 1000;
+                        return sleep(delay).then(function () { return attempt(tries + 1); });
+                    }
+                    if (!res.ok) { throw new Error("HTTP " + res.status); }
+                    return res.text();
+                });
+            };
+
+            return attempt(0);
+        });
+    }
+
+    function buildUrl(accession, rettype, email) {
+        return NCBI_EFETCH +
+               "?db=nuccore" +
+               "&id=" + encodeURIComponent(accession) +
+               "&rettype=" + rettype +
+               "&retmode=text" +
+               "&tool=dash-seqviz" +
+               "&email=" + encodeURIComponent(email);
+    }
+
+    function fetchAccession(accessionRaw) {
         var statusEl = el("fetch-status");
-        accession = (accession || "").trim();
+
+        var email = (el("ctrl-email").value || "").trim();
+        if (!EMAIL_RE.test(email)) {
+            statusEl.textContent = "Please enter a valid email — NCBI requires it for public API use.";
+            statusEl.style.color = "#dc2626";
+            el("ctrl-email").focus();
+            return;
+        }
+        try { localStorage.setItem(EMAIL_KEY, email); } catch (_) { /* private mode — ignore */ }
+
+        var accession = (accessionRaw || "").trim();
         if (!accession) {
             statusEl.textContent = "Please enter an accession.";
             statusEl.style.color = "#dc2626";
+            return;
+        }
+        if (!ACCESSION_RE.test(accession)) {
+            statusEl.textContent = "\"" + accession + "\" doesn't look like a valid NCBI accession " +
+                                   "(expected e.g. MN623123.1 or NC_000913.3).";
+            statusEl.style.color = "#dc2626";
+            return;
+        }
+
+        // Serve from cache if we already fetched this accession this session
+        if (fetchCache[accession]) {
+            statusEl.textContent = "Loading cached " + accession + "...";
+            statusEl.style.color = "var(--color-text-muted)";
+            loadParsed(fetchCache[accession], accession, statusEl);
             return;
         }
 
@@ -253,44 +345,30 @@
         statusEl.style.color = "var(--color-text-muted)";
         el("btn-fetch").disabled = true;
 
-        var ncbiUrl = NCBI_EFETCH + "?db=nuccore&id=" + encodeURIComponent(accession) +
-                      "&rettype=gb&retmode=text&tool=dash-seqviz&email=evanroyrees@gmail.com";
-
-        fetch(ncbiUrl)
-            .then(function (res) {
-                if (!res.ok) { throw new Error("HTTP " + res.status); }
-                return res.text();
-            })
+        rateLimitedFetch(buildUrl(accession, "gb", email))
             .then(function (text) {
                 if (text.indexOf("LOCUS") === -1) {
-                    throw new Error("Not a valid GenBank record.");
+                    throw new Error("Not a valid GenBank record — check the accession.");
                 }
                 var parsed = parseGenBank(text);
+                fetchCache[accession] = parsed;
                 loadParsed(parsed, accession, statusEl);
             })
-            .catch(function (ncbiErr) {
-                // NCBI may fail due to CORS — try NCBI FASTA as fallback
-                statusEl.textContent = "NCBI GenBank failed (" + ncbiErr.message + "), trying FASTA...";
-
-                var fastaUrl = NCBI_EFETCH + "?db=nuccore&id=" + encodeURIComponent(accession) +
-                               "&rettype=fasta&retmode=text&tool=dash-seqviz&email=evanroyrees@gmail.com";
-
-                return fetch(fastaUrl)
-                    .then(function (res) {
-                        if (!res.ok) { throw new Error("HTTP " + res.status); }
-                        return res.text();
-                    })
+            .catch(function (gbErr) {
+                statusEl.textContent = "GenBank fetch failed (" + gbErr.message + "), trying FASTA...";
+                return rateLimitedFetch(buildUrl(accession, "fasta", email))
                     .then(function (text) {
                         if (text.charAt(0) !== ">") { throw new Error("Not a valid FASTA record."); }
                         var parsed = parseFasta(text);
+                        fetchCache[accession] = parsed;
                         statusEl.innerHTML = "";
                         loadParsed(parsed, accession, statusEl);
-                        statusEl.innerHTML += " <em>(FASTA only — no annotations. GenBank format was unavailable.)</em>";
+                        statusEl.innerHTML += ' <em>(FASTA only &mdash; no annotations available)</em>';
                     });
             })
             .catch(function (err) {
-                statusEl.textContent = "Failed to fetch: " + err.message +
-                    ". NCBI may not support CORS from this browser. Try a different accession or use the demo sequence.";
+                statusEl.textContent = "Failed to fetch " + accession + ": " + err.message +
+                    ". Verify the accession or try again in a moment.";
                 statusEl.style.color = "#dc2626";
             })
             .finally(function () {
@@ -435,11 +513,21 @@
 
     // ---- NCBI fetch wiring ---------------------------------------------------
 
+    // Restore saved email from localStorage (if any)
+    try {
+        var savedEmail = localStorage.getItem(EMAIL_KEY);
+        if (savedEmail) { el("ctrl-email").value = savedEmail; }
+    } catch (_) { /* private browsing — ignore */ }
+
     el("btn-fetch").addEventListener("click", function () {
         fetchAccession(el("ctrl-accession").value);
     });
 
     el("ctrl-accession").addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter") { fetchAccession(el("ctrl-accession").value); }
+    });
+
+    el("ctrl-email").addEventListener("keydown", function (ev) {
         if (ev.key === "Enter") { fetchAccession(el("ctrl-accession").value); }
     });
 

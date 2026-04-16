@@ -216,11 +216,15 @@
             using the <a href="https://github.com/Lattice-Automation/seqviz" target="_blank" rel="noopener">seqviz</a> library loaded from unpkg.
         </p>
 
-        <h3>Load Sequence</h3>
-        <div class="demo-controls" style="grid-template-columns: 1fr auto auto;">
+        <h3>Load Sequence from NCBI</h3>
+        <div class="demo-controls" style="grid-template-columns: 1fr 1fr auto auto;">
             <div class="ctrl">
                 <label for="ctrl-accession">NCBI Accession</label>
                 <input id="ctrl-accession" type="text" value="" placeholder="e.g. MN623123.1, NC_000913.3, U00096.3">
+            </div>
+            <div class="ctrl">
+                <label for="ctrl-email">Your email <span style="text-transform: none; font-weight: 400;">(required by NCBI)</span></label>
+                <input id="ctrl-email" type="email" placeholder="you@lab.org" autocomplete="email">
             </div>
             <div class="ctrl" style="justify-content: end;">
                 <label>&nbsp;</label>
@@ -235,7 +239,28 @@
                 </button>
             </div>
         </div>
-        <div id="fetch-status" style="margin-bottom: 16px; font-size: 0.85rem; color: var(--color-text-muted);"></div>
+        <div id="fetch-status" style="margin-bottom: 8px; font-size: 0.85rem; color: var(--color-text-muted);"></div>
+        <details style="margin-bottom: 16px; font-size: 0.8rem; color: var(--color-text-muted);">
+            <summary style="cursor: pointer;">About NCBI requests &amp; your responsibilities</summary>
+            <div style="margin-top: 8px; padding: 12px; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border);">
+                <p style="margin-bottom: 8px;">
+                    Requests go directly from your browser to NCBI's
+                    <a href="https://www.ncbi.nlm.nih.gov/books/NBK25497/" target="_blank" rel="noopener">E-utilities API</a>.
+                    <strong>dash-seqviz does not operate a proxy</strong> &mdash; your email is sent to NCBI along with each
+                    request, as recommended by their usage policy, so they can contact you if your usage causes issues.
+                </p>
+                <p style="margin-bottom: 8px;">
+                    Your email is stored locally in your browser only (localStorage). We cap you at 3 requests per second
+                    (NCBI's unauthenticated limit), cache responses so repeat accessions don't re-hit NCBI, and refuse
+                    obviously invalid accession strings.
+                </p>
+                <p>
+                    For heavy or automated use, please
+                    <a href="https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/" target="_blank" rel="noopener">get an NCBI API key</a>
+                    and run your own workload &mdash; not through this public demo.
+                </p>
+            </div>
+        </details>
 
         <h3>Viewer &amp; Display</h3>
         <div class="demo-controls">
