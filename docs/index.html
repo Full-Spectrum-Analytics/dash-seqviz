@@ -18,7 +18,7 @@
             --color-code-bg: #1e293b;
             --color-code-text: #e2e8f0;
             --radius: 8px;
-            --max-width: 1100px;
+            --max-width: 1200px;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -47,10 +47,11 @@
         .btn {
             display: inline-block; padding: 10px 22px; border-radius: var(--radius);
             font-size: 0.95rem; font-weight: 600; text-decoration: none; transition: background 0.15s;
+            border: none; cursor: pointer;
         }
         .btn-light  { background: #fff; color: var(--color-primary); }
         .btn-light:hover { background: #e0e7ff; }
-        .btn-outline { border: 2px solid rgba(255,255,255,0.6); color: #fff; }
+        .btn-outline { border: 2px solid rgba(255,255,255,0.6); color: #fff; background: transparent; }
         .btn-outline:hover { background: rgba(255,255,255,0.12); }
 
         /* ---- Sections ---- */
@@ -58,36 +59,105 @@
 
         section { padding: 56px 0; }
         section h2 { font-size: 1.6rem; margin-bottom: 24px; }
+        section h3 { font-size: 1.05rem; margin: 20px 0 10px; color: var(--color-text-muted); font-weight: 600; }
 
         /* ---- Demo ---- */
         .demo-section { background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
+
         .demo-controls {
-            display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; align-items: end;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
         }
-        .demo-controls label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--color-text-muted); margin-bottom: 4px; }
-        .demo-controls select,
-        .demo-controls input[type="text"],
-        .demo-controls input[type="range"] {
-            font-size: 0.9rem; padding: 6px 10px; border: 1px solid var(--color-border);
-            border-radius: var(--radius); background: var(--color-bg);
+        .ctrl { display: flex; flex-direction: column; gap: 4px; }
+        .ctrl label {
+            font-size: 0.78rem; font-weight: 600; color: var(--color-text-muted);
+            text-transform: uppercase; letter-spacing: 0.03em;
         }
-        .demo-controls input[type="range"] { width: 140px; }
+        .ctrl select,
+        .ctrl input[type="text"],
+        .ctrl input[type="number"] {
+            font-size: 0.9rem; padding: 7px 10px; border: 1px solid var(--color-border);
+            border-radius: var(--radius); background: var(--color-bg); width: 100%;
+        }
+        .ctrl input[type="range"] { width: 100%; }
+        .ctrl-inline {
+            display: flex; align-items: center; gap: 8px; min-height: 34px;
+            font-size: 0.9rem;
+        }
+        .bp-colors { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .bp-colors input {
+            font-size: 0.82rem; padding: 5px 6px; border: 1px solid var(--color-border);
+            border-radius: var(--radius); background: var(--color-bg); width: 100%;
+            font-family: "SFMono-Regular", Consolas, monospace;
+        }
+        .bp-colors label { font-size: 0.7rem; text-align: center; }
+
+        /* Multi-select for enzymes */
+        .enzyme-picker {
+            border: 1px solid var(--color-border); border-radius: var(--radius);
+            background: var(--color-bg); padding: 8px;
+        }
+        .enzyme-search {
+            width: 100%; padding: 6px 10px; border: 1px solid var(--color-border);
+            border-radius: var(--radius); font-size: 0.85rem; margin-bottom: 6px;
+            background: #fff;
+        }
+        .enzyme-list {
+            max-height: 140px; overflow-y: auto; border: 1px solid var(--color-border);
+            border-radius: var(--radius); background: #fff; padding: 4px;
+        }
+        .enzyme-item {
+            display: flex; align-items: center; gap: 6px; padding: 2px 6px;
+            font-size: 0.82rem; border-radius: 4px; cursor: pointer;
+        }
+        .enzyme-item:hover { background: #f1f5f9; }
+        .enzyme-selected {
+            display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px;
+            min-height: 20px;
+        }
+        .enzyme-chip {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: var(--color-primary); color: #fff;
+            padding: 2px 8px; border-radius: 12px; font-size: 0.78rem;
+        }
+        .enzyme-chip button {
+            background: none; border: none; color: #fff; cursor: pointer;
+            font-size: 1rem; line-height: 1; padding: 0;
+        }
 
         #seqviz-root {
             border: 1px solid var(--color-border); border-radius: var(--radius);
-            background: #fff; min-height: 420px; overflow: hidden;
+            background: #fff; min-height: 500px; overflow: hidden;
         }
 
-        /* ---- Install ---- */
-        .install-grid {
+        .readouts {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px; margin-top: 14px;
+            font-size: 0.85rem; color: var(--color-text-muted);
+            font-family: "SFMono-Regular", Consolas, monospace;
+        }
+        .readout {
+            background: var(--color-bg); border: 1px solid var(--color-border);
+            border-radius: var(--radius); padding: 8px 12px;
+        }
+
+        /* ---- Install / Example / Features ---- */
+        .install-grid,
+        .features-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
         }
-        .install-card {
+        .install-card,
+        .feature-card {
             background: var(--color-surface); border: 1px solid var(--color-border);
             border-radius: var(--radius); padding: 24px;
         }
-        .install-card h3 { font-size: 1rem; margin-bottom: 12px; }
+        .install-card h3,
+        .feature-card h3 { font-size: 1rem; margin-bottom: 8px; color: var(--color-text); text-transform: none; letter-spacing: 0; }
+        .feature-card p { font-size: 0.9rem; color: var(--color-text-muted); }
+        .feature-icon { font-size: 1.4rem; margin-bottom: 8px; }
 
         pre {
             background: var(--color-code-bg); color: var(--color-code-text);
@@ -95,27 +165,10 @@
             font-size: 0.88rem; line-height: 1.5;
         }
         code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
-        p code {
-            background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.88em;
-        }
+        p code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.88em; }
 
-        /* ---- Features ---- */
-        .features-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 20px;
-        }
-        .feature-card {
-            background: var(--color-surface); border: 1px solid var(--color-border);
-            border-radius: var(--radius); padding: 24px;
-        }
-        .feature-card h3 { font-size: 1rem; margin-bottom: 6px; }
-        .feature-card p  { font-size: 0.9rem; color: var(--color-text-muted); }
-        .feature-icon { font-size: 1.4rem; margin-bottom: 8px; }
-
-        /* ---- Example ---- */
         .example-section { background: var(--color-surface); border-top: 1px solid var(--color-border); }
 
-        /* ---- Footer ---- */
         footer {
             text-align: center; padding: 32px 24px; font-size: 0.85rem;
             color: var(--color-text-muted); border-top: 1px solid var(--color-border);
@@ -123,7 +176,6 @@
         footer a { color: var(--color-primary); text-decoration: none; }
         footer a:hover { text-decoration: underline; }
 
-        /* ---- Responsive ---- */
         @media (max-width: 600px) {
             .hero h1 { font-size: 1.7rem; }
             .hero { padding: 40px 16px 32px; }
@@ -156,9 +208,15 @@
 <section class="demo-section" id="demo">
     <div class="container">
         <h2>Live Demo</h2>
+        <p style="margin-bottom: 24px; color: var(--color-text-muted);">
+            This demo mirrors the controls available in <code>usage.py</code>. All rendering happens client-side
+            using the <a href="https://github.com/Lattice-Automation/seqviz" target="_blank" rel="noopener">seqviz</a> library loaded from unpkg.
+        </p>
+
+        <h3>Viewer &amp; Display</h3>
         <div class="demo-controls">
-            <div>
-                <label for="ctrl-viewer">Viewer</label>
+            <div class="ctrl">
+                <label for="ctrl-viewer">Topology</label>
                 <select id="ctrl-viewer">
                     <option value="both" selected>Both</option>
                     <option value="both_flip">Both (flipped)</option>
@@ -166,21 +224,76 @@
                     <option value="linear">Linear</option>
                 </select>
             </div>
-            <div>
-                <label for="ctrl-zoom">Zoom (linear): <span id="zoom-val">50</span></label>
-                <input id="ctrl-zoom" type="range" min="1" max="100" value="50">
+            <div class="ctrl">
+                <label for="ctrl-zoom">Zoom (linear): <span id="zoom-val">60</span></label>
+                <input id="ctrl-zoom" type="range" min="1" max="100" value="60">
             </div>
-            <div>
-                <label for="ctrl-search">Search motif</label>
-                <input id="ctrl-search" type="text" value="ttnnnaat" placeholder="e.g. GCTAGC">
-            </div>
-            <div>
-                <label for="ctrl-complement">
+            <div class="ctrl">
+                <label>Toggles</label>
+                <label class="ctrl-inline">
                     <input id="ctrl-complement" type="checkbox" checked> Show complement
+                </label>
+                <label class="ctrl-inline">
+                    <input id="ctrl-rotate" type="checkbox" checked> Rotate on scroll (circular)
+                </label>
+                <label class="ctrl-inline">
+                    <input id="ctrl-translations" type="checkbox" checked> Show translations (CDS)
                 </label>
             </div>
         </div>
+
+        <h3>Search</h3>
+        <div class="demo-controls">
+            <div class="ctrl">
+                <label for="ctrl-search">Query (motif)</label>
+                <input id="ctrl-search" type="text" value="ttnnnaat" placeholder="e.g. GCTAGC">
+            </div>
+            <div class="ctrl">
+                <label for="ctrl-mismatch">Search mismatch</label>
+                <input id="ctrl-mismatch" type="number" min="0" step="1" value="0">
+            </div>
+        </div>
+
+        <h3>Base-Pair Colors</h3>
+        <div class="demo-controls">
+            <div class="ctrl">
+                <label>bpColors (A / T / C / G)</label>
+                <div class="bp-colors">
+                    <div>
+                        <label for="ctrl-bp-a">A</label>
+                        <input id="ctrl-bp-a" type="text" value="#1f78b4">
+                    </div>
+                    <div>
+                        <label for="ctrl-bp-t">T</label>
+                        <input id="ctrl-bp-t" type="text" value="#33a02c">
+                    </div>
+                    <div>
+                        <label for="ctrl-bp-c">C</label>
+                        <input id="ctrl-bp-c" type="text" value="#e31a1c">
+                    </div>
+                    <div>
+                        <label for="ctrl-bp-g">G</label>
+                        <input id="ctrl-bp-g" type="text" value="#ff7f00">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Restriction Enzymes (NEB)</h3>
+        <div class="enzyme-picker">
+            <input id="enzyme-search" class="enzyme-search" type="text" placeholder="Filter enzymes... (type to search)">
+            <div id="enzyme-list" class="enzyme-list"></div>
+            <div id="enzyme-selected" class="enzyme-selected"></div>
+        </div>
+
+        <h3 style="margin-top: 28px;">Viewer</h3>
         <div id="seqviz-root"></div>
+
+        <div class="readouts">
+            <div id="selection-readout" class="readout">selection: none</div>
+            <div id="search-readout" class="readout">searchResults: 0</div>
+            <div id="copied-banner" class="readout"></div>
+        </div>
     </div>
 </section>
 
@@ -219,7 +332,7 @@ app.layout = html.Div([
         annotations=[
             {"start": 0, "end": 22, "name": "Promoter", "direction": 1, "color": "#3b82f6"},
         ],
-        enzymes=["PstI", "EcoRI"],
+        enzymes=["PstI", "EcoRI", "XbaI", "SpeI"],
         style={"height": "500px", "width": "100%"},
     )
 ])
@@ -277,80 +390,16 @@ if __name__ == "__main__":
     </p>
 </footer>
 
-<!-- React 18 + seqviz from CDN -->
+<!-- React 18 + seqviz 3.10.20 from CDN -->
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/seqviz@3.10.9/dist/seqviz.umd.js"></script>
+<script crossorigin src="https://unpkg.com/seqviz@3.10.20/dist/seqviz.min.js"></script>
 
-<script>
-(function () {
-    "use strict";
+<!-- NEB enzyme list (separate file for maintainability) -->
+<script src="./enzymes.js"></script>
 
-    var DEMO_SEQ = "TTGACGGCTAGCTCAGTCCTAGGTACAGTGCTAGCAATTTCTTAAGACCCACTTTCACATTTAAGTTGTTTTTCTAATCCGCATATGATCAATTCAAGGCCGAATAAGAAGGCTGGCTCTGCACCTTGGTGATCAAATAATTCGATAGCTTGTCGTAATAATGGCGGCATACTATCAGTAGTAGGTGTTTCCCTTTCTTCTTTAGCGACTTGATGCTCTTGATCTTCCAATACGCAACCTAAAGTAAAATGCCCCACAGCGCTGAGTGCATATAATGCATTCTCTAGTGAAAAACCTTGTTGGCATAAAAAGGCTAATTGATTTTCGAGAGTTTCATACTGTTTTTCTGTAGGCCGTGTACCTAAATGTACTTTTGCTCCATCGCGATGACTTAGTAAAGCACATCTAAAACTTTTAGCGTTATTACGTAAAAAATCTTGCCAGCTTTCCCCTTCTAAAGGGCAAAAGTGAGTATGGTGCCTATCTAACATCTCAATGGCTAAGGCGTCGAGCAAAGCCCGCTTATTTTTTACATGCCAATACAATGTAGGCTGCTCTACACCTAGCTTCTGGGCGAGTTTACGGGTTGTTAAACCTTCGATTCCGACCTCATTAAGCAGCTCTAATGCGCTGTTAATCACTTTACTTTTATCTAATCTAGACATCATTAATTCCTAATTTTTGTTGACACTCTATCGTTGATAGAGTTATTTTACCACTCCCTATCAGTGATAGAGAAAAGAATTC";
+<!-- Demo app -->
+<script src="./demo.js"></script>
 
-    var DEMO_ANNOTATIONS = [
-        { start: 0, end: 35, name: "J23100 Promoter", direction: 1, color: "#3b82f6" },
-        { start: 36, end: 160, name: "RBS + ORF region", direction: 1, color: "#10b981" },
-        { start: 440, end: 540, name: "Terminator", direction: -1, color: "#f59e0b" }
-    ];
-
-    var DEMO_PRIMERS = [
-        { start: 0, end: 24, name: "Fwd primer", direction: 1, color: "#ef4444" },
-        { start: 500, end: 530, name: "Rev primer", direction: -1, color: "#8b5cf6" }
-    ];
-
-    var DEMO_ENZYMES = ["PstI", "EcoRI", "XbaI", "SpeI"];
-
-    var state = {
-        viewer: "both",
-        zoom: { linear: 50 },
-        search: { query: "ttnnnaat" },
-        showComplement: true
-    };
-
-    var root = ReactDOM.createRoot(document.getElementById("seqviz-root"));
-
-    function render() {
-        var el = React.createElement(seqviz.SeqViz, {
-            name: "p15A-HNS-GFP (demo)",
-            seq: DEMO_SEQ,
-            viewer: state.viewer,
-            annotations: DEMO_ANNOTATIONS,
-            primers: DEMO_PRIMERS,
-            enzymes: DEMO_ENZYMES,
-            search: state.search,
-            zoom: state.zoom,
-            showComplement: state.showComplement,
-            style: { height: "420px", width: "100%" }
-        });
-        root.render(el);
-    }
-
-    // Wire controls
-    document.getElementById("ctrl-viewer").addEventListener("change", function (e) {
-        state.viewer = e.target.value;
-        render();
-    });
-
-    document.getElementById("ctrl-zoom").addEventListener("input", function (e) {
-        var v = Number(e.target.value);
-        document.getElementById("zoom-val").textContent = v;
-        state.zoom = { linear: v };
-        render();
-    });
-
-    document.getElementById("ctrl-search").addEventListener("input", function (e) {
-        state.search = { query: e.target.value };
-        render();
-    });
-
-    document.getElementById("ctrl-complement").addEventListener("change", function (e) {
-        state.showComplement = e.target.checked;
-        render();
-    });
-
-    render();
-})();
-</script>
 </body>
 </html>

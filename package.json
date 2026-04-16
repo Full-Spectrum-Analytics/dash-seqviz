@@ -31,7 +31,7 @@
   "author": "Evan Rees <evanroyrees@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "seqviz": "^3.10.9"
+    "seqviz": "^3.10.20"
   },
   "devDependencies": {
     "@babel/core": "^7.22.1",
