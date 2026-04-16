@@ -275,25 +275,8 @@ bh_unicode_properties.cache
 # https://packagecontrol.io/packages/sublime-github
 GitHub.sublime-settings
 
-# Julia manifest file names
-Manifest.toml
-JuliaManifest.toml
-
 .DS_Store
 .vscode
-
-# R build artifacts
-inst
-man
-R
-DESCRIPTION
-NAMESPACE
-
-# Julia build artifacts
-deps/
-src/*.jl
-src/jl
-Project.toml
 
 # dash-seqviz artifacts
 dash_seqviz/*

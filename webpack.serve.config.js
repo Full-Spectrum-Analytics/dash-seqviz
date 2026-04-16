@@ -1,7 +1,9 @@
-const config = require('./webpack.config.js');
+const configFn = require('./webpack.config.js');
 const path = require('path');
 
-config.entry = {main: './src/demo/index.js'};
+const config = configFn(null, { mode: 'development' });
+
+config.entry = { main: './src/demo/index.js' };
 config.output = {
     filename: './output.js',
     path: path.resolve(__dirname),

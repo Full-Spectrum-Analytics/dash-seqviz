@@ -84,7 +84,6 @@ module.exports = (env, argv) => {
         },
         optimization: {
             splitChunks: {
-                name: '[name].js',
                 cacheGroups: {
                     async: {
                         chunks: 'async',

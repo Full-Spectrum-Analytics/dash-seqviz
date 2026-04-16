@@ -44,16 +44,6 @@ SeqViz.propTypes = {
     seq: PropTypes.string,
 
     /**
-     * (Deprecated upstream) Sequence file or URL. Prefer parsing with seqparse.
-     */
-    file: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-
-    /**
-     * (Deprecated upstream) NCBI accession ID. Prefer parsing with seqparse.
-     */
-    accession: PropTypes.string,
-
-    /**
      * The name of the sequence/plasmid. Shown at the center of the circular viewer.
      */
     name: PropTypes.string,

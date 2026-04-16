@@ -2,7 +2,6 @@
 DO NOT MODIFY
 This file is used to validate your publish settings.
 """
-from __future__ import print_function
 
 import os
 import sys

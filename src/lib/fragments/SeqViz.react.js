@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import PropTypes from 'prop-types';
 import { SeqViz as SeqVizLib } from 'seqviz';
 
@@ -7,97 +7,91 @@ import { SeqViz as SeqVizLib } from 'seqviz';
  * It provides DNA, RNA, and protein sequence visualization with
  * circular and linear viewers, annotations, primers, and more.
  */
-export default class SeqViz extends Component {
-    constructor(props) {
-        super(props);
-        this.handleSelection = this.handleSelection.bind(this);
-        this.handleSearch = this.handleSearch.bind(this);
-    }
+const SeqViz = (props) => {
+    const {
+        id,
+        seq,
+        name,
+        viewer,
+        annotations,
+        primers,
+        highlights,
+        translations,
+        enzymes,
+        search,
+        selection,
+        colors,
+        bpColors,
+        style,
+        zoom,
+        showComplement,
+        rotateOnScroll,
+        disableExternalFonts,
+        enableCopyEvent,
+        enableSelectAllEvent,
+        setProps,
+        onSelection,
+        onSearch,
+    } = props;
 
-    handleSelection(selection) {
-        const { setProps, onSelection } = this.props;
+    const handleSelection = useCallback((sel) => {
         if (onSelection) {
-            onSelection(selection);
+            onSelection(sel);
         }
-        // Report selection changes back to Dash
         if (setProps) {
-            setProps({ selection });
+            setProps({ selection: sel });
         }
-    }
+    }, [setProps, onSelection]);
 
-    handleSearch(results) {
-        const { setProps, onSearch } = this.props;
+    const handleSearch = useCallback((results) => {
         if (onSearch) {
             onSearch(results);
         }
-        // Report search results back to Dash
         if (setProps) {
             setProps({ searchResults: results });
         }
-    }
+    }, [setProps, onSearch]);
 
-    render() {
-        const {
-            id,
-            seq,
-            file,
-            accession,
-            name,
-            viewer,
-            annotations,
-            primers,
-            highlights,
-            translations,
-            enzymes,
-            search,
-            selection,
-            colors,
-            bpColors,
-            style,
-            zoom,
-            showComplement,
-            rotateOnScroll,
-            disableExternalFonts,
-            setProps,
-            ...otherProps
-        } = this.props;
+    const copyEvent = useMemo(
+        () => (enableCopyEvent === false ? (() => false) : undefined),
+        [enableCopyEvent]
+    );
 
-        // Remove Dash-specific props that shouldn't be passed to seqviz
-        const seqvizProps = {
-            seq,
-            file,
-            accession,
-            name,
-            viewer,
-            annotations,
-            primers,
-            highlights,
-            translations,
-            enzymes,
-            search,
-            selection,
-            colors,
-            bpColors,
-            style,
-            zoom,
-            showComplement,
-            rotateOnScroll,
-            disableExternalFonts,
-            // Map simple Dash booleans to seqviz predicate fns when disabling defaults
-            copyEvent: this.props.enableCopyEvent === false ? (() => false) : undefined,
-            selectAllEvent: this.props.enableSelectAllEvent === false ? (() => false) : undefined,
-            onSelection: this.handleSelection,
-            onSearch: this.handleSearch,
-            ...otherProps
-        };
+    const selectAllEvent = useMemo(
+        () => (enableSelectAllEvent === false ? (() => false) : undefined),
+        [enableSelectAllEvent]
+    );
 
-        return (
-            <div id={id}>
-                <SeqVizLib {...seqvizProps} />
-            </div>
-        );
-    }
-}
+    const seqvizProps = {
+        seq,
+        name,
+        viewer,
+        annotations,
+        primers,
+        highlights,
+        translations,
+        enzymes,
+        search,
+        selection,
+        colors,
+        bpColors,
+        style,
+        zoom,
+        showComplement,
+        rotateOnScroll,
+        disableExternalFonts,
+        copyEvent,
+        selectAllEvent,
+        onSelection: handleSelection,
+        onSearch: handleSearch,
+    };
+
+    return (
+        <div id={id}>
+            <SeqVizLib {...seqvizProps} />
+        </div>
+    );
+};
 
 SeqViz.defaultProps = {
     viewer: 'both',
@@ -124,16 +118,6 @@ SeqViz.propTypes = {
      * The sequence to render. Can be DNA, RNA, or amino acid sequence.
      */
     seq: PropTypes.string,
-
-    /**
-     * (Deprecated upstream) Sequence file or URL. Prefer parsing with seqparse.
-     */
-    file: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-
-    /**
-     * (Deprecated upstream) NCBI accession ID. Prefer parsing with seqparse.
-     */
-    accession: PropTypes.string,
 
     /**
      * The name of the sequence/plasmid. Shown at the center of the circular viewer.
@@ -290,6 +274,10 @@ SeqViz.propTypes = {
      */
     enableSelectAllEvent: PropTypes.bool,
 
+    /**
+     * Search results emitted by seqviz (read-only for Dash usage).
+     */
+    searchResults: PropTypes.array,
 
     /**
      * Dash-assigned callback that should be called to report property changes
@@ -297,3 +285,5 @@ SeqViz.propTypes = {
      */
     setProps: PropTypes.func
 };
+
+export default SeqViz;

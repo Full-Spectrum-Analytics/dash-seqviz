@@ -1,6 +1,6 @@
 import json
-from setuptools import setup
 from pathlib import Path
+from setuptools import setup
 
 here = Path(__file__).parent
 with open('package.json') as f:
@@ -19,8 +19,9 @@ setup(
     description=package.get('description', package_name),
     long_description=long_description,
     long_description_content_type="text/markdown",
-    install_requires=[],
-    classifiers = [
+    install_requires=['dash>=3.0.0'],
+    python_requires='>=3.9',
+    classifiers=[
         'Framework :: Dash',
-    ],    
+    ],
 )
