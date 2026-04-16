@@ -226,6 +226,14 @@
     wireBpColor("ctrl-bp-c", "C");
     wireBpColor("ctrl-bp-g", "G");
 
+    // ---- Prevent page scroll while rotating circular viewer ------------------
+
+    el("seqviz-root").addEventListener("wheel", function (ev) {
+        if (state.rotateOnScroll) {
+            ev.preventDefault();
+        }
+    }, { passive: false });
+
     // ---- Init ----------------------------------------------------------------
 
     renderEnzymeList();
