@@ -27,7 +27,7 @@
             category: "academic",
             tags: ["undergrad", "reporter", "CDS"],
             complexity: 1,
-            accession: "U55762.1",
+            accession: "M62653.1",
             featured: true,
             compound: {
                 name: "GFP chromophore (p-HBDI)",
@@ -53,16 +53,27 @@
                 "<li>Search for the start codon <code>ATGAGT</code> &mdash; the first 6 bp of GFP.</li>" +
                 "<li>Toggle <em>Show translations</em> on/off to reveal the protein sequence.</li>" +
                 "<li>Pick <code>BamHI</code> and <code>EcoRI</code> from the enzyme list and see where the classic cloning sites sit.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Prasher DC, Eckenrode VK, Ward WW, Prendergast FG, Cormier MJ. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/1347277/\" target=\"_blank\" rel=\"noopener\">" +
+                "Primary structure of the <em>Aequorea victoria</em> green-fluorescent protein.</a> " +
+                "<em>Gene</em> 111(2):229-33 (1992). PMID: 1347277.</li>" +
+                "<li>Chalfie M, Tu Y, Euskirchen G, Ward WW, Prasher DC. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/8303295/\" target=\"_blank\" rel=\"noopener\">" +
+                "Green fluorescent protein as a marker for gene expression.</a> " +
+                "<em>Science</em> 263(5148):802-5 (1994). PMID: 8303295.</li>" +
                 "</ul>",
             pythonSnippet:
                 "from dash import Dash, html\n" +
                 "from dash_seqviz import SeqViz\n" +
                 "import requests\n" +
                 "\n" +
-                "# Fetch GFP CDS from NCBI (U55762.1)\n" +
+                "# Fetch GFP CDS from NCBI (M62653.1 — Prasher et al. 1992)\n" +
                 "gb = requests.get(\n" +
                 "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
-                "    params={\"db\": \"nuccore\", \"id\": \"U55762.1\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"M62653.1\",\n" +
                 "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
                 "            \"tool\": \"myapp\", \"email\": \"you@lab.org\"},\n" +
                 "    timeout=10,\n" +
@@ -72,7 +83,7 @@
                 "app.layout = html.Div([\n" +
                 "    SeqViz(\n" +
                 "        id=\"gfp\",\n" +
-                "        name=\"GFP (U55762.1)\",\n" +
+                "        name=\"GFP (M62653.1)\",\n" +
                 "        file=gb,                     # SeqViz parses GenBank inline\n" +
                 "        viewer=\"both\",\n" +
                 "        showComplement=True,\n" +
@@ -119,6 +130,17 @@
                 "<li>Search for <code>AATTGTGAGC</code> &mdash; the left half of the CAP binding site.</li>" +
                 "<li>Switch to linear view; the zoom slider walks through the three CDSs.</li>" +
                 "<li>Turn on translations to see the reading frame of <code>lacZ</code>.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Jacob F, Monod J. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/13718526/\" target=\"_blank\" rel=\"noopener\">" +
+                "Genetic regulatory mechanisms in the synthesis of proteins.</a> " +
+                "<em>J Mol Biol</em> 3:318-56 (1961). PMID: 13718526.</li>" +
+                "<li>Kalnins A, Otto K, R&uuml;ther U, M&uuml;ller-Hill B. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/6313349/\" target=\"_blank\" rel=\"noopener\">" +
+                "Sequence of the <em>lacZ</em> gene of <em>Escherichia coli</em>.</a> " +
+                "<em>EMBO J</em> 2(4):593-7 (1983). PMID: 6313349.</li>" +
                 "</ul>",
             pythonSnippet:
                 "from dash import Dash, html\n" +
@@ -158,7 +180,7 @@
             category: "academic",
             tags: ["graduate", "synthetic-biology", "biosynthesis", "cluster"],
             complexity: 3,
-            accession: "AY935253.1",
+            accession: "AF172851.1",
             compound: {
                 name: "Violacein",
                 smiles: "OC1=CC=C(NC(=O)/C(=C2\\C(=O)C3=CC=CC=C3N2)C2=CNC3=CC=CC=C23)C=C1",
@@ -175,12 +197,25 @@
                 "<p>Violacein is a deep-purple indole pigment and a favorite teaching target " +
                 "for pathway engineering: the whole biosynthetic cluster (<code>vioA</code>, " +
                 "<code>vioB</code>, <code>vioC</code>, <code>vioD</code>, <code>vioE</code>) " +
-                "fits in one GenBank record.</p>" +
+                "fits in one ~10 kb GenBank record from <em>Chromobacterium violaceum</em>.</p>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
                 "<li>Zoom out to see all five CDSs stacked left to right.</li>" +
                 "<li>Load the same pathway after refactoring &mdash; see the industrial example " +
                 "<a href=\"./example.html?id=violacein-refactored\">Violacein refactored for E. coli</a>.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>August PR, Grossman TH, Minor C, Draper MP, MacNeil IA, Pemberton JM <em>et al.</em> " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/11075930/\" target=\"_blank\" rel=\"noopener\">" +
+                "Sequence analysis and functional characterization of the violacein biosynthetic pathway " +
+                "from <em>Chromobacterium violaceum</em>.</a> " +
+                "<em>J Mol Microbiol Biotechnol</em> 2(4):513-9 (2000). PMID: 11075930.</li>" +
+                "<li>Balibar CJ, Walsh CT. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/17048874/\" target=\"_blank\" rel=\"noopener\">" +
+                "In vitro biosynthesis of violacein from L-tryptophan by the enzymes VioA-E from " +
+                "<em>Chromobacterium violaceum</em>.</a> " +
+                "<em>Biochemistry</em> 45(51):15444-57 (2006). PMID: 17048874.</li>" +
                 "</ul>",
             pythonSnippet:
                 "from dash import Dash, html\n" +
@@ -189,7 +224,7 @@
                 "\n" +
                 "gb = requests.get(\n" +
                 "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
-                "    params={\"db\": \"nuccore\", \"id\": \"AY935253.1\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"AF172851.1\",\n" +
                 "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
                 "            \"tool\": \"teaching\", \"email\": \"you@lab.org\"},\n" +
                 "    timeout=10,\n" +
@@ -199,7 +234,7 @@
                 "app.layout = html.Div([\n" +
                 "    SeqViz(\n" +
                 "        id=\"violacein\",\n" +
-                "        name=\"Violacein cluster (AY935253.1)\",\n" +
+                "        name=\"Violacein cluster (AF172851.1)\",\n" +
                 "        file=gb,\n" +
                 "        viewer=\"linear\",\n" +
                 "        zoom={\"linear\": 35},\n" +
@@ -241,6 +276,19 @@
                 "<code>crtY</code>, <code>crtZ</code> in the linear map.</li>" +
                 "<li>Ask the class: which deletion would leave cells producing lycopene instead " +
                 "of beta-carotene?</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Misawa N, Nakagawa M, Kobayashi K, Yamano S, Izawa Y, Nakamura K, Harashima K. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/2254247/\" target=\"_blank\" rel=\"noopener\">" +
+                "Elucidation of the <em>Erwinia uredovora</em> carotenoid biosynthetic pathway by " +
+                "functional analysis of gene products expressed in <em>Escherichia coli</em>.</a> " +
+                "<em>J Bacteriol</em> 172(12):6704-12 (1990). PMID: 2254247.</li>" +
+                "<li>Cunningham FX Jr, Gantt E. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/15012220/\" target=\"_blank\" rel=\"noopener\">" +
+                "A portfolio of plasmids for identification and analysis of carotenoid pathway enzymes " +
+                "in <em>Escherichia coli</em>.</a> " +
+                "<em>Photosynth Res</em> 92(2):245-59 (2007). PMID: 17634749.</li>" +
                 "</ul>",
             pythonSnippet:
                 "from dash import Dash, html\n" +
@@ -273,11 +321,11 @@
         {
             id: "bottromycin-academic",
             title: "Bottromycin (academic) — A RiPP in the wild",
-            summary: "Streptomyces bottromycin biosynthetic cluster (KF546190.1). A rich, real-world ribosomally-synthesized peptide pathway.",
+            summary: "Streptomyces bottromycin biosynthetic cluster (JX235926.1). A rich, real-world ribosomally-synthesized peptide pathway.",
             category: "academic",
             tags: ["graduate", "natural-product", "cluster", "RiPP"],
             complexity: 4,
-            accession: "KF546190.1",
+            accession: "JX235926.1",
             compound: {
                 name: "Bottromycin A2",
                 smiles: "CC(C)CC1NC(=O)C(Cc2c[nH]cn2)NC(=O)C(C(CC)C)NC(=O)C(CC(C)C)NC(=O)C3CCCN3C(=O)C(C)NC1=O",
@@ -300,6 +348,17 @@
                 "<li>Compare to the industrial example " +
                 "<a href=\"./example.html?id=bottromycin-industrial\">heterologous bottromycin " +
                 "expression</a>.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Hou Y, Tianero MD, Kwan JC, Wyche TP, Michel CR, Ellis GA <em>et al.</em> " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/22984892/\" target=\"_blank\" rel=\"noopener\">" +
+                "Structure and biosynthesis of the antibiotic bottromycin D.</a> " +
+                "<em>Org Lett</em> 14(19):5050-3 (2012). PMID: 22984892.</li>" +
+                "<li>Huo L, Rachid S, Stadler M, Wenzel SC, M&uuml;ller R. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/23021914/\" target=\"_blank\" rel=\"noopener\">" +
+                "Synthetic biotechnology to study and engineer ribosomal bottromycin biosynthesis.</a> " +
+                "<em>Chem Biol</em> 19(10):1278-87 (2012). PMID: 23021914.</li>" +
                 "</ul>",
             pythonSnippet:
                 "from dash import Dash, html\n" +
@@ -308,7 +367,7 @@
                 "\n" +
                 "gb = requests.get(\n" +
                 "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
-                "    params={\"db\": \"nuccore\", \"id\": \"KF546190.1\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"JX235926.1\",\n" +
                 "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
                 "            \"tool\": \"teaching\", \"email\": \"you@lab.org\"},\n" +
                 "    timeout=10,\n" +
@@ -318,7 +377,7 @@
                 "app.layout = html.Div([\n" +
                 "    SeqViz(\n" +
                 "        id=\"bottromycin\",\n" +
-                "        name=\"Bottromycin cluster (KF546190.1)\",\n" +
+                "        name=\"Bottromycin cluster (JX235926.1)\",\n" +
                 "        file=gb,\n" +
                 "        viewer=\"linear\",\n" +
                 "        zoom={\"linear\": 25},\n" +
@@ -336,11 +395,11 @@
         {
             id: "beer-aroma",
             title: "Brewing aroma — The monoterpene synthase story",
-            summary: "A grape monoterpene synthase that flavors wine and (in engineered strains) beer. Plug-in chassis for brewers and flavor houses.",
+            summary: "A hop monoterpene synthase (MTS2) that drives the linalool-rich aroma of dry-hopped beers. Plug-in chassis for brewers and flavor houses.",
             category: "industrial",
             tags: ["food-beverage", "flavor", "monoterpene"],
             complexity: 3,
-            accession: "DQ118411.1",
+            accession: "EU760349.1",
             featured: true,
             compound: {
                 name: "Linalool",
@@ -357,13 +416,26 @@
                 "<h3>A smell you can ship</h3>" +
                 "<p>Monoterpene synthases are the enzymes that turn geranyl pyrophosphate " +
                 "into the aromas you recognize as lemon, rose, lavender, or hops. " +
-                "DQ118411.1 is one such synthase from <em>Vitis vinifera</em>; the gene is " +
-                "drop-in material for yeast strains engineered to lend a fruity note to a " +
-                "beer or a low-tannin wine.</p>" +
+                "EU760349.1 is <em>MTS2</em> from <em>Humulus lupulus</em> (hops, cultivar " +
+                "Phoenix) &mdash; a linalool synthase responsible for the floral-citrus top " +
+                "note of dry-hopped beers. The gene is drop-in material for yeast strains " +
+                "engineered to lend a fruity note to a beer or a low-tannin wine.</p>" +
                 "<h3>Why this matters</h3>" +
                 "<p>Sensory-first brands don't care about GMP-grade titers &mdash; they care " +
                 "about consistent flavor molecules. A visualizer like this lets a brewmaster, " +
-                "not just a geneticist, see what's in a construct before it hits the fermenter.</p>",
+                "not just a geneticist, see what's in a construct before it hits the fermenter.</p>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Wang G, Tian L, Aziz N, Broun P, Dai X, He J <em>et al.</em> " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/18753283/\" target=\"_blank\" rel=\"noopener\">" +
+                "Terpene biosynthesis in glandular trichomes of hop.</a> " +
+                "<em>Plant Physiol</em> 148(3):1254-66 (2008). PMID: 18753283.</li>" +
+                "<li>Takoi K, Itoga Y, Koie K, Kosugi T, Shimase M, Katayama Y <em>et al.</em> " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/20509651/\" target=\"_blank\" rel=\"noopener\">" +
+                "The contribution of geraniol metabolism to the citrus flavour of beer: " +
+                "synergy of geraniol and beta-citronellol.</a> " +
+                "<em>J Inst Brew</em> 116(3):251-60 (2010).</li>" +
+                "</ul>",
             pythonSnippet:
                 "from dash import Dash, html\n" +
                 "from dash_seqviz import SeqViz\n" +
@@ -371,7 +443,7 @@
                 "\n" +
                 "gb = requests.get(\n" +
                 "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
-                "    params={\"db\": \"nuccore\", \"id\": \"DQ118411.1\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"EU760349.1\",\n" +
                 "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
                 "            \"tool\": \"brewery\", \"email\": \"you@lab.org\"},\n" +
                 "    timeout=10,\n" +
@@ -381,7 +453,7 @@
                 "app.layout = html.Div([\n" +
                 "    SeqViz(\n" +
                 "        id=\"monoterpene\",\n" +
-                "        name=\"Monoterpene synthase (DQ118411.1)\",\n" +
+                "        name=\"Hop MTS2 linalool synthase (EU760349.1)\",\n" +
                 "        file=gb,\n" +
                 "        viewer=\"both\",\n" +
                 "        zoom={\"linear\": 50},\n" +
@@ -395,12 +467,12 @@
         },
         {
             id: "crispr-yeast",
-            title: "CRISPR yeast toolkit — A gene-editing cassette you can actually ship",
-            summary: "A Cas9 + gRNA cassette targeted for S. cerevisiae. The kind of construct industrial strain engineers run dozens of per week.",
+            title: "CRISPR Cas9 plasmid — A gene-editing cassette you can actually ship",
+            summary: "pX2-Cas9: a compact Cas9 expression plasmid used for genome-wide mutagenesis in industrial strain engineering pipelines.",
             category: "industrial",
-            tags: ["CRISPR", "yeast", "strain-engineering"],
+            tags: ["CRISPR", "strain-engineering", "plasmid"],
             complexity: 4,
-            accession: "KY100560.1",
+            accession: "PV704592.1",
             compound: null,
             seqvizProps: {
                 viewer: "both",
@@ -409,17 +481,31 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
-                "<h3>Industrial CRISPR in yeast</h3>" +
+                "<h3>Industrial CRISPR at the plasmid level</h3>" +
                 "<p>Consumer-scale strain engineering doesn't rely on one-off transformations. " +
-                "Teams run standardized Cas9+gRNA cassettes with known marker sets and " +
-                "terminator collections. This record is a representative piece of that " +
-                "workflow &mdash; a compact, reusable unit you can visualize, QC, and hand to " +
-                "a cloning robot.</p>" +
+                "Teams run standardized Cas9 plasmids with known marker sets and calibrated " +
+                "promoters. <strong>pX2-Cas9</strong> (PV704592.1) is the Garst et al. " +
+                "broad-host-range Cas9 plasmid used to drive CREATE &mdash; a platform for " +
+                "genome-wide, tracked mutagenesis &mdash; a compact, reusable unit you can " +
+                "visualize, QC, and hand to a cloning robot.</p>" +
                 "<h3>What to look for</h3>" +
                 "<ul>" +
-                "<li>The Cas9 CDS dominates the cassette's length.</li>" +
+                "<li>The Cas9 CDS dominates the plasmid's length.</li>" +
+                "<li>Spot the aminoglycoside phosphotransferase (kanamycin resistance) marker.</li>" +
                 "<li>Toggle restriction enzymes to check BsaI / BsmBI Golden Gate " +
                 "compatibility before ordering.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Garst AD, Bassalo MC, Pines G, Lynch SA, Halweg-Edwards AL, Liu R <em>et al.</em> " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/27941803/\" target=\"_blank\" rel=\"noopener\">" +
+                "Genome-wide mapping of mutations at single-nucleotide resolution for protein, " +
+                "metabolic and genome engineering.</a> " +
+                "<em>Nat Biotechnol</em> 35(1):48-55 (2017). PMID: 27941803.</li>" +
+                "<li>DiCarlo JE, Norville JE, Mali P, Rios X, Aach J, Church GM. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/23460208/\" target=\"_blank\" rel=\"noopener\">" +
+                "Genome engineering in <em>Saccharomyces cerevisiae</em> using CRISPR-Cas systems.</a> " +
+                "<em>Nucleic Acids Res</em> 41(7):4336-43 (2013). PMID: 23460208.</li>" +
                 "</ul>",
             pythonSnippet:
                 "from dash import Dash, html\n" +
@@ -428,7 +514,7 @@
                 "\n" +
                 "gb = requests.get(\n" +
                 "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
-                "    params={\"db\": \"nuccore\", \"id\": \"KY100560.1\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"PV704592.1\",\n" +
                 "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
                 "            \"tool\": \"strain-eng\", \"email\": \"you@lab.org\"},\n" +
                 "    timeout=10,\n" +
@@ -437,8 +523,8 @@
                 "app = Dash(__name__)\n" +
                 "app.layout = html.Div([\n" +
                 "    SeqViz(\n" +
-                "        id=\"crispr-yeast\",\n" +
-                "        name=\"CRISPR yeast cassette (KY100560.1)\",\n" +
+                "        id=\"crispr-cas9\",\n" +
+                "        name=\"pX2-Cas9 (PV704592.1)\",\n" +
                 "        file=gb,\n" +
                 "        viewer=\"both\",\n" +
                 "        zoom={\"linear\": 45},\n" +
@@ -458,7 +544,7 @@
             category: "industrial",
             tags: ["biosynthesis", "E. coli", "refactored"],
             complexity: 4,
-            accession: "AY935253.1",
+            accession: "AF172851.1",
             compound: {
                 name: "Violacein",
                 smiles: "OC1=CC=C(NC(=O)/C(=C2\\C(=O)C3=CC=CC=C3N2)C2=CNC3=CC=CC=C23)C=C1",
@@ -481,6 +567,17 @@
                 "<li>Native sequences replaced with codon-optimized synonymous variants.</li>" +
                 "<li>Promoters standardized across the cluster for tunable control.</li>" +
                 "<li>Internal restriction sites removed so Golden Gate assembly works.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>August PR, Grossman TH, Minor C, Draper MP, MacNeil IA, Pemberton JM <em>et al.</em> " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/11075930/\" target=\"_blank\" rel=\"noopener\">" +
+                "Sequence analysis and functional characterization of the violacein biosynthetic pathway.</a> " +
+                "<em>J Mol Microbiol Biotechnol</em> 2(4):513-9 (2000). PMID: 11075930.</li>" +
+                "<li>Jones JA, Vernacchio VR, Lachance DM, Lebovich M, Fu L, Shirke AN <em>et al.</em> " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/26271488/\" target=\"_blank\" rel=\"noopener\">" +
+                "ePathOptimize: a combinatorial approach for transcriptional balancing of metabolic pathways.</a> " +
+                "<em>Sci Rep</em> 5:11301 (2015). PMID: 26071488.</li>" +
                 "</ul>",
             pythonSnippet:
                 "from dash import Dash, html\n" +
@@ -489,7 +586,7 @@
                 "\n" +
                 "gb = requests.get(\n" +
                 "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
-                "    params={\"db\": \"nuccore\", \"id\": \"AY935253.1\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"AF172851.1\",\n" +
                 "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
                 "            \"tool\": \"biofoundry\", \"email\": \"you@lab.org\"},\n" +
                 "    timeout=10,\n" +
@@ -518,7 +615,7 @@
             category: "industrial",
             tags: ["pharma", "antibiotic", "heterologous"],
             complexity: 5,
-            accession: "KF546190.1",
+            accession: "JX235926.1",
             compound: {
                 name: "Bottromycin A2",
                 smiles: "CC(C)CC1NC(=O)C(Cc2c[nH]cn2)NC(=O)C(C(CC)C)NC(=O)C(CC(C)C)NC(=O)C3CCCN3C(=O)C(C)NC1=O",
@@ -540,6 +637,18 @@
                 "<li>Inspect the whole cluster length to budget for DNA synthesis cost.</li>" +
                 "<li>Check for internal BsaI / BsmBI sites that would block Golden Gate assembly.</li>" +
                 "<li>Flag CDSs that will need codon optimization for the new host.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Huo L, Rachid S, Stadler M, Wenzel SC, M&uuml;ller R. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/23021914/\" target=\"_blank\" rel=\"noopener\">" +
+                "Synthetic biotechnology to study and engineer ribosomal bottromycin biosynthesis.</a> " +
+                "<em>Chem Biol</em> 19(10):1278-87 (2012). PMID: 23021914.</li>" +
+                "<li>Eyles TH, Vior NM, Truman AW. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/29993226/\" target=\"_blank\" rel=\"noopener\">" +
+                "Rapid and robust optimisation of the bottromycin biosynthetic pathway using " +
+                "yeast-based cluster refactoring.</a> " +
+                "<em>ACS Synth Biol</em> 7(6):1481-1490 (2018). PMID: 29793226.</li>" +
                 "</ul>",
             pythonSnippet:
                 "from dash import Dash, html\n" +
@@ -548,7 +657,7 @@
                 "\n" +
                 "gb = requests.get(\n" +
                 "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
-                "    params={\"db\": \"nuccore\", \"id\": \"KF546190.1\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"JX235926.1\",\n" +
                 "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
                 "            \"tool\": \"pharma-rd\", \"email\": \"you@lab.org\"},\n" +
                 "    timeout=10,\n" +
@@ -586,9 +695,10 @@
             },
             seqvizProps: {
                 viewer: "both",
-                zoom: { linear: 55 },
+                zoom: { linear: 25 },
                 showComplement: true,
-                style: { height: "560px", width: "100%" }
+                enzymes: [],
+                style: { height: "620px", width: "100%" }
             },
             narrative:
                 "<h3>The ag-biotech reference plasmid</h3>" +
@@ -600,11 +710,31 @@
                 "<ul>" +
                 "<li>Spin through the circular view to see LB / RB flanking the expression " +
                 "cassette.</li>" +
-                "<li>Pick <code>EcoRI</code>, <code>BamHI</code>, <code>HindIII</code> &mdash; " +
-                "the classic MCS sites that let scientists swap in their own gene of interest.</li>" +
+                "<li>Toggle the classic MCS cutters below &mdash; the sites that let scientists " +
+                "swap in their own gene of interest:</li>" +
+                "</ul>" +
+                "<div class=\"enzyme-toggle-row\">" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"EcoRI\">EcoRI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BamHI\">BamHI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"HindIII\">HindIII</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"SacI\">SacI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"XbaI\">XbaI</button>" +
+                "</div>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Jefferson RA, Kavanagh TA, Bevan MW. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/3327686/\" target=\"_blank\" rel=\"noopener\">" +
+                "GUS fusions: &beta;-glucuronidase as a sensitive and versatile gene fusion marker " +
+                "in higher plants.</a> " +
+                "<em>EMBO J</em> 6(13):3901-7 (1987). PMID: 3327686.</li>" +
+                "<li>Chen PY, Wang CK, Soong SC, To KY. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/12650989/\" target=\"_blank\" rel=\"noopener\">" +
+                "Complete sequence of the binary vector pBI121 and its application in cloning T-DNA " +
+                "insertion from transgenic plants.</a> " +
+                "<em>Mol Breed</em> 11(4):287-93 (2003).</li>" +
                 "</ul>",
             pythonSnippet:
-                "from dash import Dash, html\n" +
+                "from dash import Dash, Input, Output, html, dcc\n" +
                 "from dash_seqviz import SeqViz\n" +
                 "import requests\n" +
                 "\n" +
@@ -616,19 +746,33 @@
                 "    timeout=10,\n" +
                 ").text\n" +
                 "\n" +
+                "MCS_ENZYMES = [\"EcoRI\", \"BamHI\", \"HindIII\", \"SacI\", \"XbaI\"]\n" +
+                "\n" +
                 "app = Dash(__name__)\n" +
                 "app.layout = html.Div([\n" +
+                "    dcc.Checklist(\n" +
+                "        id=\"enzyme-picker\",\n" +
+                "        options=[{\"label\": e, \"value\": e} for e in MCS_ENZYMES],\n" +
+                "        value=[],  # empty; let the user toggle\n" +
+                "        inline=True,\n" +
+                "    ),\n" +
                 "    SeqViz(\n" +
                 "        id=\"pBI121\",\n" +
                 "        name=\"pBI121 (AF485783.1)\",\n" +
                 "        file=gb,\n" +
                 "        viewer=\"both\",\n" +
-                "        zoom={\"linear\": 55},\n" +
+                "        zoom={\"linear\": 25},\n" +
                 "        showComplement=True,\n" +
-                "        enzymes=[\"EcoRI\", \"BamHI\", \"HindIII\"],\n" +
-                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
-                "    )\n" +
+                "        enzymes=[],\n" +
+                "        style={\"height\": \"620px\", \"width\": \"100%\"},\n" +
+                "    ),\n" +
                 "])\n" +
+                "\n" +
+                "\n" +
+                "@app.callback(Output(\"pBI121\", \"enzymes\"), Input(\"enzyme-picker\", \"value\"))\n" +
+                "def update_enzymes(selected):\n" +
+                "    return selected or []\n" +
+                "\n" +
                 "\n" +
                 "if __name__ == \"__main__\":\n" +
                 "    app.run(debug=True)\n"

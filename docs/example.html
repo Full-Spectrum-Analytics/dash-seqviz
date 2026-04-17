@@ -76,7 +76,7 @@
 </footer>
 
 <script crossorigin src="https://unpkg.com/seqviz@3.10.20/dist/seqviz.min.js"></script>
-<script crossorigin src="https://unpkg.com/smiles-drawer@2.1.7/dist/smiles-drawer.min.js"></script>
+<script crossorigin src="https://unpkg.com/smiles-drawer@2.2.1/dist/smiles-drawer.min.js"></script>
 <script src="./assets/nav.js"></script>
 <script src="./assets/seqviz-adapter.js"></script>
 <script src="./data/examples.js"></script>
@@ -205,13 +205,48 @@
             loadingEl.style.display = "none";
             statusEl.textContent = "Loaded " + rec.seq.length.toLocaleString() + " bp from " + ex.accession + ".";
 
-            var props = Object.assign({}, ex.seqvizProps, {
+            var baseProps = Object.assign({}, ex.seqvizProps, {
                 name: rec.name,
                 seq: rec.seq,
                 annotations: rec.annotations,
                 translations: rec.translations
             });
-            window.SeqVizSite.renderViewer("seqviz-root", props);
+
+            // Live enzyme toggle buttons embedded in the narrative, e.g.
+            // <button class="enzyme-toggle" data-enzyme="EcoRI">EcoRI</button>.
+            // Any `.enzyme-toggle` button on the page becomes a toggle that
+            // re-renders the viewer with the new enzyme selection.
+            var toggles = Array.prototype.slice.call(
+                document.querySelectorAll(".enzyme-toggle")
+            );
+            var selected = Array.isArray(baseProps.enzymes) ? baseProps.enzymes.slice() : [];
+            toggles.forEach(function (btn) {
+                var name = btn.getAttribute("data-enzyme");
+                btn.setAttribute("aria-pressed", selected.indexOf(name) !== -1 ? "true" : "false");
+                btn.addEventListener("click", function () {
+                    var idx = selected.indexOf(name);
+                    if (idx === -1) selected.push(name);
+                    else selected.splice(idx, 1);
+                    btn.setAttribute("aria-pressed", idx === -1 ? "true" : "false");
+                    var nextProps = Object.assign({}, baseProps, { enzymes: selected.slice() });
+                    window.SeqVizSite.renderViewer("seqviz-root", nextProps);
+                });
+            });
+
+            window.SeqVizSite.renderViewer("seqviz-root", baseProps);
+
+            // Prevent page scroll while the cursor is over the circular viewer
+            // (seqviz rotates the circular view on wheel). Linear-only viewers
+            // don't rotate, so leave page scroll alone there.
+            var viewerMode = baseProps.viewer || "both";
+            if (viewerMode === "circular" || viewerMode === "both") {
+                var vroot = document.getElementById("seqviz-root");
+                if (vroot) {
+                    vroot.addEventListener("wheel", function (ev) {
+                        ev.preventDefault();
+                    }, { passive: false });
+                }
+            }
         }).catch(function (err) {
             loadingEl.textContent = "Couldn't load sequence: " + (err && err.message ? err.message : "unknown error");
             statusEl.textContent =
