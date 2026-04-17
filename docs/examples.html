@@ -22,8 +22,8 @@
         <div class="gallery-filter" role="toolbar" aria-label="Filter examples">
             <div class="filter-group" id="filter-category" role="radiogroup" aria-label="Category">
                 <button type="button" data-cat="all" class="active">All</button>
-                <button type="button" data-cat="academic">Academic</button>
-                <button type="button" data-cat="industrial">Industrial</button>
+                <button type="button" data-cat="academic">Academia</button>
+                <button type="button" data-cat="industrial">Industry</button>
             </div>
             <div class="filter-group" id="filter-sort" role="radiogroup" aria-label="Sort">
                 <button type="button" data-sort="featured" class="active">Featured</button>
@@ -136,27 +136,15 @@
                 a.className = "gallery-card";
                 a.href = "./example.html?id=" + encodeURIComponent(ex.id);
 
-                var thumbInfo = thumbSlugFor(ex);
-                if (thumbInfo) {
-                    var thumb = document.createElement("img");
-                    thumb.className = "card-thumb";
-                    thumb.alt = thumbInfo.name + " structure";
-                    thumb.loading = "lazy";
-                    thumb.src = "./assets/molecules/" + thumbInfo.slug + ".svg";
-                    thumb.onerror = function () {
-                        thumb.remove();
-                        a.classList.remove("has-thumb");
-                    };
-                    a.classList.add("has-thumb");
-                    a.appendChild(thumb);
-                }
-
+                // Build the text stack first so badges/title/summary
+                // can wrap using the FULL card width (no thumbnail
+                // competing for horizontal space anymore).
                 var badges = document.createElement("div");
                 badges.className = "card-badges";
 
                 var catBadge = document.createElement("span");
                 catBadge.className = "badge " + (ex.category === "academic" ? "badge-academic" : "badge-industrial");
-                catBadge.textContent = ex.category;
+                catBadge.textContent = ex.category === "academic" ? "academia" : "industry";
                 badges.appendChild(catBadge);
 
                 var cxBadge = document.createElement("span");
@@ -187,6 +175,27 @@
                 p.textContent = ex.summary;
                 a.appendChild(p);
 
+                // Thumbnail sits in normal flow between summary and
+                // the accession — centered horizontally via CSS.
+                // onerror falls back to a text-only layout by
+                // stripping the .has-thumb class.
+                var thumbInfo = thumbSlugFor(ex);
+                if (thumbInfo) {
+                    var thumb = document.createElement("img");
+                    thumb.className = "card-thumb";
+                    thumb.alt = thumbInfo.name + " structure";
+                    thumb.loading = "lazy";
+                    thumb.src = "./assets/molecules/" + thumbInfo.slug + ".svg";
+                    thumb.onerror = function () {
+                        thumb.remove();
+                        a.classList.remove("has-thumb");
+                    };
+                    a.classList.add("has-thumb");
+                    a.appendChild(thumb);
+                }
+
+                // Accession stays as the last child so it anchors
+                // the bottom of the card regardless of thumbnail.
                 var meta = document.createElement("div");
                 meta.className = "card-meta";
                 meta.textContent = ex.accession;

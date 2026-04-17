@@ -184,9 +184,18 @@ code {
 }
 p code {
     background: #f1f5f9;
+    color: var(--color-text);
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 0.88em;
+}
+/* Hero sections use white text on a blue gradient, which makes the
+   light `p code` pill unreadable (white text on near-white pill).
+   Pin the code color explicitly so it contrasts against the pill. */
+.hero p code,
+.hero code {
+    color: var(--color-text);
+    background: #f1f5f9;
 }
 
 /* ---- Copy-snippet button ---- */
@@ -275,7 +284,6 @@ footer a:hover { text-decoration: underline; }
     gap: 20px;
 }
 .gallery-card {
-    position: relative;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
@@ -287,9 +295,6 @@ footer a:hover { text-decoration: underline; }
     color: inherit;
     transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
 }
-.gallery-card.has-thumb {
-    padding-right: 148px;
-}
 .gallery-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
@@ -298,32 +303,24 @@ footer a:hover { text-decoration: underline; }
 .gallery-card:hover .card-thumb {
     border-color: var(--color-primary);
 }
+/* Thumbnail sits in the normal flex-column flow between the summary
+   text and the NCBI accession, centered horizontally. A little extra
+   top margin separates it from the paragraph above. */
 .gallery-card .card-thumb {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 120px;
-    height: 90px;
+    align-self: center;
+    margin-top: 6px;
+    width: 180px;
+    height: 135px;
     object-fit: contain;
     background: #ffffff;
     border: 1px solid var(--color-border);
     border-radius: 6px;
-    padding: 4px;
+    padding: 6px;
     box-sizing: border-box;
     transition: border-color 0.12s;
 }
 .gallery-card .card-badges {
     display: flex; gap: 6px; flex-wrap: wrap;
-}
-@media (max-width: 480px) {
-    .gallery-card.has-thumb {
-        padding-right: 20px;
-        padding-top: 116px;
-    }
-    .gallery-card .card-thumb {
-        top: 16px;
-        right: 16px;
-    }
 }
 .badge {
     display: inline-block;
@@ -517,7 +514,6 @@ footer a:hover { text-decoration: underline; }
     min-height: 80px;
 }
 .next-examples a:hover { border-color: var(--color-primary); background: #eff6ff; }
-.next-examples a:hover .next-thumb { border-color: var(--color-primary); }
 .next-examples .next-eyebrow {
     font-size: 0.7rem;
     color: var(--color-text-muted);
@@ -530,22 +526,20 @@ footer a:hover { text-decoration: underline; }
     font-weight: 600;
     color: var(--color-text);
 }
-/* 2D-structure thumbnail pinned top-right. Mirrors the gallery-card
-   pattern from PR #2, scaled down (68×56) because these cards are
-   narrower (220px min-width) and the card title needs room to breathe. */
+/* 2D-structure thumbnail, vertically centered on the right edge of
+   the card. Smaller than the gallery-card thumb (120×90) because
+   these cards are narrower (220px min-width) and the card title
+   needs room to breathe. No border/background — the SVG sits
+   directly on the card surface so the chemistry reads as an icon
+   rather than a framed thumbnail. */
 .next-examples .next-thumb {
     position: absolute;
-    top: 10px;
+    top: 50%;
     right: 10px;
+    transform: translateY(-50%);
     width: 68px;
     height: 56px;
     object-fit: contain;
-    background: #ffffff;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    padding: 2px;
-    box-sizing: border-box;
-    transition: border-color 0.12s;
 }
 
 /* ---- Compound card (SmilesDrawer) ---- */

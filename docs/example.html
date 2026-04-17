@@ -184,13 +184,13 @@
 
         // Header
         document.title = ex.title + " — dash-seqviz";
-        eyebrowEl.textContent = ex.category === "academic" ? "Academic example" : "Industrial example";
+        eyebrowEl.textContent = ex.category === "academic" ? "Academia example" : "Industry example";
         titleEl.textContent = ex.title;
         summaryEl.textContent = ex.summary;
 
         var catBadge = document.createElement("span");
         catBadge.className = "badge " + (ex.category === "academic" ? "badge-academic" : "badge-industrial");
-        catBadge.textContent = ex.category;
+        catBadge.textContent = ex.category === "academic" ? "academia" : "industry";
         metaEl.appendChild(catBadge);
 
         var cxBadge = document.createElement("span");
@@ -392,7 +392,7 @@
 
             var eye = document.createElement("span");
             eye.className = "next-eyebrow";
-            eye.textContent = e.category;
+            eye.textContent = e.category === "academic" ? "academia" : "industry";
             a.appendChild(eye);
 
             var t = document.createElement("span");

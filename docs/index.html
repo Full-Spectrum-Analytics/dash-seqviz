@@ -98,7 +98,7 @@
                     <li>Annotations, translations, restriction maps, motif search</li>
                     <li>Works in JupyterLab, Dash, or a static HTML page</li>
                 </ul>
-                <a class="cta" href="./examples.html?category=academic">Academic examples &rarr;</a>
+                <a class="cta" href="./examples.html?category=academic">Academia examples &rarr;</a>
             </div>
             <div class="audience-card industrial">
                 <div class="audience-icon">&#x1F3ED;</div>
@@ -112,7 +112,7 @@
                     <li>Restriction-site QC for Golden Gate / MoClo pipelines</li>
                     <li>Embed inside internal Dash dashboards and LIMS frontends</li>
                 </ul>
-                <a class="cta" href="./examples.html?category=industrial">Industrial examples &rarr;</a>
+                <a class="cta" href="./examples.html?category=industrial">Industry examples &rarr;</a>
             </div>
         </div>
         <div class="logo-row" aria-label="Representative industry targets">
@@ -246,7 +246,7 @@ if __name__ == "__main__":
 
             var catBadge = document.createElement("span");
             catBadge.className = "badge " + (ex.category === "academic" ? "badge-academic" : "badge-industrial");
-            catBadge.textContent = ex.category;
+            catBadge.textContent = ex.category === "academic" ? "academia" : "industry";
             badges.appendChild(catBadge);
 
             (ex.tags || []).slice(0, 2).forEach(function (t) {
