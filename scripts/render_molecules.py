@@ -143,6 +143,33 @@ LINALOOL_NODES: List[Node] = [
 
 
 # ---------------------------------------------------------------------------
+# Lovastatin (Aspergillus terreus lovB/lovC/lovA/lovD cluster).
+# Textbook fungal polyketide: LovB iteratively condenses nine acetate
+# units to release dihydromonacolin L, LovA oxidizes twice (monacolin L
+# → monacolin J), LovD tacks on the 2-methylbutyrate side chain.
+# ---------------------------------------------------------------------------
+
+LOVASTATIN_NODES: List[Node] = [
+    Node(
+        "Dihydromonacolin L",
+        "CCC(C)C1CCC2CCC(C)C(CCC3CC(O)CC(=O)O3)C12",
+    ),
+    Node(
+        "Monacolin L",
+        "CCC(C)C1CC=C2C=CC(C)C(CCC3CC(O)CC(=O)O3)C12",
+    ),
+    Node(
+        "Monacolin J",
+        "OC1CC(C)C=C2C=CC(C)C(CCC3CC(O)CC(=O)O3)C12",
+    ),
+    Node(
+        "Lovastatin",
+        "CCC(C)C(=O)OC1CC(C)C=C2C=CC(C)C(CCC3CC(O)CC(=O)O3)C12",
+    ),
+]
+
+
+# ---------------------------------------------------------------------------
 # Bottromycin biosynthesis (RiPP; Streptomyces bottromycin cluster).
 # The precursor peptide BotA is cleaved to the GPVVVFDC octapeptide,
 # then macro-amidinated, thiazole-installed, C-methylated (×3), and
@@ -183,6 +210,13 @@ PATHWAYS: List[Pathway] = [
     Pathway(slug="carotenoid", nodes=CAROTENOID_NODES),
     Pathway(slug="linalool", nodes=LINALOOL_NODES),
     Pathway(slug="bottromycin", nodes=BOTTROMYCIN_NODES),
+    # Lovastatin shares a decalin scaffold across all four intermediates,
+    # so a decalin SMILES template aligns each drawing predictably.
+    Pathway(
+        slug="lovastatin",
+        nodes=LOVASTATIN_NODES,
+        template_smiles="C1CCC2CCCCC2C1",
+    ),
 ]
 
 
@@ -205,6 +239,16 @@ STANDALONE_COMPOUNDS: List[Node] = [
         "Kanamycin A",
         "NC1CC(N)C(OC2OC(CO)C(O)C(N)C2O)C(O)C1OC3OC(CO)C(O)C(O)C3O",
     ),
+    # Maltose — waxy-corn-crispr example. A stand-in for the amylose
+    # α-1,4 linkage that the Wx1 (GBSSI) enzyme extends.
+    Node(
+        "Maltose",
+        "OC[C@H]1O[C@@H](O[C@H]2[C@H](O)[C@@H](O)[C@H](O)[C@@H](CO)O2)"
+        "[C@H](O)[C@@H](O)[C@@H]1O",
+    ),
+    # Glyphosate — cp4-epsps example. The phosphonate herbicide whose
+    # target (EPSPS) the CP4 variant resists.
+    Node("Glyphosate", "OC(=O)CNCP(=O)(O)O"),
 ]
 
 

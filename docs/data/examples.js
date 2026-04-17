@@ -942,6 +942,482 @@
                 "\n" +
                 "if __name__ == \"__main__\":\n" +
                 "    app.run(debug=True)\n"
+        },
+
+        // ------------------------------------------------------------------
+        // INDUSTRIAL (account-research additions — ag-biotech, biopharma,
+        // natural products, synbio standardized parts)
+        // ------------------------------------------------------------------
+        {
+            id: "waxy-corn-crispr",
+            title: "Waxy corn (Wx1) \u2014 Corteva's first commercial CRISPR crop",
+            summary: "The maize Wx1 (waxy) locus. Corteva's 2021 commercial CRISPR product: a knock-out that eliminates amylose for 100% amylopectin starch.",
+            category: "industrial",
+            tags: ["agriculture", "CRISPR", "trait", "plant-biotech"],
+            complexity: 3,
+            accession: "X03935.1",
+            compound: {
+                name: "Maltose",
+                smiles: "OC[C@H]1O[C@@H](O[C@H]2[C@H](O)[C@@H](O)[C@H](O)[C@@H](CO)O2)[C@H](O)[C@@H](O)[C@@H]1O",
+                description: "The \u03b1-1,4-linked glucose dimer at the heart of starch. The Wx1 gene encodes GBSSI (granule-bound starch synthase I), the enzyme that lays down \u03b1-1,4 chains to build amylose. Disable Wx1 and you get pure amylopectin \u2014 glutinous \"waxy\" starch."
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 60 },
+                showComplement: true,
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>The first CRISPR crop Corteva put in the ground</h3>" +
+                "<p>The <em>Waxy</em> (<code>Wx1</code>) locus in maize encodes <em>granule-bound " +
+                "starch synthase I</em> (GBSSI), the enzyme that stitches glucose units into " +
+                "straight-chain <strong>amylose</strong>. Disable Wx1 and the kernel makes only " +
+                "<strong>amylopectin</strong> \u2014 the branched starch prized by confectioners, " +
+                "noodle makers, and the adhesives industry for its clarity, stability, and " +
+                "freeze-thaw tolerance.</p>" +
+                "<p>The spontaneous waxy mutation has been selected for in Asian maize and " +
+                "glutinous rice for centuries. In 2016 Corteva (then DuPont Pioneer) announced " +
+                "a CRISPR-edited waxy hybrid, and in 2021 it became <strong>the first CRISPR " +
+                "crop in a US commercial pipeline</strong>. No transgenes, no foreign DNA \u2014 " +
+                "just a targeted knock-out \u2014 which also simplified the regulatory path " +
+                "(USDA ruled it outside GMO jurisdiction in 2016).</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li>Zoom in on the <code>Wx1</code> CDS and pick a 20 bp PAM-adjacent window " +
+                "inside an early exon \u2014 that's a plausible CRISPR cut site.</li>" +
+                "<li>Toggle the cloning cutters below to see whether the native sequence has " +
+                "compatible restriction sites for traditional cloning (versus going gene-edit):</li>" +
+                "</ul>" +
+                "<div class=\"enzyme-toggle-row\">" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"EcoRI\">EcoRI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"HindIII\">HindIII</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BamHI\">BamHI</button>" +
+                "</div>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Shure M, Wessler S, Fedoroff N. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/6414718/\" target=\"_blank\" rel=\"noopener\">" +
+                "Molecular identification and isolation of the <em>Waxy</em> locus in maize.</a> " +
+                "<em>Cell</em> 35(1):225-33 (1983). PMID: 6414718.</li>" +
+                "<li>Waltz E. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/27097087/\" target=\"_blank\" rel=\"noopener\">" +
+                "Gene-edited CRISPR mushroom escapes US regulation.</a> " +
+                "<em>Nature</em> 532(7599):293 (2016). PMID: 27097087. (Same regulatory ruling that " +
+                "covered DuPont Pioneer's waxy corn.)</li>" +
+                "<li>Gao H <em>et al.</em> " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/32541957/\" target=\"_blank\" rel=\"noopener\">" +
+                "Superior field performance of waxy corn engineered using CRISPR-Cas9.</a> " +
+                "<em>Nat Biotechnol</em> 38(5):579-581 (2020). PMID: 32541957.</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# Maize Wx1 (waxy) locus \u2014 Shure, Wessler & Fedoroff 1983\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"X03935.1\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"agbiotech\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"wx1\",\n" +
+                "        name=\"Maize Wx1 (X03935.1)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        showComplement=True,\n" +
+                "        zoom={\"linear\": 60},\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        {
+            id: "cp4-epsps",
+            title: "CP4 EPSPS \u2014 The Roundup Ready trait",
+            summary: "Agrobacterium sp. CP4's glyphosate-insensitive EPSPS. The most commercially deployed trait gene in the history of agriculture.",
+            category: "industrial",
+            tags: ["agriculture", "herbicide-tolerance", "trait", "plant-biotech"],
+            complexity: 3,
+            accession: "AF464188.1",
+            compound: {
+                name: "Glyphosate",
+                smiles: "OC(=O)CNCP(=O)(O)O",
+                description: "The active ingredient of Roundup. Glyphosate is a phosphonate analog of phosphoenolpyruvate (PEP) that tightly binds the EPSPS active site, choking off aromatic amino-acid biosynthesis. Plants die; mammals are unaffected because we don't have a shikimate pathway."
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 70 },
+                showComplement: true,
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>A bacterium's enzyme that saved a herbicide</h3>" +
+                "<p>Glyphosate kills plants by shutting down the <strong>shikimate pathway</strong> " +
+                "\u2014 specifically by blocking <em>5-enolpyruvylshikimate-3-phosphate synthase</em> " +
+                "(EPSPS), which plants and microbes need to make phenylalanine, tyrosine, and " +
+                "tryptophan. Mammals lack this pathway, which is why glyphosate has its famously " +
+                "wide mammalian safety window.</p>" +
+                "<p>In the early 1990s, a Monsanto-led team isolated a naturally glyphosate-insensitive " +
+                "EPSPS from <em>Agrobacterium</em> strain <strong>CP4</strong>. A single active-site " +
+                "substitution (Gly101 \u2192 Ala in the prokaryotic numbering) keeps PEP binding tight " +
+                "while sterically excluding glyphosate. Dropping this gene into soybean, cotton, " +
+                "canola, and corn created the <strong>Roundup Ready</strong> trait franchise \u2014 " +
+                "still the most-deployed GM trait today and core IP that flows through the " +
+                "Corteva / Bayer / BASF ag-biotech ecosystem.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li>Find the CDS start codon and inspect the N-terminal <em>chloroplast transit peptide</em> " +
+                "\u2014 plants need it to target EPSPS to the chloroplast stroma where the shikimate " +
+                "pathway runs.</li>" +
+                "<li>Toggle the Golden Gate cutters below to check domestication compatibility:</li>" +
+                "</ul>" +
+                "<div class=\"enzyme-toggle-row\">" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BsaI\">BsaI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BsmBI\">BsmBI</button>" +
+                "</div>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Padgette SR, Kolacz KH, Delannay X, Re DB, LaVallee BJ, Tinius CN <em>et al.</em> " +
+                "<a href=\"https://doi.org/10.2135/cropsci1995.0011183X003500050004x\" target=\"_blank\" rel=\"noopener\">" +
+                "Development, identification, and characterization of a glyphosate-tolerant soybean line.</a> " +
+                "<em>Crop Sci</em> 35(5):1451-1461 (1995).</li>" +
+                "<li>Funke T, Han H, Healy-Fried ML, Fischer M, Sch\u00f6nbrunn E. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/16916934/\" target=\"_blank\" rel=\"noopener\">" +
+                "Molecular basis for the herbicide resistance of Roundup Ready crops.</a> " +
+                "<em>Proc Natl Acad Sci USA</em> 103(35):13010-5 (2006). PMID: 16916934.</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# CP4 EPSPS \u2014 the Roundup Ready trait gene\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"AF464188.1\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"agbiotech\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"cp4-epsps\",\n" +
+                "        name=\"CP4 EPSPS (AF464188.1)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        showComplement=True,\n" +
+                "        zoom={\"linear\": 70},\n" +
+                "        enzymes=[\"BsaI\", \"BsmBI\"],\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        {
+            id: "lovastatin-cluster",
+            title: "Lovastatin biosynthetic cluster \u2014 The textbook fungal polyketide",
+            summary: "Aspergillus terreus lovB/lovC/lovD cluster. A cholesterol-lowering blockbuster produced by a classic iterative polyketide synthase (PKS).",
+            category: "academic",
+            tags: ["graduate", "biosynthesis", "polyketide", "fungal", "cluster"],
+            complexity: 4,
+            accession: "AF141924.1",
+            compound: {
+                name: "Lovastatin",
+                smiles: "CCC(C)C(=O)OC1CC(C)C=C2C=CC(C)C(CCC3CC(O)CC(=O)O3)C12",
+                description: "An HMG-CoA reductase inhibitor that launched the statin class. LovB (a nonaketide synthase) iteratively condenses nine acetate units; LovC trims; LovA oxidizes; LovD tacks on a 2-methylbutyrate side chain. A 300 M&dollar;/yr scaffold that defines fungal polyketide teaching."
+            },
+            pathway: {
+                title: "Lovastatin biosynthesis",
+                description: "LovB (iterative nonaketide synthase) + LovC (trans-acting enoyl reductase) build the decalin scaffold; LovA (P450) installs the lactone hydroxyl; LovD (acyltransferase) attaches the 2-methylbutyrate side chain that distinguishes lovastatin from monacolin J.",
+                nodes: [
+                    {
+                        name: "Dihydromonacolin L",
+                        smiles: "CCC(C)C1CCC2CCC(C)C(CCC3CC(O)CC(=O)O3)C12"
+                    },
+                    {
+                        name: "Monacolin L",
+                        smiles: "CCC(C)C1CC=C2C=CC(C)C(CCC3CC(O)CC(=O)O3)C12",
+                        enzyme: "LovA (P450)",
+                        cosubstrates: [{ name: "O\u2082" }, { name: "NADPH" }],
+                        note: "two desaturations"
+                    },
+                    {
+                        name: "Monacolin J",
+                        smiles: "OC1CC(C)C=C2C=CC(C)C(CCC3CC(O)CC(=O)O3)C12",
+                        enzyme: "LovA (P450)",
+                        cosubstrates: [{ name: "O\u2082" }, { name: "NADPH" }],
+                        note: "C8 hydroxylation"
+                    },
+                    {
+                        name: "Lovastatin",
+                        smiles: "CCC(C)C(=O)OC1CC(C)C=C2C=CC(C)C(CCC3CC(O)CC(=O)O3)C12",
+                        enzyme: "LovD",
+                        cosubstrates: [{ name: "(S)-2-methylbutyryl-CoA" }],
+                        note: "transesterification"
+                    }
+                ]
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 30 },
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>A fungal polyketide that moved a global cholesterol market</h3>" +
+                "<p>Lovastatin was the first statin approved (Merck's Mevacor, 1987) and the " +
+                "proof-of-concept for a drug class that now underpins cardiovascular medicine. " +
+                "It's also the <strong>textbook example</strong> for how fungal iterative " +
+                "polyketide synthases (PKSs) work: a single LovB megasynthase threads nine " +
+                "acetate units through its own active site, programming each round's reduction, " +
+                "dehydration, and cyclization, releasing the decalin core on its own.</p>" +
+                "<p>The <code>AF141924.1</code> record is the Kennedy et al. 1999 assembly of " +
+                "the entire <em>Aspergillus terreus</em> lovastatin cluster \u2014 <code>lovA</code> " +
+                "(cytochrome P450), <code>lovB</code> (nonaketide synthase, ~10 kb CDS!), " +
+                "<code>lovC</code> (enoyl reductase), <code>lovD</code> (acyltransferase), " +
+                "plus transport and regulatory genes. It's a standard teaching target for any " +
+                "lab working on BGC capture, refactoring, or heterologous expression \u2014 and " +
+                "a natural fit for platforms like <em>Terra Bioforge</em>'s DNAtrap\u2122 or " +
+                "<em>Clue Genetics</em>' fungal mining pipelines.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li>Zoom out to see the whole cluster \u2014 note <code>lovB</code>'s enormous CDS.</li>" +
+                "<li>Use the pathway panel to follow the decalin scaffold from " +
+                "dihydromonacolin L through to lovastatin itself.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Kennedy J, Auclair K, Kendrew SG, Park C, Vederas JC, Hutchinson CR. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/10329708/\" target=\"_blank\" rel=\"noopener\">" +
+                "Modulation of polyketide synthase activity by accessory proteins during " +
+                "lovastatin biosynthesis.</a> " +
+                "<em>Science</em> 284(5418):1368-72 (1999). PMID: 10329708.</li>" +
+                "<li>Xu W, Chooi YH, Choi JW, Li S, Vederas JC, Da Silva NA, Tang Y. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/23495210/\" target=\"_blank\" rel=\"noopener\">" +
+                "LovG: the thioesterase required for dihydromonacolin L release and lovastatin " +
+                "nonaketide synthase turnover in lovastatin biosynthesis.</a> " +
+                "<em>Angew Chem Int Ed</em> 52(25):6472-5 (2013). PMID: 23495210.</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# Aspergillus terreus lovastatin cluster (Kennedy et al. 1999)\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"AF141924.1\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"lovastatin\",\n" +
+                "        name=\"Lovastatin cluster (AF141924.1)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"linear\",\n" +
+                "        zoom={\"linear\": 30},\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        {
+            id: "puc19-modular-cloning",
+            title: "pUC19 \u2014 The cloning workhorse that launched modular DNA assembly",
+            summary: "The 2,686 bp pUC19 backbone. The most-deployed cloning vector in molecular biology and the philosophical ancestor of every standardized synbio parts kit.",
+            category: "industrial",
+            tags: ["synthetic-biology", "cloning", "standardized", "vector"],
+            complexity: 2,
+            accession: "L09137.1",
+            seqvizProps: {
+                viewer: "circular",
+                zoom: { linear: 80 },
+                enzymes: ["EcoRI", "BamHI", "HindIII", "SalI", "PstI", "SphI"],
+                showComplement: true,
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>The DNA that every modular cloning kit descends from</h3>" +
+                "<p><strong>pUC19</strong> (Yanisch-Perron, Vieira &amp; Messing, 1985) is the " +
+                "single most-cited plasmid in molecular biology. A <em>2,686 bp</em> circular " +
+                "backbone carrying a ColE1 origin, <em>bla</em> (ampicillin resistance), and a " +
+                "multi-cloning site embedded in <em>lacZα</em> for blue/white screening, it " +
+                "defined what a general-purpose cloning vector <strong>should</strong> look " +
+                "like \u2014 small, stable, high-copy, easy to screen.</p>" +
+                "<p>Every modular-cloning toolkit built since \u2014 <strong>pSB1C3</strong> " +
+                "(iGEM BioBricks), <strong>MoClo</strong>, <strong>pYTK</strong> (Dueber yeast " +
+                "toolkit), the <strong>pGoldenGate</strong> family, and Ginkgo's own " +
+                "<em>Codebase</em> parts \u2014 traces its philosophy of \"one shared backbone, " +
+                "interchangeable inserts\" back to pUC19. If you're teaching a new scientist why " +
+                "standardized DNA parts matter, this is where you start.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li>Toggle the classic MCS cutters below. All six sit in the lacZα MCS, close " +
+                "enough that cloning into any of them disrupts lacZα and produces a white colony.</li>" +
+                "<li>Switch the viewer to <em>Circular</em> to see the vector's compact geometry " +
+                "\u2014 this is the shape every downstream synbio toolkit scales up from.</li>" +
+                "</ul>" +
+                "<div class=\"enzyme-toggle-row\">" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"EcoRI\">EcoRI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BamHI\">BamHI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"HindIII\">HindIII</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"SalI\">SalI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"PstI\">PstI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"SphI\">SphI</button>" +
+                "</div>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Yanisch-Perron C, Vieira J, Messing J. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/2985470/\" target=\"_blank\" rel=\"noopener\">" +
+                "Improved M13 phage cloning vectors and host strains: nucleotide sequences of " +
+                "the M13mp18 and pUC19 vectors.</a> " +
+                "<em>Gene</em> 33(1):103-19 (1985). PMID: 2985470.</li>" +
+                "<li>Lee ME, DeLoache WC, Cervantes B, Dueber JE. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/25871405/\" target=\"_blank\" rel=\"noopener\">" +
+                "A highly characterized yeast toolkit for modular, multipart assembly.</a> " +
+                "<em>ACS Synth Biol</em> 4(9):975-86 (2015). PMID: 25871405. (One of many modern " +
+                "MoClo kits built on the pUC-style backbone tradition.)</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# pUC19 \u2014 the classic cloning vector (Yanisch-Perron, Vieira & Messing 1985)\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"L09137.1\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"synbio\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"puc19\",\n" +
+                "        name=\"pUC19 (L09137.1)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"circular\",\n" +
+                "        showComplement=True,\n" +
+                "        enzymes=[\"EcoRI\", \"BamHI\", \"HindIII\", \"SalI\", \"PstI\", \"SphI\"],\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        {
+            id: "trastuzumab-her2",
+            title: "HER2 / ERBB2 \u2014 The receptor behind Herceptin",
+            summary: "The original HER2 cDNA (Coussens et al. 1985). The molecular target of trastuzumab (Herceptin) \u2014 Genentech's landmark humanized monoclonal antibody.",
+            category: "industrial",
+            tags: ["biopharma", "antibody", "oncology", "mAb"],
+            complexity: 4,
+            accession: "M11730.1",
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 40 },
+                showComplement: false,
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>The receptor that became a drug target</h3>" +
+                "<p><strong>HER2</strong> (ERBB2) was first cloned by Coussens <em>et al.</em> " +
+                "in 1985 as a tyrosine-kinase receptor homologous to EGFR and co-located with " +
+                "the <em>neu</em> oncogene \u2014 the discovery captured in this <code>M11730</code> " +
+                "record. A decade later it would become the most important drug target in " +
+                "oncology: HER2 is amplified in ~20% of breast cancers, where it drives " +
+                "aggressive tumor growth.</p>" +
+                "<p>In the mid-1990s, <strong>Genentech</strong> humanized a murine anti-HER2 " +
+                "antibody (4D5) by grafting its complementarity-determining regions onto a human " +
+                "IgG1 framework \u2014 a landmark use of <em>CDR grafting</em> (Carter, Presta, " +
+                "Gorman <em>et al.</em> 1992). The resulting antibody, <strong>trastuzumab</strong> " +
+                "(Herceptin), was FDA-approved in 1998 and launched the era of targeted mAb " +
+                "therapies in oncology. The part that matters for Herceptin binding is the " +
+                "<em>extracellular domain IV</em> \u2014 roughly residues 480\u2013620 of the " +
+                "ERBB2 protein. Modern antibody engineering teams (Genentech, GenScript, and " +
+                "dozens of biotech R&amp;D pipelines) spend their days visualizing constructs " +
+                "exactly like this when designing CHO-cell expression vectors for humanized " +
+                "IgGs and their bispecific/ADC derivatives.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li>Look for the CDS start \u2014 the signal peptide is the first ~22 residues, " +
+                "followed by the extracellular subdomains I\u2013IV (~residues 23\u2013652).</li>" +
+                "<li>Toggle the common mammalian expression cutters below \u2014 useful when " +
+                "deciding whether to sub-clone the ECD for phage display or purified antigen.</li>" +
+                "</ul>" +
+                "<div class=\"enzyme-toggle-row\">" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"EcoRI\">EcoRI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"NotI\">NotI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"HindIII\">HindIII</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"XbaI\">XbaI</button>" +
+                "</div>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Coussens L, Yang-Feng TL, Liao YC, Chen E, Gray A, McGrath J <em>et al.</em> " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/3863936/\" target=\"_blank\" rel=\"noopener\">" +
+                "Tyrosine kinase receptor with extensive homology to EGF receptor shares " +
+                "chromosomal location with <em>neu</em> oncogene.</a> " +
+                "<em>Science</em> 230(4730):1132-9 (1985). PMID: 3863936.</li>" +
+                "<li>Carter P, Presta L, Gorman CM, Ridgway JB, Henner D, Wong WL <em>et al.</em> " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/1350088/\" target=\"_blank\" rel=\"noopener\">" +
+                "Humanization of an anti-p185HER2 antibody for human cancer therapy.</a> " +
+                "<em>Proc Natl Acad Sci USA</em> 89(10):4285-9 (1992). PMID: 1350088.</li>" +
+                "<li>Cho HS, Mason K, Ramyar KX, Stanley AM, Gabelli SB, Denney DW Jr, Leahy DJ. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/12610629/\" target=\"_blank\" rel=\"noopener\">" +
+                "Structure of the extracellular region of HER2 alone and in complex with the " +
+                "Herceptin Fab.</a> " +
+                "<em>Nature</em> 421(6924):756-60 (2003). PMID: 12610629.</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# HER2 mRNA \u2014 the original Coussens et al. 1985 clone,\n" +
+                "# target of trastuzumab (Herceptin).\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"M11730.1\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"biopharma\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"erbb2\",\n" +
+                "        name=\"HER2 / ERBB2 (M11730.1)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        zoom={\"linear\": 40},\n" +
+                "        enzymes=[\"EcoRI\", \"NotI\", \"HindIII\", \"XbaI\"],\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
         }
     ];
 
