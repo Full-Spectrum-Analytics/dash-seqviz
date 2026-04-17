@@ -300,24 +300,16 @@ footer a:hover { text-decoration: underline; }
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
     border-color: var(--color-primary);
 }
-.gallery-card:hover .card-thumb {
-    border-color: var(--color-primary);
-}
 /* Thumbnail sits in the normal flex-column flow between the summary
-   text and the NCBI accession, centered horizontally. A little extra
-   top margin separates it from the paragraph above. */
+   text and the NCBI accession, centered horizontally. No border/
+   background — the SVG sits directly on the card surface so the
+   chemistry reads as an illustration rather than a framed thumbnail. */
 .gallery-card .card-thumb {
     align-self: center;
     margin-top: 6px;
     width: 180px;
     height: 135px;
     object-fit: contain;
-    background: #ffffff;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    padding: 6px;
-    box-sizing: border-box;
-    transition: border-color 0.12s;
 }
 .gallery-card .card-badges {
     display: flex; gap: 6px; flex-wrap: wrap;
