@@ -131,85 +131,32 @@
 
     // ---- NCBI GenBank parser -------------------------------------------------
     //
-    // Delegates to Lattice Automation's `seqparse` (same team as seqviz, ~78 KB
-    // UMD bundle loaded via CDN). That library already extracts /gene,
-    // /product, /note, /locus_tag etc. as the annotation name — which is what
-    // used to require a 60-line hand-rolled regex here.
+    // Delegates to the site-wide SeqVizSite.parseGenBank (seqviz-adapter.js),
+    // which dynamically imports Lattice Automation's `seqparse` from
+    // esm.sh and does the /gene /product /note label extraction, gene+CDS
+    // dedup, and translations derivation. Here we just enrich the result
+    // with cycling colors from ANNO_COLORS so overlapping annotations stay
+    // visually distinct in the Explorer.
     //
-    // We still post-process:
-    //   1. Dedupe the typical GenBank `gene` + `CDS` pair at identical coords
-    //      (prefer CDS, which carries /product and /translation).
-    //   2. Cycle an ANNO_COLORS palette so overlapping annotations stay
-    //      visually distinct. seqparse doesn't colour anything on its own.
-    //   3. Derive a `translations` list from the CDS features so seqviz can
-    //      render the protein tracks.
-    //
-    // seqparse() returns a Promise, so this function does too. Callers need
-    // to .then() the result.
+    // Returns a Promise; callers need to .then() the result.
 
     function parseGenBank(text) {
-        if (typeof window.seqparse !== "function") {
-            return Promise.reject(new Error("seqparse bundle missing"));
+        if (!window.SeqVizSite || typeof window.SeqVizSite.parseGenBank !== "function") {
+            return Promise.reject(new Error("SeqVizSite adapter not loaded"));
         }
-        return window.seqparse(text).then(function (parsed) {
-            if (!parsed || !parsed.seq) {
-                throw new Error("Could not parse GenBank record");
-            }
-
-            // Dedupe: keep the CDS (richer qualifiers) when a gene+CDS pair
-            // shares coordinates. Fallback ranking for the less common cases.
-            var byCoord = {};
-            (parsed.annotations || []).forEach(function (a) {
-                var dir = (a.direction == null ? 1 : a.direction);
-                var key = a.start + ":" + a.end + ":" + dir;
-                var prev = byCoord[key];
-                if (!prev) { byCoord[key] = a; return; }
-                var prevScore = (prev.type === "CDS" ? 2 : 0) +
-                                (prev.name && prev.name !== prev.type ? 1 : 0);
-                var curScore  = (a.type === "CDS" ? 2 : 0) +
-                                (a.name && a.name !== a.type ? 1 : 0);
-                if (curScore > prevScore) byCoord[key] = a;
+        return window.SeqVizSite.parseGenBank(text).then(function (result) {
+            // Same palette cycling for coincident annotation+translation so
+            // a CDS annotation and its amino-acid track get matching colors.
+            var colorByKey = {};
+            result.annotations.forEach(function (a, i) {
+                a.color = ANNO_COLORS[i % ANNO_COLORS.length];
+                colorByKey[a.start + ":" + a.end + ":" + a.direction] = a.color;
             });
-
-            // Stable left-to-right order so colors cycle predictably.
-            var deduped = Object.keys(byCoord).map(function (k) { return byCoord[k]; });
-            deduped.sort(function (x, y) {
-                if (x.start !== y.start) return x.start - y.start;
-                return (y.end - y.start) - (x.end - x.start);
+            result.translations.forEach(function (t) {
+                t.color = colorByKey[t.start + ":" + t.end + ":" + t.direction] ||
+                          ANNO_COLORS[0];
             });
-
-            // NCBI /note fields can run 300+ chars of prose; trim so seqviz
-            // doesn't render a wall of text as the annotation label.
-            function trim(label) {
-                label = String(label || "feature").replace(/\s+/g, " ").trim();
-                if (label.length > 64) label = label.slice(0, 61) + "\u2026";
-                return label;
-            }
-
-            var annotations = [];
-            var translations = [];
-            deduped.forEach(function (a, i) {
-                var dir = (a.direction == null ? 1 : a.direction);
-                var label = trim(a.name || a.type);
-                var color = ANNO_COLORS[i % ANNO_COLORS.length];
-                annotations.push({
-                    start: a.start, end: a.end,
-                    direction: dir, name: label, color: color
-                });
-                if (a.type === "CDS") {
-                    translations.push({
-                        start: a.start, end: a.end,
-                        direction: dir, name: label, color: color
-                    });
-                }
-            });
-
-            return {
-                name: parsed.name || "",
-                seq: String(parsed.seq || "").toUpperCase(),
-                annotations: annotations,
-                translations: translations
-            };
+            return result;
         });
     }
 

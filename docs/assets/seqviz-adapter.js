@@ -3,14 +3,38 @@
  * and the home-page mini demo. The Explorer has its own richer demo.js.
  *
  * Expects:
- *   window.seqviz       — Viewer bundle (seqviz.min.js, ~3.10.x)
- *   window.seqparse     — GenBank/FASTA/SBOL parser from Lattice Automation
- *                         (same team as seqviz). Returns a Promise with
- *                         {name, type, seq, annotations} and already does the
- *                         /gene, /product, /note label extraction we need.
+ *   window.seqviz    — Viewer bundle (seqviz.min.js, ~3.10.x)
+ *
+ * Dynamically imports Lattice Automation's seqparse for GenBank parsing
+ * (/gene, /product, /note label extraction). We use esm.sh rather than
+ * the unpkg UMD bundle because the UMD's webpack build leaves Node
+ * require() calls for its internal dependencies (buffer, node-fetch,
+ * fast-xml-parser) which blow up in the browser. esm.sh rewrites those
+ * into ES-module imports that Just Work.
  */
 (function (global) {
     var NCBI_EFETCH = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi";
+    var SEQPARSE_URL = "https://esm.sh/seqparse@0.2.2";
+
+    // Cache the dynamic import Promise so we only load the module once
+    // per page load. The call is lazy — it doesn't fire until the first
+    // parseGenBank() call, which happens after the user fetches an
+    // accession, so the cost is amortized.
+    var seqparsePromise = null;
+    function loadSeqparse() {
+        if (seqparsePromise) return seqparsePromise;
+        seqparsePromise = import(SEQPARSE_URL).then(function (mod) {
+            var fn = (mod && mod.default) || mod;
+            if (typeof fn !== "function") {
+                throw new Error("seqparse module did not expose a callable default export");
+            }
+            // Also stash on window so demo.js (Explorer) can reuse
+            // the cached instance rather than double-loading the module.
+            global.seqparse = fn;
+            return fn;
+        });
+        return seqparsePromise;
+    }
 
     function renderViewer(elementId, opts) {
         if (!global.seqviz || typeof global.seqviz.Viewer !== "function") {
@@ -28,23 +52,23 @@
     /**
      * Parse a GenBank record string into the shape seqviz.Viewer expects.
      *
-     * Returns a Promise — seqparse() is async because it also supports fetching
-     * accessions over the network. When we feed it a local string it resolves
-     * immediately with {name, seq, annotations, translations}.
+     * Returns a Promise — both the dynamic import of seqparse AND the
+     * seqparse call itself are async, so the whole thing resolves with
+     * {name, seq, annotations, translations}.
      *
-     * The translations array is derived from CDS annotations (seqviz renders
-     * these as separate amino-acid tracks). We dedupe coincident gene+CDS
-     * pairs so a single ORF doesn't stack two bars on top of each other.
+     * The translations array is derived from CDS annotations (seqviz
+     * renders these as separate amino-acid tracks). We dedupe coincident
+     * gene+CDS pairs so a single ORF doesn't stack two bars on top of
+     * each other.
      */
     function parseGenBank(text) {
         if (!text || text.indexOf("LOCUS") === -1) {
             return Promise.reject(new Error("Not a GenBank record"));
         }
-        if (typeof global.seqparse !== "function") {
-            return Promise.reject(new Error("seqparse bundle missing"));
-        }
 
-        return global.seqparse(text).then(function (parsed) {
+        return loadSeqparse().then(function (seqparse) {
+            return seqparse(text);
+        }).then(function (parsed) {
             if (!parsed || !parsed.seq) {
                 throw new Error("Could not parse GenBank record");
             }

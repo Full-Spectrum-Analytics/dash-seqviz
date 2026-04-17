@@ -323,17 +323,16 @@ if __name__ == "__main__":
 
 <!-- seqviz 3.10.20 UMD bundle (includes React internally; Viewer API self-mounts) -->
 <script crossorigin src="https://unpkg.com/seqviz@3.10.20/dist/seqviz.min.js"></script>
-<script crossorigin src="https://unpkg.com/seqparse@0.2.2/dist/index.js"></script>
 
 <!-- NEB enzyme list (separate file for maintainability) -->
 <script src="./enzymes.js"></script>
 
 <!-- Shared site nav + adapter -->
 <script src="./assets/nav.js"></script>
-<script src="./assets/seqviz-adapter.js"></script>
+<script src="./assets/seqviz-adapter.js?v=2"></script>
 
 <!-- Explorer demo logic -->
-<script src="./demo.js"></script>
+<script src="./demo.js?v=2"></script>
 
 <script>
     if (window.SeqVizSite && window.SeqVizSite.wireCopy) {
