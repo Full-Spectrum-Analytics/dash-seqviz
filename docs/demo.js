@@ -229,13 +229,13 @@
     var EMAIL_KEY      = "dashSeqviz.email";
     var QUOTA_KEY      = "dashSeqviz.quota";
 
-    // Accession patterns accepted by NCBI nuccore. Covers:
-    //   Standard:   1-2 letters + 5-6 digits          (U00096, MN623123)
-    //   RefSeq:     2 letters + _ + 6-9 digits         (NC_000913, NM_001301717)
-    //   RefSeq WGS: 2 letters + _ + 2 letters + 6 digits (NZ_CP098790)
-    //   WGS:        4-6 letters + 8-10 digits          (JAAA01000001)
-    //   All with optional .version suffix
-    var ACCESSION_RE = /^[A-Z]{1,6}_?[A-Z]{0,4}[0-9]{5,10}(?:\.[0-9]+)?$/i;
+    // Minimal client-side sanity check. We do NOT try to encode NCBI's full
+    // accession spec (40+ prefix formats, evolves over time) — NCBI itself is
+    // the authoritative validator. This regex only rejects obvious garbage
+    // (spaces, HTML, SQL, empty, overly long) to avoid wasted requests.
+    // Anything that looks like an alphanumeric identifier passes through;
+    // NCBI decides whether it actually exists.
+    var ACCESSION_RE = /^[A-Za-z][A-Za-z0-9_.]{2,31}$/;
     var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     var fetchCache = {};
@@ -389,8 +389,8 @@
             return;
         }
         if (!ACCESSION_RE.test(accession)) {
-            statusEl.textContent = "\"" + accession + "\" doesn't look like a valid NCBI accession " +
-                                   "(expected e.g. MN623123.1 or NC_000913.3).";
+            statusEl.textContent = "\"" + accession + "\" doesn't look like an accession identifier " +
+                                   "(letters/digits/underscores/dots, 3-32 chars, starts with a letter).";
             statusEl.style.color = "#dc2626";
             return;
         }
