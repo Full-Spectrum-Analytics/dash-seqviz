@@ -14,13 +14,13 @@
             display: flex; flex-direction: column; gap: 8px;
         }
         .audience-card .audience-icon {
-            width: 40px; height: 40px; border-radius: 8px;
+            width: 44px; height: 44px; border-radius: 10px;
             display: inline-flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; font-weight: 700;
+            font-size: 1.6rem;
             margin-bottom: 4px;
         }
-        .audience-card.academic .audience-icon { background: #eff6ff; color: #1d4ed8; }
-        .audience-card.industrial .audience-icon { background: #fef3c7; color: #92400e; }
+        .audience-card.academic .audience-icon { background: #eff6ff; }
+        .audience-card.industrial .audience-icon { background: #fef3c7; }
         .audience-card ul { padding-left: 18px; font-size: 0.88rem; color: var(--color-text-muted); }
         .audience-card ul li { margin: 4px 0; }
         .audience-card a.cta {
@@ -85,10 +85,10 @@
 <!-- Audience split -->
 <section id="audiences">
     <div class="container">
-        <h2>Built for two audiences</h2>
+        <h2>From the classroom to the foundry</h2>
         <div class="audience-grid">
             <div class="audience-card academic">
-                <div class="audience-icon">EDU</div>
+                <div class="audience-icon">&#x1F393;</div>
                 <h3>Academia</h3>
                 <p>Drop a real NCBI accession into a Dash app and walk a student through it live.
                    From high-school classrooms to graduate synthetic-biology labs, the same
@@ -101,7 +101,7 @@
                 <a class="cta" href="./examples.html?category=academic">Academic examples &rarr;</a>
             </div>
             <div class="audience-card industrial">
-                <div class="audience-icon">IND</div>
+                <div class="audience-icon">&#x1F3ED;</div>
                 <h3>Industry &amp; biotech R&amp;D</h3>
                 <p>Biofoundries, ag-biotech, pharma R&amp;D, food &amp; beverage, consumer synbio.
                    Use <code>dash-seqviz</code> to visualize what ships to a cloning robot or

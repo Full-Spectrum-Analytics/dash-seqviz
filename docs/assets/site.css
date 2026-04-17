@@ -437,3 +437,59 @@ footer a:hover { text-decoration: underline; }
     font-weight: 600;
     color: var(--color-text);
 }
+
+/* ---- Compound card (SmilesDrawer) ---- */
+.compound-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 20px;
+}
+.compound-card h3 {
+    font-size: 1.05rem;
+    margin: 0 0 4px;
+    color: var(--color-text);
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 700;
+}
+.compound-card .compound-name {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+}
+.compound-card .compound-canvas-wrap {
+    display: flex;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 12px;
+    margin-bottom: 12px;
+}
+.compound-card canvas {
+    max-width: 100%;
+    height: auto;
+}
+.compound-card .compound-desc {
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+}
+.compound-card .compound-smiles {
+    margin-top: 10px;
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    font-family: "SFMono-Regular", Consolas, monospace;
+    overflow-wrap: anywhere;
+    word-break: break-all;
+}
+.compound-card .compound-smiles code {
+    background: var(--color-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+}

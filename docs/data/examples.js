@@ -29,6 +29,11 @@
             complexity: 1,
             accession: "U55762.1",
             featured: true,
+            compound: {
+                name: "GFP chromophore (p-HBDI)",
+                smiles: "OC1=CC=C(/C=C2\\N=C(C)C(=O)N2)C=C1",
+                description: "The mature chromophore auto-catalytically formed by Ser65-Tyr66-Gly67 cyclization. This small molecule is what actually fluoresces green."
+            },
             seqvizProps: {
                 viewer: "both",
                 zoom: { linear: 60 },
@@ -89,6 +94,11 @@
             complexity: 2,
             accession: "J01636.1",
             featured: true,
+            compound: {
+                name: "IPTG",
+                smiles: "CC(C)SC1OC(CO)C(O)C(O)C1O",
+                description: "Isopropyl \u03b2-D-1-thiogalactopyranoside \u2014 the gratuitous inducer every student uses to switch on the lac promoter. Unlike allolactose, IPTG is not metabolized."
+            },
             seqvizProps: {
                 viewer: "linear",
                 zoom: { linear: 40 },
@@ -149,6 +159,11 @@
             tags: ["graduate", "synthetic-biology", "biosynthesis", "cluster"],
             complexity: 3,
             accession: "AY935253.1",
+            compound: {
+                name: "Violacein",
+                smiles: "OC1=CC=C(NC(=O)/C(=C2\\C(=O)C3=CC=CC=C3N2)C2=CNC3=CC=CC=C23)C=C1",
+                description: "A bisindole pigment with deep violet color. The five-enzyme pathway (vioA\u2013E) converts L-tryptophan into this compound, which also shows anti-tumor and antibacterial activity."
+            },
             seqvizProps: {
                 viewer: "linear",
                 zoom: { linear: 35 },
@@ -203,6 +218,11 @@
             tags: ["graduate", "synthetic-biology", "biosynthesis"],
             complexity: 3,
             accession: "D90087.2",
+            compound: {
+                name: "\u03b2-Carotene",
+                smiles: "CC1=CCCC(C)(C)C1/C=C/C(C)=C/C=C/C(C)=C/C=C/C=C(C)/C=C/C=C(C)/C=C/C2=C(C)CCCC2(C)C",
+                description: "The orange-red C40 terpenoid. The full crt pathway converts farnesyl-PP through phytoene, lycopene, and finally into \u03b2-carotene (provitamin A). Plate color reveals how far the pathway went."
+            },
             seqvizProps: {
                 viewer: "linear",
                 zoom: { linear: 35 },
@@ -258,6 +278,11 @@
             tags: ["graduate", "natural-product", "cluster", "RiPP"],
             complexity: 4,
             accession: "KF546190.1",
+            compound: {
+                name: "Bottromycin A2",
+                smiles: "CC(C)CC1NC(=O)C(Cc2c[nH]cn2)NC(=O)C(C(CC)C)NC(=O)C(CC(C)C)NC(=O)C3CCCN3C(=O)C(C)NC1=O",
+                description: "A macrocyclic peptide antibiotic produced by Streptomyces. Contains a thiazole, a macrolactam ring, and several non-proteinogenic residues \u2014 all installed by the RiPP biosynthetic machinery."
+            },
             seqvizProps: {
                 viewer: "linear",
                 zoom: { linear: 25 },
@@ -317,6 +342,11 @@
             complexity: 3,
             accession: "DQ118411.1",
             featured: true,
+            compound: {
+                name: "Linalool",
+                smiles: "C=CC(C)(O)CCC=C(C)C",
+                description: "A monoterpene alcohol with a floral-citrus aroma. It is a primary flavor contributor in Muscat grapes, lavender, and hop-forward beers. This enzyme converts geranyl pyrophosphate into linalool."
+            },
             seqvizProps: {
                 viewer: "both",
                 zoom: { linear: 50 },
@@ -371,6 +401,7 @@
             tags: ["CRISPR", "yeast", "strain-engineering"],
             complexity: 4,
             accession: "KY100560.1",
+            compound: null,
             seqvizProps: {
                 viewer: "both",
                 zoom: { linear: 45 },
@@ -428,6 +459,11 @@
             tags: ["biosynthesis", "E. coli", "refactored"],
             complexity: 4,
             accession: "AY935253.1",
+            compound: {
+                name: "Violacein",
+                smiles: "OC1=CC=C(NC(=O)/C(=C2\\C(=O)C3=CC=CC=C3N2)C2=CNC3=CC=CC=C23)C=C1",
+                description: "Same bisindole pigment as the academic example. In an industrial context, titer optimization is the goal \u2014 codon-optimized CDSs and calibrated promoters push E. coli to produce grams per liter."
+            },
             seqvizProps: {
                 viewer: "linear",
                 zoom: { linear: 35 },
@@ -483,6 +519,11 @@
             tags: ["pharma", "antibiotic", "heterologous"],
             complexity: 5,
             accession: "KF546190.1",
+            compound: {
+                name: "Bottromycin A2",
+                smiles: "CC(C)CC1NC(=O)C(Cc2c[nH]cn2)NC(=O)C(C(CC)C)NC(=O)C(CC(C)C)NC(=O)C3CCCN3C(=O)C(C)NC1=O",
+                description: "Same macrocyclic peptide \u2014 but in an industrial pipeline the goal is titer in a tractable host, not structural elucidation. Visualizing the cluster helps budget DNA synthesis and plan the assembly."
+            },
             seqvizProps: {
                 viewer: "linear",
                 zoom: { linear: 25 },
@@ -538,6 +579,11 @@
             complexity: 3,
             accession: "AF485783.1",
             featured: true,
+            compound: {
+                name: "Kanamycin A",
+                smiles: "NC1CC(N)C(OC2OC(CO)C(O)C(N)C2O)C(O)C1OC3OC(CO)C(O)C(O)C3O",
+                description: "An aminoglycoside antibiotic. pBI121 carries the NPTII gene (neomycin phosphotransferase II) conferring kanamycin resistance \u2014 the selectable marker that lets you pick transformed plant cells."
+            },
             seqvizProps: {
                 viewer: "both",
                 zoom: { linear: 55 },

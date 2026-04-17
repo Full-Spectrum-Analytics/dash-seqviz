@@ -131,7 +131,14 @@
                 cxBadge.textContent = "complexity " + (ex.complexity || "?");
                 badges.appendChild(cxBadge);
 
-                (ex.tags || []).slice(0, 3).forEach(function (t) {
+                if (ex.compound) {
+                    var molBadge = document.createElement("span");
+                    molBadge.className = "badge badge-tag";
+                    molBadge.textContent = "\u2697\uFE0F " + ex.compound.name;
+                    badges.appendChild(molBadge);
+                }
+
+                (ex.tags || []).slice(0, 2).forEach(function (t) {
                     var b = document.createElement("span");
                     b.className = "badge badge-tag";
                     b.textContent = t;
