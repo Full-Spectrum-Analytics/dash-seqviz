@@ -130,81 +130,87 @@
     }
 
     // ---- NCBI GenBank parser -------------------------------------------------
+    //
+    // Delegates to Lattice Automation's `seqparse` (same team as seqviz, ~78 KB
+    // UMD bundle loaded via CDN). That library already extracts /gene,
+    // /product, /note, /locus_tag etc. as the annotation name — which is what
+    // used to require a 60-line hand-rolled regex here.
+    //
+    // We still post-process:
+    //   1. Dedupe the typical GenBank `gene` + `CDS` pair at identical coords
+    //      (prefer CDS, which carries /product and /translation).
+    //   2. Cycle an ANNO_COLORS palette so overlapping annotations stay
+    //      visually distinct. seqparse doesn't colour anything on its own.
+    //   3. Derive a `translations` list from the CDS features so seqviz can
+    //      render the protein tracks.
+    //
+    // seqparse() returns a Promise, so this function does too. Callers need
+    // to .then() the result.
 
     function parseGenBank(text) {
-        var result = { name: "", seq: "", annotations: [], translations: [] };
-
-        // Prefer short identifiers for the viewer title — seqviz renders it
-        // in the center of the circular view and long names break mid-word.
-        // Priority: ACCESSION -> LOCUS -> DEFINITION (only if very short)
-
-        var accMatch = text.match(/^ACCESSION\s+(\S+)/m);
-        if (accMatch) { result.name = accMatch[1]; }
-
-        if (!result.name) {
-            var locusMatch = text.match(/^LOCUS\s+(\S+)/m);
-            if (locusMatch) { result.name = locusMatch[1]; }
+        if (typeof window.seqparse !== "function") {
+            return Promise.reject(new Error("seqparse bundle missing"));
         }
-
-        // Only fall back to DEFINITION for very short ones that render cleanly
-        if (!result.name) {
-            var defMatch = text.match(/^DEFINITION\s+(.+?)(?:\n\S|\n$)/ms);
-            if (defMatch) {
-                var def = defMatch[1].replace(/\s+/g, " ").trim().replace(/\.$/, "");
-                if (def.length <= 30) { result.name = def; }
+        return window.seqparse(text).then(function (parsed) {
+            if (!parsed || !parsed.seq) {
+                throw new Error("Could not parse GenBank record");
             }
-        }
 
-        // Extract sequence from ORIGIN section
-        var originMatch = text.match(/ORIGIN\s*\n([\s\S]*?)\/\//);
-        if (originMatch) {
-            result.seq = originMatch[1].replace(/[\s0-9]/g, "").toUpperCase();
-        }
+            // Dedupe: keep the CDS (richer qualifiers) when a gene+CDS pair
+            // shares coordinates. Fallback ranking for the less common cases.
+            var byCoord = {};
+            (parsed.annotations || []).forEach(function (a) {
+                var dir = (a.direction == null ? 1 : a.direction);
+                var key = a.start + ":" + a.end + ":" + dir;
+                var prev = byCoord[key];
+                if (!prev) { byCoord[key] = a; return; }
+                var prevScore = (prev.type === "CDS" ? 2 : 0) +
+                                (prev.name && prev.name !== prev.type ? 1 : 0);
+                var curScore  = (a.type === "CDS" ? 2 : 0) +
+                                (a.name && a.name !== a.type ? 1 : 0);
+                if (curScore > prevScore) byCoord[key] = a;
+            });
 
-        // Extract features (CDS, gene, regulatory, misc_feature, etc.)
-        var featBlock = text.match(/FEATURES\s+Location\/Qualifiers\n([\s\S]*?)(?=ORIGIN|CONTIG)/);
-        if (!featBlock) { return result; }
+            // Stable left-to-right order so colors cycle predictably.
+            var deduped = Object.keys(byCoord).map(function (k) { return byCoord[k]; });
+            deduped.sort(function (x, y) {
+                if (x.start !== y.start) return x.start - y.start;
+                return (y.end - y.start) - (x.end - x.start);
+            });
 
-        var features = featBlock[1];
-        var featureRegex = /^\s{5}(\S+)\s+(complement\()?<?(\d+)\.\.>?(\d+)\)?\s*\n((?:\s{21}\/[\s\S]*?)(?=\n\s{5}\S|\n(?:ORIGIN|CONTIG)|$))/gm;
-        var m;
-        var colorIdx = 0;
-
-        while ((m = featureRegex.exec(features)) !== null) {
-            var type = m[1];
-            var isComplement = !!m[2];
-            var start = parseInt(m[3], 10) - 1; // GenBank is 1-based
-            var end = parseInt(m[4], 10);
-            var qualifiers = m[5];
-            var direction = isComplement ? -1 : 1;
-
-            // Extract /gene, /product, /label, /note qualifiers for the name
-            var nameVal = extractQualifier(qualifiers, "gene") ||
-                          extractQualifier(qualifiers, "product") ||
-                          extractQualifier(qualifiers, "label") ||
-                          extractQualifier(qualifiers, "note") ||
-                          type;
-
-            var color = ANNO_COLORS[colorIdx % ANNO_COLORS.length];
-            colorIdx++;
-
-            if (type === "CDS") {
-                result.annotations.push({ start: start, end: end, name: nameVal, direction: direction, color: color });
-                result.translations.push({ start: start, end: end, direction: direction, name: nameVal, color: color });
-            } else if (type === "gene" || type === "regulatory" || type === "promoter" ||
-                       type === "terminator" || type === "misc_feature" || type === "rep_origin") {
-                result.annotations.push({ start: start, end: end, name: nameVal, direction: direction, color: color });
+            // NCBI /note fields can run 300+ chars of prose; trim so seqviz
+            // doesn't render a wall of text as the annotation label.
+            function trim(label) {
+                label = String(label || "feature").replace(/\s+/g, " ").trim();
+                if (label.length > 64) label = label.slice(0, 61) + "\u2026";
+                return label;
             }
-        }
 
-        return result;
-    }
+            var annotations = [];
+            var translations = [];
+            deduped.forEach(function (a, i) {
+                var dir = (a.direction == null ? 1 : a.direction);
+                var label = trim(a.name || a.type);
+                var color = ANNO_COLORS[i % ANNO_COLORS.length];
+                annotations.push({
+                    start: a.start, end: a.end,
+                    direction: dir, name: label, color: color
+                });
+                if (a.type === "CDS") {
+                    translations.push({
+                        start: a.start, end: a.end,
+                        direction: dir, name: label, color: color
+                    });
+                }
+            });
 
-    function extractQualifier(text, key) {
-        var re = new RegExp('/' + key + '="([^"]*(?:"\\s+"[^"]*)*)"', "m");
-        var m = re.exec(text);
-        if (m) { return m[1].replace(/"\s+"/g, "").trim(); }
-        return null;
+            return {
+                name: parsed.name || "",
+                seq: String(parsed.seq || "").toUpperCase(),
+                annotations: annotations,
+                translations: translations
+            };
+        });
     }
 
     // ---- NCBI eFetch with safeguards -----------------------------------------
@@ -428,7 +434,9 @@
                 if (text.indexOf("LOCUS") === -1) {
                     throw new Error("Not a valid GenBank record — check the accession.");
                 }
-                var parsed = parseGenBank(text);
+                return parseGenBank(text);
+            })
+            .then(function (parsed) {
                 fetchCache[accession] = parsed;
                 loadParsed(parsed, accession, statusEl);
             })

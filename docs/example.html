@@ -24,8 +24,39 @@
 <section>
     <div class="container">
         <div class="example-body">
-            <div class="col-visual">
+
+            <!-- ① About this example + Try this (narrative contains enzyme buttons) -->
+            <div class="ex-section">
+                <h3 style="margin-top: 0;">About this example</h3>
+                <div id="ex-narrative" class="narrative"></div>
+            </div>
+
+            <!-- ② Live viewer -->
+            <div class="ex-section">
                 <h3 style="margin-top: 0;">Live viewer</h3>
+                <div class="example-controls" id="example-controls" hidden>
+                    <div class="ctrl">
+                        <label for="ctrl-viewer">Topology</label>
+                        <select id="ctrl-viewer">
+                            <option value="both">Both</option>
+                            <option value="circular">Circular</option>
+                            <option value="linear">Linear</option>
+                        </select>
+                    </div>
+                    <div class="ctrl">
+                        <label for="ctrl-zoom">Zoom (linear): <span id="zoom-val">50</span></label>
+                        <input id="ctrl-zoom" type="range" min="1" max="100" value="50">
+                    </div>
+                    <div class="ctrl">
+                        <label>Toggles</label>
+                        <label class="ctrl-inline">
+                            <input id="ctrl-complement" type="checkbox"> Show complement
+                        </label>
+                        <label class="ctrl-inline">
+                            <input id="ctrl-translations" type="checkbox"> Show translations
+                        </label>
+                    </div>
+                </div>
                 <div id="example-viewer-wrap" class="example-viewer-wrap">
                     <div class="example-loading" id="example-loading">
                         Fetching sequence from NCBI&hellip;
@@ -33,36 +64,53 @@
                     <div id="seqviz-root" style="height: 560px;"></div>
                 </div>
                 <p id="ex-fetch-status" style="margin-top: 10px; color: var(--color-text-muted); font-size: 0.85rem;"></p>
-                <p style="margin-top: 8px; color: var(--color-text-muted); font-size: 0.82rem;">
+                <p style="margin-top: 6px; color: var(--color-text-muted); font-size: 0.82rem;">
                     Fetched live from <a id="ex-ncbi-link" href="#" target="_blank" rel="noopener">NCBI</a>. All rendering is client-side.
                 </p>
-
-                <div id="compound-card" class="compound-card" style="display: none;">
-                    <div class="compound-name" id="compound-label"></div>
-                    <h3 id="compound-name"></h3>
-                    <div class="compound-canvas-wrap">
-                        <canvas id="compound-canvas" width="400" height="300"></canvas>
-                    </div>
-                    <p class="compound-desc" id="compound-desc"></p>
-                    <div class="compound-smiles">SMILES: <code id="compound-smiles"></code></div>
-                </div>
             </div>
 
-            <div class="col-content">
-                <h3 style="margin-top: 0;">About this example</h3>
-                <div id="ex-narrative" class="narrative"></div>
+            <!-- ③ Compound card (single molecule, shown only when ex.compound exists) -->
+            <div id="compound-card" class="compound-card" style="display: none;">
+                <div class="compound-name" id="compound-label"></div>
+                <h3 id="compound-name"></h3>
+                <div class="compound-canvas-wrap">
+                    <canvas id="compound-canvas" width="400" height="300"></canvas>
+                </div>
+                <p class="compound-desc" id="compound-desc"></p>
+                <div class="compound-smiles">SMILES: <code id="compound-smiles"></code></div>
+            </div>
 
-                <h3>Python snippet</h3>
-                <p style="color: var(--color-text-muted); font-size: 0.88rem;">
+            <!-- ④ Pathway card (biosynthetic route, shown only when ex.pathway exists) -->
+            <div id="pathway-card" class="pathway-card" style="display: none;">
+                <h3 id="pathway-title"></h3>
+                <p class="compound-desc" id="pathway-desc"></p>
+                <div class="pathway-view-toggle" role="radiogroup" aria-label="Pathway view">
+                    <label><input type="radio" name="pw-view" value="full" checked> Full reaction scheme</label>
+                    <label><input type="radio" name="pw-view" value="chain"> Intermediates only</label>
+                </div>
+                <div id="pathway-row" class="pathway-row"></div>
+            </div>
+
+            <!-- ⑤ Python snippet -->
+            <div class="ex-section">
+                <h3 style="margin-top: 0;">Python snippet</h3>
+                <p style="color: var(--color-text-muted); font-size: 0.88rem; margin-bottom: 12px;">
                     Paste this into a file, <code>pip install dash-seqviz</code>, and run.
                 </p>
                 <div class="snippet">
                     <pre id="ex-snippet"><code></code></pre>
                 </div>
+            </div>
 
-                <h3>More examples</h3>
+            <!-- ⑥ References (populated from narrative HTML or separate field) -->
+            <div id="ex-references" class="narrative"></div>
+
+            <!-- ⑦ More examples -->
+            <div class="ex-section">
+                <h3 style="margin-top: 0;">More examples</h3>
                 <div id="ex-next" class="next-examples"></div>
             </div>
+
         </div>
     </div>
 </section>
@@ -76,6 +124,7 @@
 </footer>
 
 <script crossorigin src="https://unpkg.com/seqviz@3.10.20/dist/seqviz.min.js"></script>
+<script crossorigin src="https://unpkg.com/seqparse@0.2.2/dist/index.js"></script>
 <script crossorigin src="https://unpkg.com/smiles-drawer@2.2.1/dist/smiles-drawer.min.js"></script>
 <script src="./assets/nav.js"></script>
 <script src="./assets/seqviz-adapter.js"></script>
@@ -146,10 +195,14 @@
         ncbiLinkEl.href = "https://www.ncbi.nlm.nih.gov/nuccore/" + encodeURIComponent(ex.accession);
         ncbiLinkEl.textContent = "NCBI " + ex.accession;
 
-        // Compound structure (SmilesDrawer)
-        if (ex.compound && ex.compound.smiles && window.SmilesDrawer) {
+        // Pathway panel (multi-step biosynthetic route) takes priority over
+        // the single-compound panel. Each node is a product in the chain;
+        // `enzyme` + `cosubstrates` annotate the arrow arriving into it.
+        if (ex.pathway && Array.isArray(ex.pathway.nodes) && ex.pathway.nodes.length && window.SmilesDrawer) {
+            renderPathway(ex.pathway);
+        } else if (ex.compound && ex.compound.smiles && window.SmilesDrawer) {
             var card = document.getElementById("compound-card");
-            document.getElementById("compound-label").textContent = "Gene product";
+            document.getElementById("compound-label").textContent = "Key product";
             document.getElementById("compound-name").textContent = ex.compound.name;
             document.getElementById("compound-desc").textContent = ex.compound.description || "";
             document.getElementById("compound-smiles").textContent = ex.compound.smiles;
@@ -161,6 +214,135 @@
             }, function (err) {
                 card.style.display = "none";
             });
+        }
+
+        function renderPathway(pw) {
+            var card = document.getElementById("pathway-card");
+            // Default title falls back to "{final product} biosynthesis" using
+            // the last node's name. Authors can override with pw.title.
+            var lastNode = pw.nodes[pw.nodes.length - 1] || {};
+            var defaultTitle = lastNode.name ? (lastNode.name + " biosynthesis") : "Biosynthetic route";
+            document.getElementById("pathway-title").textContent = pw.title || defaultTitle;
+            document.getElementById("pathway-desc").textContent = pw.description || "";
+            card.style.display = "block";
+
+            var row = document.getElementById("pathway-row");
+            var mode = "full"; // or "chain"
+
+            // Prefer a pre-rendered SVG (generated by scripts/render_molecules.py
+            // via RDKit — much cleaner polycyclic layouts, oriented to a shared
+            // template). Fall back to SmilesDrawer if the SVG is missing.
+            function slugify(s) {
+                return s.toLowerCase()
+                    .replace(/\u03b2/g, "beta").replace(/\u03b1/g, "alpha")
+                    .replace(/[^a-z0-9]+/g, "-")
+                    .replace(/^-+|-+$/g, "");
+            }
+            function makeNodeEl(node, i) {
+                var nodeEl = document.createElement("div");
+                nodeEl.className = "pathway-node";
+                var visual = document.createElement("div");
+                visual.className = "pathway-node-visual";
+                visual.style.width = "180px";
+                visual.style.height = "140px";
+                var nameEl = document.createElement("div");
+                nameEl.className = "pathway-node-name";
+                nameEl.textContent = node.name;
+                nodeEl.appendChild(visual);
+                nodeEl.appendChild(nameEl);
+
+                var svgUrl = "./assets/molecules/" + slugify(node.name) + ".svg";
+
+                var draw = function () {
+                    var img = new Image();
+                    img.onload = function () {
+                        visual.innerHTML = "";
+                        img.style.width = "100%";
+                        img.style.height = "100%";
+                        img.alt = node.name;
+                        visual.appendChild(img);
+                    };
+                    img.onerror = function () {
+                        // Fallback: SmilesDrawer into a canvas.
+                        visual.innerHTML = "";
+                        var canvas = document.createElement("canvas");
+                        canvas.id = "pw-canvas-" + i;
+                        canvas.width = 180;
+                        canvas.height = 140;
+                        visual.appendChild(canvas);
+                        var drawer = new SmilesDrawer.Drawer({ width: 180, height: 140, padding: 6 });
+                        SmilesDrawer.parse(node.smiles, function (tree) {
+                            drawer.draw(tree, canvas.id, "light", false);
+                        }, function () {
+                            nodeEl.classList.add("pathway-node-err");
+                        });
+                    };
+                    img.src = svgUrl;
+                };
+                return { nodeEl: nodeEl, draw: draw };
+            }
+
+            function makeArrowEl(node) {
+                var arrow = document.createElement("div");
+                arrow.className = "pathway-arrow";
+                var enz = document.createElement("div");
+                enz.className = "pathway-arrow-enzyme";
+                enz.textContent = node.enzyme || "";
+                var line = document.createElement("div");
+                line.className = "pathway-arrow-line";
+                line.innerHTML = "&rarr;";
+                arrow.appendChild(enz);
+                arrow.appendChild(line);
+                if (node.note) {
+                    var nt = document.createElement("div");
+                    nt.className = "pathway-arrow-note";
+                    nt.textContent = node.note;
+                    arrow.appendChild(nt);
+                }
+                if (mode === "full" && Array.isArray(node.cosubstrates) && node.cosubstrates.length) {
+                    var coWrap = document.createElement("div");
+                    coWrap.className = "pathway-cosubstrates";
+                    node.cosubstrates.forEach(function (co) {
+                        var co_el = document.createElement("div");
+                        co_el.className = "pathway-cosubstrate";
+                        var co_plus = document.createElement("span");
+                        co_plus.className = "pathway-cosubstrate-plus";
+                        co_plus.textContent = "+";
+                        var co_name = document.createElement("span");
+                        co_name.className = "pathway-cosubstrate-name";
+                        co_name.textContent = co.name;
+                        co_el.appendChild(co_plus);
+                        co_el.appendChild(co_name);
+                        coWrap.appendChild(co_el);
+                    });
+                    arrow.appendChild(coWrap);
+                }
+                return arrow;
+            }
+
+            function draw() {
+                row.innerHTML = "";
+                // Group each arrow + its destination node into a single
+                // flex item so flex-wrap never orphans an arrow at the end
+                // of a row. The first node has no incoming arrow.
+                var pendingDraws = [];
+                pw.nodes.forEach(function (node, i) {
+                    var step = document.createElement("div");
+                    step.className = "pathway-step" + (i === 0 ? " pathway-step-first" : "");
+                    if (i > 0) step.appendChild(makeArrowEl(node));
+                    var nb = makeNodeEl(node, i);
+                    step.appendChild(nb.nodeEl);
+                    row.appendChild(step);
+                    pendingDraws.push(nb.draw);
+                });
+                pendingDraws.forEach(function (fn) { fn(); });
+            }
+
+            draw();
+            Array.prototype.slice.call(document.querySelectorAll('input[name="pw-view"]'))
+                .forEach(function (r) {
+                    r.addEventListener("change", function () { mode = r.value; draw(); });
+                });
         }
 
         // Next examples — prefer same category, then others, skip self
@@ -205,47 +387,91 @@
             loadingEl.style.display = "none";
             statusEl.textContent = "Loaded " + rec.seq.length.toLocaleString() + " bp from " + ex.accession + ".";
 
-            var baseProps = Object.assign({}, ex.seqvizProps, {
-                name: rec.name,
-                seq: rec.seq,
-                annotations: rec.annotations,
-                translations: rec.translations
-            });
+            // Single source of truth for what's currently on screen. Every
+            // control (topology select, zoom slider, complement/translations
+            // checkboxes, enzyme toggle buttons) mutates this object and
+            // calls render().
+            var sp = ex.seqvizProps || {};
+            var state = {
+                viewer: sp.viewer || "both",
+                zoomLinear: (sp.zoom && typeof sp.zoom.linear === "number") ? sp.zoom.linear : 50,
+                showComplement: !!sp.showComplement,
+                showTranslations: Array.isArray(rec.translations) && rec.translations.length > 0,
+                enzymes: Array.isArray(sp.enzymes) ? sp.enzymes.slice() : [],
+                baseProps: {
+                    name: rec.name,
+                    seq: rec.seq,
+                    annotations: rec.annotations,
+                    translations: rec.translations,
+                    search: sp.search,
+                    style: sp.style || { height: "560px", width: "100%" }
+                }
+            };
 
-            // Live enzyme toggle buttons embedded in the narrative, e.g.
-            // <button class="enzyme-toggle" data-enzyme="EcoRI">EcoRI</button>.
-            // Any `.enzyme-toggle` button on the page becomes a toggle that
-            // re-renders the viewer with the new enzyme selection.
-            var toggles = Array.prototype.slice.call(
-                document.querySelectorAll(".enzyme-toggle")
-            );
-            var selected = Array.isArray(baseProps.enzymes) ? baseProps.enzymes.slice() : [];
-            toggles.forEach(function (btn) {
-                var name = btn.getAttribute("data-enzyme");
-                btn.setAttribute("aria-pressed", selected.indexOf(name) !== -1 ? "true" : "false");
-                btn.addEventListener("click", function () {
-                    var idx = selected.indexOf(name);
-                    if (idx === -1) selected.push(name);
-                    else selected.splice(idx, 1);
-                    btn.setAttribute("aria-pressed", idx === -1 ? "true" : "false");
-                    var nextProps = Object.assign({}, baseProps, { enzymes: selected.slice() });
-                    window.SeqVizSite.renderViewer("seqviz-root", nextProps);
+            function render() {
+                var props = Object.assign({}, state.baseProps, {
+                    viewer: state.viewer,
+                    zoom: { linear: state.zoomLinear },
+                    showComplement: state.showComplement,
+                    enzymes: state.enzymes.slice(),
+                    translations: state.showTranslations ? state.baseProps.translations : []
                 });
-            });
+                window.SeqVizSite.renderViewer("seqviz-root", props);
+            }
 
-            window.SeqVizSite.renderViewer("seqviz-root", baseProps);
+            // Initialize controls to match state.
+            var controls = document.getElementById("example-controls");
+            var viewerSel = document.getElementById("ctrl-viewer");
+            var zoomRange = document.getElementById("ctrl-zoom");
+            var zoomVal = document.getElementById("zoom-val");
+            var complChk = document.getElementById("ctrl-complement");
+            var translChk = document.getElementById("ctrl-translations");
+
+            viewerSel.value = state.viewer;
+            zoomRange.value = state.zoomLinear;
+            zoomVal.textContent = state.zoomLinear;
+            complChk.checked = state.showComplement;
+            translChk.checked = state.showTranslations;
+            translChk.disabled = !(state.baseProps.translations && state.baseProps.translations.length);
+            controls.hidden = false;
+
+            viewerSel.addEventListener("change", function () { state.viewer = viewerSel.value; render(); });
+            zoomRange.addEventListener("input", function () {
+                state.zoomLinear = parseInt(zoomRange.value, 10);
+                zoomVal.textContent = state.zoomLinear;
+                render();
+            });
+            complChk.addEventListener("change", function () { state.showComplement = complChk.checked; render(); });
+            translChk.addEventListener("change", function () { state.showTranslations = translChk.checked; render(); });
+
+            // Enzyme buttons embedded in the narrative:
+            // <button class="enzyme-toggle" data-enzyme="EcoRI">EcoRI</button>.
+            // Each button toggles one enzyme in state.enzymes and re-renders.
+            Array.prototype.slice.call(document.querySelectorAll(".enzyme-toggle"))
+                .forEach(function (btn) {
+                    var name = btn.getAttribute("data-enzyme");
+                    btn.setAttribute("aria-pressed", state.enzymes.indexOf(name) !== -1 ? "true" : "false");
+                    btn.addEventListener("click", function () {
+                        var idx = state.enzymes.indexOf(name);
+                        if (idx === -1) state.enzymes.push(name);
+                        else state.enzymes.splice(idx, 1);
+                        btn.setAttribute("aria-pressed", idx === -1 ? "true" : "false");
+                        render();
+                    });
+                });
+
+            render();
 
             // Prevent page scroll while the cursor is over the circular viewer
             // (seqviz rotates the circular view on wheel). Linear-only viewers
             // don't rotate, so leave page scroll alone there.
-            var viewerMode = baseProps.viewer || "both";
-            if (viewerMode === "circular" || viewerMode === "both") {
-                var vroot = document.getElementById("seqviz-root");
-                if (vroot) {
-                    vroot.addEventListener("wheel", function (ev) {
+            var vroot = document.getElementById("seqviz-root");
+            if (vroot) {
+                vroot.addEventListener("wheel", function (ev) {
+                    if (state.viewer === "circular" || state.viewer === "both") {
                         ev.preventDefault();
-                    }, { passive: false });
-                }
+                    }
+                }, { passive: false });
             }
         }).catch(function (err) {
             loadingEl.textContent = "Couldn't load sequence: " + (err && err.message ? err.message : "unknown error");

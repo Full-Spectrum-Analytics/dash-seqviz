@@ -363,16 +363,19 @@ footer a:hover { text-decoration: underline; }
 }
 
 .example-body {
-    display: grid;
-    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-    gap: 36px;
-    align-items: start;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
 }
-.example-body .col-visual { min-width: 0; }
-.example-body .col-content { min-width: 0; }
-
-@media (max-width: 1100px) {
-    .example-body { grid-template-columns: 1fr; }
+/* Logical grouping wrapper — keeps h3 + its content together
+   so the 40px gap only appears *between* sections, not inside them. */
+.ex-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.ex-section h3 {
+    margin: 0;
 }
 
 .example-viewer-wrap {
@@ -409,6 +412,28 @@ footer a:hover { text-decoration: underline; }
 .narrative li { margin-bottom: 4px; }
 .narrative a { color: var(--color-primary); text-decoration: underline; }
 .narrative a:hover { text-decoration: none; }
+
+.example-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.example-controls .ctrl { display: flex; flex-direction: column; gap: 4px; }
+.example-controls .ctrl label {
+    font-size: 0.72rem; font-weight: 600; color: var(--color-text-muted);
+    text-transform: uppercase; letter-spacing: 0.04em;
+}
+.example-controls .ctrl select {
+    font-size: 0.9rem; padding: 6px 9px; border: 1px solid var(--color-border);
+    border-radius: var(--radius); background: var(--color-bg); width: 100%;
+}
+.example-controls .ctrl input[type="range"] { width: 100%; }
+.example-controls .ctrl-inline {
+    display: flex; align-items: center; gap: 8px; min-height: 30px;
+    font-size: 0.88rem; font-weight: 400; color: var(--color-text);
+    text-transform: none; letter-spacing: 0;
+}
 
 .enzyme-toggle-row {
     display: flex;
@@ -522,4 +547,142 @@ footer a:hover { text-decoration: underline; }
     background: var(--color-bg);
     padding: 2px 6px;
     border-radius: 4px;
+}
+
+/* ---- Pathway panel (multi-step biosynthetic route) ---- */
+.pathway-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 20px;
+}
+.pathway-card h3 {
+    font-size: 1.05rem;
+    margin: 0 0 4px;
+    color: var(--color-text);
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 700;
+}
+.pathway-card .compound-name {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+}
+.pathway-card .compound-desc {
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+.pathway-view-toggle {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    color: var(--color-text);
+}
+.pathway-view-toggle label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+.pathway-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px 0;
+    padding: 12px 8px;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+}
+.pathway-step {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
+.pathway-step-first { /* no incoming arrow; just the first node */ }
+.pathway-node {
+    flex: 0 0 auto;
+    width: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 4px;
+    background: #fff;
+}
+.pathway-node canvas {
+    width: 180px;
+    height: 140px;
+}
+.pathway-node-name {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-text);
+    text-align: center;
+    line-height: 1.25;
+    max-width: 180px;
+    word-wrap: break-word;
+}
+.pathway-node-err canvas {
+    background: #fafafa;
+    border: 1px dashed var(--color-border);
+}
+.pathway-arrow {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    padding: 8px 4px;
+    color: var(--color-text-muted);
+}
+.pathway-arrow-enzyme {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    font-family: "SFMono-Regular", Consolas, monospace;
+    text-align: center;
+}
+.pathway-arrow-line {
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--color-text-muted);
+    margin: 2px 0;
+}
+.pathway-arrow-note {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    text-align: center;
+}
+.pathway-cosubstrates {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin-top: 4px;
+}
+.pathway-cosubstrate {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+.pathway-cosubstrate-plus {
+    font-weight: 700;
+    color: var(--color-primary);
+}
+.pathway-cosubstrate-name {
+    font-family: "SFMono-Regular", Consolas, monospace;
 }

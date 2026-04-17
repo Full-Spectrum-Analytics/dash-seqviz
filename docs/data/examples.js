@@ -40,6 +40,7 @@
                 showComplement: true,
                 search: { query: "ATGAGT" },
                 highlights: [],
+                enzymes: ["EcoRI", "BamHI"],
                 style: { height: "560px", width: "100%" }
             },
             narrative:
@@ -52,8 +53,14 @@
                 "<ul>" +
                 "<li>Search for the start codon <code>ATGAGT</code> &mdash; the first 6 bp of GFP.</li>" +
                 "<li>Toggle <em>Show translations</em> on/off to reveal the protein sequence.</li>" +
-                "<li>Pick <code>BamHI</code> and <code>EcoRI</code> from the enzyme list and see where the classic cloning sites sit.</li>" +
+                "<li>Toggle the classic cloning sites below and see where they sit in the CDS:</li>" +
                 "</ul>" +
+                "<div class=\"enzyme-toggle-row\">" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"EcoRI\">EcoRI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BamHI\">BamHI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"HindIII\">HindIII</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"XhoI\">XhoI</button>" +
+                "</div>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Prasher DC, Eckenrode VK, Ward WW, Prendergast FG, Cormier MJ. " +
@@ -111,7 +118,7 @@
                 description: "Isopropyl \u03b2-D-1-thiogalactopyranoside \u2014 the gratuitous inducer every student uses to switch on the lac promoter. Unlike allolactose, IPTG is not metabolized."
             },
             seqvizProps: {
-                viewer: "linear",
+                viewer: "both",
                 zoom: { linear: 40 },
                 showComplement: true,
                 search: { query: "AATTGTGAGC" },  // canonical CAP binding site
@@ -186,8 +193,48 @@
                 smiles: "OC1=CC=C(NC(=O)/C(=C2\\C(=O)C3=CC=CC=C3N2)C2=CNC3=CC=CC=C23)C=C1",
                 description: "A bisindole pigment with deep violet color. The five-enzyme pathway (vioA\u2013E) converts L-tryptophan into this compound, which also shows anti-tumor and antibacterial activity."
             },
+            pathway: {
+                title: "Violacein biosynthesis",
+                description: "Five enzymes (VioA\u2013E) turn two L-tryptophan molecules into violacein, consuming O\u2082 at three steps.",
+                nodes: [
+                    {
+                        name: "L-Tryptophan",
+                        smiles: "N[C@@H](Cc1c[nH]c2ccccc12)C(=O)O"
+                    },
+                    {
+                        name: "Indole-3-pyruvic acid imine",
+                        smiles: "OC(=O)C(=N)Cc1c[nH]c2ccccc12",
+                        enzyme: "VioA",
+                        cosubstrates: [{ name: "O\u2082", smiles: "O=O" }]
+                    },
+                    {
+                        name: "Protodeoxyviolaceinic acid",
+                        smiles: "OC(=O)C1=C(Cc2c[nH]c3ccccc23)NC(Cc2c[nH]c3ccccc23)=C1",
+                        enzyme: "VioB + VioE",
+                        note: "2\u00d7 IPA imine condense"
+                    },
+                    {
+                        name: "Protodeoxyviolacein",
+                        smiles: "O=C1NC(=Cc2c[nH]c3ccccc23)C1=Cc1c[nH]c2ccccc12",
+                        enzyme: "spontaneous",
+                        note: "decarboxylation"
+                    },
+                    {
+                        name: "Protoviolacein",
+                        smiles: "O=C1NC(=Cc2c[nH]c3ccccc23)C1=Cc1c[nH]c2ccc(O)cc12",
+                        enzyme: "VioD",
+                        cosubstrates: [{ name: "O\u2082", smiles: "O=O" }]
+                    },
+                    {
+                        name: "Violacein",
+                        smiles: "OC1=CC=C(NC(=O)/C(=C2\\C(=O)C3=CC=CC=C3N2)C2=CNC3=CC=CC=C23)C=C1",
+                        enzyme: "VioC",
+                        cosubstrates: [{ name: "O\u2082", smiles: "O=O" }]
+                    }
+                ]
+            },
             seqvizProps: {
-                viewer: "linear",
+                viewer: "both",
                 zoom: { linear: 35 },
                 showComplement: false,
                 style: { height: "560px", width: "100%" }
@@ -258,8 +305,51 @@
                 smiles: "CC1=CCCC(C)(C)C1/C=C/C(C)=C/C=C/C(C)=C/C=C/C=C(C)/C=C/C=C(C)/C=C/C2=C(C)CCCC2(C)C",
                 description: "The orange-red C40 terpenoid. The full crt pathway converts farnesyl-PP through phytoene, lycopene, and finally into \u03b2-carotene (provitamin A). Plate color reveals how far the pathway went."
             },
+            pathway: {
+                title: "\u03b2-carotene / zeaxanthin biosynthesis",
+                description: "Five Erwinia crt enzymes extend, condense, desaturate, cyclize, and finally hydroxylate prenyl units on the way to zeaxanthin. Each step shows up as a visible color change on the plate.",
+                nodes: [
+                    {
+                        name: "Farnesyl pyrophosphate",
+                        smiles: "CC(C)=CCC/C(C)=C/CC/C(C)=C/COP(=O)(O)OP(=O)(O)O"
+                    },
+                    {
+                        name: "Geranylgeranyl pyrophosphate",
+                        smiles: "CC(C)=CCC/C(C)=C/CC/C(C)=C/CC/C(C)=C/COP(=O)(O)OP(=O)(O)O",
+                        enzyme: "CrtE",
+                        cosubstrates: [{ name: "IPP" }],
+                        note: "prenyl extension (C15 \u2192 C20)"
+                    },
+                    {
+                        name: "Phytoene",
+                        smiles: "CC(=CCCC(=CCCC(=CCC=C(C)C=CC=C(C)CCC=C(C)CCC=C(C)C)C)C)C",
+                        enzyme: "CrtB",
+                        cosubstrates: [{ name: "GGPP" }],
+                        note: "head-to-head fusion (2\u00d7 GGPP)"
+                    },
+                    {
+                        name: "Lycopene",
+                        smiles: "CC(=CCCC(=CCC=C(C)C=CC=C(C)C=CC=C(C)C=CC=C(C)CCC=C(C)C)C)C",
+                        enzyme: "CrtI",
+                        note: "4\u00d7 desaturation (colorless \u2192 red)"
+                    },
+                    {
+                        name: "\u03b2-Carotene",
+                        smiles: "CC1=C(C(CCC1)(C)C)C=CC(=CC=CC(=CC=CC=C(C)C=CC=C(C)C=CC2=C(CCCC2(C)C)C)C)C",
+                        enzyme: "CrtY",
+                        note: "bicyclization (red \u2192 orange)"
+                    },
+                    {
+                        name: "Zeaxanthin",
+                        smiles: "CC1=C(C(CC(C1)O)(C)C)C=CC(=CC=CC(=CC=CC=C(C)C=CC=C(C)C=CC2=C(CC(CC2(C)C)O)C)C)C",
+                        enzyme: "CrtZ",
+                        cosubstrates: [{ name: "O\u2082" }],
+                        note: "3,3\u2032-hydroxylation"
+                    }
+                ]
+            },
             seqvizProps: {
-                viewer: "linear",
+                viewer: "both",
                 zoom: { linear: 35 },
                 style: { height: "560px", width: "100%" }
             },
@@ -331,8 +421,26 @@
                 smiles: "CC(C)CC1NC(=O)C(Cc2c[nH]cn2)NC(=O)C(C(CC)C)NC(=O)C(CC(C)C)NC(=O)C3CCCN3C(=O)C(C)NC1=O",
                 description: "A macrocyclic peptide antibiotic produced by Streptomyces. Contains a thiazole, a macrolactam ring, and several non-proteinogenic residues \u2014 all installed by the RiPP biosynthetic machinery."
             },
+            pathway: {
+                title: "Bottromycin biosynthesis",
+                description: "A textbook RiPP: BotA is translated as a 44-aa precursor, leader-cleaved, macro-amidinated at the N-terminus, thiazole-installed at Cys, and methylated (3\u00d7 C-methyl + 1\u00d7 O-methyl) before the cytochrome P450 finishes the mature compound.",
+                nodes: [
+                    {
+                        name: "BotA core peptide",
+                        smiles: "NCC(=O)N1CCCC1C(=O)NC(C(C)C)C(=O)NC(C(C)C)C(=O)NC(C(C)C)C(=O)NC(Cc1ccccc1)C(=O)NC(CC(=O)O)C(=O)NC(CS)C(=O)O",
+                        note: "linear GPVVVFDC octapeptide (leader cleaved by BotP / BotH / BotAH)"
+                    },
+                    {
+                        name: "Bottromycin A2",
+                        smiles: "CC(C)CC1NC(=O)C(Cc2c[nH]cn2)NC(=O)C(C(CC)C)NC(=O)C(CC(C)C)NC(=O)C3CCCN3C(=O)C(C)NC1=O",
+                        enzyme: "BotCD + BotRMT1\u20133 + BotOMT + BotCYP",
+                        cosubstrates: [{ name: "SAM (\u00d74)" }, { name: "O\u2082" }],
+                        note: "macroamidine + thiazole + C/O-methylations"
+                    }
+                ]
+            },
             seqvizProps: {
-                viewer: "linear",
+                viewer: "both",
                 zoom: { linear: 25 },
                 style: { height: "560px", width: "100%" }
             },
@@ -406,6 +514,29 @@
                 smiles: "C=CC(C)(O)CCC=C(C)C",
                 description: "A monoterpene alcohol with a floral-citrus aroma. It is a primary flavor contributor in Muscat grapes, lavender, and hop-forward beers. This enzyme converts geranyl pyrophosphate into linalool."
             },
+            pathway: {
+                title: "Linalool biosynthesis",
+                description: "A two-enzyme monoterpene route: GPP synthase joins DMAPP + IPP into GPP, then MTS2 ionizes GPP and quenches with water to release linalool \u2014 the floral-citrus top note of dry-hopped beers.",
+                nodes: [
+                    {
+                        name: "Dimethylallyl pyrophosphate",
+                        smiles: "CC(C)=CCOP(=O)(O)OP(=O)(O)O"
+                    },
+                    {
+                        name: "Geranyl pyrophosphate",
+                        smiles: "CC(C)=CCC/C(C)=C/COP(=O)(O)OP(=O)(O)O",
+                        enzyme: "GPPS",
+                        cosubstrates: [{ name: "IPP" }],
+                        note: "C5 + C5 \u2192 C10"
+                    },
+                    {
+                        name: "Linalool",
+                        smiles: "C=CC(C)(O)CCC=C(C)C",
+                        enzyme: "MTS2",
+                        note: "ionization + H\u2082O quench (releases PPi)"
+                    }
+                ]
+            },
             seqvizProps: {
                 viewer: "both",
                 zoom: { linear: 50 },
@@ -478,6 +609,7 @@
                 viewer: "both",
                 zoom: { linear: 45 },
                 showComplement: true,
+                enzymes: ["BsaI", "BsmBI"],
                 style: { height: "560px", width: "100%" }
             },
             narrative:
@@ -492,9 +624,13 @@
                 "<ul>" +
                 "<li>The Cas9 CDS dominates the plasmid's length.</li>" +
                 "<li>Spot the aminoglycoside phosphotransferase (kanamycin resistance) marker.</li>" +
-                "<li>Toggle restriction enzymes to check BsaI / BsmBI Golden Gate " +
-                "compatibility before ordering.</li>" +
+                "<li>Toggle Golden Gate cutters below to check compatibility before ordering:</li>" +
                 "</ul>" +
+                "<div class=\"enzyme-toggle-row\">" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BsaI\">BsaI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BsmBI\">BsmBI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"SapI\">SapI</button>" +
+                "</div>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Garst AD, Bassalo MC, Pines G, Lynch SA, Halweg-Edwards AL, Liu R <em>et al.</em> " +
@@ -551,8 +687,9 @@
                 description: "Same bisindole pigment as the academic example. In an industrial context, titer optimization is the goal \u2014 codon-optimized CDSs and calibrated promoters push E. coli to produce grams per liter."
             },
             seqvizProps: {
-                viewer: "linear",
+                viewer: "both",
                 zoom: { linear: 35 },
+                enzymes: ["BsaI", "BsmBI"],
                 style: { height: "560px", width: "100%" }
             },
             narrative:
@@ -568,6 +705,10 @@
                 "<li>Promoters standardized across the cluster for tunable control.</li>" +
                 "<li>Internal restriction sites removed so Golden Gate assembly works.</li>" +
                 "</ul>" +
+                "<div class=\"enzyme-toggle-row\">" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BsaI\">BsaI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BsmBI\">BsmBI</button>" +
+                "</div>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>August PR, Grossman TH, Minor C, Draper MP, MacNeil IA, Pemberton JM <em>et al.</em> " +
@@ -621,9 +762,28 @@
                 smiles: "CC(C)CC1NC(=O)C(Cc2c[nH]cn2)NC(=O)C(C(CC)C)NC(=O)C(CC(C)C)NC(=O)C3CCCN3C(=O)C(C)NC1=O",
                 description: "Same macrocyclic peptide \u2014 but in an industrial pipeline the goal is titer in a tractable host, not structural elucidation. Visualizing the cluster helps budget DNA synthesis and plan the assembly."
             },
+            pathway: {
+                title: "Bottromycin biosynthesis",
+                description: "A textbook RiPP: BotA is translated as a 44-aa precursor, leader-cleaved, macro-amidinated at the N-terminus, thiazole-installed at Cys, and methylated (3\u00d7 C-methyl + 1\u00d7 O-methyl) before the cytochrome P450 finishes the mature compound.",
+                nodes: [
+                    {
+                        name: "BotA core peptide",
+                        smiles: "NCC(=O)N1CCCC1C(=O)NC(C(C)C)C(=O)NC(C(C)C)C(=O)NC(C(C)C)C(=O)NC(Cc1ccccc1)C(=O)NC(CC(=O)O)C(=O)NC(CS)C(=O)O",
+                        note: "linear GPVVVFDC octapeptide (leader cleaved by BotP / BotH / BotAH)"
+                    },
+                    {
+                        name: "Bottromycin A2",
+                        smiles: "CC(C)CC1NC(=O)C(Cc2c[nH]cn2)NC(=O)C(C(CC)C)NC(=O)C(CC(C)C)NC(=O)C3CCCN3C(=O)C(C)NC1=O",
+                        enzyme: "BotCD + BotRMT1\u20133 + BotOMT + BotCYP",
+                        cosubstrates: [{ name: "SAM (\u00d74)" }, { name: "O\u2082" }],
+                        note: "macroamidine + thiazole + C/O-methylations"
+                    }
+                ]
+            },
             seqvizProps: {
-                viewer: "linear",
+                viewer: "both",
                 zoom: { linear: 25 },
+                enzymes: ["BsaI", "BsmBI", "NotI"],
                 style: { height: "560px", width: "100%" }
             },
             narrative:
@@ -635,9 +795,14 @@
                 "<h3>This record as a pipeline checkpoint</h3>" +
                 "<ul>" +
                 "<li>Inspect the whole cluster length to budget for DNA synthesis cost.</li>" +
-                "<li>Check for internal BsaI / BsmBI sites that would block Golden Gate assembly.</li>" +
                 "<li>Flag CDSs that will need codon optimization for the new host.</li>" +
+                "<li>Toggle the Golden Gate + NotI cutters below to check compatibility:</li>" +
                 "</ul>" +
+                "<div class=\"enzyme-toggle-row\">" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BsaI\">BsaI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BsmBI\">BsmBI</button>" +
+                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"NotI\">NotI</button>" +
+                "</div>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Huo L, Rachid S, Stadler M, Wenzel SC, M&uuml;ller R. " +
@@ -697,7 +862,7 @@
                 viewer: "both",
                 zoom: { linear: 25 },
                 showComplement: true,
-                enzymes: [],
+                enzymes: ["EcoRI", "BamHI", "HindIII"],
                 style: { height: "620px", width: "100%" }
             },
             narrative:
@@ -747,13 +912,14 @@
                 ").text\n" +
                 "\n" +
                 "MCS_ENZYMES = [\"EcoRI\", \"BamHI\", \"HindIII\", \"SacI\", \"XbaI\"]\n" +
+                "DEFAULT_ENZYMES = [\"EcoRI\", \"BamHI\", \"HindIII\"]\n" +
                 "\n" +
                 "app = Dash(__name__)\n" +
                 "app.layout = html.Div([\n" +
                 "    dcc.Checklist(\n" +
                 "        id=\"enzyme-picker\",\n" +
                 "        options=[{\"label\": e, \"value\": e} for e in MCS_ENZYMES],\n" +
-                "        value=[],  # empty; let the user toggle\n" +
+                "        value=DEFAULT_ENZYMES,\n" +
                 "        inline=True,\n" +
                 "    ),\n" +
                 "    SeqViz(\n" +
@@ -763,7 +929,7 @@
                 "        viewer=\"both\",\n" +
                 "        zoom={\"linear\": 25},\n" +
                 "        showComplement=True,\n" +
-                "        enzymes=[],\n" +
+                "        enzymes=DEFAULT_ENZYMES,\n" +
                 "        style={\"height\": \"620px\", \"width\": \"100%\"},\n" +
                 "    ),\n" +
                 "])\n" +
