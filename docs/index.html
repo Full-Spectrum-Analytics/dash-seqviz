@@ -3,195 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dash-seqviz &mdash; DNA, RNA &amp; Protein Sequence Viewer for Dash</title>
-    <meta name="description" content="A Dash component for interactive DNA, RNA, and protein sequence visualization. Circular and linear viewers, annotations, primers, restriction enzymes, and more.">
+    <title>dash-seqviz &mdash; DNA, RNA &amp; protein sequence visualization for Dash</title>
+    <meta name="description" content="A Dash component for interactive DNA, RNA, and protein sequence visualization. Built for academic labs and industrial biotech teams. Circular and linear viewers, annotations, primers, restriction enzymes, and more.">
 
+    <link rel="stylesheet" href="./assets/site.css">
     <style>
-        :root {
-            --color-bg: #f8fafc;
-            --color-surface: #ffffff;
-            --color-primary: #2563eb;
-            --color-primary-dark: #1d4ed8;
-            --color-text: #1e293b;
-            --color-text-muted: #64748b;
-            --color-border: #e2e8f0;
-            --color-code-bg: #1e293b;
-            --color-code-text: #e2e8f0;
-            --radius: 8px;
-            --max-width: 1200px;
+        .home-hero p.lede { font-size: 1.25rem; opacity: 0.92; }
+
+        .audience-grid .audience-card {
+            display: flex; flex-direction: column; gap: 8px;
         }
-
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: var(--color-bg);
-            color: var(--color-text);
-            line-height: 1.6;
+        .audience-card .audience-icon {
+            width: 40px; height: 40px; border-radius: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; font-weight: 700;
+            margin-bottom: 4px;
         }
-
-        /* ---- Hero ---- */
-        .hero {
-            background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
-            color: #fff;
-            padding: 64px 24px 48px;
-            text-align: center;
+        .audience-card.academic .audience-icon { background: #eff6ff; color: #1d4ed8; }
+        .audience-card.industrial .audience-icon { background: #fef3c7; color: #92400e; }
+        .audience-card ul { padding-left: 18px; font-size: 0.88rem; color: var(--color-text-muted); }
+        .audience-card ul li { margin: 4px 0; }
+        .audience-card a.cta {
+            display: inline-block; margin-top: 8px;
+            font-size: 0.88rem; font-weight: 600;
+            color: var(--color-primary); text-decoration: none;
         }
-        .hero h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.02em; }
-        .hero p  { font-size: 1.15rem; opacity: 0.88; max-width: 640px; margin: 12px auto 0; }
+        .audience-card a.cta:hover { text-decoration: underline; }
 
-        .badges { display: flex; gap: 8px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
-        .badges img { height: 22px; }
-
-        .hero-actions { margin-top: 28px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-        .btn {
-            display: inline-block; padding: 10px 22px; border-radius: var(--radius);
-            font-size: 0.95rem; font-weight: 600; text-decoration: none; transition: background 0.15s;
-            border: none; cursor: pointer;
+        .featured-strip {
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
         }
-        .btn-light  { background: #fff; color: var(--color-primary); }
-        .btn-light:hover { background: #e0e7ff; }
-        .btn-outline { border: 2px solid rgba(255,255,255,0.6); color: #fff; background: transparent; }
-        .btn-outline:hover { background: rgba(255,255,255,0.12); }
-
-        /* ---- Sections ---- */
-        .container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
-
-        section { padding: 56px 0; }
-        section h2 { font-size: 1.6rem; margin-bottom: 24px; }
-        section h3 { font-size: 1.05rem; margin: 20px 0 10px; color: var(--color-text-muted); font-weight: 600; }
-
-        /* ---- Demo ---- */
-        .demo-section { background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
-
-        .demo-controls {
+        .featured-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 16px;
-            margin-bottom: 20px;
-        }
-        .ctrl { display: flex; flex-direction: column; gap: 4px; }
-        .ctrl label {
-            font-size: 0.78rem; font-weight: 600; color: var(--color-text-muted);
-            text-transform: uppercase; letter-spacing: 0.03em;
-        }
-        .ctrl select,
-        .ctrl input[type="text"],
-        .ctrl input[type="number"] {
-            font-size: 0.9rem; padding: 7px 10px; border: 1px solid var(--color-border);
-            border-radius: var(--radius); background: var(--color-bg); width: 100%;
-        }
-        .ctrl input[type="range"] { width: 100%; }
-        .ctrl-inline {
-            display: flex; align-items: center; gap: 8px; min-height: 34px;
-            font-size: 0.9rem;
-        }
-        .bp-colors { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-        .bp-colors input {
-            font-size: 0.82rem; padding: 5px 6px; border: 1px solid var(--color-border);
-            border-radius: var(--radius); background: var(--color-bg); width: 100%;
-            font-family: "SFMono-Regular", Consolas, monospace;
-        }
-        .bp-colors label { font-size: 0.7rem; text-align: center; }
-
-        /* Multi-select for enzymes */
-        .enzyme-picker {
-            border: 1px solid var(--color-border); border-radius: var(--radius);
-            background: var(--color-bg); padding: 8px;
-        }
-        .enzyme-search {
-            width: 100%; padding: 6px 10px; border: 1px solid var(--color-border);
-            border-radius: var(--radius); font-size: 0.85rem; margin-bottom: 6px;
-            background: #fff;
-        }
-        .enzyme-list {
-            max-height: 140px; overflow-y: auto; border: 1px solid var(--color-border);
-            border-radius: var(--radius); background: #fff; padding: 4px;
-        }
-        .enzyme-item {
-            display: flex; align-items: center; gap: 6px; padding: 2px 6px;
-            font-size: 0.82rem; border-radius: 4px; cursor: pointer;
-        }
-        .enzyme-item:hover { background: #f1f5f9; }
-        .enzyme-selected {
-            display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px;
-            min-height: 20px;
-        }
-        .enzyme-chip {
-            display: inline-flex; align-items: center; gap: 4px;
-            background: var(--color-primary); color: #fff;
-            padding: 2px 8px; border-radius: 12px; font-size: 0.78rem;
-        }
-        .enzyme-chip button {
-            background: none; border: none; color: #fff; cursor: pointer;
-            font-size: 1rem; line-height: 1; padding: 0;
         }
 
-        #seqviz-root {
-            border: 1px solid var(--color-border); border-radius: var(--radius);
-            background: #fff; min-height: 500px; overflow: hidden;
+        .logo-row {
+            display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;
+            color: var(--color-text-muted); font-size: 0.85rem;
+        }
+        .logo-row span {
+            padding: 4px 10px; background: var(--color-bg);
+            border: 1px solid var(--color-border); border-radius: 999px;
         }
 
-        .readouts {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 12px; margin-top: 14px;
-            font-size: 0.85rem; color: var(--color-text-muted);
-            font-family: "SFMono-Regular", Consolas, monospace;
-        }
-        .readout {
-            background: var(--color-bg); border: 1px solid var(--color-border);
-            border-radius: var(--radius); padding: 8px 12px;
-            overflow-wrap: anywhere;
-            word-break: break-all;
-            min-width: 0;
-        }
-
-        /* ---- Install / Example / Features ---- */
-        .install-grid,
-        .features-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        .install-card,
-        .feature-card {
-            background: var(--color-surface); border: 1px solid var(--color-border);
-            border-radius: var(--radius); padding: 24px;
-        }
-        .install-card h3,
-        .feature-card h3 { font-size: 1rem; margin-bottom: 8px; color: var(--color-text); text-transform: none; letter-spacing: 0; }
-        .feature-card p { font-size: 0.9rem; color: var(--color-text-muted); }
-        .feature-icon { font-size: 1.4rem; margin-bottom: 8px; }
-
-        pre {
-            background: var(--color-code-bg); color: var(--color-code-text);
-            padding: 14px 18px; border-radius: var(--radius); overflow-x: auto;
-            font-size: 0.88rem; line-height: 1.5;
-        }
-        code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
-        p code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.88em; }
-
-        .example-section { background: var(--color-surface); border-top: 1px solid var(--color-border); }
-
-        footer {
-            text-align: center; padding: 32px 24px; font-size: 0.85rem;
-            color: var(--color-text-muted); border-top: 1px solid var(--color-border);
-        }
-        footer a { color: var(--color-primary); text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
-
-        @media (max-width: 600px) {
-            .hero h1 { font-size: 1.7rem; }
-            .hero { padding: 40px 16px 32px; }
-            section { padding: 40px 0; }
+        .mini-example {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 20px;
         }
     </style>
 </head>
-<body>
+<body data-page="home">
+
+<div id="site-nav-mount"></div>
 
 <!-- Hero -->
-<header class="hero">
+<header class="hero home-hero">
     <h1>dash-seqviz</h1>
-    <p>Interactive DNA, RNA &amp; protein sequence visualization for <a href="https://dash.plotly.com" style="color:#93c5fd;" target="_blank" rel="noopener">Plotly Dash</a></p>
+    <p class="lede">Drop real sequence biology into your Dash app &mdash; in one component.</p>
+    <p>Circular and linear viewers, GenBank / FASTA / NCBI loaders, annotations, primers, 250+ restriction enzymes, motif search, and rich callback state. Built for classrooms and industrial bio-foundries alike.</p>
     <div class="badges">
         <a href="https://pypi.org/project/dash-seqviz/" target="_blank" rel="noopener">
             <img alt="PyPI version" src="https://img.shields.io/pypi/v/dash-seqviz?style=flat-square">
@@ -202,162 +77,70 @@
         <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square">
     </div>
     <div class="hero-actions">
-        <a class="btn btn-light" href="#install">Get Started</a>
-        <a class="btn btn-outline" href="https://github.com/Full-Spectrum-Analytics/dash-seqviz" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn-light" href="./examples.html">See examples</a>
+        <a class="btn btn-outline" href="./explorer.html">Open Explorer</a>
     </div>
 </header>
 
-<!-- Live Demo -->
-<section class="demo-section" id="demo">
+<!-- Audience split -->
+<section id="audiences">
     <div class="container">
-        <h2>Live Demo</h2>
-        <p style="margin-bottom: 24px; color: var(--color-text-muted);">
-            This demo mirrors the controls available in <code>usage.py</code>. All rendering happens client-side
-            using the <a href="https://github.com/Lattice-Automation/seqviz" target="_blank" rel="noopener">seqviz</a> library loaded from unpkg.
-        </p>
-
-        <h3>Load Sequence from NCBI</h3>
-        <div class="demo-controls" style="grid-template-columns: 1fr 1fr auto auto;">
-            <div class="ctrl">
-                <label for="ctrl-accession">NCBI Accession</label>
-                <input id="ctrl-accession" type="text" value="" placeholder="e.g. MN623123.1, NC_000913.3, U00096.3">
+        <h2>Built for two audiences</h2>
+        <div class="audience-grid">
+            <div class="audience-card academic">
+                <div class="audience-icon">EDU</div>
+                <h3>Academia</h3>
+                <p>Drop a real NCBI accession into a Dash app and walk a student through it live.
+                   From high-school classrooms to graduate synthetic-biology labs, the same
+                   component scales with the lesson.</p>
+                <ul>
+                    <li>GFP, lac operon, carotenoid cluster &mdash; turnkey teaching demos</li>
+                    <li>Annotations, translations, restriction maps, motif search</li>
+                    <li>Works in JupyterLab, Dash, or a static HTML page</li>
+                </ul>
+                <a class="cta" href="./examples.html?category=academic">Academic examples &rarr;</a>
             </div>
-            <div class="ctrl">
-                <label for="ctrl-email">Your email <span style="text-transform: none; font-weight: 400;">(required by NCBI)</span></label>
-                <input id="ctrl-email" type="email" placeholder="you@lab.org" autocomplete="email">
-            </div>
-            <div class="ctrl" style="justify-content: end;">
-                <label>&nbsp;</label>
-                <button id="btn-fetch" class="btn btn-light" style="padding: 7px 18px; border: 1px solid var(--color-border);">
-                    Fetch from NCBI
-                </button>
-            </div>
-            <div class="ctrl" style="justify-content: end;">
-                <label>&nbsp;</label>
-                <button id="btn-reset" class="btn" style="padding: 7px 18px; border: 1px solid var(--color-border); background: var(--color-bg);">
-                    Reset demo
-                </button>
-            </div>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 8px; font-size: 0.85rem;">
-            <div id="fetch-status" style="color: var(--color-text-muted); flex: 1;"></div>
-            <div id="quota-display" style="color: var(--color-text-muted); white-space: nowrap; font-variant-numeric: tabular-nums;"></div>
-        </div>
-        <details style="margin-bottom: 16px; font-size: 0.8rem; color: var(--color-text-muted);">
-            <summary style="cursor: pointer;">About NCBI requests &amp; your responsibilities</summary>
-            <div style="margin-top: 8px; padding: 12px; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border);">
-                <p style="margin-bottom: 8px;">
-                    Requests go directly from your browser to NCBI's
-                    <a href="https://www.ncbi.nlm.nih.gov/books/NBK25497/" target="_blank" rel="noopener">E-utilities API</a>.
-                    <strong>dash-seqviz does not operate a proxy</strong> &mdash; your email is sent to NCBI along with each
-                    request, as recommended by their usage policy, so they can contact you if your usage causes issues.
-                </p>
-                <p style="margin-bottom: 8px;">
-                    Your email is stored locally in your browser only (localStorage). We cap you at 3 requests per second
-                    (NCBI's unauthenticated limit), cache responses so repeat accessions don't re-hit NCBI, and refuse
-                    obviously invalid accession strings.
-                </p>
-                <p>
-                    For heavy or automated use, please
-                    <a href="https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/" target="_blank" rel="noopener">get an NCBI API key</a>
-                    and run your own workload &mdash; not through this public demo.
-                </p>
-            </div>
-        </details>
-
-        <h3>Viewer &amp; Display</h3>
-        <div class="demo-controls">
-            <div class="ctrl">
-                <label for="ctrl-viewer">Topology</label>
-                <select id="ctrl-viewer">
-                    <option value="both" selected>Both</option>
-                    <option value="both_flip">Both (flipped)</option>
-                    <option value="circular">Circular</option>
-                    <option value="linear">Linear</option>
-                </select>
-            </div>
-            <div class="ctrl">
-                <label for="ctrl-zoom">Zoom (linear): <span id="zoom-val">60</span></label>
-                <input id="ctrl-zoom" type="range" min="1" max="100" value="60">
-            </div>
-            <div class="ctrl">
-                <label>Toggles</label>
-                <label class="ctrl-inline">
-                    <input id="ctrl-complement" type="checkbox" checked> Show complement
-                </label>
-                <label class="ctrl-inline">
-                    <input id="ctrl-rotate" type="checkbox" checked> Rotate on scroll (circular)
-                </label>
-                <label class="ctrl-inline">
-                    <input id="ctrl-translations" type="checkbox" checked> Show translations (CDS)
-                </label>
+            <div class="audience-card industrial">
+                <div class="audience-icon">IND</div>
+                <h3>Industry &amp; biotech R&amp;D</h3>
+                <p>Biofoundries, ag-biotech, pharma R&amp;D, food &amp; beverage, consumer synbio.
+                   Use <code>dash-seqviz</code> to visualize what ships to a cloning robot or
+                   a production fermenter &mdash; without forcing scientists into a heavyweight
+                   desktop tool.</p>
+                <ul>
+                    <li>Binary vectors, CRISPR cassettes, natural-product clusters</li>
+                    <li>Restriction-site QC for Golden Gate / MoClo pipelines</li>
+                    <li>Embed inside internal Dash dashboards and LIMS frontends</li>
+                </ul>
+                <a class="cta" href="./examples.html?category=industrial">Industrial examples &rarr;</a>
             </div>
         </div>
-
-        <h3>Search</h3>
-        <div class="demo-controls">
-            <div class="ctrl">
-                <label for="ctrl-search">Query (motif)</label>
-                <input id="ctrl-search" type="text" value="ttnnnaat" placeholder="e.g. GCTAGC">
-            </div>
-            <div class="ctrl">
-                <label for="ctrl-mismatch">Search mismatch</label>
-                <input id="ctrl-mismatch" type="number" min="0" step="1" value="0">
-            </div>
-        </div>
-
-        <h3>Base-Pair Colors</h3>
-        <div class="demo-controls">
-            <div class="ctrl">
-                <label>bpColors (A / T / C / G)</label>
-                <div class="bp-colors">
-                    <div>
-                        <label for="ctrl-bp-a">A</label>
-                        <input id="ctrl-bp-a" type="text" value="#1f78b4">
-                    </div>
-                    <div>
-                        <label for="ctrl-bp-t">T</label>
-                        <input id="ctrl-bp-t" type="text" value="#33a02c">
-                    </div>
-                    <div>
-                        <label for="ctrl-bp-c">C</label>
-                        <input id="ctrl-bp-c" type="text" value="#e31a1c">
-                    </div>
-                    <div>
-                        <label for="ctrl-bp-g">G</label>
-                        <input id="ctrl-bp-g" type="text" value="#ff7f00">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <h3>Restriction Enzymes (NEB)</h3>
-        <div class="enzyme-picker">
-            <div style="display: flex; gap: 8px; margin-bottom: 6px;">
-                <input id="enzyme-search" class="enzyme-search" type="text" placeholder="Filter enzymes... (type to search)" style="margin-bottom: 0; flex: 1;">
-                <button id="btn-enzyme-clear" type="button" class="btn" style="padding: 6px 14px; font-size: 0.82rem; border: 1px solid var(--color-border); background: #fff;">
-                    Clear all
-                </button>
-            </div>
-            <div id="enzyme-list" class="enzyme-list"></div>
-            <div id="enzyme-selected" class="enzyme-selected"></div>
-        </div>
-
-        <h3 style="margin-top: 28px;">Viewer</h3>
-        <div id="seqviz-root"></div>
-
-        <div class="readouts">
-            <div id="selection-readout" class="readout">selection: none</div>
-            <div id="search-readout" class="readout">searchResults: 0</div>
-            <div id="copied-banner" class="readout"></div>
+        <div class="logo-row" aria-label="Representative industry targets">
+            <span>Biofoundries</span>
+            <span>Ag-biotech</span>
+            <span>Pharma R&amp;D</span>
+            <span>Food &amp; beverage</span>
+            <span>Consumer synbio</span>
+            <span>Teaching labs</span>
         </div>
     </div>
 </section>
 
-<!-- Install -->
+<!-- Featured examples strip -->
+<section class="featured-strip" id="featured">
+    <div class="container">
+        <h2>Featured examples</h2>
+        <p style="color: var(--color-text-muted); margin-bottom: 20px;">
+            A few to start with. Browse the full <a href="./examples.html">gallery</a> for all ten.
+        </p>
+        <div id="featured-examples" class="featured-grid"></div>
+    </div>
+</section>
+
+<!-- Quick install -->
 <section id="install">
     <div class="container">
-        <h2>Installation</h2>
+        <h2>Install</h2>
         <div class="install-grid">
             <div class="install-card">
                 <h3>Python (PyPI)</h3>
@@ -368,71 +151,68 @@
                 <pre><code>conda install -c conda-forge dash-seqviz</code></pre>
             </div>
         </div>
-    </div>
-</section>
-
-<!-- Quick Example -->
-<section class="example-section">
-    <div class="container">
-        <h2>Quick Example</h2>
-        <pre><code>from dash import Dash, html
+        <div class="mini-example" style="margin-top: 24px;">
+            <h3 style="margin-bottom: 12px; color: var(--color-text); text-transform: none; letter-spacing: 0; font-size: 1rem;">30-second example</h3>
+            <div class="snippet">
+<pre><code>from dash import Dash, html
 from dash_seqviz import SeqViz
 
 app = Dash(__name__)
-
 app.layout = html.Div([
     SeqViz(
-        id="my-seqviz",
-        name="pUC19",
+        id="demo",
+        name="pUC19 fragment",
         seq="TTGACGGCTAGCTCAGTCCTAGGTACAGTGCTAGC",
-        viewer="both",
         annotations=[
-            {"start": 0, "end": 22, "name": "Promoter", "direction": 1, "color": "#3b82f6"},
+            {"start": 0, "end": 22, "name": "Promoter",
+             "direction": 1, "color": "#2a9d8f"},
         ],
-        enzymes=["PstI", "EcoRI", "XbaI", "SpeI"],
+        enzymes=["EcoRI", "XbaI", "SpeI"],
         style={"height": "500px", "width": "100%"},
     )
 ])
 
 if __name__ == "__main__":
     app.run(debug=True)</code></pre>
+            </div>
+        </div>
     </div>
 </section>
 
 <!-- Features -->
 <section id="features">
     <div class="container">
-        <h2>Features</h2>
+        <h2>What's in the box</h2>
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon" aria-hidden="true">&#x1F9EC;</div>
-                <h3>Circular &amp; Linear Views</h3>
-                <p>Toggle between circular plasmid maps, linear sequence views, or display both side by side.</p>
+                <h3>Circular &amp; linear views</h3>
+                <p>Toggle between circular plasmid maps, linear sequence views, or show both side by side.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon" aria-hidden="true">&#x1F3F7;&#xFE0F;</div>
-                <h3>Annotations &amp; Primers</h3>
-                <p>Overlay named annotations, directional primers, and highlight regions on the sequence.</p>
+                <div class="feature-icon" aria-hidden="true">&#x1F4DD;</div>
+                <h3>Annotations &amp; primers</h3>
+                <p>Overlay named annotations, directional primers, and highlight regions on any sequence.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon" aria-hidden="true">&#x2702;&#xFE0F;</div>
-                <h3>Restriction Enzymes</h3>
-                <p>Visualize cut sites for 250+ NEB restriction enzymes or define custom enzymes.</p>
+                <h3>Restriction enzymes</h3>
+                <p>250+ NEB enzymes out of the box, plus custom recognition sites.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon" aria-hidden="true">&#x1F50D;</div>
-                <h3>Motif Search</h3>
-                <p>Search for sequence motifs with configurable mismatch tolerance and highlight all matches.</p>
+                <h3>Motif search</h3>
+                <p>Fuzzy motif search with configurable mismatch tolerance and searchResults callback.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon" aria-hidden="true">&#x1F3A8;</div>
-                <h3>Custom Colors</h3>
-                <p>Color individual base pairs, annotations, translations, and highlights with full control.</p>
+                <h3>Custom colors</h3>
+                <p>Full control over base-pair, annotation, translation, and highlight colors.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon" aria-hidden="true">&#x26A1;</div>
-                <h3>Dash Callbacks</h3>
-                <p>React to selection, search, and copy events via standard Dash callbacks.</p>
+                <h3>Dash callbacks</h3>
+                <p>React to selection, searchResults, and copy events with standard Dash callbacks.</p>
             </div>
         </div>
     </div>
@@ -447,14 +227,57 @@ if __name__ == "__main__":
     </p>
 </footer>
 
-<!-- seqviz 3.10.20 UMD bundle (includes React internally; Viewer API self-mounts) -->
-<script crossorigin src="https://unpkg.com/seqviz@3.10.20/dist/seqviz.min.js"></script>
+<script src="./assets/nav.js"></script>
+<script src="./assets/seqviz-adapter.js"></script>
+<script src="./data/examples.js"></script>
 
-<!-- NEB enzyme list (separate file for maintainability) -->
-<script src="./enzymes.js"></script>
+<script>
+    (function renderFeatured() {
+        var mount = document.getElementById("featured-examples");
+        var list = (window.DASH_SEQVIZ_EXAMPLES || []).filter(function (e) { return e.featured; });
+        if (!mount || list.length === 0) return;
+        list.forEach(function (ex) {
+            var a = document.createElement("a");
+            a.className = "gallery-card";
+            a.href = "./example.html?id=" + encodeURIComponent(ex.id);
 
-<!-- Demo app -->
-<script src="./demo.js"></script>
+            var badges = document.createElement("div");
+            badges.className = "card-badges";
+
+            var catBadge = document.createElement("span");
+            catBadge.className = "badge " + (ex.category === "academic" ? "badge-academic" : "badge-industrial");
+            catBadge.textContent = ex.category;
+            badges.appendChild(catBadge);
+
+            (ex.tags || []).slice(0, 2).forEach(function (t) {
+                var b = document.createElement("span");
+                b.className = "badge badge-tag";
+                b.textContent = t;
+                badges.appendChild(b);
+            });
+            a.appendChild(badges);
+
+            var h = document.createElement("h3");
+            h.textContent = ex.title;
+            a.appendChild(h);
+
+            var p = document.createElement("p");
+            p.textContent = ex.summary;
+            a.appendChild(p);
+
+            var meta = document.createElement("div");
+            meta.className = "card-meta";
+            meta.textContent = ex.accession;
+            a.appendChild(meta);
+
+            mount.appendChild(a);
+        });
+    })();
+
+    if (window.SeqVizSite && window.SeqVizSite.wireCopy) {
+        window.SeqVizSite.wireCopy(document);
+    }
+</script>
 
 </body>
 </html>

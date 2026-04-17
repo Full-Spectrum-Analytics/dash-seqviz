@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example &mdash; dash-seqviz</title>
+    <meta name="description" content="Interactive example — one curated construct visualized with dash-seqviz, with a ready-to-paste Python snippet.">
+
+    <link rel="stylesheet" href="./assets/site.css">
+</head>
+<body data-page="examples">
+
+<div id="site-nav-mount"></div>
+
+<section class="example-header">
+    <div class="container">
+        <div class="eyebrow" id="ex-eyebrow">Example</div>
+        <h1 id="ex-title">Loading...</h1>
+        <p class="subtitle" id="ex-summary"></p>
+        <div class="meta-row" id="ex-meta"></div>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <div class="example-body">
+            <div class="col-visual">
+                <h3 style="margin-top: 0;">Live viewer</h3>
+                <div id="example-viewer-wrap" class="example-viewer-wrap">
+                    <div class="example-loading" id="example-loading">
+                        Fetching sequence from NCBI&hellip;
+                    </div>
+                    <div id="seqviz-root" style="height: 560px;"></div>
+                </div>
+                <p id="ex-fetch-status" style="margin-top: 10px; color: var(--color-text-muted); font-size: 0.85rem;"></p>
+                <p style="margin-top: 8px; color: var(--color-text-muted); font-size: 0.82rem;">
+                    Fetched live from <a id="ex-ncbi-link" href="#" target="_blank" rel="noopener">NCBI</a>. All rendering is client-side.
+                </p>
+            </div>
+
+            <div class="col-content">
+                <h3 style="margin-top: 0;">About this example</h3>
+                <div id="ex-narrative" class="narrative"></div>
+
+                <h3>Python snippet</h3>
+                <p style="color: var(--color-text-muted); font-size: 0.88rem;">
+                    Paste this into a file, <code>pip install dash-seqviz</code>, and run.
+                </p>
+                <div class="snippet">
+                    <pre id="ex-snippet"><code></code></pre>
+                </div>
+
+                <h3>More examples</h3>
+                <div id="ex-next" class="next-examples"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>
+        Built by <a href="https://github.com/Full-Spectrum-Analytics" target="_blank" rel="noopener">Full Spectrum Analytics</a>
+        &middot; Powered by <a href="https://github.com/Lattice-Automation/seqviz" target="_blank" rel="noopener">seqviz</a>
+        &middot; <a href="https://github.com/Full-Spectrum-Analytics/dash-seqviz" target="_blank" rel="noopener">Source on GitHub</a>
+    </p>
+</footer>
+
+<script crossorigin src="https://unpkg.com/seqviz@3.10.20/dist/seqviz.min.js"></script>
+<script src="./assets/nav.js"></script>
+<script src="./assets/seqviz-adapter.js"></script>
+<script src="./data/examples.js"></script>
+
+<script>
+    (function () {
+        var params = new URLSearchParams(window.location.search);
+        var id = params.get("id");
+        var all = window.DASH_SEQVIZ_EXAMPLES || [];
+        var ex = all.find(function (e) { return e.id === id; });
+
+        var titleEl     = document.getElementById("ex-title");
+        var summaryEl   = document.getElementById("ex-summary");
+        var eyebrowEl   = document.getElementById("ex-eyebrow");
+        var metaEl      = document.getElementById("ex-meta");
+        var narrativeEl = document.getElementById("ex-narrative");
+        var snippetEl   = document.getElementById("ex-snippet").querySelector("code");
+        var nextEl      = document.getElementById("ex-next");
+        var ncbiLinkEl  = document.getElementById("ex-ncbi-link");
+        var statusEl    = document.getElementById("ex-fetch-status");
+        var loadingEl   = document.getElementById("example-loading");
+
+        if (!ex) {
+            titleEl.textContent = "Example not found";
+            summaryEl.textContent =
+                'We could not find an example with id "' + (id || "") + '". ' +
+                'Head back to the gallery to pick another.';
+            loadingEl.textContent = "No example loaded.";
+            var back = document.createElement("a");
+            back.className = "btn btn-primary";
+            back.href = "./examples.html";
+            back.textContent = "Back to gallery";
+            metaEl.appendChild(back);
+            return;
+        }
+
+        // Header
+        document.title = ex.title + " — dash-seqviz";
+        eyebrowEl.textContent = ex.category === "academic" ? "Academic example" : "Industrial example";
+        titleEl.textContent = ex.title;
+        summaryEl.textContent = ex.summary;
+
+        var catBadge = document.createElement("span");
+        catBadge.className = "badge " + (ex.category === "academic" ? "badge-academic" : "badge-industrial");
+        catBadge.textContent = ex.category;
+        metaEl.appendChild(catBadge);
+
+        var cxBadge = document.createElement("span");
+        cxBadge.className = "badge badge-complexity";
+        cxBadge.textContent = "complexity " + (ex.complexity || "?");
+        metaEl.appendChild(cxBadge);
+
+        (ex.tags || []).forEach(function (t) {
+            var b = document.createElement("span");
+            b.className = "badge badge-tag";
+            b.textContent = t;
+            metaEl.appendChild(b);
+        });
+
+        var accBadge = document.createElement("span");
+        accBadge.className = "badge badge-tag";
+        accBadge.textContent = "NCBI " + ex.accession;
+        metaEl.appendChild(accBadge);
+
+        narrativeEl.innerHTML = ex.narrative || "";
+        snippetEl.textContent = ex.pythonSnippet || "";
+        ncbiLinkEl.href = "https://www.ncbi.nlm.nih.gov/nuccore/" + encodeURIComponent(ex.accession);
+        ncbiLinkEl.textContent = "NCBI " + ex.accession;
+
+        // Next examples — prefer same category, then others, skip self
+        var next = all.filter(function (e) { return e.id !== ex.id; });
+        next.sort(function (a, b) {
+            var sameA = a.category === ex.category ? 0 : 1;
+            var sameB = b.category === ex.category ? 0 : 1;
+            if (sameA !== sameB) return sameA - sameB;
+            return (a.complexity || 0) - (b.complexity || 0);
+        });
+        next.slice(0, 4).forEach(function (e) {
+            var a = document.createElement("a");
+            a.href = "./example.html?id=" + encodeURIComponent(e.id);
+
+            var eye = document.createElement("span");
+            eye.className = "next-eyebrow";
+            eye.textContent = e.category;
+            a.appendChild(eye);
+
+            var t = document.createElement("span");
+            t.className = "next-title";
+            t.textContent = e.title;
+            a.appendChild(t);
+
+            nextEl.appendChild(a);
+        });
+
+        // Wire copy buttons
+        if (window.SeqVizSite && window.SeqVizSite.wireCopy) {
+            window.SeqVizSite.wireCopy(document);
+        }
+
+        // Fetch sequence and render viewer
+        // Uses a site-owned email for the E-utilities call (since this page is read-only
+        // and doesn't ask the user for one). Rate/quota enforcement is handled by NCBI;
+        // the Explorer page covers interactive fetching with user-supplied email.
+        var SITE_EMAIL = "dash-seqviz@fullspectrumanalytics.com";
+
+        statusEl.textContent = "Fetching " + ex.accession + " from NCBI...";
+
+        window.SeqVizSite.fetchAccession(ex.accession, SITE_EMAIL).then(function (rec) {
+            loadingEl.style.display = "none";
+            statusEl.textContent = "Loaded " + rec.seq.length.toLocaleString() + " bp from " + ex.accession + ".";
+
+            var props = Object.assign({}, ex.seqvizProps, {
+                name: rec.name,
+                seq: rec.seq,
+                annotations: rec.annotations,
+                translations: rec.translations
+            });
+            window.SeqVizSite.renderViewer("seqviz-root", props);
+        }).catch(function (err) {
+            loadingEl.textContent = "Couldn't load sequence: " + (err && err.message ? err.message : "unknown error");
+            statusEl.textContent =
+                "If this keeps happening, try loading the accession from the " +
+                "Explorer page, which supports retries and your own email.";
+            var retry = document.createElement("a");
+            retry.className = "btn btn-primary";
+            retry.style.marginTop = "8px";
+            retry.href = "./explorer.html";
+            retry.textContent = "Open in Explorer";
+            loadingEl.appendChild(document.createElement("br"));
+            loadingEl.appendChild(retry);
+        });
+    })();
+</script>
+
+</body>
+</html>

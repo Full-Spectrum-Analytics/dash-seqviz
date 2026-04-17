@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorer &mdash; dash-seqviz</title>
+    <meta name="description" content="Interactive explorer for DNA, RNA, and protein sequences. Load any NCBI accession and play with topology, zoom, translations, enzymes, and motif search.">
+
+    <link rel="stylesheet" href="./assets/site.css">
+    <style>
+        /* Explorer-specific controls — not shared with other pages */
+        .demo-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .ctrl { display: flex; flex-direction: column; gap: 4px; }
+        .ctrl label {
+            font-size: 0.78rem; font-weight: 600; color: var(--color-text-muted);
+            text-transform: uppercase; letter-spacing: 0.03em;
+        }
+        .ctrl select,
+        .ctrl input[type="text"],
+        .ctrl input[type="email"],
+        .ctrl input[type="number"] {
+            font-size: 0.9rem; padding: 7px 10px; border: 1px solid var(--color-border);
+            border-radius: var(--radius); background: var(--color-bg); width: 100%;
+        }
+        .ctrl input[type="range"] { width: 100%; }
+        .ctrl-inline {
+            display: flex; align-items: center; gap: 8px; min-height: 34px;
+            font-size: 0.9rem;
+        }
+        .bp-colors { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .bp-colors input {
+            font-size: 0.82rem; padding: 5px 6px; border: 1px solid var(--color-border);
+            border-radius: var(--radius); background: var(--color-bg); width: 100%;
+            font-family: "SFMono-Regular", Consolas, monospace;
+        }
+        .bp-colors label { font-size: 0.7rem; text-align: center; }
+
+        .enzyme-picker {
+            border: 1px solid var(--color-border); border-radius: var(--radius);
+            background: var(--color-bg); padding: 8px;
+        }
+        .enzyme-search {
+            width: 100%; padding: 6px 10px; border: 1px solid var(--color-border);
+            border-radius: var(--radius); font-size: 0.85rem; margin-bottom: 6px;
+            background: #fff;
+        }
+        .enzyme-list {
+            max-height: 140px; overflow-y: auto; border: 1px solid var(--color-border);
+            border-radius: var(--radius); background: #fff; padding: 4px;
+        }
+        .enzyme-item {
+            display: flex; align-items: center; gap: 6px; padding: 2px 6px;
+            font-size: 0.82rem; border-radius: 4px; cursor: pointer;
+        }
+        .enzyme-item:hover { background: #f1f5f9; }
+        .enzyme-selected {
+            display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px;
+            min-height: 20px;
+        }
+        .enzyme-chip {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: var(--color-primary); color: #fff;
+            padding: 2px 8px; border-radius: 12px; font-size: 0.78rem;
+        }
+        .enzyme-chip button {
+            background: none; border: none; color: #fff; cursor: pointer;
+            font-size: 1rem; line-height: 1; padding: 0;
+        }
+
+        #seqviz-root {
+            border: 1px solid var(--color-border); border-radius: var(--radius);
+            background: #fff; min-height: 500px; overflow: hidden;
+        }
+
+        .readouts {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px; margin-top: 14px;
+            font-size: 0.85rem; color: var(--color-text-muted);
+            font-family: "SFMono-Regular", Consolas, monospace;
+        }
+        .readout {
+            background: var(--color-bg); border: 1px solid var(--color-border);
+            border-radius: var(--radius); padding: 8px 12px;
+            overflow-wrap: anywhere;
+            word-break: break-all;
+            min-width: 0;
+        }
+
+        .demo-section { background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
+        .example-section { background: var(--color-surface); border-top: 1px solid var(--color-border); }
+    </style>
+</head>
+<body data-page="explorer">
+
+<div id="site-nav-mount"></div>
+
+<!-- Hero -->
+<header class="hero">
+    <h1>Explorer</h1>
+    <p>Load any NCBI accession &mdash; or bring your own sequence &mdash; and try every viewer control <code>dash-seqviz</code> exposes.</p>
+    <div class="badges">
+        <a href="https://pypi.org/project/dash-seqviz/" target="_blank" rel="noopener">
+            <img alt="PyPI version" src="https://img.shields.io/pypi/v/dash-seqviz?style=flat-square">
+        </a>
+        <a href="https://www.npmjs.com/package/dash_seqviz" target="_blank" rel="noopener">
+            <img alt="npm version" src="https://img.shields.io/npm/v/dash_seqviz?style=flat-square">
+        </a>
+        <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square">
+    </div>
+    <div class="hero-actions">
+        <a class="btn btn-light" href="./examples.html">Browse Examples</a>
+        <a class="btn btn-outline" href="https://github.com/Full-Spectrum-Analytics/dash-seqviz" target="_blank" rel="noopener">GitHub</a>
+    </div>
+</header>
+
+<!-- Live Demo -->
+<section class="demo-section" id="demo">
+    <div class="container">
+        <h2>Live demo</h2>
+        <p style="margin-bottom: 24px; color: var(--color-text-muted);">
+            This explorer mirrors the controls available in <code>usage.py</code>. All rendering happens client-side
+            using the <a href="https://github.com/Lattice-Automation/seqviz" target="_blank" rel="noopener">seqviz</a> library loaded from unpkg.
+        </p>
+
+        <h3>Load sequence from NCBI</h3>
+        <div class="demo-controls" style="grid-template-columns: 1fr 1fr auto auto;">
+            <div class="ctrl">
+                <label for="ctrl-accession">NCBI accession</label>
+                <input id="ctrl-accession" type="text" value="" placeholder="e.g. MN623123.1, NC_000913.3, U00096.3">
+            </div>
+            <div class="ctrl">
+                <label for="ctrl-email">Your email <span style="text-transform: none; font-weight: 400;">(required by NCBI)</span></label>
+                <input id="ctrl-email" type="email" placeholder="you@lab.org" autocomplete="email">
+            </div>
+            <div class="ctrl" style="justify-content: end;">
+                <label>&nbsp;</label>
+                <button id="btn-fetch" class="btn btn-light" style="padding: 7px 18px; border: 1px solid var(--color-border);">
+                    Fetch from NCBI
+                </button>
+            </div>
+            <div class="ctrl" style="justify-content: end;">
+                <label>&nbsp;</label>
+                <button id="btn-reset" class="btn" style="padding: 7px 18px; border: 1px solid var(--color-border); background: var(--color-bg);">
+                    Reset demo
+                </button>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 8px; font-size: 0.85rem;">
+            <div id="fetch-status" style="color: var(--color-text-muted); flex: 1;"></div>
+            <div id="quota-display" style="color: var(--color-text-muted); white-space: nowrap; font-variant-numeric: tabular-nums;"></div>
+        </div>
+        <details style="margin-bottom: 16px; font-size: 0.8rem; color: var(--color-text-muted);">
+            <summary style="cursor: pointer;">About NCBI requests &amp; your responsibilities</summary>
+            <div style="margin-top: 8px; padding: 12px; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border);">
+                <p style="margin-bottom: 8px;">
+                    Requests go directly from your browser to NCBI's
+                    <a href="https://www.ncbi.nlm.nih.gov/books/NBK25497/" target="_blank" rel="noopener">E-utilities API</a>.
+                    <strong>dash-seqviz does not operate a proxy</strong> &mdash; your email is sent to NCBI along with each
+                    request, as recommended by their usage policy, so they can contact you if your usage causes issues.
+                </p>
+                <p style="margin-bottom: 8px;">
+                    Your email is stored locally in your browser only (localStorage). We cap you at 3 requests per second
+                    (NCBI's unauthenticated limit), cache responses so repeat accessions don't re-hit NCBI, and refuse
+                    obviously invalid accession strings.
+                </p>
+                <p>
+                    For heavy or automated use, please
+                    <a href="https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/" target="_blank" rel="noopener">get an NCBI API key</a>
+                    and run your own workload &mdash; not through this public demo.
+                </p>
+            </div>
+        </details>
+
+        <h3>Viewer &amp; display</h3>
+        <div class="demo-controls">
+            <div class="ctrl">
+                <label for="ctrl-viewer">Topology</label>
+                <select id="ctrl-viewer">
+                    <option value="both" selected>Both</option>
+                    <option value="both_flip">Both (flipped)</option>
+                    <option value="circular">Circular</option>
+                    <option value="linear">Linear</option>
+                </select>
+            </div>
+            <div class="ctrl">
+                <label for="ctrl-zoom">Zoom (linear): <span id="zoom-val">60</span></label>
+                <input id="ctrl-zoom" type="range" min="1" max="100" value="60">
+            </div>
+            <div class="ctrl">
+                <label>Toggles</label>
+                <label class="ctrl-inline">
+                    <input id="ctrl-complement" type="checkbox" checked> Show complement
+                </label>
+                <label class="ctrl-inline">
+                    <input id="ctrl-rotate" type="checkbox" checked> Rotate on scroll (circular)
+                </label>
+                <label class="ctrl-inline">
+                    <input id="ctrl-translations" type="checkbox" checked> Show translations (CDS)
+                </label>
+            </div>
+        </div>
+
+        <h3>Search</h3>
+        <div class="demo-controls">
+            <div class="ctrl">
+                <label for="ctrl-search">Query (motif)</label>
+                <input id="ctrl-search" type="text" value="ttnnnaat" placeholder="e.g. GCTAGC">
+            </div>
+            <div class="ctrl">
+                <label for="ctrl-mismatch">Search mismatch</label>
+                <input id="ctrl-mismatch" type="number" min="0" step="1" value="0">
+            </div>
+        </div>
+
+        <h3>Base-pair colors</h3>
+        <div class="demo-controls">
+            <div class="ctrl">
+                <label>bpColors (A / T / C / G)</label>
+                <div class="bp-colors">
+                    <div>
+                        <label for="ctrl-bp-a">A</label>
+                        <input id="ctrl-bp-a" type="text" value="#1f78b4">
+                    </div>
+                    <div>
+                        <label for="ctrl-bp-t">T</label>
+                        <input id="ctrl-bp-t" type="text" value="#33a02c">
+                    </div>
+                    <div>
+                        <label for="ctrl-bp-c">C</label>
+                        <input id="ctrl-bp-c" type="text" value="#e31a1c">
+                    </div>
+                    <div>
+                        <label for="ctrl-bp-g">G</label>
+                        <input id="ctrl-bp-g" type="text" value="#ff7f00">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Restriction enzymes (NEB)</h3>
+        <div class="enzyme-picker">
+            <div style="display: flex; gap: 8px; margin-bottom: 6px;">
+                <input id="enzyme-search" class="enzyme-search" type="text" placeholder="Filter enzymes... (type to search)" style="margin-bottom: 0; flex: 1;">
+                <button id="btn-enzyme-clear" type="button" class="btn" style="padding: 6px 14px; font-size: 0.82rem; border: 1px solid var(--color-border); background: #fff;">
+                    Clear all
+                </button>
+            </div>
+            <div id="enzyme-list" class="enzyme-list"></div>
+            <div id="enzyme-selected" class="enzyme-selected"></div>
+        </div>
+
+        <h3 style="margin-top: 28px;">Viewer</h3>
+        <div id="seqviz-root"></div>
+
+        <div class="readouts">
+            <div id="selection-readout" class="readout">selection: none</div>
+            <div id="search-readout" class="readout">searchResults: 0</div>
+            <div id="copied-banner" class="readout"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Install -->
+<section id="install">
+    <div class="container">
+        <h2>Installation</h2>
+        <div class="install-grid">
+            <div class="install-card">
+                <h3>Python (PyPI)</h3>
+                <pre><code>pip install dash-seqviz</code></pre>
+            </div>
+            <div class="install-card">
+                <h3>Conda</h3>
+                <pre><code>conda install -c conda-forge dash-seqviz</code></pre>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Example -->
+<section class="example-section">
+    <div class="container">
+        <h2>Quick example</h2>
+        <div class="snippet">
+<pre><code>from dash import Dash, html
+from dash_seqviz import SeqViz
+
+app = Dash(__name__)
+
+app.layout = html.Div([
+    SeqViz(
+        id="my-seqviz",
+        name="pUC19",
+        seq="TTGACGGCTAGCTCAGTCCTAGGTACAGTGCTAGC",
+        viewer="both",
+        annotations=[
+            {"start": 0, "end": 22, "name": "Promoter", "direction": 1, "color": "#2a9d8f"},
+        ],
+        enzymes=["PstI", "EcoRI", "XbaI", "SpeI"],
+        style={"height": "500px", "width": "100%"},
+    )
+])
+
+if __name__ == "__main__":
+    app.run(debug=True)</code></pre>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <p>
+        Built by <a href="https://github.com/Full-Spectrum-Analytics" target="_blank" rel="noopener">Full Spectrum Analytics</a>
+        &middot; Powered by <a href="https://github.com/Lattice-Automation/seqviz" target="_blank" rel="noopener">seqviz</a>
+        &middot; <a href="https://github.com/Full-Spectrum-Analytics/dash-seqviz" target="_blank" rel="noopener">Source on GitHub</a>
+    </p>
+</footer>
+
+<!-- seqviz 3.10.20 UMD bundle (includes React internally; Viewer API self-mounts) -->
+<script crossorigin src="https://unpkg.com/seqviz@3.10.20/dist/seqviz.min.js"></script>
+
+<!-- NEB enzyme list (separate file for maintainability) -->
+<script src="./enzymes.js"></script>
+
+<!-- Shared site nav + adapter -->
+<script src="./assets/nav.js"></script>
+<script src="./assets/seqviz-adapter.js"></script>
+
+<!-- Explorer demo logic -->
+<script src="./demo.js"></script>
+
+<script>
+    if (window.SeqVizSite && window.SeqVizSite.wireCopy) {
+        window.SeqVizSite.wireCopy(document);
+    }
+</script>
+
+</body>
+</html>
