@@ -186,6 +186,28 @@ PATHWAYS: List[Pathway] = [
 ]
 
 
+# ---------------------------------------------------------------------------
+# Standalone "compound" thumbnails used by the examples gallery
+# (docs/examples.html → thumbSlugFor). These examples carry a single
+# `compound: {...}` instead of a multi-step `pathway: {...}`, so they
+# aren't in any of the pathways above — but the gallery cards still
+# want a structure thumbnail. SMILES must stay in sync with
+# docs/data/examples.js.
+# ---------------------------------------------------------------------------
+
+STANDALONE_COMPOUNDS: List[Node] = [
+    # GFP chromophore (p-HBDI) — gfp-reporter example.
+    Node("GFP chromophore (p-HBDI)", "OC1=CC=C(/C=C2\\N=C(C)C(=O)N2)C=C1"),
+    # IPTG — lac-operon example.
+    Node("IPTG", "CC(C)SC1OC(CO)C(O)C(O)C1O"),
+    # Kanamycin A — pBI121 example.
+    Node(
+        "Kanamycin A",
+        "NC1CC(N)C(OC2OC(CO)C(O)C(N)C2O)C(O)C1OC3OC(CO)C(O)C(O)C3O",
+    ),
+]
+
+
 def slugify(name: str) -> str:
     """Match the JS slugify in docs/example.html so filenames line up."""
     s = name.lower()
@@ -254,6 +276,19 @@ def main() -> None:
             rel = os.path.relpath(path, repo_root)
             print(f"  wrote   {rel}")
             total += 1
+
+    # Standalone single-compound thumbnails (no pathway to align to).
+    print(f"\n[standalone]  {len(STANDALONE_COMPOUNDS)} compounds  (CoordGen only)")
+    for node in STANDALONE_COMPOUNDS:
+        try:
+            path = render(node, None, out_dir)
+        except Exception as exc:
+            failures.append(f"standalone/{node.name}: {exc}")
+            print(f"  FAILED  {node.name!r}: {exc}")
+            continue
+        rel = os.path.relpath(path, repo_root)
+        print(f"  wrote   {rel}")
+        total += 1
 
     print(f"\nDone — {total} SVGs written to {os.path.relpath(out_dir, repo_root)}")
     if failures:
