@@ -167,6 +167,93 @@
             return null;
         }
 
+        // Glossary entries keyed by the `data-term` attribute on
+        // <span class="info-term"> spans embedded in narrative HTML.
+        // Hovering a term pops up a floating card with the molecule,
+        // a short description, and a Wikipedia link for the curious.
+        var INFO_TERMS = {
+            "amylose": {
+                name: "Amylose",
+                svg: "./assets/molecules/amylose.svg",
+                description:
+                    "A linear, helical glucose polymer \u2014 glucose units linked in a " +
+                    "single long chain by \u03b1-1,4-glycosidic bonds. It's the straight-chain " +
+                    "component of native starch (~20\u201330% of most cereal starches) and is " +
+                    "what Wx1/GBSSI synthesizes.",
+                wiki: "https://en.wikipedia.org/wiki/Amylose"
+            },
+            "amylopectin": {
+                name: "Amylopectin",
+                svg: "./assets/molecules/amylopectin.svg",
+                description:
+                    "A highly branched glucose polymer \u2014 \u03b1-1,4 backbone with " +
+                    "\u03b1-1,6 branch points every 24\u201330 residues. Dominant component " +
+                    "of waxy starches. \"Waxy\" plants are ones where Wx1 is disabled, leaving " +
+                    "only amylopectin.",
+                wiki: "https://en.wikipedia.org/wiki/Amylopectin"
+            }
+        };
+
+        // One shared tooltip node — cheaper than creating/destroying per term.
+        var infoTooltipEl = null;
+        function getInfoTooltip() {
+            if (infoTooltipEl) return infoTooltipEl;
+            infoTooltipEl = document.createElement("div");
+            infoTooltipEl.className = "info-tooltip";
+            infoTooltipEl.style.display = "none";
+            // Keep tooltip visible while the cursor is ON the tooltip itself
+            // (so users can click the Wikipedia link).
+            infoTooltipEl.addEventListener("mouseenter", function () {
+                infoTooltipEl.dataset.pinned = "1";
+            });
+            infoTooltipEl.addEventListener("mouseleave", function () {
+                infoTooltipEl.dataset.pinned = "";
+                infoTooltipEl.style.display = "none";
+            });
+            document.body.appendChild(infoTooltipEl);
+            return infoTooltipEl;
+        }
+        function showInfoTooltip(entry, anchorEl) {
+            var tip = getInfoTooltip();
+            tip.innerHTML =
+                '<img src="' + entry.svg + '" alt="' + entry.name + ' structure">' +
+                '<div class="info-tooltip-title">' + entry.name + '</div>' +
+                '<div class="info-tooltip-desc">' + entry.description + '</div>' +
+                '<a class="info-tooltip-link" href="' + entry.wiki +
+                '" target="_blank" rel="noopener">Read on Wikipedia \u2192</a>';
+            // Position below + slightly left of the anchor. If it would clip
+            // the right edge of the viewport, pull it back.
+            var rect = anchorEl.getBoundingClientRect();
+            var top = rect.bottom + window.scrollY + 6;
+            var left = rect.left + window.scrollX;
+            tip.style.display = "block";
+            var tipWidth = tip.offsetWidth;
+            var vpRight = window.scrollX + window.innerWidth - 12;
+            if (left + tipWidth > vpRight) left = vpRight - tipWidth;
+            if (left < 8) left = 8;
+            tip.style.top = top + "px";
+            tip.style.left = left + "px";
+        }
+        function hideInfoTooltip() {
+            var tip = getInfoTooltip();
+            // Give the cursor a moment to land on the tooltip itself.
+            setTimeout(function () {
+                if (tip.dataset.pinned !== "1") tip.style.display = "none";
+            }, 120);
+        }
+        function wireInfoTerms(root) {
+            (root || document).querySelectorAll(".info-term").forEach(function (el) {
+                var key = (el.getAttribute("data-term") || "").toLowerCase();
+                var entry = INFO_TERMS[key];
+                if (!entry) return;
+                el.addEventListener("mouseenter", function () { showInfoTooltip(entry, el); });
+                el.addEventListener("mouseleave", hideInfoTooltip);
+                el.addEventListener("focus",      function () { showInfoTooltip(entry, el); });
+                el.addEventListener("blur",       hideInfoTooltip);
+                el.setAttribute("tabindex", "0");
+            });
+        }
+
         if (!ex) {
             titleEl.textContent = "Example not found";
             summaryEl.textContent =
@@ -210,6 +297,7 @@
         metaEl.appendChild(accBadge);
 
         narrativeEl.innerHTML = ex.narrative || "";
+        wireInfoTerms(narrativeEl);
         snippetEl.textContent = ex.pythonSnippet || "";
         ncbiLinkEl.href = "https://www.ncbi.nlm.nih.gov/nuccore/" + encodeURIComponent(ex.accession);
         ncbiLinkEl.textContent = "NCBI " + ex.accession;
@@ -359,17 +447,47 @@
                 });
         }
 
-        // Next examples — prefer same category, then others, skip self
-        var next = all.filter(function (e) { return e.id !== ex.id; });
-        next.sort(function (a, b) {
-            var sameA = a.category === ex.category ? 0 : 1;
-            var sameB = b.category === ex.category ? 0 : 1;
-            if (sameA !== sameB) return sameA - sameB;
+        // Next examples — pick a mix of same-category and cross-category
+        // suggestions, prioritized by similarity to the current example's
+        // complexity. Each card also picks up a `cat-academic` /
+        // `cat-industrial` class so the CSS can color-code the hover state.
+        var exComplexity = ex.complexity || 0;
+        function byComplexityProximity(a, b) {
+            var aDiff = Math.abs((a.complexity || 0) - exComplexity);
+            var bDiff = Math.abs((b.complexity || 0) - exComplexity);
+            if (aDiff !== bDiff) return aDiff - bDiff;
             return (a.complexity || 0) - (b.complexity || 0);
-        });
-        next.slice(0, 4).forEach(function (e) {
+        }
+        var poolSame = all.filter(function (e) {
+            return e.id !== ex.id && e.category === ex.category;
+        }).sort(byComplexityProximity);
+        var poolOther = all.filter(function (e) {
+            return e.id !== ex.id && e.category !== ex.category;
+        }).sort(byComplexityProximity);
+
+        // Interleave same / other so the user always sees at least one of
+        // each category represented (assuming both pools are non-empty).
+        var nextPicks = [];
+        var iSame = 0, iOther = 0;
+        while (nextPicks.length < 4 && (iSame < poolSame.length || iOther < poolOther.length)) {
+            // On even indices (0, 2) prefer same-category; odd indices (1, 3)
+            // prefer cross-category — fall through if one pool is empty.
+            var preferSame = (nextPicks.length % 2 === 0);
+            if (preferSame && iSame < poolSame.length) {
+                nextPicks.push(poolSame[iSame++]);
+            } else if (!preferSame && iOther < poolOther.length) {
+                nextPicks.push(poolOther[iOther++]);
+            } else if (iSame < poolSame.length) {
+                nextPicks.push(poolSame[iSame++]);
+            } else if (iOther < poolOther.length) {
+                nextPicks.push(poolOther[iOther++]);
+            }
+        }
+
+        nextPicks.forEach(function (e) {
             var a = document.createElement("a");
             a.href = "./example.html?id=" + encodeURIComponent(e.id);
+            a.classList.add(e.category === "academic" ? "cat-academic" : "cat-industrial");
 
             // Mirror the gallery-card thumbnail pattern: positioned to the
             // right of the text. Uses the same SVG catalog under

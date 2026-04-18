@@ -971,10 +971,11 @@
                 "<h3>The first CRISPR crop Corteva put in the ground</h3>" +
                 "<p>The <em>Waxy</em> (<code>Wx1</code>) locus in maize encodes <em>granule-bound " +
                 "starch synthase I</em> (GBSSI), the enzyme that stitches glucose units into " +
-                "straight-chain <strong>amylose</strong>. Disable Wx1 and the kernel makes only " +
-                "<strong>amylopectin</strong> \u2014 the branched starch prized by confectioners, " +
-                "noodle makers, and the adhesives industry for its clarity, stability, and " +
-                "freeze-thaw tolerance.</p>" +
+                "straight-chain <span class=\"info-term\" data-term=\"amylose\">amylose</span>. " +
+                "Disable Wx1 and the kernel makes only " +
+                "<span class=\"info-term\" data-term=\"amylopectin\">amylopectin</span> " +
+                "\u2014 the branched starch prized by confectioners, noodle makers, and the " +
+                "adhesives industry for its clarity, stability, and freeze-thaw tolerance.</p>" +
                 "<p>The spontaneous waxy mutation has been selected for in Asian maize and " +
                 "glutinous rice for centuries. In 2016 Corteva (then DuPont Pioneer) announced " +
                 "a CRISPR-edited waxy hybrid, and in 2021 it became <strong>the first CRISPR " +

@@ -433,6 +433,58 @@ footer a:hover { text-decoration: underline; }
 .narrative a { color: var(--color-primary); text-decoration: underline; }
 .narrative a:hover { text-decoration: none; }
 
+/* ---- Inline info terms (hover for molecule info card) ---- */
+/* Any <span class="info-term" data-term="..."> in a narrative gets
+   a dotted underline hinting "hover for more"; the attached
+   example.html script pops up a floating card with a 2D structure
+   SVG, name, blurb, and a Wikipedia link. */
+.info-term {
+    border-bottom: 1px dotted var(--color-primary);
+    cursor: help;
+    color: var(--color-primary);
+    font-weight: 600;
+}
+.info-tooltip {
+    position: absolute;
+    z-index: 1000;
+    width: 280px;
+    padding: 14px 16px;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--color-text);
+    pointer-events: auto;
+}
+.info-tooltip img {
+    display: block;
+    width: 100%;
+    max-width: 240px;
+    height: 140px;
+    object-fit: contain;
+    margin: 0 auto 8px;
+}
+.info-tooltip .info-tooltip-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--color-text);
+}
+.info-tooltip .info-tooltip-desc {
+    color: var(--color-text);
+    margin-bottom: 10px;
+}
+.info-tooltip .info-tooltip-link {
+    display: inline-block;
+    font-size: 0.78rem;
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+.info-tooltip .info-tooltip-link:hover { text-decoration: underline; }
+
 .example-controls {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -505,7 +557,19 @@ footer a:hover { text-decoration: underline; }
     padding-right: 92px;
     min-height: 80px;
 }
-.next-examples a:hover { border-color: var(--color-primary); background: #eff6ff; }
+/* Color-coded hover: academia = primary blue, industry = amber.
+   The SVG thumbnails are rendered with transparent backgrounds
+   (RDKit clearBackground=False) so the card hover color bleeds
+   through cleanly without a white rectangle around the molecule. */
+.next-examples a:hover { border-color: var(--color-primary); }
+.next-examples a.cat-academic:hover {
+    border-color: #1d4ed8;
+    background: #eff6ff;
+}
+.next-examples a.cat-industrial:hover {
+    border-color: #92400e;
+    background: #fef3c7;
+}
 .next-examples .next-eyebrow {
     font-size: 0.7rem;
     color: var(--color-text-muted);

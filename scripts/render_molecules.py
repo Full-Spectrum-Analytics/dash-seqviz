@@ -249,6 +249,23 @@ STANDALONE_COMPOUNDS: List[Node] = [
     # Glyphosate — cp4-epsps example. The phosphonate herbicide whose
     # target (EPSPS) the CP4 variant resists.
     Node("Glyphosate", "OC(=O)CNCP(=O)(O)O"),
+    # Amylose — info-term tooltip on the waxy-corn-crispr narrative.
+    # Simplified α-1,4-linked glucose trimer representing the linear
+    # helical glucan laid down by GBSSI (Wx1).
+    Node(
+        "Amylose",
+        "OC[C@H]1O[C@@H](O[C@H]2[C@H](O)[C@@H](O)[C@H](O[C@@H]3O[C@H](CO)"
+        "[C@@H](O)[C@H](O)[C@@H]3O)[C@@H](CO)O2)[C@H](O)[C@@H](O)[C@@H]1O",
+    ),
+    # Amylopectin — info-term tooltip. α-1,4 backbone with an α-1,6
+    # branch point (shown with a single glucose branch at the C6 of
+    # the middle residue).
+    Node(
+        "Amylopectin",
+        "OC[C@H]1O[C@@H](O[C@H]2[C@H](O)[C@@H](O)[C@H](O)[C@@H]"
+        "(CO[C@H]3O[C@H](CO)[C@@H](O)[C@H](O)[C@@H]3O)O2)"
+        "[C@H](O)[C@@H](O)[C@@H]1O",
+    ),
 ]
 
 
@@ -285,6 +302,9 @@ def render(node: Node, template: Optional[Chem.Mol], out_dir: str) -> str:
     opts.bondLineWidth = 1.4
     opts.padding = 0.08
     opts.baseFontSize = 0.7
+    # Transparent background so the card hover color bleeds through
+    # instead of a white frame sitting on top of the card surface.
+    opts.clearBackground = False
     drawer.DrawMolecule(mol)
     drawer.FinishDrawing()
     svg = drawer.GetDrawingText()
