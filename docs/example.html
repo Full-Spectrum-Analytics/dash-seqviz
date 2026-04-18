@@ -172,6 +172,7 @@
         // Hovering a term pops up a floating card with the molecule,
         // a short description, and a Wikipedia link for the curious.
         var INFO_TERMS = {
+            // ---- starch / waxy corn ---------------------------------------
             "amylose": {
                 name: "Amylose",
                 svg: "./assets/molecules/amylose.svg",
@@ -191,6 +192,198 @@
                     "of waxy starches. \"Waxy\" plants are ones where Wx1 is disabled, leaving " +
                     "only amylopectin.",
                 wiki: "https://en.wikipedia.org/wiki/Amylopectin"
+            },
+
+            // ---- prenyl-PP terpene precursors -----------------------------
+            "ipp": {
+                name: "Isopentenyl pyrophosphate (IPP)",
+                svg: "./assets/molecules/ipp.svg",
+                description:
+                    "The 5-carbon \"building block\" of all terpenoids. Prenyltransferases " +
+                    "chain IPP units head-to-tail onto DMAPP to make GPP (C10), FPP (C15), " +
+                    "GGPP (C20), and so on \u2014 eventually reaching the C40 carotenoids.",
+                wiki: "https://en.wikipedia.org/wiki/Isopentenyl_pyrophosphate"
+            },
+            "dmapp": {
+                name: "Dimethylallyl pyrophosphate (DMAPP)",
+                svg: "./assets/molecules/dimethylallyl-pyrophosphate.svg",
+                description:
+                    "IPP's isomer \u2014 the allylic C5 \"starter unit\" that initiates " +
+                    "prenyl chain elongation. IDI (isopentenyl-diphosphate delta-isomerase) " +
+                    "interconverts the two.",
+                wiki: "https://en.wikipedia.org/wiki/Dimethylallyl_pyrophosphate"
+            },
+            "gpp": {
+                name: "Geranyl pyrophosphate (GPP)",
+                svg: "./assets/molecules/geranyl-pyrophosphate.svg",
+                description:
+                    "The C10 monoterpene precursor. One round of prenyl extension " +
+                    "(DMAPP + IPP) gets you here. Every monoterpene synthase \u2014 " +
+                    "including the hop MTS2 that drips linalool into dry-hopped beer " +
+                    "\u2014 starts from GPP.",
+                wiki: "https://en.wikipedia.org/wiki/Geranyl_pyrophosphate"
+            },
+            "fpp": {
+                name: "Farnesyl pyrophosphate (FPP)",
+                svg: "./assets/molecules/farnesyl-pyrophosphate.svg",
+                description:
+                    "The C15 sesquiterpene / triterpene precursor. One more IPP on top " +
+                    "of GPP. Feeds into sterol biosynthesis and \u2014 in the carotenoid " +
+                    "cluster \u2014 gets extended again to GGPP by CrtE.",
+                wiki: "https://en.wikipedia.org/wiki/Farnesyl_pyrophosphate"
+            },
+            "ggpp": {
+                name: "Geranylgeranyl pyrophosphate (GGPP)",
+                svg: "./assets/molecules/geranylgeranyl-pyrophosphate.svg",
+                description:
+                    "The C20 diterpene precursor. In the carotenoid pathway, two GGPP " +
+                    "molecules condense head-to-head (via CrtB / phytoene synthase) to " +
+                    "give the C40 phytoene backbone.",
+                wiki: "https://en.wikipedia.org/wiki/Geranylgeranyl_pyrophosphate"
+            },
+            "linalool": {
+                name: "Linalool",
+                svg: "./assets/molecules/linalool.svg",
+                description:
+                    "A monoterpene alcohol with a floral-citrus aroma. Primary flavor " +
+                    "contributor in Muscat grapes, lavender oil, and hop-forward beers. " +
+                    "MTS2 converts GPP to linalool by ionization + H\u2082O quench.",
+                wiki: "https://en.wikipedia.org/wiki/Linalool"
+            },
+
+            // ---- carotenoid cluster ---------------------------------------
+            "phytoene": {
+                name: "Phytoene",
+                svg: "./assets/molecules/phytoene.svg",
+                description:
+                    "The first committed step in carotenoid biosynthesis: a colorless C40 " +
+                    "hydrocarbon formed when CrtB condenses two GGPPs head-to-head. Gets " +
+                    "progressively desaturated to red lycopene by CrtI.",
+                wiki: "https://en.wikipedia.org/wiki/Phytoene"
+            },
+            "lycopene": {
+                name: "Lycopene",
+                svg: "./assets/molecules/lycopene.svg",
+                description:
+                    "The red carotenoid in tomatoes. Fully desaturated linear C40 polyene " +
+                    "(11 conjugated double bonds). Substrate for CrtY, which cyclizes both " +
+                    "ends into \u03b2-ionone rings to give \u03b2-carotene.",
+                wiki: "https://en.wikipedia.org/wiki/Lycopene"
+            },
+            "beta-carotene": {
+                name: "\u03b2-Carotene",
+                svg: "./assets/molecules/beta-carotene.svg",
+                description:
+                    "The orange provitamin A. Two \u03b2-ionone rings on a lycopene " +
+                    "backbone. A plate turns bright orange when CrtE+B+I+Y are all " +
+                    "functional \u2014 which is why this pathway is a favorite teaching " +
+                    "target for reporter-by-color.",
+                wiki: "https://en.wikipedia.org/wiki/Carotene"
+            },
+            "zeaxanthin": {
+                name: "Zeaxanthin",
+                svg: "./assets/molecules/zeaxanthin.svg",
+                description:
+                    "3,3\u2032-Dihydroxy-\u03b2-carotene \u2014 adds two OHs to \u03b2-carotene " +
+                    "via CrtZ. The yellow xanthophyll in corn kernels, marigolds, and the " +
+                    "human macula (where it filters blue light).",
+                wiki: "https://en.wikipedia.org/wiki/Zeaxanthin"
+            },
+
+            // ---- CP4 EPSPS / Roundup Ready --------------------------------
+            "glyphosate": {
+                name: "Glyphosate",
+                svg: "./assets/molecules/glyphosate.svg",
+                description:
+                    "The active ingredient in Roundup. A phosphonate analog of PEP that " +
+                    "binds the EPSPS active site and shuts down the shikimate pathway " +
+                    "\u2014 lethal to plants, harmless to mammals (we don't have this " +
+                    "pathway).",
+                wiki: "https://en.wikipedia.org/wiki/Glyphosate"
+            },
+            "pep": {
+                name: "Phosphoenolpyruvate (PEP)",
+                svg: "./assets/molecules/pep.svg",
+                description:
+                    "The enolpyruvyl donor in EPSPS catalysis. EPSPS transfers PEP's " +
+                    "enolpyruvyl group onto shikimate-3-phosphate. Glyphosate's structural " +
+                    "mimicry of PEP is what makes it such an effective EPSPS inhibitor.",
+                wiki: "https://en.wikipedia.org/wiki/Phosphoenolpyruvic_acid"
+            },
+            "shikimate": {
+                name: "Shikimate",
+                svg: "./assets/molecules/shikimate.svg",
+                description:
+                    "The C7 cyclohexene carboxylate that gives its name to the shikimate " +
+                    "pathway. The route plants and microbes use to build aromatic amino " +
+                    "acids (Phe, Tyr, Trp). Absent in mammals \u2014 which is why glyphosate " +
+                    "is selective.",
+                wiki: "https://en.wikipedia.org/wiki/Shikimic_acid"
+            },
+
+            // ---- lovastatin ----------------------------------------------
+            "lovastatin": {
+                name: "Lovastatin",
+                svg: "./assets/molecules/lovastatin.svg",
+                description:
+                    "The first statin. A fungal polyketide from Aspergillus terreus that " +
+                    "inhibits HMG-CoA reductase, the rate-limiting enzyme in cholesterol " +
+                    "biosynthesis. FDA-approved as Mevacor in 1987 and the template for " +
+                    "every statin since.",
+                wiki: "https://en.wikipedia.org/wiki/Lovastatin"
+            },
+            "monacolin j": {
+                name: "Monacolin J",
+                svg: "./assets/molecules/monacolin-j.svg",
+                description:
+                    "The penultimate intermediate in lovastatin biosynthesis. LovD then " +
+                    "catalyzes the transesterification of a 2-methylbutyryl group onto " +
+                    "monacolin J's C8 hydroxyl to produce lovastatin.",
+                wiki: "https://en.wikipedia.org/wiki/Monacolin_J"
+            },
+
+            // ---- violacein ------------------------------------------------
+            "l-tryptophan": {
+                name: "L-Tryptophan",
+                svg: "./assets/molecules/l-tryptophan.svg",
+                description:
+                    "The aromatic amino acid precursor for the violacein pathway. VioA " +
+                    "oxidatively deaminates L-Trp to indole-3-pyruvic acid imine; two of " +
+                    "those molecules then condense (via VioB/VioE) to seed the bisindole " +
+                    "scaffold.",
+                wiki: "https://en.wikipedia.org/wiki/Tryptophan"
+            },
+            "violacein": {
+                name: "Violacein",
+                svg: "./assets/molecules/violacein.svg",
+                description:
+                    "A deep-purple bisindole pigment from Chromobacterium violaceum. Five " +
+                    "enzymes (VioA\u2013E) turn two L-tryptophans into this compound, which " +
+                    "also shows anti-tumor and antibacterial activity \u2014 a favorite " +
+                    "graduate-level teaching target for pathway refactoring.",
+                wiki: "https://en.wikipedia.org/wiki/Violacein"
+            },
+
+            // ---- others ---------------------------------------------------
+            "iptg": {
+                name: "IPTG",
+                svg: "./assets/molecules/iptg.svg",
+                description:
+                    "Isopropyl \u03b2-D-1-thiogalactopyranoside \u2014 a non-metabolizable " +
+                    "lactose analog that induces the lac operon by binding LacI and " +
+                    "releasing it from the operator. The most common molecular biology " +
+                    "inducer in teaching and research.",
+                wiki: "https://en.wikipedia.org/wiki/Isopropyl_%CE%B2-D-1-thiogalactopyranoside"
+            },
+            "kanamycin": {
+                name: "Kanamycin A",
+                svg: "./assets/molecules/kanamycin-a.svg",
+                description:
+                    "An aminoglycoside antibiotic. pBI121 carries NPTII (neomycin " +
+                    "phosphotransferase II) conferring kanamycin resistance \u2014 the " +
+                    "selectable marker that lets you pick transformed plant cells on " +
+                    "kanamycin plates.",
+                wiki: "https://en.wikipedia.org/wiki/Kanamycin_A"
             }
         };
 
@@ -410,11 +603,29 @@
                         var co_plus = document.createElement("span");
                         co_plus.className = "pathway-cosubstrate-plus";
                         co_plus.textContent = "+";
+                        co_el.appendChild(co_plus);
+
+                        // If we have a rendered SVG matching the cosubstrate
+                        // name, surface the 2D structure inline — "+ [IPP
+                        // molecule]" is much more informative than "+ IPP".
+                        // When the SVG is missing the <img> removes itself
+                        // via onerror so we fall back to the text name.
+                        var co_img = document.createElement("img");
+                        co_img.className = "pathway-cosubstrate-svg";
+                        co_img.alt = co.name + " structure";
+                        co_img.loading = "lazy";
+                        co_img.src = "./assets/molecules/" + slugify(co.name) + ".svg";
+                        co_img.onerror = function () {
+                            co_el.classList.add("pathway-cosubstrate-no-svg");
+                            co_img.remove();
+                        };
+                        co_el.appendChild(co_img);
+
                         var co_name = document.createElement("span");
                         co_name.className = "pathway-cosubstrate-name";
                         co_name.textContent = co.name;
-                        co_el.appendChild(co_plus);
                         co_el.appendChild(co_name);
+
                         coWrap.appendChild(co_el);
                     });
                     arrow.appendChild(coWrap);

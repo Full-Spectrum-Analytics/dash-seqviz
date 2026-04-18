@@ -266,6 +266,18 @@ STANDALONE_COMPOUNDS: List[Node] = [
         "(CO[C@H]3O[C@H](CO)[C@@H](O)[C@H](O)[C@@H]3O)O2)"
         "[C@H](O)[C@@H](O)[C@@H]1O",
     ),
+    # IPP (isopentenyl pyrophosphate) — cosubstrate in linalool and
+    # carotenoid pathways. Slug "ipp" matches cosubstrate name in
+    # docs/data/examples.js so the pathway card picks up the thumbnail.
+    Node("IPP", "C=C(C)CCOP(=O)(O)OP(=O)(O)O"),
+    # PEP (phosphoenolpyruvate) — cp4-epsps info-term. The native
+    # EPSPS substrate that glyphosate mimics.
+    Node("PEP", "C(=C)(C(=O)O)OP(=O)(O)O"),
+    # Shikimate — cp4-epsps info-term for the pathway name.
+    Node(
+        "Shikimate",
+        "O[C@H]1CC(=C[C@H](O)[C@H]1O)C(=O)O",
+    ),
 ]
 
 

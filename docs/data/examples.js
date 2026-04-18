@@ -241,10 +241,14 @@
             },
             narrative:
                 "<h3>Five genes, one violet pigment</h3>" +
-                "<p>Violacein is a deep-purple indole pigment and a favorite teaching target " +
-                "for pathway engineering: the whole biosynthetic cluster (<code>vioA</code>, " +
+                "<p><span class=\"info-term\" data-term=\"violacein\">Violacein</span> is a " +
+                "deep-purple indole pigment and a favorite teaching target for pathway " +
+                "engineering: the whole biosynthetic cluster (<code>vioA</code>, " +
                 "<code>vioB</code>, <code>vioC</code>, <code>vioD</code>, <code>vioE</code>) " +
-                "fits in one ~10 kb GenBank record from <em>Chromobacterium violaceum</em>.</p>" +
+                "fits in one ~10 kb GenBank record from <em>Chromobacterium violaceum</em>, " +
+                "converting two " +
+                "<span class=\"info-term\" data-term=\"l-tryptophan\">L-tryptophan</span> " +
+                "molecules into violacein.</p>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
                 "<li>Zoom out to see all five CDSs stacked left to right.</li>" +
@@ -355,17 +359,22 @@
             },
             narrative:
                 "<h3>Color in a dish</h3>" +
-                "<p>The <em>Erwinia uredovora</em> carotenoid cluster converts farnesyl " +
-                "pyrophosphate into beta-carotene, zeaxanthin, or lycopene depending on which " +
-                "genes are present. It is a favorite teaching case for <strong>pathway " +
-                "engineering</strong> because the color of a plate reveals how far the pathway " +
-                "went.</p>" +
+                "<p>The <em>Erwinia uredovora</em> carotenoid cluster converts " +
+                "<span class=\"info-term\" data-term=\"fpp\">farnesyl pyrophosphate</span> " +
+                "into " +
+                "<span class=\"info-term\" data-term=\"beta-carotene\">\u03b2-carotene</span>, " +
+                "<span class=\"info-term\" data-term=\"zeaxanthin\">zeaxanthin</span>, or " +
+                "<span class=\"info-term\" data-term=\"lycopene\">lycopene</span> " +
+                "depending on which genes are present. It is a favorite teaching case for " +
+                "<strong>pathway engineering</strong> because the color of a plate reveals " +
+                "how far the pathway went.</p>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
                 "<li>Identify <code>crtE</code>, <code>crtB</code>, <code>crtI</code>, " +
                 "<code>crtY</code>, <code>crtZ</code> in the linear map.</li>" +
-                "<li>Ask the class: which deletion would leave cells producing lycopene instead " +
-                "of beta-carotene?</li>" +
+                "<li>Ask the class: which deletion would leave cells producing " +
+                "<span class=\"info-term\" data-term=\"lycopene\">lycopene</span> instead of " +
+                "<span class=\"info-term\" data-term=\"beta-carotene\">\u03b2-carotene</span>?</li>" +
                 "</ul>" +
                 "<h3>References</h3>" +
                 "<ul>" +
@@ -545,10 +554,13 @@
             },
             narrative:
                 "<h3>A smell you can ship</h3>" +
-                "<p>Monoterpene synthases are the enzymes that turn geranyl pyrophosphate " +
+                "<p>Monoterpene synthases are the enzymes that turn " +
+                "<span class=\"info-term\" data-term=\"gpp\">geranyl pyrophosphate</span> " +
                 "into the aromas you recognize as lemon, rose, lavender, or hops. " +
                 "EU760349.1 is <em>MTS2</em> from <em>Humulus lupulus</em> (hops, cultivar " +
-                "Phoenix) &mdash; a linalool synthase responsible for the floral-citrus top " +
+                "Phoenix) &mdash; a " +
+                "<span class=\"info-term\" data-term=\"linalool\">linalool</span> " +
+                "synthase responsible for the floral-citrus top " +
                 "note of dry-hopped beers. The gene is drop-in material for yeast strains " +
                 "engineered to lend a fruity note to a beer or a low-tannin wine.</p>" +
                 "<h3>Why this matters</h3>" +
@@ -870,6 +882,7 @@
                 "<p><strong>pBI121</strong> is the binary vector nearly every Agrobacterium-" +
                 "mediated plant transformation paper cites. It carries the " +
                 "<code>uidA</code> (GUS) reporter under a 35S promoter with an NPTII " +
+                "(<span class=\"info-term\" data-term=\"kanamycin\">kanamycin</span>) " +
                 "selection marker, flanked by T-DNA left and right borders.</p>" +
                 "<h3>What to look at</h3>" +
                 "<ul>" +
@@ -1061,14 +1074,17 @@
             },
             narrative:
                 "<h3>A bacterium's enzyme that saved a herbicide</h3>" +
-                "<p>Glyphosate kills plants by shutting down the <strong>shikimate pathway</strong> " +
+                "<p><span class=\"info-term\" data-term=\"glyphosate\">Glyphosate</span> " +
+                "kills plants by shutting down the <strong>" +
+                "<span class=\"info-term\" data-term=\"shikimate\">shikimate</span> pathway</strong> " +
                 "\u2014 specifically by blocking <em>5-enolpyruvylshikimate-3-phosphate synthase</em> " +
                 "(EPSPS), which plants and microbes need to make phenylalanine, tyrosine, and " +
                 "tryptophan. Mammals lack this pathway, which is why glyphosate has its famously " +
                 "wide mammalian safety window.</p>" +
                 "<p>In the early 1990s, a Monsanto-led team isolated a naturally glyphosate-insensitive " +
                 "EPSPS from <em>Agrobacterium</em> strain <strong>CP4</strong>. A single active-site " +
-                "substitution (Gly101 \u2192 Ala in the prokaryotic numbering) keeps PEP binding tight " +
+                "substitution (Gly101 \u2192 Ala in the prokaryotic numbering) keeps " +
+                "<span class=\"info-term\" data-term=\"pep\">PEP</span> binding tight " +
                 "while sterically excluding glyphosate. Dropping this gene into soybean, cotton, " +
                 "canola, and corn created the <strong>Roundup Ready</strong> trait franchise \u2014 " +
                 "still the most-deployed GM trait today and core IP that flows through the " +
@@ -1177,7 +1193,8 @@
             },
             narrative:
                 "<h3>A fungal polyketide that moved a global cholesterol market</h3>" +
-                "<p>Lovastatin was the first statin approved (Merck's Mevacor, 1987) and the " +
+                "<p><span class=\"info-term\" data-term=\"lovastatin\">Lovastatin</span> " +
+                "was the first statin approved (Merck's Mevacor, 1987) and the " +
                 "proof-of-concept for a drug class that now underpins cardiovascular medicine. " +
                 "It's also the <strong>textbook example</strong> for how fungal iterative " +
                 "polyketide synthases (PKSs) work: a single LovB megasynthase threads nine " +

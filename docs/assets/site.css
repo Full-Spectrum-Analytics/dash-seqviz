@@ -791,3 +791,18 @@ footer a:hover { text-decoration: underline; }
 .pathway-cosubstrate-name {
     font-family: "SFMono-Regular", Consolas, monospace;
 }
+/* Cosubstrate 2D-structure thumbnail, shown inline under the full
+   reaction scheme when an SVG matching slugify(cosubstrate.name) is
+   present. Absent SVG → onerror strips the <img> and we fall back to
+   the text name alone. */
+.pathway-cosubstrate-svg {
+    width: 70px;
+    height: 44px;
+    object-fit: contain;
+    margin: 0 2px;
+}
+/* When the SVG is missing we slightly rearrange so the "+ NAME" pair
+   reads cleanly without a gap where the image would have been. */
+.pathway-cosubstrate-no-svg .pathway-cosubstrate-name {
+    margin-left: 2px;
+}
