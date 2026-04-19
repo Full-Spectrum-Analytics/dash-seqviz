@@ -607,6 +607,44 @@ footer a:hover { text-decoration: underline; }
     font-size: 0.88rem; font-weight: 400; color: var(--color-text);
     text-transform: none; letter-spacing: 0;
 }
+/* Search input + clear button sit on one row. Clear-button hugs the
+   input's right edge and stays invisible until the field has text,
+   keeping the resting control minimal. */
+.example-controls .ctrl-search-row {
+    display: flex; align-items: stretch; gap: 0;
+}
+.example-controls .ctrl-search-row input[type="text"] {
+    flex: 1 1 auto;
+    font-family: "SF Mono", "Menlo", "Consolas", monospace;
+    font-size: 0.86rem;
+    padding: 6px 9px;
+    border: 1px solid var(--color-border);
+    border-right: none;
+    border-radius: var(--radius) 0 0 var(--radius);
+    background: var(--color-bg);
+    color: var(--color-text);
+    min-width: 0;
+}
+.example-controls .ctrl-search-row input[type="text"]:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary) inset;
+}
+.example-controls .ctrl-search-clear {
+    border: 1px solid var(--color-border);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 0 10px;
+    cursor: pointer;
+    transition: color 120ms, background 120ms;
+}
+.example-controls .ctrl-search-clear:hover {
+    color: var(--color-text);
+    background: #f1f5f9;
+}
 
 
 .enzyme-toggle-row {

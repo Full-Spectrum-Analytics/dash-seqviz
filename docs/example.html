@@ -6,7 +6,7 @@
     <title>Example &mdash; dash-seqviz</title>
     <meta name="description" content="Interactive example — one curated construct visualized with dash-seqviz, with a ready-to-paste Python snippet.">
 
-    <link rel="stylesheet" href="./assets/site.css?v=8">
+    <link rel="stylesheet" href="./assets/site.css?v=9">
 </head>
 <body data-page="examples">
 
@@ -60,6 +60,15 @@
                         <label class="ctrl-inline">
                             <input id="ctrl-translations" type="checkbox"> Show translations
                         </label>
+                    </div>
+                    <div class="ctrl ctrl-search">
+                        <label for="ctrl-search">Search</label>
+                        <div class="ctrl-search-row">
+                            <input id="ctrl-search" type="text" autocomplete="off"
+                                   placeholder="e.g. ATGAGT or ACPACPACP" />
+                            <button id="ctrl-search-clear" type="button"
+                                    class="ctrl-search-clear" aria-label="Clear search">&times;</button>
+                        </div>
                     </div>
                 </div>
                 <div id="example-viewer-wrap" class="example-viewer-wrap">
@@ -136,7 +145,7 @@
 <script crossorigin src="https://unpkg.com/smiles-drawer@2.2.1/dist/smiles-drawer.min.js"></script>
 <script src="./assets/nav.js"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
-<script src="./data/examples.js?v=9"></script>
+<script src="./data/examples.js?v=10"></script>
 
 <script>
     (function () {
@@ -883,6 +892,8 @@
         var zoomVal = document.getElementById("zoom-val");
         var complChk = document.getElementById("ctrl-complement");
         var translChk = document.getElementById("ctrl-translations");
+        var searchInput = document.getElementById("ctrl-search");
+        var searchClearBtn = document.getElementById("ctrl-search-clear");
 
         // Lock the dropdown / slider / complement / layout to the
         // already-known defaults NOW. These values won't change when
@@ -896,6 +907,10 @@
         // Translations checkbox stays disabled until we know whether any
         // fetched record actually has translations to show.
         translChk.disabled = true;
+        // Seed the search input with whatever the example pre-seeded
+        // (ex.seqvizProps.search.query). Users can clear or override.
+        var initialSearchQuery = (sp.search && sp.search.query) || "";
+        searchInput.value = initialSearchQuery;
 
         gridEl.classList.toggle("viewer-grid--stacked", initialViewer === "linear");
         cells.forEach(function (cell) { cell.viewerRoot.style.height = initialHeight; });
@@ -939,7 +954,10 @@
                 showTranslations: cells.some(function (c) {
                     return c.rec && Array.isArray(c.rec.translations) && c.rec.translations.length > 0;
                 }),
-                enzymes: Array.isArray(sp.enzymes) ? sp.enzymes.slice() : []
+                enzymes: Array.isArray(sp.enzymes) ? sp.enzymes.slice() : [],
+                // Live search query — user-editable via ctrl-search. Starts
+                // with whatever the example pre-seeded (if anything).
+                searchQuery: searchInput.value
             };
 
             translChk.checked = state.showTranslations;
@@ -971,6 +989,16 @@
                 cells.forEach(function (cell) {
                     if (!cell.rec) return;
                     cell.viewerRoot.style.height = height;
+                    // Compose the search prop from the live input. A blank
+                    // query evaluates to undefined so seqviz doesn't show a
+                    // "no matches" highlight when the user has cleared it.
+                    var searchProp;
+                    if (state.searchQuery && state.searchQuery.trim()) {
+                        searchProp = {
+                            query: state.searchQuery.trim(),
+                            mismatch: (sp.search && sp.search.mismatch) || 0
+                        };
+                    }
                     window.SeqVizSite.renderViewer(cell.viewerRoot.id, {
                         name: cell.rec.name,
                         seq: cell.rec.seq,
@@ -980,7 +1008,7 @@
                         zoom: { linear: state.zoomLinear },
                         showComplement: state.showComplement,
                         enzymes: state.enzymes.slice(),
-                        search: sp.search,
+                        search: searchProp,
                         style: { height: height, width: "100%" }
                     });
                 });
@@ -994,6 +1022,25 @@
             });
             complChk.addEventListener("change", function () { state.showComplement = complChk.checked; renderAll(); });
             translChk.addEventListener("change", function () { state.showTranslations = translChk.checked; renderAll(); });
+
+            // Search input: debounced so every keystroke doesn't trigger a
+            // full seqviz re-render. 180 ms is short enough that typing
+            // feels live but long enough that each keystroke on a 100 kb
+            // cluster doesn't thrash the viewer.
+            var searchTimer = null;
+            searchInput.addEventListener("input", function () {
+                if (searchTimer) clearTimeout(searchTimer);
+                searchTimer = setTimeout(function () {
+                    state.searchQuery = searchInput.value;
+                    renderAll();
+                }, 180);
+            });
+            searchClearBtn.addEventListener("click", function () {
+                searchInput.value = "";
+                state.searchQuery = "";
+                renderAll();
+                searchInput.focus();
+            });
 
             // Enzyme buttons embedded in the narrative:
             // <button class="enzyme-toggle" data-enzyme="EcoRI">EcoRI</button>.

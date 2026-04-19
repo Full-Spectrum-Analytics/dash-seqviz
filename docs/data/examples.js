@@ -2228,7 +2228,7 @@
                 "same ribosomal-peptide origin story.</li>" +
                 "<li><strong>Flip to circular.</strong> The whole cluster is only 13 kb, so " +
                 "even the circular view is a compact summary of the biosynthesis.</li>" +
-                "<li><strong>Hover the compound name</strong> to see the thiazoline + " +
+                "<li><strong>Look at the compound card below</strong> to see the thiazoline + " +
                 "oxazoline heterocycles that decorate the macrocycle. Every other residue " +
                 "carries one \u2014 characteristic cyanobactin geometry.</li>" +
                 "</ul>" +
@@ -2329,7 +2329,7 @@
                 "Together they install the terminal alkynyl bromide. This is one of very " +
                 "few characterized biosynthetic pathways to a C\u2261C-Br group anywhere in " +
                 "nature.</li>" +
-                "<li><strong>Hover the compound name</strong> to see the 2D structure: " +
+                "<li><strong>Look at the compound card below</strong> to see the 2D structure: " +
                 "note the Cl dangling off the vinyl and the Br at the chain terminus.</li>" +
                 "</ul>" +
                 "<h3>References</h3>" +
@@ -2417,7 +2417,7 @@
                 "very different chemistry: curacin uses cyclopropane + thiazoline, " +
                 "jamaicamide uses halogenation. Both are cases of cyanobacterial PKS-NRPS " +
                 "decorating otherwise simple chains with wild tailoring.</li>" +
-                "<li><strong>Hover the compound name</strong> to see the cyclopropane " +
+                "<li><strong>Look at the compound card below</strong> to see the cyclopropane " +
                 "+ thiazoline geometry on the 2D structure.</li>" +
                 "</ul>" +
                 "<h3>References</h3>" +
@@ -2496,7 +2496,7 @@
                 "and <code>barB2</code> are the non-heme Fe halogenases \u2014 scan the " +
                 "linear view for their annotations. Each installs one chlorine; together " +
                 "with a later step they give the signature CCl\u2083.</li>" +
-                "<li><strong>Hover the compound name</strong> to see the CCl\u2083 group " +
+                "<li><strong>Look at the compound card below</strong> to see the CCl\u2083 group " +
                 "on the 2D structure \u2014 the three chlorines sitting on one carbon " +
                 "is unmistakable.</li>" +
                 "<li><strong>Compare to <a href=\"./example.html?id=jamaicamide-cluster\">" +
@@ -2593,7 +2593,7 @@
                 "meta-omic approach shown here is the modern template for turning an " +
                 "\"interesting compound in a marine invertebrate\" into a druggable " +
                 "biosynthetic hypothesis.</li>" +
-                "<li><strong>Hover the compound name</strong> to see the pentacyclic core " +
+                "<li><strong>Look at the compound card below</strong> to see the pentacyclic core " +
                 "of trabectedin \u2014 three fused tetrahydroisoquinoline rings plus the " +
                 "pendant C-ring that alkylates DNA in the minor groove.</li>" +
                 "<li><strong>Think about genome reduction.</strong> The producer's full " +
@@ -2721,7 +2721,7 @@
                 "Three invertebrate-symbiont trans-AT PKS clusters side by side. Same " +
                 "architecture, same \"uncultured symbiont of an invertebrate\" story, " +
                 "three different hosts and three different chemical payloads.</li>" +
-                "<li><strong>Hover the compound name</strong> to see the spiroacetal and " +
+                "<li><strong>Look at the compound card below</strong> to see the spiroacetal and " +
                 "tetrahydropyran rings that come off the PKS after release from the " +
                 "assembly line.</li>" +
                 "</ul>" +
@@ -2933,18 +2933,20 @@
                 "assembly.</p>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
-                "<li><strong>Find the DDxxD motif.</strong> Class-I terpene synthases " +
-                "share a conserved aspartate-rich DDxxD motif that coordinates Mg" +
-                "<sup>2+</sup> at the active site. Toggle translations on, zoom in on " +
-                "the CDS, and search for <code>DDxxD</code>. It's the signature of the " +
-                "cyclisation chemistry.</li>" +
+                "<li><strong>Scan for the DDxxD motif.</strong> Class-I terpene " +
+                "synthases share a conserved aspartate-rich DDxxD motif that " +
+                "coordinates Mg<sup>2+</sup> at the active site. Toggle translations " +
+                "on and zoom into the CDS \u2014 the aspartate pair sits around " +
+                "residue 613 of TDC1, recognisable as two D's separated by two " +
+                "residues and then a third D. It's the signature of the cyclisation " +
+                "chemistry.</li>" +
                 "<li><strong>Read this as a counterweight to the cluster examples.</strong> " +
                 "Unlike bacterial PKS/NRPS, plant natural-product genes are scattered " +
                 "across chromosomes, not clustered. Taxadiene synthase is just one " +
                 "gene \u2014 the first committed step. Turning it into paclitaxel " +
                 "takes a dozen more enzymes (T5\u03b1H, T10\u03b2H, T13\u03b1H, DBAT, " +
                 "BAPT, \u2026) spread across the <em>Taxus</em> genome.</li>" +
-                "<li><strong>Hover the compound name</strong> to see the 2D structure " +
+                "<li><strong>Look at the compound card below</strong> to see the 2D structure " +
                 "of paclitaxel \u2014 the taxane core that TDC1 builds sits at the " +
                 "centre, with the benzamide side chain that was the chemical synthesis " +
                 "bottleneck for decades.</li>" +
@@ -3052,7 +3054,7 @@
                 "class-I terpene synthase; STR is a Pictet-Spenglerase. Different " +
                 "chemistry, same architectural theme: plant NP biosynthesis gates on " +
                 "a single committed step, with the diversity downstream.</li>" +
-                "<li><strong>Hover the compound name</strong> to see the planar " +
+                "<li><strong>Look at the compound card below</strong> to see the planar " +
                 "pentacyclic scaffold of camptothecin \u2014 the E-ring lactone that " +
                 "intercalates into topoisomerase-I\u2013DNA complexes is the piece " +
                 "topotecan and irinotecan variously modify.</li>" +
@@ -3148,9 +3150,10 @@
                 "<ul>" +
                 "<li><strong>Find the catalytic cysteine.</strong> Type-III PKSs use " +
                 "a Cys-His-Asn catalytic triad instead of the acyl-carrier-protein " +
-                "machinery found in bacterial trans-AT systems. Toggle translations " +
-                "on and search for the conserved <code>CHN</code> residues \u2014 " +
-                "the cysteine typically sits around position 164 in plant CHSs.</li>" +
+                "machinery of bacterial trans-AT systems. Toggle translations on and " +
+                "scroll to residue ~164 of the CDS \u2014 that's where the catalytic " +
+                "cysteine sits in plant CHSs, with the paired histidine and asparagine " +
+                "downstream in the active-site pocket.</li>" +
                 "<li><strong>Compare to the bacterial PKSs elsewhere in the gallery.</strong> " +
                 "CHS3 is a <em>single</em> iterative enzyme performing three rounds " +
                 "of condensation with zero tailoring. The bacterial megasynthases in " +
@@ -3158,7 +3161,7 @@
                 "<a href=\"./example.html?id=lagriamide-cluster\">lagriamide</a> are " +
                 "dozens of kilobases encoding one module per step. Plant vs. bacterial " +
                 "polyketide biosynthesis is a tale of two strategies.</li>" +
-                "<li><strong>Hover the compound name</strong> to see silybin A. The " +
+                "<li><strong>Look at the compound card below</strong> to see silybin A. The " +
                 "benzodioxane ring in the centre is the oxidative-coupling handiwork; " +
                 "the flavanonol on the left is the portion CHS3's output eventually " +
                 "becomes.</li>" +
