@@ -2670,7 +2670,7 @@
             accession: "MH171092.1",
             compound: {
                 name: "Lagriamide",
-                smiles: "CC1CCC(OC1CC(=O)NCC(C(C)C(=O)NCCCC2C(CCC3(O2)CCCC(O3)CCC(C)C=C(C)CCC(=O)O)C)O)CC(=O)C4C(O4)C",
+                smiles: "CC1CCC(OC1CC(=O)NCC(C(C)C(=O)NCCCC2C(CCC3(O2)CCCC(O3)CCC(C)/C=C(\\C)/CCC(=O)O)C)O)CC(=O)C4C(O4)C",
                 description: "An antifungal hybrid polyketide-peptide with a spiroacetal, tetrahydropyran, and pendant epoxide. Produced by Burkholderia gladioli Lv-StB \u2014 an uncultured symbiont Lagria villosa beetles pass to their eggs as a chemical shield against soil fungi."
             },
             seqvizProps: {
@@ -2792,7 +2792,7 @@
             featured: true,
             compound: {
                 name: "Lasonolide A",
-                smiles: "CC1C(CC2CC=CC=CC(=O)OC3CC(C=CCC=CC(=CC1O2)C)OC(C3(C)CO)CC=CCC(C(=O)OCC(=C)CCC(C)C)O)O",
+                smiles: "C[C@@H]1[C@H](C[C@@H]2C/C=C/C=C/C(=O)O[C@@H]3C[C@@H](/C=C/C/C=C/C(=C\\[C@H]1O2)/C)O[C@H]([C@]3(C)CO)C/C=C\\C[C@H](C(=O)OCC(=C)CCC(C)C)O)O",
                 description: "A macrolactone polyketide from deep-water Forcepia sp. sponges with sub-nanomolar cytotoxicity and a one-of-a-kind NCI-60 fingerprint \u2014 no other compound in the screen phenocopies it, suggesting a novel mechanism. The producer is an uncultured Verrucomicrobium, Candidatus Thermopylae lasonolidus."
             },
             seqvizProps: {
@@ -2904,7 +2904,7 @@
             accession: "U48796.1",
             compound: {
                 name: "Paclitaxel (Taxol)",
-                smiles: "CC1=C2C(C(=O)C3(C(CC4C(C3C(C(C2(C)C)(CC1OC(=O)C(C(C5=CC=CC=C5)NC(=O)C6=CC=CC=C6)O)O)OC(=O)C7=CC=CC=C7)(CO4)OC(=O)C)O)C)OC(=O)C",
+                smiles: "CC1=C2[C@H](C(=O)[C@@]3([C@H](C[C@@H]4[C@]([C@H]3[C@@H]([C@@](C2(C)C)(C[C@@H]1OC(=O)[C@@H]([C@H](C5=CC=CC=C5)NC(=O)C6=CC=CC=C6)O)O)OC(=O)C7=CC=CC=C7)(CO4)OC(=O)C)O)C)OC(=O)C",
                 description: "A microtubule-stabilising diterpenoid from the Pacific yew (Taxus brevifolia). First isolated in 1971; now a billion-dollar cancer drug with dozens of indications. Taxadiene synthase (TDC1) catalyses the first committed step \u2014 the cyclisation of geranylgeranyl diphosphate into taxa-4(5),11(12)-diene."
             },
             seqvizProps: {
@@ -3008,7 +3008,7 @@
             accession: "JF508375.1",
             compound: {
                 name: "Camptothecin",
-                smiles: "CCC1(C2=C(COC1=O)C(=O)N3CC4=CC5=CC=CC=C5N=C4C3=C2)O",
+                smiles: "CC[C@@]1(C2=C(COC1=O)C(=O)N3CC4=CC5=CC=CC=C5N=C4C3=C2)O",
                 description: "A pentacyclic quinoline alkaloid from the Chinese happy tree (Camptotheca acuminata). Isolated in 1966, five years before paclitaxel, at the same research institute. Clinical derivatives topotecan and irinotecan are topoisomerase-I inhibitors used against ovarian, colorectal, and small-cell lung cancer."
             },
             seqvizProps: {
@@ -3114,7 +3114,7 @@
             accession: "PP965198.1",
             compound: {
                 name: "Silybin A",
-                smiles: "COC1=C(C=CC(=C1)C2C(OC3=C(O2)C=C(C=C3)C4C(C(=O)C5=C(C=C(C=C5O4)O)O)O)CO)O",
+                smiles: "COC1=C(C=CC(=C1)[C@@H]2[C@H](OC3=C(O2)C=C(C=C3)[C@@H]4[C@H](C(=O)C5=C(C=C(C=C5O4)O)O)O)CO)O",
                 description: "A flavonolignan from milk thistle (Silybum marianum) fruits \u2014 the principal active component of silymarin, used for centuries as a hepatoprotective agent and currently evaluated against hepatocellular carcinoma. Formed by peroxidase-mediated oxidative coupling of taxifolin with coniferyl alcohol; the chalcone synthase shown here is two biosynthetic steps upstream of taxifolin."
             },
             seqvizProps: {

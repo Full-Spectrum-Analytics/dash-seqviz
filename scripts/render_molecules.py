@@ -323,6 +323,39 @@ STANDALONE_COMPOUNDS: List[Node] = [
         "Pederin",
         "CC1C(OC(CC1=C)(C(C(=O)NC(C2CC(C(C(O2)CC(COC)OC)(C)C)O)OC)O)OC)C",
     ),
+    # ----------------------------------------------------------------
+    # Plant + symbiont natural products from the expanded gallery set.
+    # SMILES are the PubChem *isomeric* canonical strings (CIDs
+    # 146684558 / 11342965 / 36314 / 24360 / 31553) so wedge bonds
+    # render correctly instead of the stereo-free connectivity form.
+    # ----------------------------------------------------------------
+    Node(
+        "Lagriamide",
+        "CC1CCC(OC1CC(=O)NCC(C(C)C(=O)NCCCC2C(CCC3(O2)CCCC(O3)CCC(C)"
+        "/C=C(\\C)/CCC(=O)O)C)O)CC(=O)C4C(O4)C",
+    ),
+    Node(
+        "Lasonolide A",
+        "C[C@@H]1[C@H](C[C@@H]2C/C=C/C=C/C(=O)O[C@@H]3C[C@@H]"
+        "(/C=C/C/C=C/C(=C\\[C@H]1O2)/C)O[C@H]([C@]3(C)CO)C/C=C\\C"
+        "[C@H](C(=O)OCC(=C)CCC(C)C)O)O",
+    ),
+    Node(
+        "Paclitaxel (Taxol)",
+        "CC1=C2[C@H](C(=O)[C@@]3([C@H](C[C@@H]4[C@]([C@H]3[C@@H]"
+        "([C@@](C2(C)C)(C[C@@H]1OC(=O)[C@@H]([C@H](C5=CC=CC=C5)"
+        "NC(=O)C6=CC=CC=C6)O)O)OC(=O)C7=CC=CC=C7)(CO4)OC(=O)C)O)C)"
+        "OC(=O)C",
+    ),
+    Node(
+        "Camptothecin",
+        "CC[C@@]1(C2=C(COC1=O)C(=O)N3CC4=CC5=CC=CC=C5N=C4C3=C2)O",
+    ),
+    Node(
+        "Silybin A",
+        "COC1=C(C=CC(=C1)[C@@H]2[C@H](OC3=C(O2)C=C(C=C3)[C@@H]4"
+        "[C@H](C(=O)C5=C(C=C(C=C5O4)O)O)O)CO)O",
+    ),
 ]
 
 
