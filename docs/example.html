@@ -6,7 +6,7 @@
     <title>Example &mdash; dash-seqviz</title>
     <meta name="description" content="Interactive example — one curated construct visualized with dash-seqviz, with a ready-to-paste Python snippet.">
 
-    <link rel="stylesheet" href="./assets/site.css?v=6">
+    <link rel="stylesheet" href="./assets/site.css?v=7">
 </head>
 <body data-page="examples">
 
@@ -136,7 +136,7 @@
 <script crossorigin src="https://unpkg.com/smiles-drawer@2.2.1/dist/smiles-drawer.min.js"></script>
 <script src="./assets/nav.js"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
-<script src="./data/examples.js?v=4"></script>
+<script src="./data/examples.js?v=5"></script>
 
 <script>
     (function () {
@@ -522,7 +522,7 @@
         // `enzyme` + `cosubstrates` annotate the arrow arriving into it.
         if (ex.pathway && Array.isArray(ex.pathway.nodes) && ex.pathway.nodes.length && window.SmilesDrawer) {
             renderPathway(ex.pathway);
-        } else if (ex.compound && ex.compound.smiles && window.SmilesDrawer) {
+        } else if (ex.compound && ex.compound.smiles) {
             var card = document.getElementById("compound-card");
             document.getElementById("compound-label").textContent = "Key product";
             document.getElementById("compound-name").textContent = ex.compound.name;
@@ -530,12 +530,35 @@
             document.getElementById("compound-smiles").textContent = ex.compound.smiles;
             card.style.display = "block";
 
-            var drawer = new SmilesDrawer.Drawer({ width: 400, height: 300 });
-            SmilesDrawer.parse(ex.compound.smiles, function (tree) {
-                drawer.draw(tree, "compound-canvas", "light", false);
-            }, function (err) {
-                card.style.display = "none";
-            });
+            // Prefer the pre-rendered RDKit SVG (via scripts/render_molecules.py).
+            // RDKit CoordGen produces clean 2D layouts — especially important
+            // for cyclic peptides and macrocycles where SmilesDrawer tends to
+            // distort bond angles. Fall back to SmilesDrawer only if the SVG
+            // is missing for this compound.
+            var wrap = document.querySelector(".compound-canvas-wrap");
+            var canvas = document.getElementById("compound-canvas");
+            var svgUrl = "./assets/molecules/" + slugify(ex.compound.name) + ".svg";
+            var img = new Image();
+            img.onload = function () {
+                // SVG loaded — swap it in, hide the canvas.
+                img.alt = ex.compound.name + " 2D structure";
+                img.style.maxWidth = "400px";
+                img.style.width = "100%";
+                img.style.height = "auto";
+                if (canvas && canvas.parentNode === wrap) wrap.removeChild(canvas);
+                wrap.appendChild(img);
+            };
+            img.onerror = function () {
+                // No SVG on disk — fall back to SmilesDrawer on the canvas.
+                if (!window.SmilesDrawer) { card.style.display = "none"; return; }
+                var drawer = new SmilesDrawer.Drawer({ width: 400, height: 300 });
+                SmilesDrawer.parse(ex.compound.smiles, function (tree) {
+                    drawer.draw(tree, "compound-canvas", "light", false);
+                }, function () {
+                    card.style.display = "none";
+                });
+            };
+            img.src = svgUrl;
         }
 
         function renderPathway(pw) {

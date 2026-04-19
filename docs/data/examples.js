@@ -2090,13 +2090,20 @@
                 "Patellamide A and C biosynthesis by a microcin-like pathway in Prochloron " +
                 "didemni, the cyanobacterial symbiont of Lissoclinum patella.</a> " +
                 "<em>Proc Natl Acad Sci USA</em> 102(20):7315-20 (2005). PMID: 15983371.</li>" +
+                "<li>Kwan JC, Donia MS, Han AW, Hirose E, Haygood MG, Schmidt EW. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/23185008/\" target=\"_blank\" rel=\"noopener\">" +
+                "Genome streamlining and chemical defense in a coral reef symbiosis.</a> " +
+                "<em>Proc Natl Acad Sci USA</em> 109(50):20655-60 (2012). PMID: 23185008. " +
+                "(Kwan's post-doc work in the Schmidt lab \u2014 ties the <em>pat</em> " +
+                "cluster to the broader story of Prochloron's reduced genome and the " +
+                "chemical protection it provides to its tunicate host.)</li>" +
                 "</ul>",
             pythonSnippet:
                 "from dash import Dash, html\n" +
                 "from dash_seqviz import SeqViz\n" +
                 "import requests\n" +
                 "\n" +
-                "# Patellamide cluster (Schmidt et al. 2005)\n" +
+                "# Patellamide cluster (Schmidt et al. 2005; Kwan et al. 2012 genome ctx)\n" +
                 "gb = requests.get(\n" +
                 "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
                 "    params={\"db\": \"nuccore\", \"id\": \"AY986476\",\n" +
