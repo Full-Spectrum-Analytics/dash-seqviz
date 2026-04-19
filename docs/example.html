@@ -6,7 +6,7 @@
     <title>Example &mdash; dash-seqviz</title>
     <meta name="description" content="Interactive example — one curated construct visualized with dash-seqviz, with a ready-to-paste Python snippet.">
 
-    <link rel="stylesheet" href="./assets/site.css">
+    <link rel="stylesheet" href="./assets/site.css?v=5">
 </head>
 <body data-page="examples">
 
@@ -34,17 +34,22 @@
             <!-- ② Live viewer -->
             <div class="ex-section">
                 <h3 style="margin-top: 0;">Live viewer</h3>
-                <div class="example-controls" id="example-controls" hidden>
+                <div class="example-controls" id="example-controls">
                     <div class="ctrl">
                         <label for="ctrl-viewer">Topology</label>
                         <select id="ctrl-viewer">
-                            <option value="both">Both</option>
                             <option value="circular">Circular</option>
                             <option value="linear">Linear</option>
+                            <!-- Both is the static default because it's the right
+                                 answer for every single-record example. Multi-record
+                                 pages re-point the dropdown to "circular" in JS
+                                 during pre-fetch setup. -->
+                            <option value="both" selected>Both</option>
+                            <option value="both_flip">Both (flipped)</option>
                         </select>
                     </div>
                     <div class="ctrl">
-                        <label for="ctrl-zoom">Zoom (linear): <span id="zoom-val">50</span></label>
+                        <label for="ctrl-zoom">Zoom: <span id="zoom-val">50</span></label>
                         <input id="ctrl-zoom" type="range" min="1" max="100" value="50">
                     </div>
                     <div class="ctrl">
@@ -61,11 +66,15 @@
                     <div class="example-loading" id="example-loading">
                         Fetching sequence from NCBI&hellip;
                     </div>
-                    <div id="seqviz-root" style="height: 560px;"></div>
+                    <!-- Viewer grid: populated at runtime with one cell per
+                         entry in ex.accessions (or a single cell from
+                         ex.accession when only one record is needed).
+                         Cells auto-stack at narrow viewports via CSS
+                         grid-template-columns: repeat(auto-fit, ...). -->
+                    <div id="viewer-grid" class="viewer-grid"></div>
                 </div>
-                <p id="ex-fetch-status" style="margin-top: 10px; color: var(--color-text-muted); font-size: 0.85rem;"></p>
-                <p style="margin-top: 6px; color: var(--color-text-muted); font-size: 0.82rem;">
-                    Fetched live from <a id="ex-ncbi-link" href="#" target="_blank" rel="noopener">NCBI</a>. All rendering is client-side.
+                <p style="margin-top: 10px; color: var(--color-text-muted); font-size: 0.82rem;">
+                    Fetched live from NCBI E-utilities. All rendering is client-side.
                 </p>
             </div>
 
@@ -127,7 +136,7 @@
 <script crossorigin src="https://unpkg.com/smiles-drawer@2.2.1/dist/smiles-drawer.min.js"></script>
 <script src="./assets/nav.js"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
-<script src="./data/examples.js?v=2"></script>
+<script src="./data/examples.js?v=3"></script>
 
 <script>
     (function () {
@@ -143,9 +152,8 @@
         var narrativeEl = document.getElementById("ex-narrative");
         var snippetEl   = document.getElementById("ex-snippet").querySelector("code");
         var nextEl      = document.getElementById("ex-next");
-        var ncbiLinkEl  = document.getElementById("ex-ncbi-link");
-        var statusEl    = document.getElementById("ex-fetch-status");
         var loadingEl   = document.getElementById("example-loading");
+        var gridEl      = document.getElementById("viewer-grid");
 
         // Shared helpers — also mirrored in docs/examples.html for the
         // gallery thumbnails. Must stay in sync with scripts/render_molecules.py
@@ -484,16 +492,30 @@
             metaEl.appendChild(b);
         });
 
-        var accBadge = document.createElement("span");
-        accBadge.className = "badge badge-tag";
-        accBadge.textContent = "NCBI " + ex.accession;
-        metaEl.appendChild(accBadge);
+        // Normalize the accession schema: new examples use `accessions:
+        // [{id, label}, ...]`; legacy single-accession entries use
+        // `accession: "X"`. Both flow through the same viewer-grid path.
+        var accessionsList;
+        if (Array.isArray(ex.accessions) && ex.accessions.length) {
+            accessionsList = ex.accessions.map(function (a) {
+                return { id: a.id, label: a.label || "" };
+            });
+        } else if (ex.accession) {
+            accessionsList = [{ id: ex.accession, label: "" }];
+        } else {
+            accessionsList = [];
+        }
+
+        accessionsList.forEach(function (a) {
+            var accBadge = document.createElement("span");
+            accBadge.className = "badge badge-tag";
+            accBadge.textContent = "NCBI " + a.id;
+            metaEl.appendChild(accBadge);
+        });
 
         narrativeEl.innerHTML = ex.narrative || "";
         wireInfoTerms(narrativeEl);
         snippetEl.textContent = ex.pythonSnippet || "";
-        ncbiLinkEl.href = "https://www.ncbi.nlm.nih.gov/nuccore/" + encodeURIComponent(ex.accession);
-        ncbiLinkEl.textContent = "NCBI " + ex.accession;
 
         // Pathway panel (multi-step biosynthetic route) takes priority over
         // the single-compound panel. Each node is a product in the chain;
@@ -736,78 +758,204 @@
             window.SeqVizSite.wireCopy(document);
         }
 
-        // Fetch sequence and render viewer
+        // Fetch sequence(s) and render viewer(s)
         // Uses a site-owned email for the E-utilities call (since this page is read-only
         // and doesn't ask the user for one). Rate/quota enforcement is handled by NCBI;
         // the Explorer page covers interactive fetching with user-supplied email.
+        //
+        // Architecture: one control bar drives a CSS grid of N independent
+        // seqviz.Viewer() instances — one per accession. Every control
+        // mutates a single shared `state` object and calls renderAll(),
+        // which iterates over every cell. Each cell has its own SeqViz
+        // instance because the library renders one sequence per Viewer;
+        // sharing UI + state on top composes them into a unified card.
         var SITE_EMAIL = "dash-seqviz@fullspectrumanalytics.com";
+        var sp = ex.seqvizProps || {};
 
-        statusEl.textContent = "Fetching " + ex.accession + " from NCBI...";
+        // Build the grid cells eagerly so users see labels + loading
+        // placeholders immediately, before the network round-trip.
+        gridEl.innerHTML = "";
+        var cells = accessionsList.map(function (a, i) {
+            var cell = document.createElement("div");
+            cell.className = "viewer-cell";
 
-        window.SeqVizSite.fetchAccession(ex.accession, SITE_EMAIL).then(function (rec) {
+            // Cell header: NCBI link + optional descriptor + bp count.
+            // Hidden when there's only one accession (the header row
+            // already shows the accession badge).
+            var header = document.createElement("div");
+            header.className = "viewer-cell-header";
+            var accLink = document.createElement("a");
+            accLink.href = "https://www.ncbi.nlm.nih.gov/nuccore/" + encodeURIComponent(a.id);
+            accLink.target = "_blank";
+            accLink.rel = "noopener";
+            accLink.className = "viewer-cell-accession";
+            accLink.textContent = a.id;
+            header.appendChild(accLink);
+            if (a.label) {
+                var labelSpan = document.createElement("span");
+                labelSpan.className = "viewer-cell-descriptor";
+                labelSpan.textContent = " \u2014 " + a.label;
+                header.appendChild(labelSpan);
+            }
+            var bpSpan = document.createElement("span");
+            bpSpan.className = "viewer-cell-bp";
+            bpSpan.textContent = "";
+            header.appendChild(bpSpan);
+            if (accessionsList.length > 1) cell.appendChild(header);
+
+            var viewerRoot = document.createElement("div");
+            viewerRoot.id = "seqviz-root-" + i;
+            viewerRoot.style.height = (sp.style && sp.style.height) || "560px";
+            cell.appendChild(viewerRoot);
+
+            gridEl.appendChild(cell);
+            return { accInfo: a, viewerRoot: viewerRoot, bpSpan: bpSpan, rec: null };
+        });
+
+        // ---- Pre-fetch setup -------------------------------------------
+        //
+        // Everything below that depends ONLY on static example metadata
+        // (ex.seqvizProps, how many records) is computed + applied to the
+        // controls BEFORE the NCBI fetch fires. That way the dropdown,
+        // zoom slider, and grid layout are already in their correct
+        // resting state on first paint — there's no flash of
+        // browser-default "Circular" → JS snaps to "Both" when the
+        // fetch lands. The viewer area just goes "Fetching…" →
+        // rendered content, with no intermediate switch.
+
+        var multiViewer = cells.length > 1;
+        // Single-record examples default to "both"; multi-record pages
+        // can't sensibly render "both" across N viewers (4+ panes) so
+        // they land on "circular" instead.
+        var initialViewer = sp.viewer || "both";
+        if (multiViewer && (initialViewer === "both" || initialViewer === "both_flip")) {
+            initialViewer = "circular";
+        }
+        var initialZoom = (sp.zoom && typeof sp.zoom.linear === "number") ? sp.zoom.linear : 50;
+        var baseHeight = (sp.style && sp.style.height) || "560px";
+        var initialHeight = initialViewer === "linear" ? "820px" : baseHeight;
+
+        var viewerSel = document.getElementById("ctrl-viewer");
+        var zoomRange = document.getElementById("ctrl-zoom");
+        var zoomVal = document.getElementById("zoom-val");
+        var complChk = document.getElementById("ctrl-complement");
+        var translChk = document.getElementById("ctrl-translations");
+
+        // Lock the dropdown / slider / complement / layout to the
+        // already-known defaults NOW. These values won't change when
+        // the fetch resolves — renderAll() just renders the viewer
+        // using the same state the controls already reflect.
+        viewerSel.value = initialViewer;
+        zoomRange.value = initialZoom;
+        zoomRange.disabled = initialViewer === "circular";
+        zoomVal.textContent = initialZoom;
+        complChk.checked = !!sp.showComplement;
+        // Translations checkbox stays disabled until we know whether any
+        // fetched record actually has translations to show.
+        translChk.disabled = true;
+
+        gridEl.classList.toggle("viewer-grid--stacked", initialViewer === "linear");
+        cells.forEach(function (cell) { cell.viewerRoot.style.height = initialHeight; });
+
+        // Multi-viewer pages: "Both" and "Both (flipped)" remain visible
+        // in the dropdown (so the control surface stays consistent
+        // across example pages) but are disabled — their grayed-out
+        // state signals they're intentionally off for this layout.
+        if (multiViewer) {
+            ["both", "both_flip"].forEach(function (v) {
+                var opt = viewerSel.querySelector('option[value="' + v + '"]');
+                if (opt) opt.disabled = true;
+            });
+        }
+
+        loadingEl.textContent = "Fetching " + accessionsList.length + " sequence" +
+            (accessionsList.length === 1 ? "" : "s") + " from NCBI\u2026";
+
+        // Fetch all accessions in parallel. NCBI tolerates a handful of
+        // concurrent E-utilities calls; the pages that need per-browser
+        // rate limiting (Explorer) handle that separately.
+        Promise.all(accessionsList.map(function (a, i) {
+            return window.SeqVizSite.fetchAccession(a.id, SITE_EMAIL).then(function (rec) {
+                cells[i].rec = rec;
+                cells[i].bpSpan.textContent = " \u00b7 " + rec.seq.length.toLocaleString() + " bp";
+                return rec;
+            });
+        })).then(function () {
             loadingEl.style.display = "none";
-            statusEl.textContent = "Loaded " + rec.seq.length.toLocaleString() + " bp from " + ex.accession + ".";
 
-            // Single source of truth for what's currently on screen. Every
-            // control (topology select, zoom slider, complement/translations
-            // checkboxes, enzyme toggle buttons) mutates this object and
-            // calls render().
-            var sp = ex.seqvizProps || {};
+            // ---- Post-fetch state ---------------------------------------
+            // Now that we know the records, build the mutable state that
+            // event handlers read/write. We seed viewer/zoom/complement
+            // from the current DOM values so any user interactions that
+            // happened during the fetch are respected; translations we
+            // only know about now.
             var state = {
-                viewer: sp.viewer || "both",
-                zoomLinear: (sp.zoom && typeof sp.zoom.linear === "number") ? sp.zoom.linear : 50,
-                showComplement: !!sp.showComplement,
-                showTranslations: Array.isArray(rec.translations) && rec.translations.length > 0,
-                enzymes: Array.isArray(sp.enzymes) ? sp.enzymes.slice() : [],
-                baseProps: {
-                    name: rec.name,
-                    seq: rec.seq,
-                    annotations: rec.annotations,
-                    translations: rec.translations,
-                    search: sp.search,
-                    style: sp.style || { height: "560px", width: "100%" }
-                }
+                viewer: viewerSel.value,
+                zoomLinear: parseInt(zoomRange.value, 10) || initialZoom,
+                showComplement: complChk.checked,
+                showTranslations: cells.some(function (c) {
+                    return c.rec && Array.isArray(c.rec.translations) && c.rec.translations.length > 0;
+                }),
+                enzymes: Array.isArray(sp.enzymes) ? sp.enzymes.slice() : []
             };
 
-            function render() {
-                var props = Object.assign({}, state.baseProps, {
-                    viewer: state.viewer,
-                    zoom: { linear: state.zoomLinear },
-                    showComplement: state.showComplement,
-                    enzymes: state.enzymes.slice(),
-                    translations: state.showTranslations ? state.baseProps.translations : []
+            translChk.checked = state.showTranslations;
+            translChk.disabled = !state.showTranslations;
+
+            function renderAll() {
+                // Layout switches on topology: circular stays in the
+                // auto-fit grid (side-by-side when wide); linear forces
+                // a single column so each sequence gets the full card
+                // width to scroll through. Both-variants only apply to
+                // single-accession pages where the grid has one cell
+                // anyway, so they keep the default layout.
+                gridEl.classList.toggle("viewer-grid--stacked",
+                                        state.viewer === "linear");
+
+                // Zoom only controls the linear track. Disable the
+                // slider in pure Circular mode so there's no confusion
+                // that it does nothing there — re-enable for Linear,
+                // Both, and Both (flipped), all of which show a linear
+                // track the zoom actually affects.
+                zoomRange.disabled = state.viewer === "circular";
+
+                // Linear mode gets a taller viewer so more rows are
+                // visible without scrolling — closer to an overview of
+                // the whole cluster. Circular is square-ish, so keep
+                // the configured height.
+                var height = state.viewer === "linear" ? "820px" : baseHeight;
+
+                cells.forEach(function (cell) {
+                    if (!cell.rec) return;
+                    cell.viewerRoot.style.height = height;
+                    window.SeqVizSite.renderViewer(cell.viewerRoot.id, {
+                        name: cell.rec.name,
+                        seq: cell.rec.seq,
+                        annotations: cell.rec.annotations,
+                        translations: state.showTranslations ? cell.rec.translations : [],
+                        viewer: state.viewer,
+                        zoom: { linear: state.zoomLinear },
+                        showComplement: state.showComplement,
+                        enzymes: state.enzymes.slice(),
+                        search: sp.search,
+                        style: { height: height, width: "100%" }
+                    });
                 });
-                window.SeqVizSite.renderViewer("seqviz-root", props);
             }
 
-            // Initialize controls to match state.
-            var controls = document.getElementById("example-controls");
-            var viewerSel = document.getElementById("ctrl-viewer");
-            var zoomRange = document.getElementById("ctrl-zoom");
-            var zoomVal = document.getElementById("zoom-val");
-            var complChk = document.getElementById("ctrl-complement");
-            var translChk = document.getElementById("ctrl-translations");
-
-            viewerSel.value = state.viewer;
-            zoomRange.value = state.zoomLinear;
-            zoomVal.textContent = state.zoomLinear;
-            complChk.checked = state.showComplement;
-            translChk.checked = state.showTranslations;
-            translChk.disabled = !(state.baseProps.translations && state.baseProps.translations.length);
-            controls.hidden = false;
-
-            viewerSel.addEventListener("change", function () { state.viewer = viewerSel.value; render(); });
+            viewerSel.addEventListener("change", function () { state.viewer = viewerSel.value; renderAll(); });
             zoomRange.addEventListener("input", function () {
                 state.zoomLinear = parseInt(zoomRange.value, 10);
                 zoomVal.textContent = state.zoomLinear;
-                render();
+                renderAll();
             });
-            complChk.addEventListener("change", function () { state.showComplement = complChk.checked; render(); });
-            translChk.addEventListener("change", function () { state.showTranslations = translChk.checked; render(); });
+            complChk.addEventListener("change", function () { state.showComplement = complChk.checked; renderAll(); });
+            translChk.addEventListener("change", function () { state.showTranslations = translChk.checked; renderAll(); });
 
             // Enzyme buttons embedded in the narrative:
             // <button class="enzyme-toggle" data-enzyme="EcoRI">EcoRI</button>.
-            // Each button toggles one enzyme in state.enzymes and re-renders.
+            // Each button toggles one enzyme in state.enzymes and re-renders
+            // every viewer at once — each cell shows its own cut sites.
             Array.prototype.slice.call(document.querySelectorAll(".enzyme-toggle"))
                 .forEach(function (btn) {
                     var name = btn.getAttribute("data-enzyme");
@@ -817,28 +965,27 @@
                         if (idx === -1) state.enzymes.push(name);
                         else state.enzymes.splice(idx, 1);
                         btn.setAttribute("aria-pressed", idx === -1 ? "true" : "false");
-                        render();
+                        renderAll();
                     });
                 });
 
-            render();
+            renderAll();
 
-            // Prevent page scroll while the cursor is over the circular viewer
-            // (seqviz rotates the circular view on wheel). Linear-only viewers
-            // don't rotate, so leave page scroll alone there.
-            var vroot = document.getElementById("seqviz-root");
-            if (vroot) {
-                vroot.addEventListener("wheel", function (ev) {
-                    if (state.viewer === "circular" || state.viewer === "both") {
+            // Prevent page scroll while the cursor is over a circular
+            // viewer (seqviz rotates it on wheel). Both "Both" modes
+            // also render a circular half so treat them the same.
+            // Wired per cell — applies to every viewer in the grid.
+            cells.forEach(function (cell) {
+                cell.viewerRoot.addEventListener("wheel", function (ev) {
+                    if (state.viewer === "circular" ||
+                        state.viewer === "both" ||
+                        state.viewer === "both_flip") {
                         ev.preventDefault();
                     }
                 }, { passive: false });
-            }
+            });
         }).catch(function (err) {
-            loadingEl.textContent = "Couldn't load sequence: " + (err && err.message ? err.message : "unknown error");
-            statusEl.textContent =
-                "If this keeps happening, try loading the accession from the " +
-                "Explorer page, which supports retries and your own email.";
+            loadingEl.textContent = "Couldn't load sequence(s): " + (err && err.message ? err.message : "unknown error");
             var retry = document.createElement("a");
             retry.className = "btn btn-primary";
             retry.style.marginTop = "8px";

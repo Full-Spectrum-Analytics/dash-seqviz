@@ -21,6 +21,15 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* HTML5 `hidden` attribute must beat any `display:` rule. Without this
+   !important, elements like .example-controls (which use `display: grid`)
+   stay visible while JS finishes setting the dropdown value, producing
+   a flash of the browser's default selection before snapping to the
+   configured one. Standard Normalize.css pattern. */
+[hidden] {
+    display: none !important;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
                  "Helvetica Neue", Arial, sans-serif;
@@ -406,6 +415,52 @@ footer a:hover { text-decoration: underline; }
     overflow: hidden;
 }
 
+/* Viewer grid: one cell per accession. CSS grid with auto-fit lets
+   single-accession examples take the full width while multi-accession
+   teaching units (lovastatin, eventually others) split into 2+ columns
+   on wide viewports and stack on narrow ones — no JS media query
+   juggling required.
+
+   When the topology is "linear" the JS adds .viewer-grid--stacked,
+   which forces one column regardless of width. Circular views are
+   square-ish so side-by-side reads cleanly; linear views want the
+   full card width for comfortable horizontal scrolling. */
+.viewer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 14px;
+    padding: 12px;
+}
+.viewer-grid.viewer-grid--stacked {
+    grid-template-columns: 1fr;
+}
+.viewer-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;     /* let flex children shrink within the grid cell */
+}
+.viewer-cell-header {
+    font-size: 0.85rem;
+    color: var(--color-text);
+    padding: 0 2px 4px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 4px;
+}
+.viewer-cell-header .viewer-cell-accession {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-decoration: none;
+}
+.viewer-cell-header .viewer-cell-accession:hover { text-decoration: underline; }
+.viewer-cell-header .viewer-cell-descriptor { color: var(--color-text-muted); }
+.viewer-cell-header .viewer-cell-bp {
+    color: var(--color-text-muted);
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 0.78rem;
+}
+
 .example-loading {
     display: flex;
     align-items: center;
@@ -506,6 +561,7 @@ footer a:hover { text-decoration: underline; }
     font-size: 0.88rem; font-weight: 400; color: var(--color-text);
     text-transform: none; letter-spacing: 0;
 }
+
 
 .enzyme-toggle-row {
     display: flex;
@@ -748,6 +804,7 @@ footer a:hover { text-decoration: underline; }
     align-items: center;
     justify-content: center;
     min-width: 90px;
+    max-width: 200px;
     padding: 8px 4px;
     color: var(--color-text-muted);
 }
@@ -757,6 +814,8 @@ footer a:hover { text-decoration: underline; }
     color: var(--color-primary);
     font-family: "SFMono-Regular", Consolas, monospace;
     text-align: center;
+    max-width: 100%;
+    word-wrap: break-word;
 }
 .pathway-arrow-line {
     font-size: 1.6rem;
@@ -769,6 +828,10 @@ footer a:hover { text-decoration: underline; }
     color: var(--color-text-muted);
     font-style: italic;
     text-align: center;
+    max-width: 100%;
+    word-wrap: break-word;
+    line-height: 1.3;
+    padding: 2px 4px;
 }
 .pathway-cosubstrates {
     display: flex;
@@ -794,12 +857,14 @@ footer a:hover { text-decoration: underline; }
 /* Cosubstrate 2D-structure thumbnail, shown inline under the full
    reaction scheme when an SVG matching slugify(cosubstrate.name) is
    present. Absent SVG → onerror strips the <img> and we fall back to
-   the text name alone. */
+   the text name alone. Kept compact so the arrow element doesn't blow
+   out the pathway-card flex layout. */
 .pathway-cosubstrate-svg {
-    width: 70px;
-    height: 44px;
+    width: 48px;
+    height: 30px;
     object-fit: contain;
     margin: 0 2px;
+    flex-shrink: 0;
 }
 /* When the SVG is missing we slightly rearrange so the "+ NAME" pair
    reads cleanly without a gap where the image would have been. */

@@ -150,6 +150,10 @@ LINALOOL_NODES: List[Node] = [
 # ---------------------------------------------------------------------------
 
 LOVASTATIN_NODES: List[Node] = [
+    # Acetyl-CoA — the starter unit. Drawn as acetyl-SNAc, the common
+    # in-vitro PKS surrogate (cysteamine stub in place of full CoA) so
+    # the thumbnail stays readable at pathway-card size.
+    Node("Acetyl-CoA", "CC(=O)SCCNC(C)=O"),
     Node(
         "Dihydromonacolin L",
         "CCC(C)C1CCC2CCC(C)C(CCC3CC(O)CC(=O)O3)C12",
@@ -278,6 +282,13 @@ STANDALONE_COMPOUNDS: List[Node] = [
         "Shikimate",
         "O[C@H]1CC(=C[C@H](O)[C@H]1O)C(=O)O",
     ),
+    # PKS building blocks used as cosubstrates in the lovastatin pathway.
+    # Drawn as the N-acetylcysteamine (SNAc) analogs: the same acyl head
+    # group on a cysteamine tail — the model substrates everyone uses in
+    # in-vitro PKS assays because they're simpler than full CoA but keep
+    # the reactive thioester chemistry intact.
+    Node("Malonyl-CoA", "OC(=O)CC(=O)SCCNC(C)=O"),
+    Node("2-Methylbutyryl-CoA", "CC[C@H](C)C(=O)SCCNC(C)=O"),
 ]
 
 

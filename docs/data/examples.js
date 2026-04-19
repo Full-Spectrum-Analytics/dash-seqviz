@@ -1145,11 +1145,20 @@
         {
             id: "lovastatin-cluster",
             title: "Lovastatin biosynthetic cluster \u2014 The textbook fungal polyketide",
-            summary: "Aspergillus terreus lovB/lovC/lovD cluster. A cholesterol-lowering blockbuster produced by a classic iterative polyketide synthase (PKS).",
+            summary: "Aspergillus terreus lovA/lovB/lovC/lovD/lovF cluster. A cholesterol-lowering blockbuster built by a classic iterative polyketide synthase (PKS).",
             category: "academic",
             tags: ["graduate", "biosynthesis", "polyketide", "fungal", "cluster"],
             complexity: 4,
-            accession: "AF141924.1",
+            // The lovastatin cluster was deposited as two separate NCBI
+            // records: AH007774 (segmented set covering lovA / lovC /
+            // lovD / lovF / esterase / transport genes) and AF151722
+            // (the lovB nonaketide synthase CDS). The page renders them
+            // side by side in one live-viewer card so the full picture
+            // reads as a single teaching unit.
+            accessions: [
+                { id: "AH007774",   label: "Core cluster (lovA / lovC / lovD / lovF)" },
+                { id: "AF151722.1", label: "LovB \u2014 nonaketide synthase" }
+            ],
             compound: {
                 name: "Lovastatin",
                 smiles: "CCC(C)C(=O)OC1CC(C)C=C2C=CC(C)C(CCC3CC(O)CC(=O)O3)C12",
@@ -1157,11 +1166,22 @@
             },
             pathway: {
                 title: "Lovastatin biosynthesis",
-                description: "LovB (iterative nonaketide synthase) + LovC (trans-acting enoyl reductase) build the decalin scaffold; LovA (P450) installs the lactone hydroxyl; LovD (acyltransferase) attaches the 2-methylbutyrate side chain that distinguishes lovastatin from monacolin J.",
+                description: "Acetyl-CoA seeds the chain; LovB (iterative nonaketide PKS) and LovC (trans-acting enoyl reductase) run nine condensation rounds with malonyl-CoA and two SAM-dependent C-methylations to build the decalin scaffold. LovA (P450) installs the double bonds and C8 hydroxyl. A parallel LovF diketide synthase makes (S)-2-methylbutyryl-CoA from its own malonyl + SAM pool, which LovD then transesterifies onto monacolin J to finish lovastatin.",
                 nodes: [
                     {
+                        name: "Acetyl-CoA",
+                        smiles: "CC(=O)SCCNC(C)=O"
+                    },
+                    {
                         name: "Dihydromonacolin L",
-                        smiles: "CCC(C)C1CCC2CCC(C)C(CCC3CC(O)CC(=O)O3)C12"
+                        smiles: "CCC(C)C1CCC2CCC(C)C(CCC3CC(O)CC(=O)O3)C12",
+                        enzyme: "LovB + LovC",
+                        cosubstrates: [
+                            { name: "Malonyl-CoA" },
+                            { name: "SAM" },
+                            { name: "NADPH" }
+                        ],
+                        note: "iterative PKS: 9 rounds + 2\u00d7 C-methylation"
                     },
                     {
                         name: "Monacolin L",
@@ -1181,15 +1201,23 @@
                         name: "Lovastatin",
                         smiles: "CCC(C)C(=O)OC1CC(C)C=C2C=CC(C)C(CCC3CC(O)CC(=O)O3)C12",
                         enzyme: "LovD",
-                        cosubstrates: [{ name: "(S)-2-methylbutyryl-CoA" }],
-                        note: "transesterification"
+                        cosubstrates: [{ name: "2-Methylbutyryl-CoA" }],
+                        note: "transesterification onto C8-OH (side chain made by LovF diketide synthase)"
                     }
                 ]
             },
             seqvizProps: {
-                viewer: "both",
-                zoom: { linear: 30 },
-                style: { height: "560px", width: "100%" }
+                // "Both" is disabled by the page on multi-viewer examples
+                // (see multi-viewer logic in example.html), so we explicitly
+                // default to "circular" here — it's the most useful single
+                // view for comparing cluster vs. megasynthase side by side.
+                viewer: "circular",
+                // Default linear zoom fully zoomed out (1) so when the
+                // user flips to "Linear" they see all of the lov CDSs
+                // laid end-to-end at a glance rather than landing inside
+                // a single gene.
+                zoom: { linear: 1 },
+                style: { height: "520px", width: "100%" }
             },
             narrative:
                 "<h3>A fungal polyketide that moved a global cholesterol market</h3>" +
@@ -1197,22 +1225,57 @@
                 "was the first statin approved (Merck's Mevacor, 1987) and the " +
                 "proof-of-concept for a drug class that now underpins cardiovascular medicine. " +
                 "It's also the <strong>textbook example</strong> for how fungal iterative " +
-                "polyketide synthases (PKSs) work: a single LovB megasynthase threads nine " +
-                "acetate units through its own active site, programming each round's reduction, " +
-                "dehydration, and cyclization, releasing the decalin core on its own.</p>" +
-                "<p>The <code>AF141924.1</code> record is the Kennedy et al. 1999 assembly of " +
-                "the entire <em>Aspergillus terreus</em> lovastatin cluster \u2014 <code>lovA</code> " +
-                "(cytochrome P450), <code>lovB</code> (nonaketide synthase, ~10 kb CDS!), " +
-                "<code>lovC</code> (enoyl reductase), <code>lovD</code> (acyltransferase), " +
-                "plus transport and regulatory genes. It's a standard teaching target for any " +
-                "lab working on BGC capture, refactoring, or heterologous expression \u2014 and " +
-                "a natural fit for platforms like <em>Terra Bioforge</em>'s DNAtrap\u2122 or " +
-                "<em>Clue Genetics</em>' fungal mining pipelines.</p>" +
+                "polyketide synthases (PKSs) work.</p>" +
+                "<p>Two NCBI records tell the full story and they're shown side by side in " +
+                "the live viewer above: <strong>AH007774</strong> is Kennedy <em>et al.</em>'s " +
+                "segmented-set deposit covering <code>lovA</code>, <code>lovC</code>, " +
+                "<code>lovD</code>, <code>lovF</code>, and the accessory transport/regulatory " +
+                "genes; " +
+                "<strong>AF151722</strong> is the ~11 kb <code>lovB</code> megasynthase CDS, " +
+                "deposited separately. The topology toggle and zoom slider apply to both at " +
+                "once \u2014 the multi-viewer pattern is a taste of how to compose " +
+                "<code>dash-seqviz</code> components with shared state in a real Dash app " +
+                "(see the snippet below).</p>" +
+                "<h3>The five enzymes and what they do</h3>" +
+                "<ul>" +
+                "<li><strong><code>lovB</code></strong> (~10 kb CDS!) is the <em>nonaketide " +
+                "synthase</em> \u2014 one enormous megasynthase that threads an acetyl-CoA " +
+                "starter plus eight malonyl-CoA extenders through its own active site, running " +
+                "a programmed sequence of condensation, ketoreduction, dehydration, and Diels\u2013" +
+                "Alder-like cyclization. Two of the rounds include a SAM-dependent C-methylation " +
+                "via its own MT domain. LovB releases <em>dihydromonacolin L acid</em> and " +
+                "lactonizes it.</li>" +
+                "<li><strong><code>lovC</code></strong> is a <em>trans-acting enoyl reductase</em>. " +
+                "LovB's own ER domain is only active for some rounds \u2014 LovC shows up " +
+                "in trans during rounds 2\u20133 to finish the job. Without LovC the chain " +
+                "stalls.</li>" +
+                "<li><strong><code>lovA</code></strong> is a <em>cytochrome P450</em> that " +
+                "performs two successive oxidations on the released scaffold: first two " +
+                "desaturations (Dihydromonacolin L \u2192 Monacolin L), then a C8 hydroxylation " +
+                "(Monacolin L \u2192 Monacolin J).</li>" +
+                "<li><strong><code>lovF</code></strong> is a <em>separate diketide synthase</em> " +
+                "that builds the (S)-2-methylbutyryl-CoA side chain from malonyl-CoA + SAM in " +
+                "parallel with the main nonaketide stream.</li>" +
+                "<li><strong><code>lovD</code></strong> is the <em>acyltransferase</em> that " +
+                "transesterifies LovF's 2-methylbutyryl group onto Monacolin J's C8 hydroxyl " +
+                "\u2014 the final step that distinguishes lovastatin from simvastatin/monacolin J.</li>" +
+                "</ul>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
-                "<li>Zoom out to see the whole cluster \u2014 note <code>lovB</code>'s enormous CDS.</li>" +
-                "<li>Use the pathway panel to follow the decalin scaffold from " +
-                "dihydromonacolin L through to lovastatin itself.</li>" +
+                "<li>Switch the topology to <em>Linear</em> and watch both sequences jump to " +
+                "the linear track at the same time \u2014 a single toggle drives every viewer " +
+                "in the card.</li>" +
+                "<li>In the <strong>AH007774</strong> viewer, zoom out to see the four " +
+                "<em>lov</em> CDSs on this record \u2014 <code>lovA</code> (P450), " +
+                "<code>lovC</code> (trans-ER), <code>lovD</code> (acyltransferase), and " +
+                "<code>lovF</code> (diketide synthase for the 2-methylbutyryl side chain) " +
+                "\u2014 plus the accessory transport/regulatory genes.</li>" +
+                "<li>In the <strong>AF151722</strong> viewer, note <code>lovB</code>'s " +
+                "single enormous CDS \u2014 the megasynthase is one polypeptide doing the " +
+                "work of a seven-domain assembly line.</li>" +
+                "<li>Use the pathway panel to follow the decalin scaffold from acetyl-CoA all " +
+                "the way to lovastatin. Toggle \"Full reaction scheme\" to see the starter, " +
+                "extender, and side-chain cosubstrates drawn inline.</li>" +
                 "</ul>" +
                 "<h3>References</h3>" +
                 "<ul>" +
@@ -1228,30 +1291,95 @@
                 "<em>Angew Chem Int Ed</em> 52(25):6472-5 (2013). PMID: 23495210.</li>" +
                 "</ul>",
             pythonSnippet:
-                "from dash import Dash, html\n" +
+                "\"\"\"Lovastatin cluster: two records, one dashboard.\n" +
+                "\n" +
+                "Shows the multi-viewer pattern used on the web page: two SeqViz\n" +
+                "components driven by a single topology radio. The grid layout\n" +
+                "also flips with topology \u2014 side-by-side for Circular so the\n" +
+                "plasmids sit next to each other, stacked for Linear so each\n" +
+                "sequence gets the full card width to scroll through.\n" +
+                "\"\"\"\n" +
+                "from dash import Dash, html, dcc, Input, Output, callback\n" +
                 "from dash_seqviz import SeqViz\n" +
                 "import requests\n" +
                 "\n" +
-                "# Aspergillus terreus lovastatin cluster (Kennedy et al. 1999)\n" +
-                "gb = requests.get(\n" +
-                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
-                "    params={\"db\": \"nuccore\", \"id\": \"AF141924.1\",\n" +
-                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
-                "            \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
-                "    timeout=10,\n" +
-                ").text\n" +
+                "ACCESSIONS = [\n" +
+                "    (\"AH007774\",   \"Core cluster (lovA / lovC / lovD / lovF)\"),\n" +
+                "    (\"AF151722.1\", \"LovB \u2014 nonaketide synthase\"),\n" +
+                "]\n" +
+                "\n" +
+                "# Layout presets keyed by the topology value. Keeping them at\n" +
+                "# module scope lets both the layout and the callback below\n" +
+                "# reference the same source of truth.\n" +
+                "GRID_SIDE_BY_SIDE = {\n" +
+                "    \"display\": \"grid\",\n" +
+                "    \"gridTemplateColumns\": \"repeat(auto-fit, minmax(420px, 1fr))\",\n" +
+                "    \"gap\": \"14px\",\n" +
+                "}\n" +
+                "GRID_STACKED = {\n" +
+                "    \"display\": \"grid\",\n" +
+                "    \"gridTemplateColumns\": \"1fr\",\n" +
+                "    \"gap\": \"14px\",\n" +
+                "}\n" +
+                "\n" +
+                "def fetch_gb(accession: str) -> str:\n" +
+                "    return requests.get(\n" +
+                "        \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "        params={\"db\": \"nuccore\", \"id\": accession,\n" +
+                "                \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "                \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
+                "        timeout=10,\n" +
+                "    ).text\n" +
+                "\n" +
+                "records = {acc: fetch_gb(acc) for acc, _ in ACCESSIONS}\n" +
                 "\n" +
                 "app = Dash(__name__)\n" +
                 "app.layout = html.Div([\n" +
-                "    SeqViz(\n" +
-                "        id=\"lovastatin\",\n" +
-                "        name=\"Lovastatin cluster (AF141924.1)\",\n" +
-                "        file=gb,\n" +
-                "        viewer=\"linear\",\n" +
-                "        zoom={\"linear\": 30},\n" +
-                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
-                "    )\n" +
+                "    dcc.RadioItems(\n" +
+                "        id=\"topology\",\n" +
+                "        options=[{\"label\": \"Circular\", \"value\": \"circular\"},\n" +
+                "                 {\"label\": \"Linear\",   \"value\": \"linear\"}],\n" +
+                "        value=\"circular\",\n" +
+                "        inline=True,\n" +
+                "    ),\n" +
+                "    html.Div(\n" +
+                "        id=\"viewer-grid\",\n" +
+                "        children=[\n" +
+                "            html.Div([\n" +
+                "                html.Div([html.Strong(acc), html.Span(f\" \u2014 {label}\")]),\n" +
+                "                SeqViz(\n" +
+                "                    id={\"type\": \"viz\", \"acc\": acc},\n" +
+                "                    name=f\"{acc} \u2014 {label}\",\n" +
+                "                    file=records[acc],\n" +
+                "                    viewer=\"circular\",\n" +
+                "                    # Fully zoomed out so the linear view lands on an\n" +
+                "                    # overview of all lov CDSs, not inside a single gene.\n" +
+                "                    zoom={\"linear\": 1},\n" +
+                "                    style={\"height\": \"520px\", \"width\": \"100%\"},\n" +
+                "                ),\n" +
+                "            ]) for acc, label in ACCESSIONS\n" +
+                "        ],\n" +
+                "        style=GRID_SIDE_BY_SIDE,\n" +
+                "    ),\n" +
                 "])\n" +
+                "\n" +
+                "# Callback 1: topology radio → every SeqViz at once via pattern-matching IDs.\n" +
+                "@callback(\n" +
+                "    Output({\"type\": \"viz\", \"acc\": \"ALL\"}, \"viewer\", allow_duplicate=True),\n" +
+                "    Input(\"topology\", \"value\"),\n" +
+                "    prevent_initial_call=True,\n" +
+                ")\n" +
+                "def set_topology(value):\n" +
+                "    return [value] * len(ACCESSIONS)\n" +
+                "\n" +
+                "# Callback 2: same topology radio → grid layout. Side-by-side for\n" +
+                "# Circular (square views), stacked for Linear (wide scrollers).\n" +
+                "@callback(\n" +
+                "    Output(\"viewer-grid\", \"style\"),\n" +
+                "    Input(\"topology\", \"value\"),\n" +
+                ")\n" +
+                "def set_grid_layout(value):\n" +
+                "    return GRID_STACKED if value == \"linear\" else GRID_SIDE_BY_SIDE\n" +
                 "\n" +
                 "if __name__ == \"__main__\":\n" +
                 "    app.run(debug=True)\n"
@@ -1265,6 +1393,9 @@
             complexity: 2,
             accession: "L09137.1",
             seqvizProps: {
+                // pUC19 is a 2.7 kb plasmid — circular view tells the
+                // story (closed loop, MCS, markers); linear is just an
+                // unrolled segment. Start on circular.
                 viewer: "circular",
                 zoom: { linear: 80 },
                 enzymes: ["EcoRI", "BamHI", "HindIII", "SalI", "PstI", "SphI"],
@@ -1281,10 +1412,10 @@
                 "like \u2014 small, stable, high-copy, easy to screen.</p>" +
                 "<p>Every modular-cloning toolkit built since \u2014 <strong>pSB1C3</strong> " +
                 "(iGEM BioBricks), <strong>MoClo</strong>, <strong>pYTK</strong> (Dueber yeast " +
-                "toolkit), the <strong>pGoldenGate</strong> family, and Ginkgo's own " +
-                "<em>Codebase</em> parts \u2014 traces its philosophy of \"one shared backbone, " +
-                "interchangeable inserts\" back to pUC19. If you're teaching a new scientist why " +
-                "standardized DNA parts matter, this is where you start.</p>" +
+                "toolkit), the <strong>pGoldenGate</strong> family, and every industrial " +
+                "biofoundry parts library since \u2014 traces its philosophy of \"one shared " +
+                "backbone, interchangeable inserts\" back to pUC19. If you're teaching a new " +
+                "scientist why standardized DNA parts matter, this is where you start.</p>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
                 "<li>Toggle the classic MCS cutters below. All six sit in the lacZα MCS, close " +
@@ -1372,8 +1503,9 @@
                 "(Herceptin), was FDA-approved in 1998 and launched the era of targeted mAb " +
                 "therapies in oncology. The part that matters for Herceptin binding is the " +
                 "<em>extracellular domain IV</em> \u2014 roughly residues 480\u2013620 of the " +
-                "ERBB2 protein. Modern antibody engineering teams (Genentech, GenScript, and " +
-                "dozens of biotech R&amp;D pipelines) spend their days visualizing constructs " +
+                "ERBB2 protein. Modern antibody engineering teams at <strong>Genentech</strong>, " +
+                "<strong>Merck</strong>, <strong>Regeneron</strong>, <strong>AbbVie</strong>, " +
+                "and the wider biopharma ecosystem spend their days visualizing constructs " +
                 "exactly like this when designing CHO-cell expression vectors for humanized " +
                 "IgGs and their bispecific/ADC derivatives.</p>" +
                 "<h3>Try this</h3>" +
