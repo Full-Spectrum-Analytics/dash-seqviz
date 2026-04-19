@@ -7,7 +7,7 @@
     var LINKS = [
         { id: "home",     label: "Home",      href: "./" },
         { id: "examples", label: "Examples",  href: "./examples.html" },
-        { id: "explorer", label: "Explorer",  href: "./explorer.html" },
+        { id: "explorer", label: "Component Explorer",  href: "./explorer.html" },
         { id: "docs",     label: "Docs",      href: "https://github.com/Full-Spectrum-Analytics/dash-seqviz#readme", external: true }
     ];
 

@@ -65,7 +65,8 @@
         showTranslations: true,
         bpColors: { A: "#1f78b4", T: "#33a02c", C: "#e31a1c", G: "#ff7f00" },
         enzymes: ["PstI", "EcoRI", "XbaI", "SpeI"],
-        enzymeFilter: ""
+        enzymeFilter: "",
+        accession: null  // set when a sequence is fetched from NCBI
     };
 
     // ---- DOM refs ------------------------------------------------------------
@@ -127,6 +128,99 @@
         } else {
             viewer.setState(getProps());
         }
+        updateLiveSnippet();
+    }
+
+    // ---- Live Python snippet -------------------------------------------------
+    //
+    // For fetched accessions we emit `requests.get(...) + file=gb` (matches the
+    // pattern in docs/data/examples.js); otherwise an inline `seq="..."` with a
+    // truncation comment so long sequences stay readable.
+
+    function pyStr(s) {
+        return '"' + String(s)
+            .replace(/\\/g, "\\\\")
+            .replace(/"/g, '\\"')
+            .replace(/\n/g, "\\n")
+            .replace(/\r/g, "\\r")
+            .replace(/\t/g, "\\t") + '"';
+    }
+
+    function pyBool(b) { return b ? "True" : "False"; }
+
+    function generatePythonSnippet(s) {
+        var lines = [];
+        var usesRequests = !!s.accession;
+
+        lines.push("from dash import Dash, html");
+        lines.push("from dash_seqviz import SeqViz");
+        if (usesRequests) { lines.push("import requests"); }
+        lines.push("");
+
+        if (usesRequests) {
+            lines.push("# Fetch GenBank from NCBI; SeqViz parses it inline via file=");
+            lines.push("gb = requests.get(");
+            lines.push('    "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi",');
+            lines.push('    params={"db": "nuccore", "id": ' + pyStr(s.accession) + ",");
+            lines.push('            "rettype": "gb", "retmode": "text",');
+            lines.push('            "tool": "myapp", "email": "you@lab.org"},');
+            lines.push("    timeout=10,");
+            lines.push(").text");
+            lines.push("");
+        }
+
+        lines.push("app = Dash(__name__)");
+        lines.push("app.layout = html.Div([");
+        lines.push("    SeqViz(");
+        lines.push('        id="demo",');
+        lines.push("        name=" + pyStr(s.name) + ",");
+
+        if (usesRequests) {
+            lines.push("        file=gb,");
+        } else if (s.seq && s.seq.length > 200) {
+            lines.push("        seq=" + pyStr(s.seq.substring(0, 100)) +
+                       ",  # ... (" + s.seq.length + " bp total, truncated)");
+        } else {
+            lines.push("        seq=" + pyStr(s.seq || "") + ",");
+        }
+
+        lines.push("        viewer=" + pyStr(s.viewer) + ",");
+        lines.push("        zoom={\"linear\": " + (s.zoom && s.zoom.linear != null ? s.zoom.linear : 50) + "},");
+        lines.push("        showComplement=" + pyBool(s.showComplement) + ",");
+        lines.push("        showTranslations=" + pyBool(s.showTranslations) + ",");
+        lines.push("        rotateOnScroll=" + pyBool(s.rotateOnScroll) + ",");
+
+        var bp = s.bpColors || {};
+        lines.push("        bpColors={" +
+                   '"A": ' + pyStr(bp.A || "") + ", " +
+                   '"T": ' + pyStr(bp.T || "") + ", " +
+                   '"C": ' + pyStr(bp.C || "") + ", " +
+                   '"G": ' + pyStr(bp.G || "") + "},");
+
+        if (s.enzymes && s.enzymes.length) {
+            var enz = s.enzymes.map(pyStr).join(", ");
+            lines.push("        enzymes=[" + enz + "],");
+        }
+
+        if (s.search && s.search.query) {
+            lines.push("        search={\"query\": " + pyStr(s.search.query) +
+                       ", \"mismatch\": " + (s.search.mismatch || 0) + "},");
+        }
+
+        lines.push('        style={"height": "500px", "width": "100%"},');
+        lines.push("    )");
+        lines.push("])");
+        lines.push("");
+        lines.push('if __name__ == "__main__":');
+        lines.push("    app.run(debug=True)");
+
+        return lines.join("\n");
+    }
+
+    function updateLiveSnippet() {
+        var node = document.querySelector("#live-snippet code");
+        if (!node) { return; }
+        node.textContent = generatePythonSnippet(state);
     }
 
     // ---- NCBI GenBank parser -------------------------------------------------
@@ -385,6 +479,7 @@
             })
             .then(function (parsed) {
                 fetchCache[accession] = parsed;
+                state.accession = accession;
                 loadParsed(parsed, accession, statusEl);
             })
             .catch(function (gbErr) {
@@ -396,6 +491,7 @@
                         if (text.charAt(0) !== ">") { throw new Error("Not a valid FASTA record."); }
                         var parsed = parseFasta(text);
                         fetchCache[accession] = parsed;
+                        state.accession = accession;
                         statusEl.innerHTML = "";
                         loadParsed(parsed, accession, statusEl);
                         statusEl.innerHTML += ' <em>(FASTA only &mdash; no annotations available)</em>';
@@ -417,6 +513,7 @@
         state.annotations = DEFAULT_ANNOTATIONS;
         state.primers = DEFAULT_PRIMERS;
         state.translations = DEFAULT_TRANSLATIONS;
+        state.accession = null;
 
         el("ctrl-accession").value = "";
         el("fetch-status").textContent = "";

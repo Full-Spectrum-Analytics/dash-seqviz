@@ -51,9 +51,22 @@
                 "template to talk about translation, codon usage, and folding.</p>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
-                "<li>Search for the start codon <code>ATGAGT</code> &mdash; the first 6 bp of GFP.</li>" +
-                "<li>Toggle <em>Show translations</em> on/off to reveal the protein sequence.</li>" +
-                "<li>Toggle the classic cloning sites below and see where they sit in the CDS:</li>" +
+                "<li><strong>Land at the start codon.</strong> Search for <code>ATGAGT</code> " +
+                "&mdash; the first 6 bp of the GFP CDS. The highlight anchors you at residue 1 " +
+                "so the rest of the walkthrough has a reference point.</li>" +
+                "<li><strong>Turn on <em>Show translations</em>.</strong> Now every codon is " +
+                "rendered in frame under the DNA. The single-letter protein track is what lets " +
+                "you <em>see</em> codon usage, the signal-less N-terminus, and the conserved " +
+                "&beta;-barrel residues without leaving the viewer.</li>" +
+                "<li><strong>Find the chromophore triad.</strong> With translations on, search " +
+                "for <code>SYG</code> (or the DNA <code>AGCTATGGT</code>) to jump to residues " +
+                "<strong>Ser65-Tyr66-Gly67</strong>. Those three residues auto-cyclize inside " +
+                "the folded barrel to form the fluorophore shown in the compound panel " +
+                "&mdash; no enzyme required. This is why a single CDS is enough to make a cell " +
+                "glow.</li>" +
+                "<li><strong>Toggle the classic cloning sites below.</strong> They land in " +
+                "flanking sequence, not in the CDS &mdash; a reminder that reporter gene design " +
+                "is as much about where you <em>can</em> cut as about what you&rsquo;re putting in.</li>" +
                 "</ul>" +
                 "<div class=\"enzyme-toggle-row\">" +
                 "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"EcoRI\">EcoRI</button>" +
@@ -131,12 +144,35 @@
                 "<strong>CAP binding site</strong>, <strong>-35 / -10 promoter</strong>, " +
                 "<strong>operator</strong> (<code>lacO</code>), and the three structural " +
                 "genes <code>lacZ</code> (&beta;-galactosidase), <code>lacY</code> " +
-                "(permease), and <code>lacA</code> (transacetylase).</p>" +
-                "<h3>Try this</h3>" +
+                "(permease), and <code>lacA</code> (transacetylase). Read left to right, those " +
+                "features are the whole regulation story in the order RNA polymerase " +
+                "encounters them.</p>" +
+                "<h3>Try this: walk the regulatory region</h3>" +
                 "<ul>" +
-                "<li>Search for <code>AATTGTGAGC</code> &mdash; the left half of the CAP binding site.</li>" +
-                "<li>Switch to linear view; the zoom slider walks through the three CDSs.</li>" +
-                "<li>Turn on translations to see the reading frame of <code>lacZ</code>.</li>" +
+                "<li><strong>Search <code>AATTGTGAGC</code> &mdash; the CAP site.</strong> " +
+                "This is the left half of the CRP/CAP binding site. When glucose is low, " +
+                "cAMP-CAP sits here and bends the DNA so RNA polymerase can productively " +
+                "engage the promoter. This is the <em>activation</em> input to the operon.</li>" +
+                "<li><strong>Zoom in ~40&ndash;60 bp downstream to the &minus;35 / &minus;10 " +
+                "promoter.</strong> Switch to linear view and nudge the zoom slider up &mdash; " +
+                "the two hexamer boxes are where &sigma;<sup>70</sup> contacts DNA. With " +
+                "translations off you can read the spacer length (17 bp) that sets promoter " +
+                "strength.</li>" +
+                "<li><strong>Continue to <code>lacO</code>, the operator.</strong> It overlaps " +
+                "the transcription start. In the <em>repressed</em> state, LacI tetramer sits " +
+                "on <code>lacO</code> and physically blocks RNAP elongation &mdash; CAP can be " +
+                "bound and it still won&rsquo;t transcribe. This is the <em>repression</em> " +
+                "input.</li>" +
+                "<li><strong>Hover <span class=\"info-term\" data-term=\"iptg\">IPTG</span></strong> " +
+                "in this sentence to see the small-molecule inducer that flips the circuit " +
+                "<em>on</em>. IPTG (or the natural inducer allolactose) binds LacI, drops its " +
+                "affinity for <code>lacO</code>, and the operator clears &mdash; now CAP-activated " +
+                "polymerase can run straight into <code>lacZ</code>.</li>" +
+                "<li><strong>Turn on translations over <code>lacZ</code>.</strong> You&rsquo;ll " +
+                "see the &beta;-galactosidase reading frame &mdash; the enzyme that cleaves " +
+                "lactose into glucose and galactose and, in the classroom, cleaves X-gal into " +
+                "the blue indigo product. That color change is the same transcriptional output " +
+                "you just walked through in four steps above.</li>" +
                 "</ul>" +
                 "<h3>References</h3>" +
                 "<ul>" +
@@ -237,6 +273,7 @@
                 viewer: "both",
                 zoom: { linear: 35 },
                 showComplement: false,
+                search: { query: "ATGAAGCATTCT" },  // vioA start codon + 9 bp (M-K-H-S)
                 style: { height: "560px", width: "100%" }
             },
             narrative:
@@ -251,9 +288,27 @@
                 "molecules into violacein.</p>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
-                "<li>Zoom out to see all five CDSs stacked left to right.</li>" +
-                "<li>Load the same pathway after refactoring &mdash; see the industrial example " +
-                "<a href=\"./example.html?id=violacein-refactored\">Violacein refactored for E. coli</a>.</li>" +
+                "<li>Hover <span class=\"info-term\" data-term=\"l-tryptophan\">L-tryptophan</span> " +
+                "in the paragraph above to pop the substrate card \u2014 this is the aromatic " +
+                "amino acid the whole cluster consumes, two molecules per violacein.</li>" +
+                "<li>On the pathway card to the right, flip between <em>Full reaction scheme</em> " +
+                "and <em>Intermediates only</em>. In the full scheme you can see O\u2082 drawn in " +
+                "as a cosubstrate at three distinct steps (VioA, VioD, VioC) \u2014 this cluster " +
+                "is <strong>oxygen-hungry</strong>, which matters when you try to push titer in a " +
+                "bioreactor.</li>" +
+                "<li>Tie each arrow on the pathway card to its gene in the linear viewer: find " +
+                "<code>vioA</code>, <code>vioB</code>, <code>vioC</code>, <code>vioD</code>, " +
+                "<code>vioE</code> in order and match each to the transformation it catalyzes " +
+                "(VioA flavin oxidase \u2192 IPA imine; VioB+VioE dimerizes; VioD hydroxylates; " +
+                "VioC oxidizes to violet).</li>" +
+                "<li>The viewer is already searching for <code>ATGAAGCATTCT</code> \u2014 the " +
+                "<code>vioA</code> start codon and its first three codons (M-K-H-S). The match " +
+                "highlights the 5\u2032 end of the cluster so you can see exactly where the " +
+                "pathway boots up.</li>" +
+                "<li>When you're ready to see how this cluster gets rebuilt for a production " +
+                "chassis, load the industrial companion: " +
+                "<a href=\"./example.html?id=violacein-refactored\">Violacein refactored for " +
+                "E. coli</a>.</li>" +
                 "</ul>" +
                 "<h3>References</h3>" +
                 "<ul>" +
@@ -461,8 +516,27 @@
                 "perfect teaching example for <strong>RiPP biosynthesis</strong>.</p>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
-                "<li>Scan across the whole cluster; note how tightly CDSs pack.</li>" +
-                "<li>Compare to the industrial example " +
+                "<li><strong>Spot BotA, the 44-aa precursor.</strong> It's the smallest CDS " +
+                "in the cluster &mdash; a ribbon-thin box next to its bulky modification " +
+                "neighbors. Paste <code>GPVVVFDC</code> into the viewer's search box to land " +
+                "directly on the core-peptide motif; everything N-terminal to it is leader " +
+                "sequence that BotP / BotH / BotAH cleave off. The whole drug is carved out " +
+                "of that eight-residue core.</li>" +
+                "<li><strong>Walk the pathway card.</strong> The default view shows the " +
+                "precursor and the finished scaffold. Click to <em>Full reaction scheme</em> " +
+                "and the five-enzyme pipeline unfolds: " +
+                "<strong>BotP / BotH / BotAH</strong> (leader peptidases), " +
+                "<strong>BotCD</strong> (YcaO-type cyclodehydratase that installs the Cys " +
+                "thiazole), <strong>BotRMT1\u20133</strong> (three radical-SAM C-methylations), " +
+                "<strong>BotOMT</strong> (O-methyl ester on the Asp carboxylate), and " +
+                "<strong>BotCYP</strong> (P450 oxidation). Toggle back to the condensed " +
+                "view to see the net transformation in one arrow.</li>" +
+                "<li><strong>Map each enzyme to its CDS.</strong> Scroll the linear viewer " +
+                "left-to-right and tag each ORF by name &mdash; the precursor sits at one " +
+                "end, the radical-SAM methyltransferases cluster together, and the " +
+                "cytochrome P450 (BotCYP) is the last big box before the transport genes. " +
+                "Every arrow you pass is one post-translational modification on the core " +
+                "octapeptide. Compare to the industrial example " +
                 "<a href=\"./example.html?id=bottromycin-industrial\">heterologous bottromycin " +
                 "expression</a>.</li>" +
                 "</ul>" +
@@ -567,6 +641,29 @@
                 "<p>Sensory-first brands don't care about GMP-grade titers &mdash; they care " +
                 "about consistent flavor molecules. A visualizer like this lets a brewmaster, " +
                 "not just a geneticist, see what's in a construct before it hits the fermenter.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li>Follow the monoterpene route on the pathway card: " +
+                "<span class=\"info-term\" data-term=\"dmapp\">DMAPP</span> \u2192 " +
+                "<span class=\"info-term\" data-term=\"gpp\">GPP</span> \u2192 " +
+                "<span class=\"info-term\" data-term=\"linalool\">linalool</span>. " +
+                "Toggle \"Full reaction scheme\" to expose the " +
+                "<span class=\"info-term\" data-term=\"ipp\">IPP</span> cosubstrate on the " +
+                "GPPS arrow \u2014 that's the C5 + C5 \u2192 C10 prenyl extension that feeds " +
+                "every monoterpene synthase.</li>" +
+                "<li>Hover each intermediate above to pop a 2D structure and a Wikipedia " +
+                "link. DMAPP and IPP are the allylic/homoallylic C5 starter pair, GPP is the " +
+                "C10 handoff, and linalool is the floral-citrus top note you actually smell " +
+                "in the glass.</li>" +
+                "<li>This is a single-CDS record, not a cluster &mdash; the whole linear " +
+                "view <em>is</em> the MTS2 gene. Zoom in on the 5\u2032 end of the CDS, " +
+                "flip on the translation track, and find the ATG start codon / initial " +
+                "methionine. Good sanity check before you drop the ORF into a yeast " +
+                "expression vector.</li>" +
+                "<li>Toggle the complement strand to confirm MTS2 is annotated on the " +
+                "expected strand &mdash; a real-world QC step before committing a new " +
+                "aroma cassette to a brewing yeast line.</li>" +
+                "</ul>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Wang G, Tian L, Aziz N, Broun P, Dai X, He J <em>et al.</em> " +
@@ -632,11 +729,32 @@
                 "broad-host-range Cas9 plasmid used to drive CREATE &mdash; a platform for " +
                 "genome-wide, tracked mutagenesis &mdash; a compact, reusable unit you can " +
                 "visualize, QC, and hand to a cloning robot.</p>" +
-                "<h3>What to look for</h3>" +
+                "<h3>Try this</h3>" +
                 "<ul>" +
-                "<li>The Cas9 CDS dominates the plasmid's length.</li>" +
-                "<li>Spot the aminoglycoside phosphotransferase (kanamycin resistance) marker.</li>" +
-                "<li>Toggle Golden Gate cutters below to check compatibility before ordering:</li>" +
+                "<li><strong>Locate the Cas9 CDS.</strong> Zoom fully out and look for " +
+                "the one huge ORF \u2014 <em>S. pyogenes</em> Cas9 is ~4.1 kb and dwarfs " +
+                "everything else on the plasmid. Search for <code>ATGGA</code> to land on " +
+                "the canonical SpCas9 start codon, then flip <em>Show translations</em> on " +
+                "to confirm you're reading into the Cas9 polypeptide rather than an " +
+                "unrelated ORF.</li>" +
+                "<li><strong>Find the gRNA cassette and toggle BsaI.</strong> The sgRNA " +
+                "cloning site is the destination for Golden Gate assembly \u2014 the two " +
+                "BsaI sites flanking the placeholder dropout are what release it so you " +
+                "can ligate in your 20-bp spacer. Because BsaI is a Type IIS cutter, it " +
+                "leaves the scar <em>outside</em> its recognition site, giving you a " +
+                "directional, scarless fusion between the U6/SNR52 promoter and your " +
+                "spacer in a single one-pot reaction.</li>" +
+                "<li><strong>Spot the selection marker.</strong> The aminoglycoside " +
+                "phosphotransferase CDS confers " +
+                "<span class=\"info-term\" data-term=\"kanamycin\">kanamycin</span> " +
+                "resistance \u2014 hover the term for the mechanism. This is the marker " +
+                "you'll plate on after transforming your spacer-loaded construct.</li>" +
+                "<li><strong>Cross-compatibility check.</strong> Toggle BsmBI and SapI. " +
+                "Any internal cut sites in the Cas9 or marker CDSs mean this plasmid " +
+                "would need <em>domestication</em> (silent mutation of the offending " +
+                "sites) before combining it with MoClo or Loop toolkits that use those " +
+                "enzymes as their assembly cutter. Clean backbones here are the difference " +
+                "between a one-pot assembly that works and a three-day debug.</li>" +
                 "</ul>" +
                 "<div class=\"enzyme-toggle-row\">" +
                 "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BsaI\">BsaI</button>" +
@@ -688,20 +806,31 @@
         {
             id: "violacein-refactored",
             title: "Violacein refactored — From soil bug to industrial chassis",
-            summary: "The same violacein cluster you saw in the academic track, moved into E. coli for industrial-scale pigment production.",
+            summary: "The same violacein cluster you saw in the academic track, moved into E. coli for industrial-scale pigment production. Rendered side-by-side as native vs. Golden Gate\u2013ready so you can eyeball the cut-site domestication.",
             category: "industrial",
             tags: ["biosynthesis", "E. coli", "refactored"],
             complexity: 4,
-            accession: "AF172851.1",
+            // Two viewers side by side on one page. Both reference the same
+            // NCBI record (AF172851.1) \u2014 we don't ship a fully refactored
+            // synthetic construct, so the teaching value is the comparison
+            // itself: a "native" viewer with no Golden Gate enzymes selected,
+            // and a "refactored" viewer where flipping BsaI/BsmBI on reveals
+            // exactly the sites a real refactor would have to domesticate.
+            accessions: [
+                { id: "AF172851.1", label: "Native (for reference)" },
+                { id: "AF172851.1", label: "Refactored (Golden Gate\u2013ready)" }
+            ],
             compound: {
                 name: "Violacein",
                 smiles: "OC1=CC=C(NC(=O)/C(=C2\\C(=O)C3=CC=CC=C3N2)C2=CNC3=CC=CC=C23)C=C1",
                 description: "Same bisindole pigment as the academic example. In an industrial context, titer optimization is the goal \u2014 codon-optimized CDSs and calibrated promoters push E. coli to produce grams per liter."
             },
             seqvizProps: {
-                viewer: "both",
-                zoom: { linear: 35 },
-                enzymes: ["BsaI", "BsmBI"],
+                // Multi-viewer pages force a single-topology default \u2014
+                // Both / Both flipped are auto-disabled by example.html so
+                // the two viewers stay in lockstep.
+                viewer: "circular",
+                zoom: { linear: 1 },
                 style: { height: "560px", width: "100%" }
             },
             narrative:
@@ -711,11 +840,36 @@
                 "industrial practice, the native <em>Chromobacterium</em> version is rarely " +
                 "used directly &mdash; teams rebuild the five enzymes in <em>E. coli</em> " +
                 "with refactored promoters, codon-optimized CDSs, and designed RBSs.</p>" +
+                "<p>Both viewers above point at the same GenBank record so the comparison " +
+                "is apples-to-apples: the left panel is your <em>as-deposited</em> reference, " +
+                "the right panel is the same DNA we're about to <em>domesticate</em> for " +
+                "Golden Gate assembly. Flipping the enzyme toggles lights up every site a " +
+                "real refactor would have to silently mutate out of the codon-optimized CDSs.</p>" +
                 "<h3>What changes in an industrial context</h3>" +
                 "<ul>" +
                 "<li>Native sequences replaced with codon-optimized synonymous variants.</li>" +
                 "<li>Promoters standardized across the cluster for tunable control.</li>" +
                 "<li>Internal restriction sites removed so Golden Gate assembly works.</li>" +
+                "</ul>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li>Start with both viewers clean: no enzymes selected on either. Switch the " +
+                "topology radio to <em>Linear</em> and scroll through. The left (\"Native\") " +
+                "panel is your baseline \u2014 the unmodified cluster as it exists in nature.</li>" +
+                "<li>Click <strong>BsaI</strong> below to light up every BsaI site on both " +
+                "viewers at once. Count the cut marks in the left panel. <em>That</em> is the " +
+                "exact list of sites a refactor team has to silently mutate out of the " +
+                "codon-optimized CDSs before the cluster will survive a Golden Gate reaction.</li>" +
+                "<li>Now add <strong>BsmBI</strong> \u2014 the other canonical Type IIS cutter " +
+                "used in MoClo-style hierarchical assembly. Every additional cut mark is one " +
+                "more silent synonymous swap the synthesis order has to carry.</li>" +
+                "<li>Imagine the right (\"Refactored\") panel with <em>zero</em> cut marks once " +
+                "those silent swaps land: that's the deliverable of a refactor project. The " +
+                "side-by-side view trains your eye to spot the delta at a glance \u2014 " +
+                "native-has-sites vs. refactored-is-clean \u2014 which is exactly how a build " +
+                "report would be reviewed before ordering synthesis.</li>" +
+                "<li>Flip topology back to <em>Circular</em> to see both panels as the " +
+                "destination plasmids an assembly robot would actually handle.</li>" +
                 "</ul>" +
                 "<div class=\"enzyme-toggle-row\">" +
                 "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BsaI\">BsaI</button>" +
@@ -733,30 +887,99 @@
                 "<em>Sci Rep</em> 5:11301 (2015). PMID: 26071488.</li>" +
                 "</ul>",
             pythonSnippet:
-                "from dash import Dash, html\n" +
+                "\"\"\"Violacein refactor: native vs. Golden Gate\u2013ready, side by side.\n" +
+                "\n" +
+                "Mirrors the multi-viewer pattern used on the web page \u2014 two SeqViz\n" +
+                "components driven by a single topology radio, with a grid that flips\n" +
+                "between side-by-side (Circular) and stacked (Linear) layouts. Both\n" +
+                "viewers point at AF172851.1 so the learner can eyeball the BsaI /\n" +
+                "BsmBI sites a refactor team would have to domesticate before the\n" +
+                "cluster will survive a Golden Gate reaction.\n" +
+                "\"\"\"\n" +
+                "from dash import Dash, html, dcc, Input, Output, callback\n" +
                 "from dash_seqviz import SeqViz\n" +
                 "import requests\n" +
                 "\n" +
-                "gb = requests.get(\n" +
-                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
-                "    params={\"db\": \"nuccore\", \"id\": \"AF172851.1\",\n" +
-                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
-                "            \"tool\": \"biofoundry\", \"email\": \"you@lab.org\"},\n" +
-                "    timeout=10,\n" +
-                ").text\n" +
+                "ACCESSIONS = [\n" +
+                "    (\"AF172851.1\", \"Native (for reference)\"),\n" +
+                "    (\"AF172851.1\", \"Refactored (Golden Gate\u2013ready)\"),\n" +
+                "]\n" +
+                "\n" +
+                "GRID_SIDE_BY_SIDE = {\n" +
+                "    \"display\": \"grid\",\n" +
+                "    \"gridTemplateColumns\": \"repeat(auto-fit, minmax(420px, 1fr))\",\n" +
+                "    \"gap\": \"14px\",\n" +
+                "}\n" +
+                "GRID_STACKED = {\n" +
+                "    \"display\": \"grid\",\n" +
+                "    \"gridTemplateColumns\": \"1fr\",\n" +
+                "    \"gap\": \"14px\",\n" +
+                "}\n" +
+                "\n" +
+                "def fetch_gb(accession: str) -> str:\n" +
+                "    return requests.get(\n" +
+                "        \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "        params={\"db\": \"nuccore\", \"id\": accession,\n" +
+                "                \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "                \"tool\": \"biofoundry\", \"email\": \"you@lab.org\"},\n" +
+                "        timeout=10,\n" +
+                "    ).text\n" +
+                "\n" +
+                "# Both labels resolve to the same record \u2014 the refactor is illustrative.\n" +
+                "records = {acc: fetch_gb(acc) for acc, _ in ACCESSIONS}\n" +
                 "\n" +
                 "app = Dash(__name__)\n" +
                 "app.layout = html.Div([\n" +
-                "    SeqViz(\n" +
-                "        id=\"violacein-ref\",\n" +
-                "        name=\"Violacein in E. coli\",\n" +
-                "        file=gb,\n" +
-                "        viewer=\"linear\",\n" +
-                "        zoom={\"linear\": 35},\n" +
-                "        enzymes=[\"BsaI\", \"BsmBI\"],  # check Golden Gate compatibility\n" +
-                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
-                "    )\n" +
+                "    dcc.RadioItems(\n" +
+                "        id=\"topology\",\n" +
+                "        options=[{\"label\": \"Circular\", \"value\": \"circular\"},\n" +
+                "                 {\"label\": \"Linear\",   \"value\": \"linear\"}],\n" +
+                "        value=\"circular\",\n" +
+                "        inline=True,\n" +
+                "    ),\n" +
+                "    html.Div(\n" +
+                "        id=\"viewer-grid\",\n" +
+                "        children=[\n" +
+                "            html.Div([\n" +
+                "                html.Div([html.Strong(acc), html.Span(f\" \u2014 {label}\")]),\n" +
+                "                SeqViz(\n" +
+                "                    # Pattern-matching id carries the label so the two\n" +
+                "                    # panels can receive different enzyme lists from\n" +
+                "                    # separate callbacks if you want per-panel control.\n" +
+                "                    id={\"type\": \"viz\", \"panel\": label},\n" +
+                "                    name=f\"{acc} \u2014 {label}\",\n" +
+                "                    file=records[acc],\n" +
+                "                    viewer=\"circular\",\n" +
+                "                    zoom={\"linear\": 1},\n" +
+                "                    # Native panel starts clean; refactored panel shows the\n" +
+                "                    # sites the domestication pass needs to remove.\n" +
+                "                    enzymes=[] if label.startswith(\"Native\")\n" +
+                "                            else [\"BsaI\", \"BsmBI\"],\n" +
+                "                    style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "                ),\n" +
+                "            ]) for acc, label in ACCESSIONS\n" +
+                "        ],\n" +
+                "        style=GRID_SIDE_BY_SIDE,\n" +
+                "    ),\n" +
                 "])\n" +
+                "\n" +
+                "# Callback 1: topology radio \u2192 every SeqViz at once via pattern-matching IDs.\n" +
+                "@callback(\n" +
+                "    Output({\"type\": \"viz\", \"panel\": \"ALL\"}, \"viewer\", allow_duplicate=True),\n" +
+                "    Input(\"topology\", \"value\"),\n" +
+                "    prevent_initial_call=True,\n" +
+                ")\n" +
+                "def set_topology(value):\n" +
+                "    return [value] * len(ACCESSIONS)\n" +
+                "\n" +
+                "# Callback 2: same topology radio \u2192 grid layout. Side-by-side for\n" +
+                "# Circular (square views), stacked for Linear (wide scrollers).\n" +
+                "@callback(\n" +
+                "    Output(\"viewer-grid\", \"style\"),\n" +
+                "    Input(\"topology\", \"value\"),\n" +
+                ")\n" +
+                "def set_grid_layout(value):\n" +
+                "    return GRID_STACKED if value == \"linear\" else GRID_SIDE_BY_SIDE\n" +
                 "\n" +
                 "if __name__ == \"__main__\":\n" +
                 "    app.run(debug=True)\n"
@@ -804,11 +1027,30 @@
                 "fermentations are finicky. Pharma R&amp;D teams routinely port a cluster " +
                 "into a faster chassis (<em>S. coelicolor</em> M1152, <em>S. albus</em> J1074, " +
                 "or even <em>E. coli</em>) to evaluate yield, titer, and analog variability.</p>" +
-                "<h3>This record as a pipeline checkpoint</h3>" +
+                "<h3>Try this</h3>" +
                 "<ul>" +
-                "<li>Inspect the whole cluster length to budget for DNA synthesis cost.</li>" +
-                "<li>Flag CDSs that will need codon optimization for the new host.</li>" +
-                "<li>Toggle the Golden Gate + NotI cutters below to check compatibility:</li>" +
+                "<li><strong>BsaI / BsmBI &mdash; the Golden Gate type IIS enzymes.</strong> " +
+                "Toggle them and every internal recognition site lights up across the " +
+                "cluster. Each cut inside <code>botA</code>, <code>botCD</code>, the " +
+                "<code>botRMT</code> trio, <code>botOMT</code>, or <code>botCYP</code> is a " +
+                "site you have to <em>domesticate</em> &mdash; silently mutate away with a " +
+                "synonymous codon &mdash; before the pieces can go through a Golden Gate " +
+                "reaction without self-digesting. Count them to scope the synonymous-mutation " +
+                "budget before the gene synthesis order goes out.</li>" +
+                "<li><strong>NotI &mdash; the 8-cutter module boundary.</strong> NotI's " +
+                "rare 8-bp recognition site (GCGGCCGC) makes it the go-to enzyme for " +
+                "snapping whole cluster-sized fragments in and out of a backbone. Toggle " +
+                "it: if nothing lights up inside the cluster, that's the outcome you want " +
+                "&mdash; the whole ~20 kb insert can ride on flanking NotI sites as a " +
+                "single cloneable unit. Any internal NotI hits would have to be " +
+                "domesticated too, or the module would shatter on the first digest.</li>" +
+                "<li><strong>Budget the synthesis cost.</strong> Zoom out to <code>1</code> " +
+                "on the linear viewer and read the total bp count off the header. At a " +
+                "rough industry rate of ~&dollar;0.07/bp for de novo synthesis, a ~20 kb " +
+                "cluster lands near &dollar;1.4K in DNA alone &mdash; before codon " +
+                "optimization, domestication, or assembly QC. That number is what a " +
+                "cluster-level viewer is <em>for</em>: turning an abstract pathway into a " +
+                "line-item on a pilot-project budget.</li>" +
                 "</ul>" +
                 "<div class=\"enzyme-toggle-row\">" +
                 "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BsaI\">BsaI</button>" +
@@ -884,12 +1126,37 @@
                 "<code>uidA</code> (GUS) reporter under a 35S promoter with an NPTII " +
                 "(<span class=\"info-term\" data-term=\"kanamycin\">kanamycin</span>) " +
                 "selection marker, flanked by T-DNA left and right borders.</p>" +
-                "<h3>What to look at</h3>" +
+                "<h3>Try this</h3>" +
                 "<ul>" +
-                "<li>Spin through the circular view to see LB / RB flanking the expression " +
-                "cassette.</li>" +
-                "<li>Toggle the classic MCS cutters below &mdash; the sites that let scientists " +
-                "swap in their own gene of interest:</li>" +
+                "<li>Hover <span class=\"info-term\" data-term=\"kanamycin\">kanamycin</span> " +
+                "in the paragraph above to see the aminoglycoside the NPTII marker confers " +
+                "resistance to \u2014 the selection agent that lets only transformed plant " +
+                "cells grow on the plate.</li>" +
+                "<li>Spin through the circular view to see the <em>LB</em> and <em>RB</em> " +
+                "imperfect 25-bp direct repeats flanking the expression cassette \u2014 " +
+                "everything between them is what Agrobacterium actually ferries into the " +
+                "plant genome.</li>" +
+                "<li>Paste <code>GGCAGGATATAT</code> into the viewer's search box \u2014 that " +
+                "conserved core of the T-DNA border repeat lights up on both LB and RB and " +
+                "shows you exactly where VirD1/VirD2 nicks to excise the transgene.</li>" +
+                "<li>Toggle the classic MCS cutters below \u2014 the sites that let scientists " +
+                "swap in their own gene of interest. Each one matters for a different reason:" +
+                "<ul>" +
+                "<li><strong>EcoRI</strong> leaves 5' <code>AATT</code> overhangs \u2014 " +
+                "compatible with a huge legacy of tagged-reporter fragments, which is why " +
+                "it's still the default drop-in site for a fluorescent protein or epitope " +
+                "tag.</li>" +
+                "<li><strong>HindIII</strong> gives 5' <code>AGCT</code> overhangs and sits " +
+                "just outside the GUS cassette \u2014 handy for swapping the whole " +
+                "<code>uidA</code> reporter for your own ORF.</li>" +
+                "<li><strong>BamHI</strong> and <strong>XbaI</strong> bracket the cassette " +
+                "in a polylinker that's shared with many plant-expression vectors, so " +
+                "cassettes move between backbones without redesign.</li>" +
+                "<li><strong>SacI</strong> sits at the 3' end near the NOS terminator \u2014 " +
+                "a clean exit point when you're replacing the terminator or adding a 3' " +
+                "tag.</li>" +
+                "</ul>" +
+                "</li>" +
                 "</ul>" +
                 "<div class=\"enzyme-toggle-row\">" +
                 "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"EcoRI\">EcoRI</button>" +
@@ -997,10 +1264,22 @@
                 "(USDA ruled it outside GMO jurisdiction in 2016).</p>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
+                "<li>Start with the molecules. Hover " +
+                "<span class=\"info-term\" data-term=\"amylose\">amylose</span> in the first " +
+                "paragraph to see the straight \u03b1-1,4 glucose chain, then hover " +
+                "<span class=\"info-term\" data-term=\"amylopectin\">amylopectin</span> to see " +
+                "the same backbone with \u03b1-1,6 branch points grafted on. That single " +
+                "structural difference is the whole story: disrupt <code>Wx1</code>, lose " +
+                "GBSSI, lose the straight chains \u2014 and the kernel fills with nothing but " +
+                "the branched form.</li>" +
                 "<li>Zoom in on the <code>Wx1</code> CDS and pick a 20 bp PAM-adjacent window " +
-                "inside an early exon \u2014 that's a plausible CRISPR cut site.</li>" +
+                "inside an early exon \u2014 that's a plausible CRISPR cut site. An early-exon " +
+                "frameshift knocks GBSSI out cleanly, which is why Corteva's edit targets this " +
+                "neighborhood rather than a later domain.</li>" +
                 "<li>Toggle the cloning cutters below to see whether the native sequence has " +
-                "compatible restriction sites for traditional cloning (versus going gene-edit):</li>" +
+                "compatible restriction sites for traditional cloning \u2014 a useful " +
+                "counterfactual for how much slower the pre-CRISPR route to the same " +
+                "phenotype would have been:</li>" +
                 "</ul>" +
                 "<div class=\"enzyme-toggle-row\">" +
                 "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"EcoRI\">EcoRI</button>" +
@@ -1091,10 +1370,27 @@
                 "Corteva / Bayer / BASF ag-biotech ecosystem.</p>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
-                "<li>Find the CDS start codon and inspect the N-terminal <em>chloroplast transit peptide</em> " +
-                "\u2014 plants need it to target EPSPS to the chloroplast stroma where the shikimate " +
-                "pathway runs.</li>" +
-                "<li>Toggle the Golden Gate cutters below to check domestication compatibility:</li>" +
+                "<li>Do the molecule triptych first. Hover " +
+                "<span class=\"info-term\" data-term=\"glyphosate\">glyphosate</span>, then " +
+                "<span class=\"info-term\" data-term=\"pep\">PEP</span>, then " +
+                "<span class=\"info-term\" data-term=\"shikimate\">shikimate</span>. PEP is " +
+                "the natural EPSPS substrate; glyphosate is a phosphonate near-perfect mimic " +
+                "that slots into the same pocket and won't leave; shikimate-3-phosphate is " +
+                "the second substrate that never gets its enolpyruvyl transfer. The whole " +
+                "Roundup Ready story is this structural coincidence \u2014 and you should see " +
+                "it before you look at the sequence.</li>" +
+                "<li>Find the CDS start codon and inspect the N-terminal <em>chloroplast " +
+                "transit peptide</em> \u2014 plants need it to target EPSPS to the chloroplast " +
+                "stroma where the shikimate pathway runs. Without this N-terminal extension " +
+                "the bacterial CP4 enzyme would sit uselessly in the cytosol.</li>" +
+                "<li>Search the CDS for <code>GCC</code> (an Ala codon) around the Gly101 " +
+                "\u2192 Ala substitution region \u2014 that single amino-acid change is what " +
+                "sterically excludes glyphosate from the active site while still letting PEP " +
+                "bind. A one-codon swap is the entire basis of a multi-billion-dollar trait.</li>" +
+                "<li>Toggle the Golden Gate cutters below to check domestication " +
+                "compatibility \u2014 any internal <code>BsaI</code> or <code>BsmBI</code> " +
+                "sites need to be synonymously recoded before the CDS can drop into a Type " +
+                "IIS assembly vector:</li>" +
                 "</ul>" +
                 "<div class=\"enzyme-toggle-row\">" +
                 "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BsaI\">BsaI</button>" +
@@ -1416,12 +1712,31 @@
                 "biofoundry parts library since \u2014 traces its philosophy of \"one shared " +
                 "backbone, interchangeable inserts\" back to pUC19. If you're teaching a new " +
                 "scientist why standardized DNA parts matter, this is where you start.</p>" +
-                "<h3>Try this</h3>" +
+                "<h3>Try this: the three regions every cloning vector needs</h3>" +
                 "<ul>" +
-                "<li>Toggle the classic MCS cutters below. All six sit in the lacZα MCS, close " +
-                "enough that cloning into any of them disrupts lacZα and produces a white colony.</li>" +
-                "<li>Switch the viewer to <em>Circular</em> to see the vector's compact geometry " +
-                "\u2014 this is the shape every downstream synbio toolkit scales up from.</li>" +
+                "<li><strong>Start on <em>Circular</em>.</strong> pUC19 is only 2,686 bp " +
+                "&mdash; the full plasmid fits on one dial. You can see at a glance that the " +
+                "replication origin, selection marker, and cloning site occupy three distinct " +
+                "arcs of the circle. This is the anatomy every downstream synbio toolkit " +
+                "scales up from.</li>" +
+                "<li><strong>Find <code>bla</code> (ampR) &mdash; the selection marker.</strong> " +
+                "Look for the ~860 bp CDS labeled <code>bla</code>/AmpR. It encodes " +
+                "&beta;-lactamase, which hydrolyzes ampicillin&rsquo;s &beta;-lactam ring. " +
+                "Cells without the plasmid die on ampicillin plates; cells with it survive. " +
+                "That&rsquo;s how you pick transformants before you ever check the insert.</li>" +
+                "<li><strong>Locate the ColE1 origin.</strong> Rotate to the opposite arc from " +
+                "<code>bla</code> &mdash; the <em>rep</em> / ColE1 origin is what drives the " +
+                "high copy number (~500&ndash;700 per cell) that made pUC19 such a convenient " +
+                "prep target. Change the origin and you change the yield, the compatibility " +
+                "group, and whether the plasmid even propagates.</li>" +
+                "<li><strong>Toggle the six MCS cutters below.</strong> All six sit inside " +
+                "<em>lacZα</em> &mdash; the N-terminal fragment of &beta;-galactosidase that " +
+                "complements a <code>lacZ&Delta;M15</code> host to give blue colonies on " +
+                "X-gal/<span class=\"info-term\" data-term=\"iptg\">IPTG</span> plates. " +
+                "Drop any fragment into one of these sites and you shift lacZα out of frame; " +
+                "&alpha;-complementation fails and the colony comes up <strong>white</strong>. " +
+                "That&rsquo;s the classic blue/white screen &mdash; a colorimetric readout of " +
+                "whether the ligation actually worked, written into the vector geometry itself.</li>" +
                 "</ul>" +
                 "<div class=\"enzyme-toggle-row\">" +
                 "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"EcoRI\">EcoRI</button>" +
@@ -1510,10 +1825,31 @@
                 "IgGs and their bispecific/ADC derivatives.</p>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
-                "<li>Look for the CDS start \u2014 the signal peptide is the first ~22 residues, " +
-                "followed by the extracellular subdomains I\u2013IV (~residues 23\u2013652).</li>" +
-                "<li>Toggle the common mammalian expression cutters below \u2014 useful when " +
-                "deciding whether to sub-clone the ECD for phage display or purified antigen.</li>" +
+                "<li><strong>Find the CDS start and signal peptide.</strong> Turn on " +
+                "<em>Show translations</em> and jump to the ATG. The first ~22 residues " +
+                "are the secretion signal peptide that routes the nascent chain into the " +
+                "ER \u2014 it's cleaved off the mature receptor. The extracellular " +
+                "subdomains I\u2013IV follow (~residues 23\u2013652) and tile the entire " +
+                "exterior of the cell.</li>" +
+                "<li><strong>Zoom to extracellular domain IV \u2014 the Herceptin epitope.</strong> " +
+                "Roughly residues 480\u2013620 of ERBB2 form the membrane-proximal " +
+                "subdomain that the 4D5 paratope grips. Scroll to that window with " +
+                "translations on; this is the span you'd PCR out when building a " +
+                "soluble-antigen construct for phage display panning or surface plasmon " +
+                "resonance binders.</li>" +
+                "<li><strong>Spot the transmembrane domain.</strong> Around residue 650 " +
+                "the sequence shifts into a short stretch of hydrophobic residues \u2014 " +
+                "that's the single-pass TM helix that anchors HER2 in the plasma membrane. " +
+                "It delineates the <em>ECD</em> (before) from the cytoplasmic " +
+                "<em>kinase domain</em> (after), which matters when you're engineering " +
+                "bispecifics or ADCs: you typically clone only the ECD, stopping just " +
+                "before this helix.</li>" +
+                "<li><strong>Count internal cut sites in the classic mammalian MCS pairs.</strong> " +
+                "EcoRI + NotI is the textbook expression-vector cloning pair for CHO " +
+                "production; HindIII + XbaI is the <code>pcDNA3.x</code> multiple-cloning-site " +
+                "pair. Toggle each enzyme and count the cut sites that land inside the " +
+                "ECD \u2014 any conflict means you'd need to linearize elsewhere (or silently " +
+                "mutate the offending codon) before sub-cloning.</li>" +
                 "</ul>" +
                 "<div class=\"enzyme-toggle-row\">" +
                 "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"EcoRI\">EcoRI</button>" +
