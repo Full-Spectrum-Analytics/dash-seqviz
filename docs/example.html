@@ -6,7 +6,7 @@
     <title>Example &mdash; dash-seqviz</title>
     <meta name="description" content="Interactive example — one curated construct visualized with dash-seqviz, with a ready-to-paste Python snippet.">
 
-    <link rel="stylesheet" href="./assets/site.css?v=7">
+    <link rel="stylesheet" href="./assets/site.css?v=8">
 </head>
 <body data-page="examples">
 
@@ -136,7 +136,7 @@
 <script crossorigin src="https://unpkg.com/smiles-drawer@2.2.1/dist/smiles-drawer.min.js"></script>
 <script src="./assets/nav.js"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
-<script src="./data/examples.js?v=7"></script>
+<script src="./data/examples.js?v=8"></script>
 
 <script>
     (function () {
@@ -455,6 +455,25 @@
             });
         }
 
+        // Promote anchor tags that point to another example page into
+        // category-colored pills. The narrative HTML ships with plain
+        // <a href="./example.html?id=X">text</a>; we look up X in the
+        // examples catalog and attach .example-link + .cat-<category>
+        // so the CSS can render them as academic/industrial chips.
+        function promoteExampleLinks(root) {
+            var byId = {};
+            (window.DASH_SEQVIZ_EXAMPLES || []).forEach(function (e) { byId[e.id] = e; });
+            (root || document).querySelectorAll('a[href^="./example.html?id="]').forEach(function (a) {
+                var m = a.getAttribute("href").match(/[?&]id=([^&#]+)/);
+                if (!m) return;
+                var target = byId[decodeURIComponent(m[1])];
+                a.classList.add("example-link");
+                if (target && target.category) {
+                    a.classList.add("cat-" + target.category);
+                }
+            });
+        }
+
         if (!ex) {
             titleEl.textContent = "Example not found";
             summaryEl.textContent =
@@ -515,6 +534,7 @@
 
         narrativeEl.innerHTML = ex.narrative || "";
         wireInfoTerms(narrativeEl);
+        promoteExampleLinks(narrativeEl);
         snippetEl.textContent = ex.pythonSnippet || "";
 
         // Pathway panel (multi-step biosynthetic route) takes priority over

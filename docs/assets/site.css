@@ -488,6 +488,52 @@ footer a:hover { text-decoration: underline; }
 .narrative a { color: var(--color-primary); text-decoration: underline; }
 .narrative a:hover { text-decoration: none; }
 
+/* ---- Cross-example link pills ---- */
+/* Anchor tags inside a narrative that point at another example page
+   (href="./example.html?id=<slug>") get auto-promoted to pill-style
+   links in JS. Baseline pill reads like a subtle chip; the category
+   variants pick up the same paleblue/amber palette as the category
+   badges and "More examples" cards so the academic-vs-industrial
+   cue is consistent site-wide. Keeps text unbolded / un-underlined
+   so it reads as an inline token, not a shouty hyperlink. */
+.narrative a.example-link {
+    display: inline-block;
+    padding: 1px 10px;
+    margin: 0 1px;
+    border-radius: 14px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.94em;
+    line-height: 1.5;
+    vertical-align: baseline;
+    transition: background 120ms, border-color 120ms, color 120ms;
+}
+.narrative a.example-link:hover {
+    text-decoration: none;
+    border-color: var(--color-primary);
+}
+.narrative a.example-link.cat-academic {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+.narrative a.example-link.cat-academic:hover {
+    background: #dbeafe;
+    border-color: #1d4ed8;
+}
+.narrative a.example-link.cat-industrial {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fde68a;
+}
+.narrative a.example-link.cat-industrial:hover {
+    background: #fde68a;
+    border-color: #92400e;
+}
+
 /* ---- Inline info terms (hover for molecule info card) ---- */
 /* Any <span class="info-term" data-term="..."> in a narrative gets
    a dotted underline hinting "hover for more"; the attached
