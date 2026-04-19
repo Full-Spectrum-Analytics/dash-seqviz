@@ -423,13 +423,37 @@
                 "depending on which genes are present. It is a favorite teaching case for " +
                 "<strong>pathway engineering</strong> because the color of a plate reveals " +
                 "how far the pathway went.</p>" +
-                "<h3>Try this</h3>" +
+                "<h3>Try this: follow the color of the plate</h3>" +
+                "<p>Each enzyme in this cluster changes what you'd see on a plate. " +
+                "Use the pathway card + the viewer together to map genes \u2192 chemistry " +
+                "\u2192 color.</p>" +
                 "<ul>" +
-                "<li>Identify <code>crtE</code>, <code>crtB</code>, <code>crtI</code>, " +
-                "<code>crtY</code>, <code>crtZ</code> in the linear map.</li>" +
-                "<li>Ask the class: which deletion would leave cells producing " +
-                "<span class=\"info-term\" data-term=\"lycopene\">lycopene</span> instead of " +
-                "<span class=\"info-term\" data-term=\"beta-carotene\">\u03b2-carotene</span>?</li>" +
+                "<li><strong>Land on the five crt genes.</strong> In the linear viewer, " +
+                "identify <code>crtE</code>, <code>crtB</code>, <code>crtI</code>, " +
+                "<code>crtY</code>, <code>crtZ</code> left-to-right. Each one's deletion " +
+                "halts the pathway at a different intermediate \u2014 and a different color.</li>" +
+                "<li><strong>Walk the pathway card, with \u201CFull reaction scheme\u201D " +
+                "selected.</strong> Watch the intermediates change: " +
+                "<span class=\"info-term\" data-term=\"fpp\">FPP</span> " +
+                "\u2192 GGPP \u2192 " +
+                "<span class=\"info-term\" data-term=\"phytoene\">phytoene</span> " +
+                "(colorless) \u2192 " +
+                "<span class=\"info-term\" data-term=\"lycopene\">lycopene</span> " +
+                "(red) \u2192 " +
+                "<span class=\"info-term\" data-term=\"beta-carotene\">\u03b2-carotene</span> " +
+                "(orange) \u2192 " +
+                "<span class=\"info-term\" data-term=\"zeaxanthin\">zeaxanthin</span> " +
+                "(yellow). Hover any intermediate to see the 2D structure that produces that color.</li>" +
+                "<li><strong>Flip to \u201CIntermediates only\u201D.</strong> The enzyme " +
+                "names and cosubstrates drop out so the chain of compounds reads as a pure " +
+                "color ladder \u2014 useful for the \"what color does each plate turn?\" " +
+                "classroom question.</li>" +
+                "<li><strong>Answer the deletion question with the viewer.</strong> Deleting " +
+                "<code>crtY</code> (the bicyclase) stops at lycopene \u2192 red colonies. " +
+                "Deleting <code>crtI</code> stops at phytoene \u2192 colorless. Deleting " +
+                "<code>crtZ</code> stops at \u03b2-carotene \u2192 orange. Trace each " +
+                "scenario by picking a crt gene in the viewer and walking the pathway card " +
+                "up to that step's product.</li>" +
                 "</ul>" +
                 "<h3>References</h3>" +
                 "<ul>" +
@@ -1898,6 +1922,560 @@
                 "        viewer=\"both\",\n" +
                 "        zoom={\"linear\": 40},\n" +
                 "        enzymes=[\"EcoRI\", \"NotI\", \"HindIII\", \"XbaI\"],\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+
+        // ------------------------------------------------------------------
+        // MARINE NATURAL PRODUCTS — symbiont clusters + cyanobacterial
+        // biosynthesis. Six stories that pharma/natural-product teams
+        // instantly recognize. All six clusters are >10 kb; several are
+        // >40 kb, so the "cluster-as-single-contig" viewer view is the
+        // point.
+        // ------------------------------------------------------------------
+        {
+            id: "bryostatin-cluster",
+            title: "Bryostatin — Anticancer PKS from an uncultured bryozoan symbiont",
+            summary: "The ~73 kb bryABCDX cluster from the uncultured symbiont of Bugula neritina. The lead compound spent years in NCI trials for leukemia and Alzheimer's.",
+            category: "industrial",
+            tags: ["natural-product", "PKS", "symbiont", "pharma", "anticancer"],
+            complexity: 5,
+            accession: "DQ889941",
+            featured: true,
+            compound: {
+                name: "Bryostatin 1",
+                smiles: "CCCC=CC=CC(=O)OC1C(=CC(=O)OC)CC2CC(OC(=O)CC(CC3CC(C(C(O3)(CC4CC(=CC(=O)OC)CC(O4)C=CC(C1(O2)O)(C)C)O)(C)C)OC(=O)C)O)C(C)O",
+                description: "A macrolactone PKC modulator isolated from the marine bryozoan Bugula neritina. The producer is an uncultured bacterial symbiont (Candidatus Endobugula sertula) \u2014 you can't grow it on a plate, but you can read its genome straight off the metagenome."
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 1 },
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>The uncultured bacterium that made it into NCI cancer trials</h3>" +
+                "<p><strong>Bryostatin 1</strong> is one of the most famous marine natural " +
+                "products in pharmacology: a macrolactone PKC activator that the National " +
+                "Cancer Institute took through clinical trials for leukemia, melanoma, and " +
+                "Alzheimer's disease. The bryozoan it was isolated from (<em>Bugula " +
+                "neritina</em>) doesn't make it \u2014 a bacterial symbiont living inside " +
+                "the bryozoan's larvae does. The symbiont is uncultured; for decades nobody " +
+                "could link the drug to a producer organism, let alone a gene cluster.</p>" +
+                "<p>Sudek <em>et al.</em> 2007 (Haygood lab, Scripps) changed that by " +
+                "sequencing directly from the bryozoan metagenome and assembling the " +
+                "<strong>bryABCDX</strong> polyketide synthase cluster \u2014 73 kb of " +
+                "modular PKS genes encoded in one continuous block. <code>bryA</code> alone " +
+                "spans ~16 kb and contains multiple PKS modules in a single open reading " +
+                "frame. This is the record those 73 kb landed in GenBank as.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li><strong>Zoom out in the linear view.</strong> At zoom=1 you can see " +
+                "all five <em>bry</em> genes laid out end-to-end. <code>bryA</code> is the " +
+                "big one \u2014 note how its CDS dwarfs the others. One polypeptide doing " +
+                "the work of an entire assembly line.</li>" +
+                "<li><strong>Search for <code>ACPACPACP</code> or a KS-domain motif.</strong> " +
+                "The repeating modular structure means the same domain types appear over " +
+                "and over in <code>bryA</code>. Toggle translations on and scroll through " +
+                "to see the pattern.</li>" +
+                "<li><strong>Flip to circular.</strong> Even though this is a contig rather " +
+                "than a complete plasmid, the circular view makes the cluster's genomic " +
+                "footprint tangible at a glance.</li>" +
+                "<li><strong>Compare to <a href=\"./example.html?id=pederin-cluster\">" +
+                "pederin</a> (if that example exists yet)</strong> \u2014 same trans-AT PKS " +
+                "architecture, same \"drug from an uncultured bacterium living inside a " +
+                "eukaryotic host\" story.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Sudek S, Lopanik NB, Waggoner LE, Hildebrand M, Anderson C, Liu H " +
+                "<em>et al.</em> " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/17253852/\" target=\"_blank\" rel=\"noopener\">" +
+                "Identification of the putative bryostatin polyketide synthase gene cluster " +
+                "from \"Candidatus Endobugula sertula\".</a> " +
+                "<em>J Nat Prod</em> 70(1):67-74 (2007). PMID: 17253852.</li>" +
+                "<li>Hale KJ, Hummersone MG, Manaviazar S, Frigerio M. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/12085154/\" target=\"_blank\" rel=\"noopener\">" +
+                "The chemistry and biology of the bryostatin antitumour macrolides.</a> " +
+                "<em>Nat Prod Rep</em> 19(4):413-53 (2002). PMID: 12085154.</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# Bryostatin cluster (Sudek et al. 2007)\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"DQ889941\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"bryostatin\",\n" +
+                "        name=\"Bryostatin cluster (DQ889941)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        zoom={\"linear\": 1},\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        {
+            id: "patellamide-cluster",
+            title: "Patellamides — Cyanobactin RiPPs from a tunicate symbiont",
+            summary: "The ~13 kb patEABCDEFG cluster from Prochloron didemni. An eight-residue ribosomal peptide gets heterocyclized and macrocyclized into a drug-like scaffold.",
+            category: "academic",
+            tags: ["natural-product", "RiPP", "cyanobactin", "symbiont", "graduate"],
+            complexity: 4,
+            accession: "AY986476",
+            compound: {
+                name: "Patellamide A",
+                smiles: "CCC(C)C1C2=NC(CO2)C(=O)NC(C3=NC(=CS3)C(=O)NC(C4=NC(C(O4)C)C(=O)NC(C5=NC(=CS5)C(=O)N1)C(C)C)C(C)CC)C(C)C",
+                description: "A head-to-tail cyclic octapeptide decorated with alternating thiazolines and oxazolines from an obligate symbiont of the coral-reef tunicate Lissoclinum patella. The drug scaffold is genetically encoded \u2014 PatE is a ribosomally translated precursor peptide."
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 1 },
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>A ribosome making a drug-like molecule</h3>" +
+                "<p><strong>Patellamides</strong> are head-to-tail cyclic octapeptides " +
+                "decorated with thiazoline and oxazoline heterocycles, first isolated from " +
+                "the coral-reef tunicate <em>Lissoclinum patella</em>. For years the " +
+                "assumption was that tunicate-derived natural products came from a large, " +
+                "complex NRPS machine. Schmidt <em>et al.</em> 2005 showed the opposite: " +
+                "the precursor is <strong>genetically encoded as a 71-aa ribosomal " +
+                "peptide</strong> (PatE), cleaved to an 8-mer core, and then heterocyclized " +
+                "+ macrocyclized by a small set of post-translational enzymes.</p>" +
+                "<p>This was one of the founding <strong>RiPP</strong> (Ribosomally " +
+                "synthesized and Post-translationally modified Peptide) papers \u2014 the " +
+                "template that made cyanobactins, lantibiotics, and the bottromycins that " +
+                "followed fit into one unified story. The whole <em>pat</em> cluster is " +
+                "only ~13 kb, which is remarkable given the chemical complexity of the " +
+                "product.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li><strong>Find <code>patE</code>.</strong> It's the shortest CDS in the " +
+                "cluster \u2014 the precursor peptide itself, 71 aa. Toggle translations " +
+                "on, zoom in, and look for the core sequence <code>ITACITFC</code> (or " +
+                "similar) \u2014 those 8 residues become the mature patellamide after " +
+                "cleavage + heterocyclization.</li>" +
+                "<li><strong>Compare to <a href=\"./example.html?id=bottromycin-academic\">" +
+                "bottromycin</a>.</strong> Both are RiPPs; both have a tiny precursor " +
+                "CDS surrounded by much larger modification enzymes. Patellamides are " +
+                "cyclic peptides; bottromycins are macroamidines \u2014 different tailoring, " +
+                "same ribosomal-peptide origin story.</li>" +
+                "<li><strong>Flip to circular.</strong> The whole cluster is only 13 kb, so " +
+                "even the circular view is a compact summary of the biosynthesis.</li>" +
+                "<li><strong>Hover the compound name</strong> to see the thiazoline + " +
+                "oxazoline heterocycles that decorate the macrocycle. Every other residue " +
+                "carries one \u2014 characteristic cyanobactin geometry.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Schmidt EW, Nelson JT, Rasko DA, Sudek S, Eisen JA, Haygood MG, Ravel J. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/15983371/\" target=\"_blank\" rel=\"noopener\">" +
+                "Patellamide A and C biosynthesis by a microcin-like pathway in Prochloron " +
+                "didemni, the cyanobacterial symbiont of Lissoclinum patella.</a> " +
+                "<em>Proc Natl Acad Sci USA</em> 102(20):7315-20 (2005). PMID: 15983371.</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# Patellamide cluster (Schmidt et al. 2005)\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"AY986476\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"patellamide\",\n" +
+                "        name=\"Patellamide cluster (AY986476)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        zoom={\"linear\": 1},\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        {
+            id: "jamaicamide-cluster",
+            title: "Jamaicamides — Halogenated PKS-NRPS from a marine cyanobacterium",
+            summary: "The ~70 kb jam cluster from Lyngbya majuscula. A hybrid PKS-NRPS that installs a vinyl chloride AND a terminal alkyne bromine in the same molecule.",
+            category: "academic",
+            tags: ["natural-product", "PKS-NRPS", "halogenation", "cyanobacterium"],
+            complexity: 4,
+            accession: "AY522504",
+            compound: {
+                name: "Jamaicamide A",
+                smiles: "CC1C=CC(=O)N1C(=O)C=C(CCNC(=O)CCC=CC(C)CCC(=CCl)CCCC#CBr)OC",
+                description: "A lipopeptide from Lyngbya majuscula with two rare structural features: a vinyl chloride (C=CCl) and a terminal alkynyl bromide (C\u2261C-Br). Sodium-channel modulator with anticancer activity in some cell lines."
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 1 },
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>A cyanobacterium that halogenates like it's going out of style</h3>" +
+                "<p><strong>Jamaicamides</strong> are hybrid PKS-NRPS lipopeptides from the " +
+                "marine cyanobacterium <em>Lyngbya majuscula</em> (now <em>Moorena " +
+                "producens</em>). Two structural features make them a natural-product " +
+                "chemistry teaching favorite: a <strong>vinyl chloride</strong> installed " +
+                "mid-chain by a radical halogenase, and a <strong>terminal alkyne " +
+                "brominated</strong> at the omega position. Each of those steps alone is " +
+                "rare; together in one molecule, they're iconic.</p>" +
+                "<p>Edwards <em>et al.</em> 2004 sequenced the ~70 kb <em>jam</em> cluster " +
+                "and found 17 open reading frames, including a dedicated halogenase " +
+                "(<code>jamD</code>) for the vinyl chloride and a terminal-alkyne " +
+                "desaturase (<code>jamB</code>). The cluster is big \u2014 about the same " +
+                "footprint as a bacterial secondary-metabolite mega-cluster \u2014 and it's " +
+                "all on one contig.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li><strong>Zoom out to see all 17 ORFs.</strong> Hold at zoom=1 in " +
+                "linear view. The hybrid PKS-NRPS modules are the big ones; the tailoring " +
+                "enzymes (halogenase, desaturase, methyltransferase) are the smaller " +
+                "CDSs scattered through.</li>" +
+                "<li><strong>Find <code>jamD</code>.</strong> It's the radical halogenase " +
+                "\u2014 a cytochrome-P450-like domain responsible for the vinyl chloride. " +
+                "Search for product labels matching \"halogenase\" in the annotation.</li>" +
+                "<li><strong>Find <code>jamB</code> and <code>jamC</code>.</strong> " +
+                "Together they install the terminal alkynyl bromide. This is one of very " +
+                "few characterized biosynthetic pathways to a C\u2261C-Br group anywhere in " +
+                "nature.</li>" +
+                "<li><strong>Hover the compound name</strong> to see the 2D structure: " +
+                "note the Cl dangling off the vinyl and the Br at the chain terminus.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Edwards DJ, Marquez BL, Nogle LM, McPhail K, Goeger DE, Roberts MA, " +
+                "Gerwick WH. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/15123209/\" target=\"_blank\" rel=\"noopener\">" +
+                "Structure and biosynthesis of the jamaicamides, new mixed polyketide-" +
+                "peptide neurotoxins from the marine cyanobacterium Lyngbya majuscula.</a> " +
+                "<em>Chem Biol</em> 11(6):817-33 (2004). PMID: 15123209.</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# Jamaicamide cluster (Edwards et al. 2004)\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"AY522504\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"jamaicamide\",\n" +
+                "        name=\"Jamaicamide cluster (AY522504)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        zoom={\"linear\": 1},\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        {
+            id: "curacin-a-cluster",
+            title: "Curacin A — Antimitotic PKS-NRPS with a cyclopropane ring",
+            summary: "The 64 kb cur cluster from Lyngbya majuscula. Hybrid PKS-NRPS whose GNAT/HCS/ECH module installs a cyclopropane ring via a carefully-timed carbanion attack.",
+            category: "academic",
+            tags: ["natural-product", "PKS-NRPS", "antimitotic", "cyanobacterium"],
+            complexity: 4,
+            accession: "AY652953.1",
+            compound: {
+                name: "Curacin A",
+                smiles: "CC1CC1C2=NC(CS2)C=CCCC=CC=C(C)CCC(CC=C)OC",
+                description: "A lipid-tailed thiazoline-bearing polyketide with a cyclopropane ring, from the marine cyanobacterium Lyngbya majuscula. Potent antimitotic (disrupts microtubule polymerization); anticancer lead in the late 1990s."
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 1 },
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>How do you put a cyclopropane ring on a PKS product?</h3>" +
+                "<p><strong>Curacin A</strong> is one of the most chemically distinctive " +
+                "marine natural products: it combines a thiazoline ring, a terminal alkene, " +
+                "an all-Z polyene, <em>and</em> a cyclopropane ring on the same backbone. " +
+                "The cyclopropane is the interesting one \u2014 it's installed by a GNAT " +
+                "(GCN5-related N-acetyltransferase) + HMG-CoA synthase + enoyl-CoA " +
+                "hydratase triad embedded mid-cluster, which primes a carbanion that " +
+                "attacks its own methyl branch.</p>" +
+                "<p>Chang <em>et al.</em> 2004 sequenced the ~64 kb <em>cur</em> cluster " +
+                "(AY652953) and showed the entire pathway is collinear: gene order on " +
+                "the chromosome matches biosynthetic step order. That makes this cluster " +
+                "a uniquely clean teaching target for reading PKS biosynthesis \"off the " +
+                "page\".</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li><strong>Read the cluster left-to-right as biosynthetic steps.</strong> " +
+                "In linear view at zoom=1, each CDS corresponds to one biochemical step. " +
+                "<code>curA</code> is the loading module; downstream modules extend + " +
+                "tailor; <code>curM</code> is the offloading step. Read gene-order-as-" +
+                "step-order.</li>" +
+                "<li><strong>Find the GNAT / HCS / ECH triad.</strong> These three CDSs " +
+                "(around <code>curD</code>/<code>curE</code>/<code>curF</code>) are what " +
+                "build the cyclopropane. This is one of the canonical examples of on-PKS " +
+                "cyclopropanation machinery.</li>" +
+                "<li><strong>Compare to <a href=\"./example.html?id=jamaicamide-cluster\">" +
+                "jamaicamide</a>.</strong> Same cyanobacterium, similar-sized cluster, " +
+                "very different chemistry: curacin uses cyclopropane + thiazoline, " +
+                "jamaicamide uses halogenation. Both are cases of cyanobacterial PKS-NRPS " +
+                "decorating otherwise simple chains with wild tailoring.</li>" +
+                "<li><strong>Hover the compound name</strong> to see the cyclopropane " +
+                "+ thiazoline geometry on the 2D structure.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Chang Z, Sitachitta N, Rossi JV, Roberts MA, Flatt PM, Jia J, Sherman " +
+                "DH, Gerwick WH. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/15332855/\" target=\"_blank\" rel=\"noopener\">" +
+                "Biosynthetic pathway and gene cluster analysis of curacin A, an antitubulin " +
+                "natural product from the tropical marine cyanobacterium Lyngbya majuscula.</a> " +
+                "<em>J Nat Prod</em> 67(8):1356-67 (2004). PMID: 15332855.</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# Curacin A cluster (Chang et al. 2004)\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"AY652953.1\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"curacin\",\n" +
+                "        name=\"Curacin A cluster (AY652953)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        zoom={\"linear\": 1},\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        {
+            id: "barbamide-cluster",
+            title: "Barbamide — Trichloromethyl group built by an NRPS halogenase",
+            summary: "The 40 kb bar cluster from Lyngbya majuscula. The only natural-product pathway known to install a -CCl\u2083 group by dedicated halogenase enzymology.",
+            category: "academic",
+            tags: ["natural-product", "NRPS", "halogenation", "cyanobacterium"],
+            complexity: 4,
+            accession: "AF516145",
+            compound: {
+                name: "Barbamide",
+                smiles: "CC(CC(=CC(=O)N(C)C(CC1=CC=CC=C1)C2=NC=CS2)OC)C(Cl)(Cl)Cl",
+                description: "A molluscicidal lipopeptide from Lyngbya majuscula with a terminal -CCl\u2083 (trichloromethyl) group \u2014 one of the very few known examples of enzymatic trichlorination in natural-product biosynthesis."
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 1 },
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>Three chlorines on one methyl \u2014 built by an enzyme</h3>" +
+                "<p>If you synthesized <strong>barbamide</strong> in an undergraduate " +
+                "organic lab, you'd make the <strong>-CCl\u2083</strong> group via radical " +
+                "chlorination: lots of CCl\u2084, UV light, messy selectivity. Barbamide's " +
+                "producer, the marine cyanobacterium <em>Lyngbya majuscula</em>, just " +
+                "uses two enzymes: <code>barB1</code> and <code>barB2</code>, non-heme " +
+                "iron halogenases that install three chlorines on the same methyl group " +
+                "of a leucyl-S-ACP intermediate.</p>" +
+                "<p>Chang <em>et al.</em> 2002 sequenced the ~40 kb <em>bar</em> cluster " +
+                "(AF516145) and mapped each step. The halogenases sit upstream in the " +
+                "cluster; the NRPS modules that load the trichlorinated leucine and " +
+                "extend it with a phenylalanine + thiazole come downstream. Read the " +
+                "cluster left-to-right and you read the biosynthesis in order.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li><strong>Find the two halogenase CDSs.</strong> <code>barB1</code> " +
+                "and <code>barB2</code> are the non-heme Fe halogenases \u2014 scan the " +
+                "linear view for their annotations. Each installs one chlorine; together " +
+                "with a later step they give the signature CCl\u2083.</li>" +
+                "<li><strong>Hover the compound name</strong> to see the CCl\u2083 group " +
+                "on the 2D structure \u2014 the three chlorines sitting on one carbon " +
+                "is unmistakable.</li>" +
+                "<li><strong>Compare to <a href=\"./example.html?id=jamaicamide-cluster\">" +
+                "jamaicamide</a> and <a href=\"./example.html?id=curacin-a-cluster\">" +
+                "curacin A</a>.</strong> Same cyanobacterial producer; three different " +
+                "approaches to decorating polyketide scaffolds. Jamaicamide gets a vinyl " +
+                "chloride + alkynyl bromide; curacin gets a cyclopropane + thiazoline; " +
+                "barbamide gets a trichloromethyl. One cyanobacterium, a wild chemistry " +
+                "toolbox.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Chang Z, Flatt P, Gerwick WH, Nguyen VA, Willis CL, Sherman DH. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/12220770/\" target=\"_blank\" rel=\"noopener\">" +
+                "The barbamide biosynthetic gene cluster: a novel marine cyanobacterial " +
+                "system of mixed polyketide synthase (PKS)-non-ribosomal peptide synthetase " +
+                "(NRPS) origin involving an unusual trichloroleucyl starter unit.</a> " +
+                "<em>Gene</em> 296(1-2):235-47 (2002). PMID: 12220770.</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# Barbamide cluster (Chang et al. 2002)\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"AF516145\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"barbamide\",\n" +
+                "        name=\"Barbamide cluster (AF516145)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        zoom={\"linear\": 1},\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        {
+            id: "trabectedin-cluster",
+            title: "Trabectedin (ET-743) \u2014 FDA-approved anticancer drug from a tunicate symbiont",
+            summary: "The 35 kb ET-743 NRPS cluster from an uncultured endosymbiont of Ecteinascidia turbinata. Yondelis was approved for soft-tissue sarcoma in the EU (2007) and US (2015).",
+            category: "industrial",
+            tags: ["natural-product", "NRPS", "symbiont", "pharma", "anticancer"],
+            complexity: 5,
+            accession: "HQ609499.1",
+            featured: true,
+            compound: {
+                name: "Trabectedin",
+                smiles: "CC1=CC2=C(C3C4C5C6=C(C(=C7C(=C6C(N4C(C(C2)N3C)O)COC(=O)C8(CS5)C9=CC(=C(C=C9CCN8)O)OC)OCO7)C)OC(=O)C)C(=C1OC)O",
+                description: "An alkylating tetrahydroisoquinoline alkaloid isolated from the Caribbean mangrove tunicate Ecteinascidia turbinata. The actual producer is an uncultured bacterial endosymbiont, Candidatus Endoecteinascidia frumentensis. Sold as Yondelis\u00ae for soft-tissue sarcoma + advanced ovarian cancer."
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 1 },
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>A marine drug that actually made it to the clinic</h3>" +
+                "<p><strong>Trabectedin</strong> (Yondelis\u00ae) is one of the few marine " +
+                "natural products to make it all the way through the clinic: EMA approval " +
+                "in 2007, FDA approval in 2015, both for <strong>soft-tissue sarcoma</strong>. " +
+                "The compound was originally isolated from <em>Ecteinascidia turbinata</em>, " +
+                "a mangrove tunicate, but \u2014 as with bryostatin \u2014 the actual " +
+                "producer is a bacterial endosymbiont (<em>Candidatus Endoecteinascidia " +
+                "frumentensis</em>) living inside the tunicate.</p>" +
+                "<p>Rath <em>et al.</em> 2011 used a meta-omic approach to pull partial " +
+                "biosynthetic contigs directly out of the tunicate metagenome. " +
+                "<code>HQ609499.1</code> is one of those contigs \u2014 35 kb of NRPS " +
+                "genes responsible for building the pentacyclic core scaffold of ET-743. " +
+                "Schofield <em>et al.</em> 2015 later assembled the complete ~631 kb " +
+                "symbiont genome, but the cluster itself spans >170 kb and is still " +
+                "partially fragmented across contigs.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li><strong>Zoom out in the linear view to see the full 35 kb span.</strong> " +
+                "Even though this is a partial sequence, it contains three NRPS modules that " +
+                "assemble the tetrahydroisoquinoline core. Each module has the canonical " +
+                "C-A-T (condensation-adenylation-thiolation) domain order \u2014 toggle " +
+                "translations and scan for the motif.</li>" +
+                "<li><strong>Compare to <a href=\"./example.html?id=bryostatin-cluster\">" +
+                "bryostatin</a>.</strong> Both drugs are from uncultured bacterial symbionts " +
+                "of marine invertebrates. Both reached (or nearly reached) the clinic " +
+                "decades after the natural product was discovered. The sequence-first " +
+                "meta-omic approach shown here is the modern template for turning an " +
+                "\"interesting compound in a marine invertebrate\" into a druggable " +
+                "biosynthetic hypothesis.</li>" +
+                "<li><strong>Hover the compound name</strong> to see the pentacyclic core " +
+                "of trabectedin \u2014 three fused tetrahydroisoquinoline rings plus the " +
+                "pendant C-ring that alkylates DNA in the minor groove.</li>" +
+                "<li><strong>Think about genome reduction.</strong> The producer's full " +
+                "genome is only ~631 kb \u2014 one of the smallest bacterial genomes known. " +
+                "This cluster alone is ~170 kb, which means <em>more than a quarter of the " +
+                "organism's genome is devoted to making one molecule</em>. Extreme " +
+                "metabolic specialization driven by obligate symbiosis.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Rath CM, Janto B, Earl J, Ahmed A, Hu FZ, Hiller L <em>et al.</em> " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/22035036/\" target=\"_blank\" rel=\"noopener\">" +
+                "Meta-omic characterization of the marine invertebrate microbial consortium " +
+                "that produces the chemotherapeutic natural product ET-743.</a> " +
+                "<em>ACS Chem Biol</em> 6(11):1244-56 (2011). PMID: 22035036.</li>" +
+                "<li>Schofield MM, Jain S, Porat D, Dick GJ, Sherman DH. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/26013440/\" target=\"_blank\" rel=\"noopener\">" +
+                "Identification and analysis of the bacterial endosymbiont specialized for " +
+                "production of the chemotherapeutic natural product ET-743.</a> " +
+                "<em>Environ Microbiol</em> 17(10):3964-75 (2015). PMID: 26013440.</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# ET-743 partial NRPS cluster (Rath et al. 2011)\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"HQ609499.1\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"trabectedin\",\n" +
+                "        name=\"ET-743 cluster (HQ609499.1)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        zoom={\"linear\": 1},\n" +
                 "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
                 "    )\n" +
                 "])\n" +

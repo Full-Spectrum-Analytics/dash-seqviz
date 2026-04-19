@@ -289,6 +289,36 @@ STANDALONE_COMPOUNDS: List[Node] = [
     # the reactive thioester chemistry intact.
     Node("Malonyl-CoA", "OC(=O)CC(=O)SCCNC(C)=O"),
     Node("2-Methylbutyryl-CoA", "CC[C@H](C)C(=O)SCCNC(C)=O"),
+    # ----------------------------------------------------------------
+    # Marine natural-product compounds (for the 6 new gallery cards).
+    # SMILES lifted from PubChem (verified against PubChem CIDs
+    # 6437364 / 157454 / 49787031 / 5281967 / 5701995 and the ET-743
+    # canonical notation).
+    # ----------------------------------------------------------------
+    Node(
+        "Bryostatin 1",
+        "CCCC=CC=CC(=O)OC1C(=CC(=O)OC)CC2CC(OC(=O)CC(CC3CC(C(C(O3)"
+        "(CC4CC(=CC(=O)OC)CC(O4)C=CC(C1(O2)O)(C)C)O)(C)C)OC(=O)C)O)C(C)O",
+    ),
+    Node(
+        "Patellamide A",
+        "CCC(C)C1C2=NC(CO2)C(=O)NC(C3=NC(=CS3)C(=O)NC(C4=NC(C(O4)C)"
+        "C(=O)NC(C5=NC(=CS5)C(=O)N1)C(C)C)C(C)CC)C(C)C",
+    ),
+    Node(
+        "Jamaicamide A",
+        "CC1C=CC(=O)N1C(=O)C=C(CCNC(=O)CCC=CC(C)CCC(=CCl)CCCC#CBr)OC",
+    ),
+    Node("Curacin A", "CC1CC1C2=NC(CS2)C=CCCC=CC=C(C)CCC(CC=C)OC"),
+    Node(
+        "Barbamide",
+        "CC(CC(=CC(=O)N(C)C(CC1=CC=CC=C1)C2=NC=CS2)OC)C(Cl)(Cl)Cl",
+    ),
+    Node(
+        "Trabectedin",
+        "CC1=CC2=C(C3C4C5C6=C(C(=C7C(=C6C(N4C(C(C2)N3C)O)COC(=O)C8(CS5)"
+        "C9=CC(=C(C=C9CCN8)O)OC)OCO7)C)OC(=O)C)C(=C1OC)O",
+    ),
 ]
 
 
