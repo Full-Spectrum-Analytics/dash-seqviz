@@ -1971,12 +1971,26 @@
                 "modular PKS genes encoded in one continuous block. <code>bryA</code> alone " +
                 "spans ~16 kb and contains multiple PKS modules in a single open reading " +
                 "frame. This is the record those 73 kb landed in GenBank as.</p>" +
+                "<p>Rees 2023 (Kwan lab, UW-Madison) extended the story across the genus. " +
+                "The <em>Ca.</em> Endobugula symbiont of <em>Bugulina simplex</em> " +
+                "(<em>Ca.</em> E. glebosa) carries a homologous <em>bry</em> cluster, as " +
+                "the shared chemistry and host phylogeny predicted. But the symbiont of " +
+                "<em>Crisularia pacifica</em> \u2014 newly named <em>Ca.</em> Endobugula " +
+                "tacita \u2014 has no <em>bry</em> at all. In its place sits an orphan " +
+                "trans-AT PKS, hinting that bryostatin chemistry is one solution, not the " +
+                "only one, to a shared defensive role in this bryozoan clade.</p>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
                 "<li><strong>Zoom out in the linear view.</strong> At zoom=1 you can see " +
                 "all five <em>bry</em> genes laid out end-to-end. <code>bryA</code> is the " +
                 "big one \u2014 note how its CDS dwarfs the others. One polypeptide doing " +
                 "the work of an entire assembly line.</li>" +
+                "<li><strong>Hold the genus-level picture in mind.</strong> Across sibling " +
+                "bryozoans, <em>Bugula neritina</em> keeps this 73 kb cluster, " +
+                "<em>Bugulina simplex</em> has a homologous <em>bry</em>, and " +
+                "<em>Crisularia pacifica</em> has swapped the whole thing for a different " +
+                "orphan PKS. The single cluster you're looking at is one frame of a much " +
+                "longer comparative-genomic story.</li>" +
                 "<li><strong>Search for <code>ACPACPACP</code> or a KS-domain motif.</strong> " +
                 "The repeating modular structure means the same domain types appear over " +
                 "and over in <code>bryA</code>. Toggle translations on and scroll through " +
@@ -2010,6 +2024,14 @@
                 "<a href=\"https://pubmed.ncbi.nlm.nih.gov/12085154/\" target=\"_blank\" rel=\"noopener\">" +
                 "The chemistry and biology of the bryostatin antitumour macrolides.</a> " +
                 "<em>Nat Prod Rep</em> 19(4):413-53 (2002). PMID: 12085154.</li>" +
+                "<li>Rees ER. " +
+                "<a href=\"https://asset.library.wisc.edu/1711.dl/MRXGAWLDM2ADQ8W/R/file-d3a3f.pdf\" target=\"_blank\" rel=\"noopener\">" +
+                "Development and Application of Metagenomic and Comparative Genomic " +
+                "Techniques for Environmental Analysis.</a> " +
+                "PhD dissertation, University of Wisconsin\u2013Madison (2023). " +
+                "(Chapter 6 characterises <em>Ca.</em> E. glebosa and names " +
+                "<em>Ca.</em> E. tacita \u2014 the genome-level context for how " +
+                "<em>bry</em> is distributed across the bryozoan symbiont clade.)</li>" +
                 "</ul>",
             pythonSnippet:
                 "from dash import Dash, html\n" +
@@ -2184,6 +2206,14 @@
                 "followed fit into one unified story. The whole <em>pat</em> cluster is " +
                 "only ~13 kb, which is remarkable given the chemical complexity of the " +
                 "product.</p>" +
+                "<p>Schmidt trained at Scripps Institution of Oceanography with D. John " +
+                "Faulkner \u2014 one of the founders of marine natural-product chemistry " +
+                "\u2014 and the <em>pat</em> story is an ideal heir to that lineage: " +
+                "molecule-first discovery backed by DNA-level mechanism. Donia, Ravel, and " +
+                "Schmidt 2008 sealed the pedagogical punch by refactoring the entire cluster " +
+                "in <em>E. coli</em>. Patellamides A and C came out of the heterologous host " +
+                "at detectable titers, without any of <em>Prochloron</em>'s cellular " +
+                "machinery \u2014 direct proof that this RiPP drug scaffold is portable.</p>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
                 "<li><strong>Find <code>patE</code>.</strong> It's the shortest CDS in the " +
@@ -2216,6 +2246,13 @@
                 "(Kwan's post-doc work in the Schmidt lab \u2014 ties the <em>pat</em> " +
                 "cluster to the broader story of Prochloron's reduced genome and the " +
                 "chemical protection it provides to its tunicate host.)</li>" +
+                "<li>Donia MS, Ravel J, Schmidt EW. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/18425111/\" target=\"_blank\" rel=\"noopener\">" +
+                "A global assembly line for cyanobactins.</a> " +
+                "<em>Nat Chem Biol</em> 4(6):341-343 (2008). PMID: 18425111. " +
+                "(Heterologous expression of <em>pat</em> and related cyanobactin pathways " +
+                "in <em>E. coli</em> \u2014 the receipts for \"a ribosomal-peptide drug " +
+                "scaffold is portable between organisms\".)</li>" +
                 "</ul>",
             pythonSnippet:
                 "from dash import Dash, html\n" +
@@ -2566,6 +2603,16 @@
                 "This cluster alone is ~170 kb, which means <em>more than a quarter of the " +
                 "organism's genome is devoted to making one molecule</em>. Extreme " +
                 "metabolic specialization driven by obligate symbiosis.</li>" +
+                "<li><strong>Trace the template.</strong> " +
+                "<a href=\"./example.html?id=bryostatin-cluster\">Bryostatin</a>, " +
+                "<a href=\"./example.html?id=pederin-cluster\">pederin</a>, " +
+                "<a href=\"./example.html?id=lagriamide-cluster\">lagriamide</a>, " +
+                "<a href=\"./example.html?id=lasonolide-cluster\">lasonolide</a>, and " +
+                "ET-743 are all in this gallery and all fit the same pattern: a marine " +
+                "or terrestrial invertebrate harbors an uncultured symbiont producing a " +
+                "drug-grade compound, and the only way into the chemistry is to sequence " +
+                "the metagenome. Lining up the five clusters side-by-side is roughly what " +
+                "a decade of symbiont-derived natural-product discovery looks like.</li>" +
                 "</ul>" +
                 "<h3>References</h3>" +
                 "<ul>" +
@@ -2599,6 +2646,589 @@
                 "    SeqViz(\n" +
                 "        id=\"trabectedin\",\n" +
                 "        name=\"ET-743 cluster (HQ609499.1)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        zoom={\"linear\": 1},\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        // ------------------------------------------------------------------
+        // Kwan-lineage additions: lagriamide (Rees co-author, beetle
+        // defensive PKS) and lasonolide A (Uppal & Kwan 2022 \u2014
+        // Autometa/Automappa-driven metagenomic discovery).
+        // ------------------------------------------------------------------
+        {
+            id: "lagriamide-cluster",
+            title: "Lagriamide \u2014 Beetle-egg defensive PKS from a horizontally acquired symbiont",
+            summary: "The 99 kb lga trans-AT PKS/NRPS cluster from Burkholderia gladioli Lv-StB, the antifungal symbiont Lagria villosa beetles smear on their eggs to ward off pathogenic fungi.",
+            category: "academic",
+            tags: ["natural-product", "PKS", "NRPS", "symbiont", "defensive", "graduate"],
+            complexity: 5,
+            accession: "MH171092.1",
+            compound: {
+                name: "Lagriamide",
+                smiles: "CC1CCC(OC1CC(=O)NCC(C(C)C(=O)NCCCC2C(CCC3(O2)CCCC(O3)CCC(C)C=C(C)CCC(=O)O)C)O)CC(=O)C4C(O4)C",
+                description: "An antifungal hybrid polyketide-peptide with a spiroacetal, tetrahydropyran, and pendant epoxide. Produced by Burkholderia gladioli Lv-StB \u2014 an uncultured symbiont Lagria villosa beetles pass to their eggs as a chemical shield against soil fungi."
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 1 },
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>A mother beetle coats her eggs in antifungal bacteria</h3>" +
+                "<p><strong>Lagriamide</strong> is the antifungal polyketide a beetle " +
+                "mother hands to her offspring \u2014 literally. Female <em>Lagria " +
+                "villosa</em> beetles deposit defensive <em>Burkholderia gladioli</em> " +
+                "symbionts onto the surface of their eggs, and the bacteria produce " +
+                "lagriamide in situ to ward off soil-borne fungal pathogens during " +
+                "embryonic development. Without the symbiont, the eggs succumb to fungal " +
+                "infection at dramatically elevated rates.</p>" +
+                "<p>Fl\u00f3rez <em>et al.</em> 2018 (Hertweck + Kaltenpoth labs, with " +
+                "Kwan lab co-authors) sequenced the <strong>lga</strong> cluster from the " +
+                "uncultured symbiont Lv-StB and assembled a 99 kb hybrid trans-AT " +
+                "PKS/NRPS encoding 17 modules. The cluster sits on a genomic island with " +
+                "all the signatures of horizontal-gene-transfer, so the beetle's " +
+                "defensive chemistry wasn't invented by its resident symbiont \u2014 it " +
+                "was inherited from somewhere else in the <em>Burkholderia</em> world " +
+                "and retained under selection.</p>" +
+                "<p>This is the terrestrial counterpart to bryostatin, ET-743, and " +
+                "pederin: a drug-grade natural product from an uncultured invertebrate " +
+                "symbiont, only accessible by sequencing the metagenome. The 2020 " +
+                "<em>mBio</em> paper (Rees as co-author) added the genome-reduction " +
+                "story, showing Lv-StB has undergone substantial gene loss while " +
+                "keeping <em>lga</em> intact \u2014 a textbook obligate defensive " +
+                "symbiont.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li><strong>Zoom out across 99 kb.</strong> At linear zoom=1 the full " +
+                "<em>lgaA</em>\u2013<em>lgaM</em> run is visible. The PKS megasynthases " +
+                "are the enormous ORFs; auxiliary enzymes (acyltransferase, " +
+                "methyltransferases, tailoring oxidoreductases) cluster at the edges.</li>" +
+                "<li><strong>Look for the trans-AT partner.</strong> Unlike classical " +
+                "modular PKS where the acyltransferase is embedded in every module, a " +
+                "trans-AT PKS encodes AT as a separate gene. Finding it in the " +
+                "<em>lga</em> region is a practical exercise in spotting a hallmark " +
+                "architecture \u2014 the same architecture shared with pederin, " +
+                "bryostatin, and lasonolide.</li>" +
+                "<li><strong>Compare to <a href=\"./example.html?id=pederin-cluster\">" +
+                "pederin</a> and <a href=\"./example.html?id=bryostatin-cluster\">" +
+                "bryostatin</a>.</strong> Three invertebrate-symbiont trans-AT PKS " +
+                "clusters side by side. Same architecture, same \"uncultured symbiont " +
+                "of an invertebrate\" story, three different hosts and three different " +
+                "chemical payloads.</li>" +
+                "<li><strong>Hover the compound name</strong> to see the spiroacetal and " +
+                "tetrahydropyran rings that come off the PKS after release from the " +
+                "assembly line.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Fl\u00f3rez LV, Scherlach K, Miller IJ, Rodrigues A, Kwan JC, " +
+                "Hertweck C, Kaltenpoth M. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/29946103/\" target=\"_blank\" rel=\"noopener\">" +
+                "An antifungal polyketide associated with horizontally acquired genes " +
+                "supports symbiont-mediated defense in Lagria villosa beetles.</a> " +
+                "<em>Nat Commun</em> 9(1):2478 (2018). PMID: 29946103.</li>" +
+                "<li>Waterworth SC, Flores-Bocanegra L, Fl\u00f3rez LV, Kaltenpoth M, " +
+                "Ch\u00e1vez-Rom\u00e1n I, Rees ER, Oberlies NH, Kwan JC. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/31964734/\" target=\"_blank\" rel=\"noopener\">" +
+                "Horizontal gene transfer to a defensive symbiont with a reduced " +
+                "genome in a multipartite beetle microbiome.</a> " +
+                "<em>mBio</em> 11(1):e02430-19 (2020). PMID: 31964734. " +
+                "(Rees as co-author; note Oberlies as co-author too \u2014 both of " +
+                "Evan's advisors in the same byline.)</li>" +
+                "<li>Fergusson CH, Saulog J, Paulo BS, Wilson DM, Liu DY, Morehouse NJ, " +
+                "Waterworth S, Barkei J, Gray CA, Kwan JC " +
+                "<em>et al.</em> " +
+                "<a href=\"https://doi.org/10.1039/D4SC00825A\" target=\"_blank\" rel=\"noopener\">" +
+                "Discovery of the polyketide lagriamide B by integrated genome mining, " +
+                "isotopic labeling, and untargeted metabolomics.</a> " +
+                "<em>Chem Sci</em> 15(19):7126\u20137139 (2024). " +
+                "(Lagriamide B discovered by genome mining a cultured relative \u2014 " +
+                "the same template extended to the next molecule.)</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# Lagriamide cluster (Fl\u00f3rez et al. 2018)\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"MH171092.1\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"lagriamide\",\n" +
+                "        name=\"Lagriamide cluster (MH171092.1)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        zoom={\"linear\": 1},\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        {
+            id: "lasonolide-cluster",
+            title: "Lasonolide A \u2014 NCI anticancer lead tied to its producer via metagenomics",
+            summary: "The 102 kb las trans-AT PKS cluster from the uncultured Ca. Thermopylae lasonolidus inside Forcepia sponges. A genome-resolved metagenomics showcase \u2014 the producer bin was pulled out with Autometa.",
+            category: "industrial",
+            tags: ["natural-product", "PKS", "trans-AT", "symbiont", "pharma", "anticancer", "autometa"],
+            complexity: 5,
+            accession: "ON409580.1",
+            featured: true,
+            compound: {
+                name: "Lasonolide A",
+                smiles: "CC1C(CC2CC=CC=CC(=O)OC3CC(C=CCC=CC(=CC1O2)C)OC(C3(C)CO)CC=CCC(C(=O)OCC(=C)CCC(C)C)O)O",
+                description: "A macrolactone polyketide from deep-water Forcepia sp. sponges with sub-nanomolar cytotoxicity and a one-of-a-kind NCI-60 fingerprint \u2014 no other compound in the screen phenocopies it, suggesting a novel mechanism. The producer is an uncultured Verrucomicrobium, Candidatus Thermopylae lasonolidus."
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 1 },
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>An NCI-60 orphan, finally given a producer</h3>" +
+                "<p><strong>Lasonolide A</strong> has been on the NCI radar for 30 years. " +
+                "Isolated from the deep-water Caribbean sponge <em>Forcepia</em> sp., it " +
+                "is sub-nanomolar cytotoxic against the NCI-60 panel, and its activity " +
+                "fingerprint is an orphan \u2014 no other compound in the COMPARE " +
+                "database reproduces it, which usually means an unprecedented mechanism. " +
+                "The obstacle, as with bryostatin, was <strong>supply</strong>: " +
+                "<em>Forcepia</em> lives several hundred meters down, yields trace " +
+                "quantities, and nobody had been able to culture the actual producer.</p>" +
+                "<p>Uppal <em>et al.</em> 2022 (<em>mBio</em>, Kwan lab) solved the " +
+                "biosynthesis end of the problem using <strong>genome-resolved " +
+                "metagenomics</strong>. Sequencing the <em>Forcepia</em> metagenome and " +
+                "binning with Autometa revealed a previously-unknown Verrucomicrobium " +
+                "\u2014 named <em>Candidatus</em> Thermopylae lasonolidus \u2014 whose " +
+                "draft genome carried three copies of a 102 kb trans-AT PKS cluster " +
+                "encoding exactly the right chemistry for lasonolide A.</p>" +
+                "<p>This example is a receipt for the tools used in the Rees dissertation: " +
+                "Autometa (Chapters 2\u20133) bins the producer out of the sponge " +
+                "metagenome; Automappa (Chapter 4) is the curation UI that makes MAG " +
+                "quality trustable. The <em>las</em> cluster you're looking at is one " +
+                "of the three copies retrieved. It's the modern version of the same " +
+                "move Piel made for pederin and Sudek made for bryostatin \u2014 but " +
+                "done end-to-end with open-source metagenomic tooling.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li><strong>Inspect the 102 kb cluster.</strong> At linear zoom=1 the " +
+                "<em>las</em> megasynthase genes dwarf their tailoring partners. This " +
+                "is a classical trans-AT PKS layout \u2014 the same architecture as " +
+                "pederin and bryostatin, which is not a coincidence.</li>" +
+                "<li><strong>Compare to " +
+                "<a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a> and " +
+                "<a href=\"./example.html?id=pederin-cluster\">pederin</a>.</strong> " +
+                "All three are drug-leads produced by uncultured bacterial symbionts " +
+                "of marine/terrestrial invertebrates, and all three share the trans-AT " +
+                "PKS engine. Lasonolide is the most recent of the three \u2014 a " +
+                "demonstration that the metagenomic-discovery template is still " +
+                "producing new clusters.</li>" +
+                "<li><strong>Think about cluster duplication.</strong> The " +
+                "<em>Ca.</em> T. lasonolidus genome carries <em>three</em> copies of " +
+                "this cluster. Why? One possibility: gene-dosage amplification to boost " +
+                "lasonolide titer in an obligate symbiont that can't scale by culture. " +
+                "Another: insurance against the kind of gene decay that tends to hit " +
+                "reduced genomes. The two copies on the same contig are a visual " +
+                "rarity in the natural-product world.</li>" +
+                "<li><strong>Open Automappa if you've used it.</strong> Recovering this " +
+                "bin from the sponge metagenome is a canonical Automappa workflow \u2014 " +
+                "the same tool Rees built in Chapter 4 of the dissertation.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Uppal S, Metz JL, Xavier RKM, Nepal KK, Xu D, Wang G, Kwan JC. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/36125273/\" target=\"_blank\" rel=\"noopener\">" +
+                "Uncovering lasonolide A biosynthesis using genome-resolved " +
+                "metagenomics.</a> " +
+                "<em>mBio</em> 13(5):e0152422 (2022). PMID: 36125273. " +
+                "(The paper. Identifies <em>Ca.</em> Thermopylae lasonolidus as the " +
+                "producer and the <em>las</em> cluster as the biosynthetic route.)</li>" +
+                "<li>Miller IJ, Rees ER, Ross J, Miller I, Baxa J, Lopera J, Kerby RL, " +
+                "Rey FE, Kwan JC. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/30838416/\" target=\"_blank\" rel=\"noopener\">" +
+                "Autometa: automated extraction of microbial genomes from individual " +
+                "shotgun metagenomes.</a> " +
+                "<em>Nucleic Acids Res</em> 47(10):e57 (2019). PMID: 30838416. " +
+                "(The binning tool used to pull the producer out of the " +
+                "<em>Forcepia</em> sponge metagenome \u2014 Rees as second author.)</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# Lasonolide A cluster (Uppal & Kwan 2022)\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"ON409580.1\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"lasonolide\",\n" +
+                "        name=\"Lasonolide A cluster (ON409580.1)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        zoom={\"linear\": 1},\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        // ------------------------------------------------------------------
+        // Oberlies-lineage additions: taxol (Wall & Wani RTI \u2014 Oberlies'
+        // postdoc mentors), camptothecin (Wall & Wani RTI again), silybin
+        // (milk thistle \u2014 Oberlies' signature UNCG project). Three plant
+        // natural products, each represented by the pivotal cloned gene
+        // rather than a full BGC, because plant NP biosynthesis is scattered
+        // across chromosomes rather than clustered.
+        // ------------------------------------------------------------------
+        {
+            id: "taxadiene-synthase",
+            title: "Taxadiene synthase \u2014 The committed step of Taxol biosynthesis",
+            summary: "The 2.7 kb Taxus brevifolia TDC1 cDNA cloned by Wildung & Croteau 1996. First enzyme on the paclitaxel pathway \u2014 the same drug whose supply crisis helped launch modern pharmacognosy.",
+            category: "academic",
+            tags: ["natural-product", "terpene-synthase", "plant", "pharma", "anticancer", "graduate"],
+            complexity: 3,
+            accession: "U48796.1",
+            compound: {
+                name: "Paclitaxel (Taxol)",
+                smiles: "CC1=C2C(C(=O)C3(C(CC4C(C3C(C(C2(C)C)(CC1OC(=O)C(C(C5=CC=CC=C5)NC(=O)C6=CC=CC=C6)O)O)OC(=O)C7=CC=CC=C7)(CO4)OC(=O)C)O)C)OC(=O)C",
+                description: "A microtubule-stabilising diterpenoid from the Pacific yew (Taxus brevifolia). First isolated by Wall & Wani at RTI in 1971; now a billion-dollar cancer drug with dozens of indications. Taxadiene synthase (TDC1) catalyses the first committed step \u2014 the cyclisation of geranylgeranyl diphosphate into taxa-4(5),11(12)-diene."
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 1 },
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>One gene, the first step, a billion-dollar drug</h3>" +
+                "<p><strong>Paclitaxel</strong> (Taxol\u00ae) is the microtubule-stabilising " +
+                "anticancer drug isolated from the bark of the Pacific yew <em>Taxus " +
+                "brevifolia</em>. The molecule was discovered by Monroe Wall and Mansukh " +
+                "Wani at the Natural Products Laboratory at RTI in 1971, but the " +
+                "Supply Problem nearly killed it: harvesting enough yew bark to treat " +
+                "American ovarian-cancer patients in the early 1990s meant stripping " +
+                "mature Pacific yews across the Pacific Northwest. Taxol's supply crisis " +
+                "became the canonical example that natural-product chemistry <em>needs</em> " +
+                "biosynthesis.</p>" +
+                "<p>Wildung & Croteau 1996 cloned the first committed step of the " +
+                "pathway: <strong>taxadiene synthase</strong> (TDC1), a class-I terpene " +
+                "synthase that cyclises geranylgeranyl diphosphate into taxa-4(5),11(12)-" +
+                "diene, the scaffold that tailoring P450s and acyltransferases decorate " +
+                "into paclitaxel. That single cDNA (<code>U48796</code>) kicked off thirty " +
+                "years of biosynthesis research, engineered <em>E. coli</em> and yeast " +
+                "platforms for taxadiene production, and eventually the chromosome-scale " +
+                "<em>Taxus</em> genome assembly.</p>" +
+                "<p>This entry is here because Evan Rees's dissertation opens by citing " +
+                "<strong>Cech & Oberlies 2023</strong>, \"From plant to cancer drug: " +
+                "lessons learned from the discovery of taxol\" \u2014 that's reference #3 " +
+                "of Chapter 1. Nicholas Oberlies (UNCG; Evan's undergrad advisor) trained " +
+                "as a postdoc at the RTI Natural Products Lab with Wall and Wani " +
+                "themselves. The Oberlies academic lineage traces directly to the " +
+                "discovery of this molecule.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li><strong>Find the DDxxD motif.</strong> Class-I terpene synthases " +
+                "share a conserved aspartate-rich DDxxD motif that coordinates Mg" +
+                "<sup>2+</sup> at the active site. Toggle translations on, zoom in on " +
+                "the CDS, and search for <code>DDxxD</code>. It's the signature of the " +
+                "cyclisation chemistry.</li>" +
+                "<li><strong>Read this as a counterweight to the cluster examples.</strong> " +
+                "Unlike bacterial PKS/NRPS, plant natural-product genes are scattered " +
+                "across chromosomes, not clustered. Taxadiene synthase is just one " +
+                "gene \u2014 the first committed step. Turning it into paclitaxel " +
+                "takes a dozen more enzymes (T5\u03b1H, T10\u03b2H, T13\u03b1H, DBAT, " +
+                "BAPT, \u2026) spread across the <em>Taxus</em> genome.</li>" +
+                "<li><strong>Hover the compound name</strong> to see the 2D structure " +
+                "of paclitaxel \u2014 the taxane core that TDC1 builds sits at the " +
+                "centre, with the benzamide side chain that was the chemical synthesis " +
+                "bottleneck for decades.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Wildung MR, Croteau R. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/8621577/\" target=\"_blank\" rel=\"noopener\">" +
+                "A cDNA clone for taxadiene synthase, the diterpene cyclase that " +
+                "catalyzes the committed step of taxol biosynthesis.</a> " +
+                "<em>J Biol Chem</em> 271(16):9201-4 (1996). PMID: 8621577.</li>" +
+                "<li>Cech NB, Oberlies NH. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/37232025/\" target=\"_blank\" rel=\"noopener\">" +
+                "From plant to cancer drug: lessons learned from the discovery of taxol.</a> " +
+                "<em>Nat Prod Rep</em> 40(7):1153-1157 (2023). PMID: 37232025. " +
+                "(Cited as reference #3 of Chapter 1 in Rees's dissertation \u2014 " +
+                "the Supply Problem anchor of the intro.)</li>" +
+                "<li>Wani MC, Taylor HL, Wall ME, Coggon P, McPhail AT. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/5553076/\" target=\"_blank\" rel=\"noopener\">" +
+                "Plant antitumor agents. VI. The isolation and structure of taxol, a " +
+                "novel antileukemic and antitumor agent from Taxus brevifolia.</a> " +
+                "<em>J Am Chem Soc</em> 93(9):2325-7 (1971). PMID: 5553076. " +
+                "(The foundational discovery paper by Wall & Wani at RTI \u2014 later " +
+                "Nicholas Oberlies's postdoctoral mentors.)</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# Taxadiene synthase cDNA (Wildung & Croteau 1996)\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"U48796.1\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"taxadiene-synthase\",\n" +
+                "        name=\"Taxadiene synthase (U48796.1)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        zoom={\"linear\": 1},\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        {
+            id: "strictosidine-synthase-cpt",
+            title: "Strictosidine synthase \u2014 Gateway enzyme to camptothecin and the TIA alkaloids",
+            summary: "The 993 bp Camptotheca acuminata CaPSTR cDNA. STR is the Pictet-Spenglerase that funnels tryptamine into the terpenoid indole alkaloid pathway \u2014 the committed step on the way to camptothecin and its derivatives topotecan/irinotecan.",
+            category: "academic",
+            tags: ["natural-product", "plant", "alkaloid", "pharma", "anticancer"],
+            complexity: 3,
+            accession: "JF508375.1",
+            compound: {
+                name: "Camptothecin",
+                smiles: "CCC1(C2=C(COC1=O)C(=O)N3CC4=CC5=CC=CC=C5N=C4C3=C2)O",
+                description: "A pentacyclic quinoline alkaloid from the Chinese happy tree (Camptotheca acuminata). Wall & Wani isolated it in 1966 at RTI \u2014 the same pair who later discovered taxol. Clinical derivatives topotecan and irinotecan are topoisomerase-I inhibitors used against ovarian, colorectal, and small-cell lung cancer."
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 1 },
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>Wall & Wani's other cancer drug</h3>" +
+                "<p><strong>Camptothecin</strong> is the pentacyclic alkaloid Monroe " +
+                "Wall and Mansukh Wani isolated from the Chinese happy tree " +
+                "(<em>Camptotheca acuminata</em>) at the RTI Natural Products " +
+                "Laboratory in 1966 \u2014 five years before their more famous taxol " +
+                "discovery. Camptothecin itself was too toxic for the clinic, but its " +
+                "semi-synthetic derivatives <strong>topotecan</strong> and <strong>" +
+                "irinotecan</strong> are topoisomerase-I inhibitors used worldwide " +
+                "against ovarian, colorectal, cervical, and small-cell lung cancer.</p>" +
+                "<p>Camptothecin belongs to the <strong>terpenoid indole alkaloid</strong> " +
+                "(TIA) family, a 3000-member natural-product class that also includes " +
+                "vincristine, vinblastine, strychnine, quinine, and reserpine. The key " +
+                "committed step shared by the entire family is a Pictet-Spengler " +
+                "condensation of tryptamine with secologanin to give strictosidine, " +
+                "catalysed by <strong>strictosidine synthase</strong> (STR). The " +
+                "accession shown here is <code>JF508375</code>, the <em>Camptotheca " +
+                "acuminata</em> STR (CaPSTR) \u2014 68% amino-acid identity to the " +
+                "<em>Catharanthus roseus</em> STR that kicks off vincristine/" +
+                "vinblastine biosynthesis in Madagascar periwinkle.</p>" +
+                "<p>This entry is paired with <a href=\"./example.html?id=taxadiene-synthase\">" +
+                "taxadiene synthase</a> because Wall and Wani discovered both " +
+                "compounds, and Nicholas Oberlies (UNCG; Evan Rees's undergraduate " +
+                "advisor) did his postdoc at the RTI Natural Products Lab directly " +
+                "under Wall and Wani. The academic family tree behind the Rees " +
+                "dissertation traces through both of the 20th century's most " +
+                "important plant-derived cancer drugs.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li><strong>Read the CDS.</strong> STR is a modest ~340-residue " +
+                "enzyme \u2014 compact compared to the massive PKS megasynthases in " +
+                "the symbiont clusters elsewhere in this gallery. Plant natural-product " +
+                "chemistry tends to come in small single-function enzymes organised " +
+                "across multiple chromosomes, not in bacterial-style clusters.</li>" +
+                "<li><strong>Compare to " +
+                "<a href=\"./example.html?id=taxadiene-synthase\">taxadiene synthase</a>." +
+                "</strong> Two \"first committed step\" enzymes for two Wall & Wani " +
+                "anticancer drugs. TDC1 is a class-I terpene synthase; STR is a " +
+                "Pictet-Spenglerase. Different chemistry, same architectural theme: " +
+                "plant NP biosynthesis gates on a single committed step, with the " +
+                "diversity downstream.</li>" +
+                "<li><strong>Hover the compound name</strong> to see the planar " +
+                "pentacyclic scaffold of camptothecin \u2014 the E-ring lactone that " +
+                "intercalates into topoisomerase-I\u2013DNA complexes is the piece " +
+                "topotecan and irinotecan variously modify.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Wall ME, Wani MC, Cook CE, Palmer KH, McPhail AT, Sim GA. " +
+                "<a href=\"https://pubs.acs.org/doi/10.1021/ja00968a057\" target=\"_blank\" rel=\"noopener\">" +
+                "Plant antitumor agents. I. The isolation and structure of camptothecin, " +
+                "a novel alkaloidal leukemia and tumor inhibitor from Camptotheca " +
+                "acuminata.</a> " +
+                "<em>J Am Chem Soc</em> 88(16):3888-3890 (1966). " +
+                "(Wall & Wani's discovery paper \u2014 Nicholas Oberlies's later " +
+                "postdoctoral mentors.)</li>" +
+                "<li>Sun Y, Luo H, Li Y, Sun C, Song J, Niu Y, Zhu Y, Dong L, Lv A, " +
+                "Tramontano E, Chen S. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/22035094/\" target=\"_blank\" rel=\"noopener\">" +
+                "Pyrosequencing of the Camptotheca acuminata transcriptome reveals " +
+                "putative genes involved in camptothecin biosynthesis and transport.</a> " +
+                "<em>BMC Genomics</em> 12:533 (2011). PMID: 22035094. " +
+                "(Transcriptome-level characterisation that yielded the CaPSTR " +
+                "accession used here.)</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# Camptotheca strictosidine synthase (CaPSTR)\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"JF508375.1\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"cpt-str\",\n" +
+                "        name=\"Camptotheca STR (JF508375.1)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        zoom={\"linear\": 1},\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        {
+            id: "silybin-chs3",
+            title: "Silybum marianum CHS3 \u2014 Gateway to silymarin flavonolignans",
+            summary: "The 1.2 kb Silybum marianum chalcone synthase (CHS3) mRNA. The first committed step of flavonoid biosynthesis in milk thistle \u2014 upstream entry point to the hepatoprotective flavonolignan silybin.",
+            category: "academic",
+            tags: ["natural-product", "plant", "type-III-PKS", "flavonoid", "hepatoprotective"],
+            complexity: 3,
+            accession: "PP965198.1",
+            compound: {
+                name: "Silybin A",
+                smiles: "COC1=C(C=CC(=C1)C2C(OC3=C(O2)C=C(C=C3)C4C(C(=O)C5=C(C=C(C=C5O4)O)O)O)CO)O",
+                description: "A flavonolignan from milk thistle (Silybum marianum) fruits \u2014 the principal active component of silymarin, used for centuries as a hepatoprotective agent and currently evaluated against hepatocellular carcinoma. Formed by peroxidase-mediated oxidative coupling of taxifolin with coniferyl alcohol; the chalcone synthase shown here is two biosynthetic steps upstream of taxifolin."
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 1 },
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>The signature molecule of a 2000-year-old herb</h3>" +
+                "<p>Milk thistle (<em>Silybum marianum</em>) has been used as a liver " +
+                "remedy since Dioscorides's <em>De Materia Medica</em> in the 1st " +
+                "century AD \u2014 the same text Rees cites in the opening paragraph " +
+                "of his dissertation as the origin of Western pharmacognosy. The " +
+                "modern chemistry is a <strong>flavonolignan</strong> mixture called " +
+                "silymarin, of which <strong>silybin</strong> (an approximately 1:1 " +
+                "mixture of diastereomers silybin A and silybin B) is the principal " +
+                "active component.</p>" +
+                "<p>Silybin is formed by <em>oxidative coupling</em> of two upstream " +
+                "metabolites: <strong>taxifolin</strong> (a dihydroflavonol from the " +
+                "flavonoid pathway) and <strong>coniferyl alcohol</strong> (a " +
+                "monolignol from the phenylpropanoid pathway). A peroxidase generates " +
+                "radicals on both partners; the adduct cyclises via addition of the " +
+                "taxifolin phenol to coniferyl alcohol's quinone methide.</p>" +
+                "<p>The gene shown here is the upstream gatekeeper of the flavonoid " +
+                "half of the coupling: <strong>chalcone synthase 3</strong> (CHS3), " +
+                "a type-III PKS that condenses one 4-coumaroyl-CoA with three " +
+                "malonyl-CoAs to form naringenin chalcone, the precursor to every " +
+                "flavonoid in the plant. Nicholas Oberlies's UNCG lab has spent over " +
+                "a decade on silymarin analytical chemistry, and has developed " +
+                "gram-scale methods for isolating the seven major silymarin " +
+                "diastereoisomers used in clinical trials.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li><strong>Find the catalytic cysteine.</strong> Type-III PKSs use " +
+                "a Cys-His-Asn catalytic triad instead of the acyl-carrier-protein " +
+                "machinery found in bacterial trans-AT systems. Toggle translations " +
+                "on and search for the conserved <code>CHN</code> residues \u2014 " +
+                "the cysteine typically sits around position 164 in plant CHSs.</li>" +
+                "<li><strong>Compare to the bacterial PKSs elsewhere in the gallery.</strong> " +
+                "CHS3 is a <em>single</em> iterative enzyme performing three rounds " +
+                "of condensation with zero tailoring. The bacterial megasynthases in " +
+                "<a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a> and " +
+                "<a href=\"./example.html?id=lagriamide-cluster\">lagriamide</a> are " +
+                "dozens of kilobases encoding one module per step. Plant vs. bacterial " +
+                "polyketide biosynthesis is a tale of two strategies.</li>" +
+                "<li><strong>Hover the compound name</strong> to see silybin A. The " +
+                "benzodioxane ring in the centre is the oxidative-coupling handiwork; " +
+                "the flavanonol on the left is the portion CHS3's output eventually " +
+                "becomes.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Althagafy HS, Meza-Avi\u00f1a ME, Oberlies NH, Croatt MP. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/23600740/\" target=\"_blank\" rel=\"noopener\">" +
+                "Mechanistic study of the biomimetic synthesis of flavonolignan " +
+                "diastereoisomers in milk thistle.</a> " +
+                "<em>J Org Chem</em> 78(15):7594\u20137600 (2013). PMID: 23600740. " +
+                "(Oberlies and Croatt at UNCG \u2014 both listed in Evan Rees's " +
+                "acknowledgments as undergraduate mentors.)</li>" +
+                "<li>Abenavoli L, Izzo AA, Milic N, Cicala C, Santini A, Capasso R. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/29936283/\" target=\"_blank\" rel=\"noopener\">" +
+                "Milk thistle (Silybum marianum): A concise overview on its chemistry, " +
+                "pharmacological, and nutraceutical uses in liver diseases.</a> " +
+                "<em>Phytother Res</em> 32(11):2202\u20132213 (2018). PMID: 29936283.</li>" +
+                "<li>Lv Y, Gao S, Xu S, Du G, Zhou J, Chen J. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/28990236/\" target=\"_blank\" rel=\"noopener\">" +
+                "Spatial organization of silybin biosynthesis in milk thistle " +
+                "[Silybum marianum (L.) Gaertn].</a> " +
+                "<em>Plant J</em> 92(6):995\u20131004 (2017). PMID: 28990236. " +
+                "(Localises the flavonoid and monolignol branches of silybin " +
+                "biosynthesis within the milk thistle fruit.)</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# Silybum marianum chalcone synthase 3\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"PP965198.1\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"silybin-chs\",\n" +
+                "        name=\"Silybum CHS3 (PP965198.1)\",\n" +
                 "        file=gb,\n" +
                 "        viewer=\"both\",\n" +
                 "        zoom={\"linear\": 1},\n" +
