@@ -1985,9 +1985,9 @@
                 "than a complete plasmid, the circular view makes the cluster's genomic " +
                 "footprint tangible at a glance.</li>" +
                 "<li><strong>Compare to <a href=\"./example.html?id=pederin-cluster\">" +
-                "pederin</a> (if that example exists yet)</strong> \u2014 same trans-AT PKS " +
-                "architecture, same \"drug from an uncultured bacterium living inside a " +
-                "eukaryotic host\" story.</li>" +
+                "pederin</a></strong> \u2014 same trans-AT PKS architecture, same \"drug " +
+                "from an uncultured bacterium living inside a eukaryotic host\" story, " +
+                "but from a beetle instead of a bryozoan.</li>" +
                 "</ul>" +
                 "<h3>References</h3>" +
                 "<ul>" +
@@ -1997,6 +1997,15 @@
                 "Identification of the putative bryostatin polyketide synthase gene cluster " +
                 "from \"Candidatus Endobugula sertula\".</a> " +
                 "<em>J Nat Prod</em> 70(1):67-74 (2007). PMID: 17253852.</li>" +
+                "<li>Miller IJ, Vanee N, Fong SS, Lim-Fong GE, Kwan JC. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/27590822/\" target=\"_blank\" rel=\"noopener\">" +
+                "Lack of overt genome reduction in the bryostatin-producing bryozoan " +
+                "symbiont \"Candidatus Endobugula sertula\".</a> " +
+                "<em>Appl Environ Microbiol</em> 82(22):6573-6583 (2016). PMID: 27590822. " +
+                "(Kwan lab at UW-Madison \u2014 surprising result: unlike Prochloron " +
+                "and many other defensive symbionts, <em>Ca.</em> E. sertula has not " +
+                "undergone dramatic genome reduction, complicating the tidy \"obligate " +
+                "symbiont equals streamlined genome\" narrative.)</li>" +
                 "<li>Hale KJ, Hummersone MG, Manaviazar S, Frigerio M. " +
                 "<a href=\"https://pubmed.ncbi.nlm.nih.gov/12085154/\" target=\"_blank\" rel=\"noopener\">" +
                 "The chemistry and biology of the bryostatin antitumour macrolides.</a> " +
@@ -2021,6 +2030,116 @@
                 "    SeqViz(\n" +
                 "        id=\"bryostatin\",\n" +
                 "        name=\"Bryostatin cluster (DQ889941)\",\n" +
+                "        file=gb,\n" +
+                "        viewer=\"both\",\n" +
+                "        zoom={\"linear\": 1},\n" +
+                "        style={\"height\": \"560px\", \"width\": \"100%\"},\n" +
+                "    )\n" +
+                "])\n" +
+                "\n" +
+                "if __name__ == \"__main__\":\n" +
+                "    app.run(debug=True)\n"
+        },
+        {
+            id: "pederin-cluster",
+            title: "Pederin — The beetle blister toxin from an uncultured Pseudomonas-like symbiont",
+            summary: "The ~54 kb ped cluster from the symbiont of Paederus fuscipes rove beetles. Piel 2002 was the first trans-AT PKS cluster ever linked to a bacterial-symbiont-derived natural product.",
+            category: "academic",
+            tags: ["natural-product", "PKS", "trans-AT", "symbiont", "graduate"],
+            complexity: 5,
+            accession: "AH013687.2",
+            compound: {
+                name: "Pederin",
+                smiles: "CC1C(OC(CC1=C)(C(C(=O)NC(C2CC(C(C(O2)CC(COC)OC)(C)C)O)OC)O)OC)C",
+                description: "A potent protein-synthesis inhibitor produced by an uncultured Pseudomonas-like bacterial symbiont of Paederus rove beetles. Contact with the beetle's hemolymph causes severe skin blistering \u2014 hence \"Paederus dermatitis,\" known to farmers and naturalists for centuries before the chemistry was worked out."
+            },
+            seqvizProps: {
+                viewer: "both",
+                zoom: { linear: 1 },
+                style: { height: "560px", width: "100%" }
+            },
+            narrative:
+                "<h3>The first trans-AT PKS cluster from an uncultured symbiont</h3>" +
+                "<p><strong>Pederin</strong> is the blistering agent that gives " +
+                "<em>Paederus</em> rove beetles their reputation \u2014 crush one against " +
+                "your skin and the toxin does the rest. For most of the 20th century, the " +
+                "compound was assumed to be beetle-derived. Piel 2002 (Max Planck Institute " +
+                "for Chemical Ecology) showed it wasn't: the producer is an uncultured " +
+                "Pseudomonas-like endosymbiont living in female beetles, and the cluster " +
+                "could be assembled straight from the beetle metagenome.</p>" +
+                "<p>This was a landmark paper. The <strong>ped</strong> cluster turned out " +
+                "to use a <em>trans</em>-AT PKS architecture \u2014 acyltransferase domains " +
+                "supplied in <em>trans</em> by a separate protein rather than embedded in " +
+                "each module \u2014 which at the time was a rare and poorly understood " +
+                "organization. Piel's follow-up work established that the same architecture " +
+                "appears in the bryostatin, psymberin, and onnamide clusters, all from " +
+                "uncultured symbionts of marine invertebrates. Pederin was the cornerstone " +
+                "that made the whole family make sense.</p>" +
+                "<h3>Try this</h3>" +
+                "<ul>" +
+                "<li><strong>Find <code>pedF</code> and <code>pedI</code>.</strong> " +
+                "These are the two giant multi-module PKS genes at the heart of the cluster. " +
+                "Zoom to 1 in the linear view and look for the longest CDSs \u2014 like " +
+                "<code>bryA</code>, they're single open reading frames encoding many " +
+                "catalytic modules.</li>" +
+                "<li><strong>Look for the missing AT domains.</strong> A hallmark of " +
+                "<em>trans</em>-AT PKSs is that the acyltransferase is encoded separately " +
+                "(here, <code>pedC</code> and <code>pedD</code>). Compare domain density " +
+                "between these small genes and the large ped PKS polypeptides \u2014 the " +
+                "modules are functionally incomplete without the <em>trans</em>-AT partners.</li>" +
+                "<li><strong>Flip to circular.</strong> This is a metagenomic contig, not a " +
+                "closed genome, but the circular view makes the 101 kb footprint tangible " +
+                "and emphasises how much real estate the cluster occupies in a reduced " +
+                "symbiont genome.</li>" +
+                "<li><strong>Compare to <a href=\"./example.html?id=bryostatin-cluster\">" +
+                "bryostatin</a>.</strong> Both are <em>trans</em>-AT PKSs from uncultured " +
+                "symbionts of marine/terrestrial invertebrates. The architectures are near " +
+                "cousins \u2014 two sister papers from the Piel and Haygood groups that " +
+                "together launched modern natural-product metagenomics.</li>" +
+                "</ul>" +
+                "<h3>References</h3>" +
+                "<ul>" +
+                "<li>Piel J. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/12381784/\" target=\"_blank\" rel=\"noopener\">" +
+                "A polyketide synthase-peptide synthetase gene cluster from an uncultured " +
+                "bacterial symbiont of Paederus beetles.</a> " +
+                "<em>Proc Natl Acad Sci USA</em> 99(22):14002-14007 (2002). PMID: 12381784. " +
+                "(The foundational paper \u2014 first trans-AT PKS cluster linked to an " +
+                "uncultured insect symbiont.)</li>" +
+                "<li>Piel J, Hofer I, Hui D. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/14973122/\" target=\"_blank\" rel=\"noopener\">" +
+                "Evidence for a symbiosis island involved in horizontal acquisition of " +
+                "pederin biosynthetic capabilities by the bacterial symbiont of Paederus " +
+                "fuscipes beetles.</a> " +
+                "<em>J Bacteriol</em> 186(5):1280-1286 (2004). PMID: 14973122.</li>" +
+                "<li>Piel J, Butzke D, Fusetani N, Hui D, Platzer M, Wen G, Matsunaga S. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/15828666/\" target=\"_blank\" rel=\"noopener\">" +
+                "Exploring the chemistry of uncultivated bacterial symbionts: antitumor " +
+                "polyketides of the pederin family.</a> " +
+                "<em>J Nat Prod</em> 68(3):472-479 (2005). PMID: 15828666. " +
+                "(Ties pederin architecturally to the onnamide/theopederin family from " +
+                "marine sponge symbionts \u2014 the uncultured-symbiont trans-AT PKS " +
+                "story generalising across host phyla.)</li>" +
+                "</ul>",
+            pythonSnippet:
+                "from dash import Dash, html\n" +
+                "from dash_seqviz import SeqViz\n" +
+                "import requests\n" +
+                "\n" +
+                "# Pederin cluster (Piel 2002)\n" +
+                "gb = requests.get(\n" +
+                "    \"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi\",\n" +
+                "    params={\"db\": \"nuccore\", \"id\": \"AH013687.2\",\n" +
+                "            \"rettype\": \"gb\", \"retmode\": \"text\",\n" +
+                "            \"tool\": \"natural-products\", \"email\": \"you@lab.org\"},\n" +
+                "    timeout=10,\n" +
+                ").text\n" +
+                "\n" +
+                "app = Dash(__name__)\n" +
+                "app.layout = html.Div([\n" +
+                "    SeqViz(\n" +
+                "        id=\"pederin\",\n" +
+                "        name=\"Pederin cluster (AH013687.2)\",\n" +
                 "        file=gb,\n" +
                 "        viewer=\"both\",\n" +
                 "        zoom={\"linear\": 1},\n" +

@@ -319,6 +319,10 @@ STANDALONE_COMPOUNDS: List[Node] = [
         "CC1=CC2=C(C3C4C5C6=C(C(=C7C(=C6C(N4C(C(C2)N3C)O)COC(=O)C8(CS5)"
         "C9=CC(=C(C=C9CCN8)O)OC)OCO7)C)OC(=O)C)C(=C1OC)O",
     ),
+    Node(
+        "Pederin",
+        "CC1C(OC(CC1=C)(C(C(=O)NC(C2CC(C(C(O2)CC(COC)OC)(C)C)O)OC)O)OC)C",
+    ),
 ]
 
 
