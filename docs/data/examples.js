@@ -1939,7 +1939,7 @@
         // ------------------------------------------------------------------
         {
             id: "bryostatin-cluster",
-            title: "Bryostatin — Anticancer PKS from an uncultured bryozoan symbiont",
+            title: "Bryostatin: an anticancer PKS from an uncultured bryozoan symbiont",
             summary: "The ~73 kb bryABCDX cluster from the uncultured symbiont of Bugula neritina. The lead compound spent years in NCI trials for leukemia and Alzheimer's.",
             category: "industrial",
             tags: ["natural-product", "PKS", "symbiont", "pharma", "anticancer"],
@@ -1949,7 +1949,7 @@
             compound: {
                 name: "Bryostatin 1",
                 smiles: "CCCC=CC=CC(=O)OC1C(=CC(=O)OC)CC2CC(OC(=O)CC(CC3CC(C(C(O3)(CC4CC(=CC(=O)OC)CC(O4)C=CC(C1(O2)O)(C)C)O)(C)C)OC(=O)C)O)C(C)O",
-                description: "A macrolactone PKC modulator isolated from the marine bryozoan Bugula neritina. The producer is an uncultured bacterial symbiont (Candidatus Endobugula sertula) \u2014 you can't grow it on a plate, but you can read its genome straight off the metagenome."
+                description: "A macrolactone PKC modulator isolated from the marine bryozoan Bugula neritina. The producer is an uncultured bacterial symbiont (Candidatus Endobugula sertula); you can't grow it on a plate, but you can read its genome straight off the metagenome."
             },
             seqvizProps: {
                 viewer: "both",
@@ -1959,33 +1959,52 @@
             narrative:
                 "<h3>A cancer drug whose producer you can't grow</h3>" +
                 "<p>Pluck a frond of <em>Bugula neritina</em> off a dock piling and " +
-                "you're handling, in gram quantities, one of the most studied molecules " +
-                "in marine pharmacology. The bryozoan is unassuming \u2014 centimeters " +
-                "tall, beige, twig-like, a filter feeder whose larvae brood in ovicells " +
-                "before release. What lives inside it is not. Deep in the larval tissue " +
-                "sits an uncultured bacterial symbiont, <em>Candidatus</em> Endobugula " +
-                "sertula, which produces <strong>bryostatin 1</strong> \u2014 a " +
-                "macrolactone the US National Cancer Institute has carried through " +
-                "five decades of clinical trials for leukemia, melanoma, and " +
-                "Alzheimer's disease.</p>" +
+                "you are handling, in gram quantities, one of the most studied " +
+                "molecules in marine pharmacology. The bryozoan is unassuming: " +
+                "centimeters tall, beige, twig-like, a filter feeder whose larvae " +
+                "brood in ovicells before release. What lives inside it is not. Deep " +
+                "in the larval tissue sits an uncultured bacterial symbiont, " +
+                "<em>Candidatus</em> Endobugula sertula, which produces " +
+                "<strong>bryostatin 1</strong>, a macrolactone the US National Cancer " +
+                "Institute has carried through five decades of clinical trials for " +
+                "leukemia, melanoma, and Alzheimer's disease.</p>" +
                 "<p>Molecules like this one are why \"the Supply Problem\" became " +
                 "founding vocabulary for pharmacognosy. The symbiont will not grow in " +
                 "culture. The host is slow-breeding. The compound sits at vanishing " +
                 "parts-per-million. For much of the late 20th century the only way to " +
-                "get more bryostatin was to take a boat and a net: one NCI collection " +
+                "get more bryostatin was to take a boat and a net. One NCI collection " +
                 "effort in the 1980s pulled more than ten thousand kilograms of " +
                 "<em>B. neritina</em> from Californian waters to yield a handful of " +
-                "grams of drug. Total synthesis, when it arrived, was a tour de force " +
-                "\u2014 too long and too low-yielding to feed a clinical program.</p>" +
+                "grams of drug. Total synthesis, when it arrived, was a tour de force, " +
+                "too long and too low-yielding to feed a clinical program.</p>" +
+                "<div class=\"inline-viewer\" " +
+                     "data-accession=\"DQ889941\" " +
+                     "data-viewer=\"linear\" " +
+                     "data-zoom=\"1\" " +
+                     "data-height=\"320px\" " +
+                     "data-caption=\"The 73 kb bryABCDX cluster laid out end to end, " +
+                                    "assembled directly from a Bugula neritina metagenome. " +
+                                    "Five genes, one storyline. The large open reading " +
+                                    "frame near center-left is bryA.\"></div>" +
                 "<p>The deadlock broke in 2007. Direct sequencing of the bryozoan " +
-                "metagenome \u2014 skipping the producer entirely, reading its DNA off " +
-                "the host tissue \u2014 assembled the 73 kb <strong>bryABCDX</strong> " +
+                "metagenome, skipping the producer entirely and reading its DNA off " +
+                "the host tissue, assembled the 73 kb <strong>bryABCDX</strong> " +
                 "polyketide synthase cluster as a single continuous block. Sixteen " +
-                "kilobases of that block are one open reading frame: <code>bryA</code>, " +
-                "a single polypeptide encoding an assembly line of catalytic modules " +
+                "kilobases of that block are one open reading frame. <code>bryA</code> " +
+                "is a single polypeptide encoding an assembly line of catalytic modules " +
                 "that add building block after building block to a growing chain. One " +
-                "gene, one mRNA, one translated protein \u2014 threading carbon after " +
-                "carbon until a full macrolactone spools off the end.</p>" +
+                "gene, one mRNA, one translated protein, threading carbon after carbon " +
+                "until a full macrolactone spools off the end.</p>" +
+                "<div class=\"inline-viewer\" " +
+                     "data-accession=\"DQ889941\" " +
+                     "data-viewer=\"linear\" " +
+                     "data-zoom=\"35\" " +
+                     "data-show-translations=\"true\" " +
+                     "data-height=\"420px\" " +
+                     "data-caption=\"Zoomed into bryA with translations on. The catalytic " +
+                                    "modules resolve as domain-scale repeats within a single " +
+                                    "open reading frame. Scroll right to watch the assembly " +
+                                    "line continue.\"></div>" +
                 "<p>The story did not stop at <em>Bugula neritina</em>. Comparative " +
                 "genomics has since reached across the bryozoan clade, and the plot " +
                 "thickens. <em>Bugulina simplex</em> hosts a closely related symbiont " +
@@ -1994,33 +2013,22 @@
                 "activity. But <em>Crisularia pacifica</em> hosts a third cousin, " +
                 "<em>Ca.</em> Endobugula tacita, that has lost <em>bry</em> entirely " +
                 "and replaced it with an unrelated trans-AT PKS. Same ecological niche, " +
-                "same invertebrate-symbiont architecture \u2014 two solutions. " +
-                "Bryostatin chemistry, it turns out, is one answer to a defensive " +
-                "problem this bryozoan clade has solved at least twice.</p>" +
-                "<h3>Try this</h3>" +
-                "<ul>" +
-                "<li><strong>Zoom out in the linear view.</strong> At zoom=1 you can see " +
-                "all five <em>bry</em> genes laid out end-to-end. <code>bryA</code> is the " +
-                "big one \u2014 note how its CDS dwarfs the others. One polypeptide doing " +
-                "the work of an entire assembly line.</li>" +
-                "<li><strong>Hold the genus-level picture in mind.</strong> Across sibling " +
-                "bryozoans, <em>Bugula neritina</em> keeps this 73 kb cluster, " +
-                "<em>Bugulina simplex</em> has a homologous <em>bry</em>, and " +
-                "<em>Crisularia pacifica</em> has swapped the whole thing for a different " +
-                "orphan PKS. The single cluster you're looking at is one frame of a much " +
-                "longer comparative-genomic story.</li>" +
-                "<li><strong>Search for <code>ACPACPACP</code> or a KS-domain motif.</strong> " +
-                "The repeating modular structure means the same domain types appear over " +
-                "and over in <code>bryA</code>. Toggle translations on and scroll through " +
-                "to see the pattern.</li>" +
-                "<li><strong>Flip to circular.</strong> Even though this is a contig rather " +
-                "than a complete plasmid, the circular view makes the cluster's genomic " +
-                "footprint tangible at a glance.</li>" +
-                "<li><strong>Compare to <a href=\"./example.html?id=pederin-cluster\">" +
-                "pederin</a></strong> \u2014 same trans-AT PKS architecture, same \"drug " +
-                "from an uncultured bacterium living inside a eukaryotic host\" story, " +
-                "but from a beetle instead of a bryozoan.</li>" +
-                "</ul>" +
+                "same invertebrate-symbiont architecture, two solutions. Bryostatin " +
+                "chemistry, it turns out, is one answer to a defensive problem this " +
+                "bryozoan clade has solved at least twice.</p>" +
+                "<div class=\"inline-viewer\" " +
+                     "data-accession=\"DQ889941\" " +
+                     "data-viewer=\"circular\" " +
+                     "data-height=\"380px\" " +
+                     "data-caption=\"The same 73 kb, wrapped. Five Ca. Endobugula sertula " +
+                                    "bry genes account for almost all of it. When one symbiont " +
+                                    "keeps this cluster and a cousin loses it, what remains " +
+                                    "behind takes on new evolutionary weight.\"></div>" +
+                "<p>A closely related story sits one example over in " +
+                "<a href=\"./example.html?id=pederin-cluster\">pederin</a>: the same " +
+                "trans-AT PKS architecture, the same uncultured-symbiont arrangement, " +
+                "but hosted by a beetle rather than a bryozoan. Read the two together " +
+                "and the outline of a biosynthetic family starts to emerge.</p>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Sudek S, Lopanik NB, Waggoner LE, Hildebrand M, Anderson C, Liu H " +
@@ -2048,7 +2056,7 @@
                 "Techniques for Environmental Analysis.</a> " +
                 "PhD dissertation, University of Wisconsin\u2013Madison (2023). " +
                 "(Comparative-genomics analysis characterising <em>Ca.</em> E. glebosa " +
-                "and establishing <em>Ca.</em> E. tacita \u2014 the genome-level context " +
+                "and establishing <em>Ca.</em> E. tacita, the genome-level context " +
                 "for how <em>bry</em> is distributed across the bryozoan symbiont clade.)" +
                 "</li>" +
                 "</ul>",

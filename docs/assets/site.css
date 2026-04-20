@@ -488,6 +488,26 @@ footer a:hover { text-decoration: underline; }
 .narrative a { color: var(--color-primary); text-decoration: underline; }
 .narrative a:hover { text-decoration: none; }
 
+/* ---- Inline viewers embedded in narrative ---- */
+/* Authors drop <div class="inline-viewer" data-accession="..." ...></div>
+   directly into narrative HTML. Each renders as a frozen seqviz snapshot
+   with an optional italic caption underneath, flowing with the prose
+   rather than sitting in a bordered card. The reader's eye moves from
+   paragraph to viewer to paragraph without hitting a modular wall. */
+.narrative .inline-viewer {
+    margin: 28px 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+}
+.narrative .inline-viewer-caption {
+    margin: 10px 2px 0;
+    font-size: 0.86rem;
+    font-style: italic;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+}
+
 /* ---- Cross-example link pills ---- */
 /* Anchor tags inside a narrative that point at another example page
    (href="./example.html?id=<slug>") get auto-promoted to pill-style

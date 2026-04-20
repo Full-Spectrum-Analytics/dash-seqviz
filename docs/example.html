@@ -6,7 +6,7 @@
     <title>Example &mdash; dash-seqviz</title>
     <meta name="description" content="Interactive example — one curated construct visualized with dash-seqviz, with a ready-to-paste Python snippet.">
 
-    <link rel="stylesheet" href="./assets/site.css?v=9">
+    <link rel="stylesheet" href="./assets/site.css?v=10">
 </head>
 <body data-page="examples">
 
@@ -145,7 +145,7 @@
 <script crossorigin src="https://unpkg.com/smiles-drawer@2.2.1/dist/smiles-drawer.min.js"></script>
 <script src="./assets/nav.js"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
-<script src="./data/examples.js?v=11"></script>
+<script src="./data/examples.js?v=12"></script>
 
 <script>
     (function () {
@@ -1082,6 +1082,100 @@
                 });
 
             renderAll();
+
+            // ---------------------------------------------------------------
+            // Inline viewers embedded in the narrative. Authors mark these
+            // as <div class="inline-viewer" data-accession="..." data-zoom="..."
+            // data-viewer="..." data-search="..." data-enzymes="A,B"
+            // data-show-translations="true" data-caption="..."></div>.
+            // Each instance is a frozen snapshot tuned to the narrative
+            // moment it sits beside; it doesn't respond to the top controls.
+            // ---------------------------------------------------------------
+            var recByAcc = {};
+            cells.forEach(function (c) {
+                if (c.accInfo && c.rec) recByAcc[c.accInfo.id] = c.rec;
+            });
+            var inlineDivs = Array.prototype.slice.call(
+                narrativeEl.querySelectorAll(".inline-viewer")
+            );
+            inlineDivs.forEach(function (div, i) {
+                var accId = div.getAttribute("data-accession") || accessionsList[0].id;
+                var rec = recByAcc[accId];
+                if (!rec) return;
+
+                if (!div.id) div.id = "inline-viewer-" + i;
+                var viewerMode = div.getAttribute("data-viewer") || "linear";
+                var zoomLinear = parseInt(
+                    div.getAttribute("data-zoom-linear") ||
+                    div.getAttribute("data-zoom") || "50", 10);
+                var zoomCircular = parseInt(
+                    div.getAttribute("data-zoom-circular") || "50", 10);
+                var showComplement = div.getAttribute("data-show-complement") === "true";
+                var showTranslations = div.getAttribute("data-show-translations") === "true";
+                var searchQuery = (div.getAttribute("data-search") || "").trim();
+                var enzymesAttr = div.getAttribute("data-enzymes") || "";
+                var enzymes = enzymesAttr
+                    ? enzymesAttr.split(",").map(function (s) { return s.trim(); }).filter(Boolean)
+                    : [];
+                var height = div.getAttribute("data-height") || "360px";
+                var caption = div.getAttribute("data-caption") || "";
+
+                // Replace the placeholder div's content with a viewer host
+                // plus an optional caption below. The outer .inline-viewer
+                // stays for styling + margin control.
+                var viewerHost = document.createElement("div");
+                viewerHost.id = div.id + "-host";
+                viewerHost.style.height = height;
+                div.innerHTML = "";
+                div.appendChild(viewerHost);
+
+                if (caption) {
+                    var capEl = document.createElement("p");
+                    capEl.className = "inline-viewer-caption";
+                    capEl.textContent = caption;
+                    div.appendChild(capEl);
+                }
+
+                var searchProp;
+                if (searchQuery) {
+                    searchProp = { query: searchQuery, mismatch: 0 };
+                }
+
+                window.SeqVizSite.renderViewer(viewerHost.id, {
+                    name: rec.name,
+                    seq: rec.seq,
+                    annotations: rec.annotations,
+                    translations: showTranslations ? rec.translations : [],
+                    viewer: viewerMode,
+                    zoom: { linear: zoomLinear, circular: zoomCircular },
+                    showComplement: showComplement,
+                    enzymes: enzymes,
+                    search: searchProp,
+                    style: { height: height, width: "100%" }
+                });
+
+                // Prevent page scroll while the cursor is over a circular
+                // inline viewer (seqviz rotates it on wheel).
+                viewerHost.addEventListener("wheel", function (ev) {
+                    if (viewerMode === "circular" ||
+                        viewerMode === "both" ||
+                        viewerMode === "both_flip") {
+                        ev.preventDefault();
+                    }
+                }, { passive: false });
+            });
+
+            // If the narrative does its own storytelling with embedded
+            // viewers, hide the boxed top "Live viewer" section -- the
+            // story and its snapshots are the experience. The section
+            // stays in the DOM for examples that don't use inline viewers.
+            if (inlineDivs.length > 0) {
+                var topViewerWrap = document.getElementById("example-viewer-wrap");
+                if (topViewerWrap) {
+                    var topSection = topViewerWrap.closest(".ex-section");
+                    if (topSection) topSection.style.display = "none";
+                }
+            }
 
             // Prevent page scroll while the cursor is over a circular
             // viewer (seqviz rotates it on wheel). Both "Both" modes
