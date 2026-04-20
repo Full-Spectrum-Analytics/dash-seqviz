@@ -1957,28 +1957,46 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
-                "<h3>The uncultured bacterium that made it into NCI cancer trials</h3>" +
-                "<p><strong>Bryostatin 1</strong> is one of the most famous marine natural " +
-                "products in pharmacology: a macrolactone PKC activator that the National " +
-                "Cancer Institute took through clinical trials for leukemia, melanoma, and " +
-                "Alzheimer's disease. The bryozoan it was isolated from (<em>Bugula " +
-                "neritina</em>) doesn't make it \u2014 a bacterial symbiont living inside " +
-                "the bryozoan's larvae does. The symbiont is uncultured; for decades nobody " +
-                "could link the drug to a producer organism, let alone a gene cluster.</p>" +
-                "<p>The breakthrough came in 2007: direct sequencing from the bryozoan " +
-                "metagenome assembled the <strong>bryABCDX</strong> polyketide synthase " +
-                "cluster without ever culturing the producer. 73 kb of modular PKS genes " +
-                "encoded in one continuous block, where <code>bryA</code> alone spans " +
-                "~16 kb and contains multiple PKS modules in a single open reading frame. " +
-                "This is the record those 73 kb landed in GenBank as.</p>" +
-                "<p>Comparative genomics has since extended the story across the genus. " +
-                "The <em>Ca.</em> Endobugula symbiont of <em>Bugulina simplex</em> " +
-                "(<em>Ca.</em> E. glebosa) carries a homologous <em>bry</em> cluster, as " +
-                "the shared chemistry and host phylogeny predicted. But the symbiont of " +
-                "<em>Crisularia pacifica</em> \u2014 newly named <em>Ca.</em> Endobugula " +
-                "tacita \u2014 has no <em>bry</em> at all. In its place sits an orphan " +
-                "trans-AT PKS, hinting that bryostatin chemistry is one solution, not the " +
-                "only one, to a shared defensive role in this bryozoan clade.</p>" +
+                "<h3>A cancer drug whose producer you can't grow</h3>" +
+                "<p>Pluck a frond of <em>Bugula neritina</em> off a dock piling and " +
+                "you're handling, in gram quantities, one of the most studied molecules " +
+                "in marine pharmacology. The bryozoan is unassuming \u2014 centimeters " +
+                "tall, beige, twig-like, a filter feeder whose larvae brood in ovicells " +
+                "before release. What lives inside it is not. Deep in the larval tissue " +
+                "sits an uncultured bacterial symbiont, <em>Candidatus</em> Endobugula " +
+                "sertula, which produces <strong>bryostatin 1</strong> \u2014 a " +
+                "macrolactone the US National Cancer Institute has carried through " +
+                "five decades of clinical trials for leukemia, melanoma, and " +
+                "Alzheimer's disease.</p>" +
+                "<p>Molecules like this one are why \"the Supply Problem\" became " +
+                "founding vocabulary for pharmacognosy. The symbiont will not grow in " +
+                "culture. The host is slow-breeding. The compound sits at vanishing " +
+                "parts-per-million. For much of the late 20th century the only way to " +
+                "get more bryostatin was to take a boat and a net: one NCI collection " +
+                "effort in the 1980s pulled more than ten thousand kilograms of " +
+                "<em>B. neritina</em> from Californian waters to yield a handful of " +
+                "grams of drug. Total synthesis, when it arrived, was a tour de force " +
+                "\u2014 too long and too low-yielding to feed a clinical program.</p>" +
+                "<p>The deadlock broke in 2007. Direct sequencing of the bryozoan " +
+                "metagenome \u2014 skipping the producer entirely, reading its DNA off " +
+                "the host tissue \u2014 assembled the 73 kb <strong>bryABCDX</strong> " +
+                "polyketide synthase cluster as a single continuous block. Sixteen " +
+                "kilobases of that block are one open reading frame: <code>bryA</code>, " +
+                "a single polypeptide encoding an assembly line of catalytic modules " +
+                "that add building block after building block to a growing chain. One " +
+                "gene, one mRNA, one translated protein \u2014 threading carbon after " +
+                "carbon until a full macrolactone spools off the end.</p>" +
+                "<p>The story did not stop at <em>Bugula neritina</em>. Comparative " +
+                "genomics has since reached across the bryozoan clade, and the plot " +
+                "thickens. <em>Bugulina simplex</em> hosts a closely related symbiont " +
+                "(<em>Ca.</em> E. glebosa) that carries a homologous <em>bry</em> " +
+                "cluster, and its tissues still test positive for bryostatin-like " +
+                "activity. But <em>Crisularia pacifica</em> hosts a third cousin, " +
+                "<em>Ca.</em> Endobugula tacita, that has lost <em>bry</em> entirely " +
+                "and replaced it with an unrelated trans-AT PKS. Same ecological niche, " +
+                "same invertebrate-symbiont architecture \u2014 two solutions. " +
+                "Bryostatin chemistry, it turns out, is one answer to a defensive " +
+                "problem this bryozoan clade has solved at least twice.</p>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
                 "<li><strong>Zoom out in the linear view.</strong> At zoom=1 you can see " +

@@ -145,7 +145,7 @@
 <script crossorigin src="https://unpkg.com/smiles-drawer@2.2.1/dist/smiles-drawer.min.js"></script>
 <script src="./assets/nav.js"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
-<script src="./data/examples.js?v=10"></script>
+<script src="./data/examples.js?v=11"></script>
 
 <script>
     (function () {
@@ -520,21 +520,43 @@
             metaEl.appendChild(b);
         });
 
-        // Normalize the accession schema: new examples use `accessions:
-        // [{id, label}, ...]`; legacy single-accession entries use
-        // `accession: "X"`. Both flow through the same viewer-grid path.
+        // Normalize the accession schema. Entries carry:
+        //   id        — NCBI accession (required)
+        //   label     — short descriptor shown in the cell header (optional)
+        //   caption   — one-line explanation of what this viewer shows
+        //               (optional, rendered below the cell)
+        //   override  — per-cell seqviz config ({viewer, zoom, search,
+        //               enzymes, showComplement, showTranslations}). When
+        //               present, that cell ignores the shared controls
+        //               panel for those fields — lets a page curate a
+        //               locked multi-viewer story (overview + zoom-in)
+        //               while still letting readers drive untouched
+        //               fields. (optional)
+        // Legacy single-accession entries still use `accession: "X"`;
+        // both shapes flow through the same viewer-grid path.
         var accessionsList;
         if (Array.isArray(ex.accessions) && ex.accessions.length) {
             accessionsList = ex.accessions.map(function (a) {
-                return { id: a.id, label: a.label || "" };
+                return {
+                    id: a.id,
+                    label: a.label || "",
+                    caption: a.caption || "",
+                    override: a.override || null
+                };
             });
         } else if (ex.accession) {
-            accessionsList = [{ id: ex.accession, label: "" }];
+            accessionsList = [{ id: ex.accession, label: "", caption: "", override: null }];
         } else {
             accessionsList = [];
         }
 
+        // Accession badges in the header dedupe — a multi-viewer page
+        // that points at the same record twice (overview + zoom) only
+        // needs one NCBI badge, not two.
+        var seenAccIds = {};
         accessionsList.forEach(function (a) {
+            if (seenAccIds[a.id]) return;
+            seenAccIds[a.id] = true;
             var accBadge = document.createElement("span");
             accBadge.className = "badge badge-tag";
             accBadge.textContent = "NCBI " + a.id;
