@@ -3366,8 +3366,8 @@
         },
         {
             id: "silybin-chs3",
-            title: "Silybum marianum CHS3 \u2014 Gateway to silymarin flavonolignans",
-            summary: "The 1.2 kb Silybum marianum chalcone synthase (CHS3) mRNA. The first committed step of flavonoid biosynthesis in milk thistle \u2014 upstream entry point to the hepatoprotective flavonolignan silybin.",
+            title: "Silybum marianum CHS3: gateway to the silymarin flavonolignans",
+            summary: "From Dioscorides to hepatocellular carcinoma trials.",
             category: "academic",
             tags: ["natural-product", "plant", "type-III-PKS", "flavonoid", "hepatoprotective"],
             complexity: 3,
@@ -3375,7 +3375,7 @@
             compound: {
                 name: "Silybin A",
                 smiles: "COC1=C(C=CC(=C1)[C@@H]2[C@H](OC3=C(O2)C=C(C=C3)[C@@H]4[C@H](C(=O)C5=C(C=C(C=C5O4)O)O)O)CO)O",
-                description: "A flavonolignan from milk thistle (Silybum marianum) fruits \u2014 the principal active component of silymarin, used for centuries as a hepatoprotective agent and currently evaluated against hepatocellular carcinoma. Formed by peroxidase-mediated oxidative coupling of taxifolin with coniferyl alcohol; the chalcone synthase shown here is two biosynthetic steps upstream of taxifolin."
+                description: "A flavonolignan from milk thistle (Silybum marianum) fruits. The principal active component of silymarin, used as a hepatoprotective agent since antiquity and currently in clinical trials against hepatocellular carcinoma. Formed by peroxidase-mediated oxidative coupling of taxifolin (from the flavonoid pathway) with coniferyl alcohol (from the monolignol pathway)."
             },
             seqvizProps: {
                 viewer: "both",
@@ -3383,47 +3383,75 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
-                "<h3>The signature molecule of a 2000-year-old herb</h3>" +
-                "<p>Milk thistle (<em>Silybum marianum</em>) has been used as a liver " +
-                "remedy since Dioscorides's <em>De Materia Medica</em> in the 1st " +
-                "century AD \u2014 a founding text of Western pharmacognosy. The modern " +
-                "chemistry is a <strong>flavonolignan</strong> mixture called silymarin, " +
-                "of which <strong>silybin</strong> (an approximately 1:1 mixture of " +
-                "diastereomers silybin A and silybin B) is the principal active " +
-                "component.</p>" +
-                "<p>Silybin is formed by <em>oxidative coupling</em> of two upstream " +
-                "metabolites: <strong>taxifolin</strong> (a dihydroflavonol from the " +
-                "flavonoid pathway) and <strong>coniferyl alcohol</strong> (a " +
-                "monolignol from the phenylpropanoid pathway). A peroxidase generates " +
-                "radicals on both partners; the adduct cyclises via addition of the " +
-                "taxifolin phenol to coniferyl alcohol's quinone methide.</p>" +
-                "<p>The gene shown here is the upstream gatekeeper of the flavonoid " +
-                "half of the coupling: <strong>chalcone synthase 3</strong> (CHS3), " +
-                "a type-III PKS that condenses one 4-coumaroyl-CoA with three " +
-                "malonyl-CoAs to form naringenin chalcone, the precursor to every " +
-                "flavonoid in the plant. Gram-scale separation of the seven major " +
-                "silymarin diastereoisomers has been the analytical foundation for " +
-                "milk thistle's clinical-trial work over the past two decades.</p>" +
-                "<h3>Try this</h3>" +
-                "<ul>" +
-                "<li><strong>Find the catalytic cysteine.</strong> Type-III PKSs use " +
-                "a Cys-His-Asn catalytic triad instead of the acyl-carrier-protein " +
-                "machinery of bacterial trans-AT systems. Toggle translations on and " +
-                "scroll to residue ~164 of the CDS \u2014 that's where the catalytic " +
-                "cysteine sits in plant CHSs, with the paired histidine and asparagine " +
-                "downstream in the active-site pocket.</li>" +
-                "<li><strong>Compare to the bacterial PKSs elsewhere in the gallery.</strong> " +
-                "CHS3 is a <em>single</em> iterative enzyme performing three rounds " +
-                "of condensation with zero tailoring. The bacterial megasynthases in " +
-                "<a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a> and " +
-                "<a href=\"./example.html?id=lagriamide-cluster\">lagriamide</a> are " +
-                "dozens of kilobases encoding one module per step. Plant vs. bacterial " +
-                "polyketide biosynthesis is a tale of two strategies.</li>" +
-                "<li><strong>Look at the compound card below</strong> to see silybin A. The " +
-                "benzodioxane ring in the centre is the oxidative-coupling handiwork; " +
-                "the flavanonol on the left is the portion CHS3's output eventually " +
-                "becomes.</li>" +
-                "</ul>" +
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/silybum-marianum.jpg\" " +
+                         "alt=\"A purple flower head of Silybum marianum, milk thistle, " +
+                              "with its characteristic spiny bracts.\">" +
+                    "<figcaption><em>Silybum marianum</em>, milk thistle. The plant " +
+                    "of Dioscorides, the plant of European grandmothers, and the " +
+                    "source of silymarin. Image: Wikimedia Commons (CC BY-SA 3.0)." +
+                    "</figcaption>" +
+                "</figure>" +
+                "<figure class=\"compound-figure figure-left\">" +
+                    "<img src=\"./assets/molecules/silybin-a.svg\" " +
+                         "alt=\"Skeletal structure of silybin A, a flavonolignan built " +
+                              "from a taxifolin flavanonol linked through a 1,4-dioxane " +
+                              "to a coniferyl-alcohol-derived aryl unit.\">" +
+                    "<figcaption>Silybin A. The flavanonol on the left derives from " +
+                    "the flavonoid pathway; the benzodioxane ring in the middle is " +
+                    "the oxidative-coupling handiwork linking it to the monolignol " +
+                    "on the right. Image: Wikimedia Commons (public domain).</figcaption>" +
+                "</figure>" +
+                "<p>Milk thistle shows up in Dioscorides's <em>De Materia Medica</em> " +
+                "in the first century AD, recommended for liver complaints. The plant " +
+                "appears in European herbal traditions continuously from that point " +
+                "forward, in Culpeper and Gerard and Linnaeus, and it kept its " +
+                "reputation through the twentieth century as a hepatoprotective " +
+                "botanical. The 1960s isolated the chemistry behind the reputation: " +
+                "<strong>silymarin</strong>, a mixture of seven flavonolignans " +
+                "extractable from the seed, dominated by <strong>silybin</strong> " +
+                "(itself a roughly 1:1 mix of diastereomers silybin A and silybin " +
+                "B).</p>" +
+                "<p>Silybin is a biosynthetic hybrid, and that is what makes it " +
+                "unusual among plant natural products. Most flavonoids are purely " +
+                "flavonoid, most lignans are purely phenylpropanoid, but silybin is " +
+                "assembled from one of each. A peroxidase in the developing milk " +
+                "thistle seed oxidises two substrates at once: <strong>taxifolin</strong>, " +
+                "a dihydroflavonol from the flavonoid pathway, and <strong>coniferyl " +
+                "alcohol</strong>, a monolignol from the phenylpropanoid pathway. The " +
+                "resulting radicals couple, the taxifolin phenol adds across coniferyl " +
+                "alcohol's quinone methide, and a benzodioxane closes to give the " +
+                "finished flavonolignan.</p>" +
+                "<p>The gene shown here sits far upstream of that coupling. " +
+                "<strong>Chalcone synthase 3</strong> (CHS3) is a type-III " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase\" target=\"_blank\" rel=\"noopener\">" +
+                "polyketide synthase</a>, a small homodimeric enzyme that condenses " +
+                "one 4-coumaroyl-CoA with three malonyl-CoAs to give naringenin " +
+                "chalcone, the precursor to every flavonoid in the plant. A few " +
+                "enzymatic steps later naringenin chalcone has become taxifolin, and " +
+                "taxifolin is what ends up as the flavanonol half of silybin. CHS3 " +
+                "is, in other words, the gatekeeper of the entire flavonoid half of " +
+                "the silybin biosynthesis.</p>" +
+                "<div class=\"inline-viewer\" " +
+                     "data-accession=\"PP965198.1\" " +
+                     "data-viewer=\"linear\" " +
+                     "data-zoom=\"60\" " +
+                     "data-show-translations=\"true\" " +
+                     "data-height=\"340px\" " +
+                     "data-caption=\"The CHS3 cDNA with translation enabled. Type-III " +
+                                    "PKSs use a compact ~390-residue fold with a Cys- " +
+                                    "His-Asn catalytic triad; the catalytic cysteine " +
+                                    "that anchors the growing tetraketide sits near " +
+                                    "residue 164.\"></div>" +
+                "<p>Plant polyketide biosynthesis is a different shape of thing from " +
+                "the bacterial symbiont systems elsewhere in this gallery. " +
+                "<a href=\"./example.html?id=bryostatin-cluster\">Bryostatin</a>'s " +
+                "megasynthases run to sixteen kilobases of one open reading frame; " +
+                "CHS3 fits inside a thousand bases and does its job as a small " +
+                "homodimer. What it lacks in machinery it makes up for in ubiquity: " +
+                "essentially every flavonoid in the plant kingdom, silybin included, " +
+                "passes through a CHS at some point on its way to the tissues where " +
+                "it accumulates.</p>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Althagafy HS, Meza-Avi\u00f1a ME, Oberlies NH, Croatt MP. " +

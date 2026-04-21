@@ -352,11 +352,9 @@ STANDALONE_COMPOUNDS: List[Node] = [
     # Camptothecin: manually sourced from Wikimedia Commons
     # (File:Camptothecin_structure.svg, public domain). Do NOT
     # re-add a Node here or the hand-drawn asset will be overwritten.
-    Node(
-        "Silybin A",
-        "COC1=C(C=CC(=C1)[C@@H]2[C@H](OC3=C(O2)C=C(C=C3)[C@@H]4"
-        "[C@H](C(=O)C5=C(C=C(C=C5O4)O)O)O)CO)O",
-    ),
+    # Silybin A: manually sourced from Wikimedia Commons
+    # (File:Silibinin_skeletal.svg, public domain). Do NOT re-add
+    # a Node here or the hand-drawn asset will be overwritten.
 ]
 
 
