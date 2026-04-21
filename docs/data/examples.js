@@ -877,8 +877,25 @@
             // and a "refactored" viewer where flipping BsaI/BsmBI on reveals
             // exactly the sites a real refactor would have to domesticate.
             accessions: [
-                { id: "AF172851.1", label: "Native (for reference)" },
-                { id: "AF172851.1", label: "Refactored (Golden Gate\u2013ready)" }
+                {
+                    id: "AF172851.1",
+                    label: "Native (for reference)",
+                    // No enzymes on the native panel so the default view
+                    // is visually clean; the shared controls panel still
+                    // affects this cell unless overridden further.
+                    override: { enzymes: [] }
+                },
+                {
+                    id: "AF172851.1",
+                    label: "Refactored (Golden Gate\u2013ready)",
+                    // Refactored panel starts with BsaI + BsmBI selected
+                    // so the Type IIS cut marks appear on first paint.
+                    // That is the whole point of the comparison: the reader
+                    // sees the sites a real refactor would have to
+                    // synonymously mutate out, without hunting for the
+                    // enzyme button.
+                    override: { enzymes: ["BsaI", "BsmBI"] }
+                }
             ],
             compound: {
                 name: "Violacein",
@@ -903,10 +920,13 @@
                 "teams rebuild the five enzymes in <em>E. coli</em> with refactored " +
                 "promoters, codon-optimized CDSs, and designed RBSs.</p>" +
                 "<p>Both viewers above point at the same GenBank record so the comparison " +
-                "is apples-to-apples: the left panel is your <em>as-deposited</em> reference, " +
-                "the right panel is the same DNA we're about to <em>domesticate</em> for " +
-                "Golden Gate assembly. Flipping the enzyme toggles lights up every site a " +
-                "real refactor would have to silently mutate out of the codon-optimized CDSs.</p>" +
+                "is apples-to-apples: the left panel is your <em>as-deposited</em> reference " +
+                "with no enzymes selected, the right panel is the same DNA with " +
+                "<strong>BsaI and BsmBI lit up by default</strong>. Every cut mark in " +
+                "the right panel is a site a real refactor would have to silently mutate " +
+                "out of the codon-optimized CDSs before the cluster survives a Golden " +
+                "Gate reaction. Left clean, right dotted with cut marks: that is the " +
+                "delta, visible at a glance.</p>" +
                 "<h3>What changes in an industrial context</h3>" +
                 "<ul>" +
                 "<li>Native sequences replaced with codon-optimized synonymous variants.</li>" +
@@ -915,28 +935,25 @@
                 "</ul>" +
                 "<h3>Try this</h3>" +
                 "<ul>" +
-                "<li>Start with both viewers clean: no enzymes selected on either. Switch the " +
-                "topology radio to <em>Linear</em> and scroll through. The left (\"Native\") " +
-                "panel is your baseline \u2014 the unmodified cluster as it exists in nature.</li>" +
-                "<li>Click <strong>BsaI</strong> below to light up every BsaI site on both " +
-                "viewers at once. Count the cut marks in the left panel. <em>That</em> is the " +
-                "exact list of sites a refactor team has to silently mutate out of the " +
-                "codon-optimized CDSs before the cluster will survive a Golden Gate reaction.</li>" +
-                "<li>Now add <strong>BsmBI</strong> \u2014 the other canonical Type IIS cutter " +
-                "used in MoClo-style hierarchical assembly. Every additional cut mark is one " +
-                "more silent synonymous swap the synthesis order has to carry.</li>" +
-                "<li>Imagine the right (\"Refactored\") panel with <em>zero</em> cut marks once " +
-                "those silent swaps land: that's the deliverable of a refactor project. The " +
-                "side-by-side view trains your eye to spot the delta at a glance \u2014 " +
-                "native-has-sites vs. refactored-is-clean \u2014 which is exactly how a build " +
-                "report would be reviewed before ordering synthesis.</li>" +
-                "<li>Flip topology back to <em>Circular</em> to see both panels as the " +
-                "destination plasmids an assembly robot would actually handle.</li>" +
+                "<li>Start in Circular view. The left panel is your baseline: the cluster " +
+                "as it exists in nature. The right panel has BsaI and BsmBI selected, so " +
+                "every Type IIS cut site is already marked. The right panel's cut marks " +
+                "<em>are</em> the domestication punch list \u2014 the sites a refactor " +
+                "team has to silently mutate out of the codon-optimized CDSs before the " +
+                "cluster will survive a Golden Gate reaction.</li>" +
+                "<li>Switch the topology radio to <em>Linear</em> and scroll along each " +
+                "panel. The cut marks stay put; now you can see which gene each site " +
+                "lives in. A BsaI hit inside <code>vioC</code> is a <code>vioC</code> " +
+                "synthesis problem; a BsmBI hit in <code>vioD</code> is a " +
+                "<code>vioD</code> synthesis problem. Counting by CDS gives you the " +
+                "synonymous-mutation budget, gene by gene.</li>" +
+                "<li>Imagine the right panel with <em>zero</em> cut marks once those " +
+                "silent swaps land: that's the deliverable of a refactor project. " +
+                "Side-by-side with the native reference trains your eye to spot the " +
+                "delta at a glance \u2014 native-has-sites vs. refactored-is-clean \u2014 " +
+                "which is exactly how a build report would be reviewed before ordering " +
+                "synthesis.</li>" +
                 "</ul>" +
-                "<div class=\"enzyme-toggle-row\">" +
-                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BsaI\">BsaI</button>" +
-                "<button type=\"button\" class=\"enzyme-toggle\" data-enzyme=\"BsmBI\">BsmBI</button>" +
-                "</div>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>August PR, Grossman TH, Minor C, Draper MP, MacNeil IA, Pemberton JM <em>et al.</em> " +

@@ -149,7 +149,7 @@
 <script crossorigin src="https://unpkg.com/smiles-drawer@2.2.1/dist/smiles-drawer.min.js"></script>
 <script src="./assets/nav.js"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
-<script src="./data/examples.js?v=32"></script>
+<script src="./data/examples.js?v=33"></script>
 
 <script>
     (function () {
@@ -1396,11 +1396,19 @@
                 cells.forEach(function (cell) {
                     if (!cell.rec) return;
                     cell.viewerRoot.style.height = height;
+                    // Per-cell override lets one cell in a multi-viewer page
+                    // diverge from the shared controls panel — e.g. the
+                    // "Refactored" panel on violacein-refactored pre-selects
+                    // BsaI + BsmBI so the domestication sites are already
+                    // lit up without the reader hunting for the button.
+                    var ov = (cell.accInfo && cell.accInfo.override) || {};
                     // Compose the search prop from the live input. A blank
                     // query evaluates to undefined so seqviz doesn't show a
                     // "no matches" highlight when the user has cleared it.
                     var searchProp;
-                    if (state.searchQuery && state.searchQuery.trim()) {
+                    if (ov.search) {
+                        searchProp = ov.search;
+                    } else if (state.searchQuery && state.searchQuery.trim()) {
                         searchProp = {
                             query: state.searchQuery.trim(),
                             mismatch: (sp.search && sp.search.mismatch) || 0
@@ -1411,10 +1419,14 @@
                         seq: cell.rec.seq,
                         annotations: cell.rec.annotations,
                         translations: state.showTranslations ? cell.rec.translations : [],
-                        viewer: state.viewer,
-                        zoom: { linear: state.zoomLinear },
-                        showComplement: state.showComplement,
-                        enzymes: state.enzymes.slice(),
+                        viewer: ov.viewer || state.viewer,
+                        zoom: { linear: (typeof ov.zoomLinear === "number")
+                                         ? ov.zoomLinear : state.zoomLinear },
+                        showComplement: (typeof ov.showComplement === "boolean")
+                                         ? ov.showComplement : state.showComplement,
+                        enzymes: Array.isArray(ov.enzymes)
+                                  ? ov.enzymes.slice()
+                                  : state.enzymes.slice(),
                         search: searchProp,
                         style: { height: height, width: "100%" }
                     });
