@@ -2301,8 +2301,8 @@
         },
         {
             id: "patellamide-cluster",
-            title: "Patellamides — Cyanobactin RiPPs from a tunicate symbiont",
-            summary: "The ~13 kb patEABCDEFG cluster from Prochloron didemni. An eight-residue ribosomal peptide gets heterocyclized and macrocyclized into a drug-like scaffold.",
+            title: "Patellamides: cyanobactin RiPPs from a tunicate symbiont",
+            summary: "The ribosome is the chemist.",
             category: "academic",
             tags: ["natural-product", "RiPP", "cyanobactin", "symbiont", "graduate"],
             complexity: 4,
@@ -2310,7 +2310,7 @@
             compound: {
                 name: "Patellamide A",
                 smiles: "CCC(C)C1C2=NC(CO2)C(=O)NC(C3=NC(=CS3)C(=O)NC(C4=NC(C(O4)C)C(=O)NC(C5=NC(=CS5)C(=O)N1)C(C)C)C(C)CC)C(C)C",
-                description: "A head-to-tail cyclic octapeptide decorated with alternating thiazolines and oxazolines from an obligate symbiont of the coral-reef tunicate Lissoclinum patella. The drug scaffold is genetically encoded \u2014 PatE is a ribosomally translated precursor peptide."
+                description: "A head-to-tail cyclic octapeptide decorated with alternating thiazoline and oxazoline heterocycles. Biosynthesised as a 71-residue ribosomal precursor (PatE), cleaved to its eight-residue core, and heterocyclised plus macrocyclised by a small set of post-translational enzymes encoded in the same cluster."
             },
             seqvizProps: {
                 viewer: "both",
@@ -2318,45 +2318,70 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
-                "<h3>A ribosome making a drug-like molecule</h3>" +
-                "<p><strong>Patellamides</strong> are head-to-tail cyclic octapeptides " +
-                "decorated with thiazoline and oxazoline heterocycles, first isolated from " +
-                "the coral-reef tunicate <em>Lissoclinum patella</em>. For years the " +
-                "assumption was that tunicate-derived natural products came from a large, " +
-                "complex NRPS machine. The 2005 cluster paper showed the opposite: the " +
-                "precursor is <strong>genetically encoded as a 71-aa ribosomal peptide</strong> " +
-                "(PatE), cleaved to an 8-mer core, and then heterocyclized + macrocyclized " +
-                "by a small set of post-translational enzymes.</p>" +
-                "<p>This was one of the founding <strong>RiPP</strong> (Ribosomally " +
-                "synthesized and Post-translationally modified Peptide) papers \u2014 the " +
-                "template that made cyanobactins, lantibiotics, and the " +
-                "<a href=\"./example.html?id=bottromycin-academic\">bottromycins</a> that " +
-                "followed fit into one unified story. The whole <em>pat</em> cluster is " +
-                "only ~13 kb, which is remarkable given the chemical complexity of the " +
-                "product.</p>" +
-                "<p>The story has a clean pedagogical payoff: in 2008 the entire <em>pat</em> " +
-                "pathway was refactored in <em>E. coli</em>. Patellamides A and C came out " +
-                "of the heterologous host at detectable titers, without any of " +
-                "<em>Prochloron</em>'s cellular machinery \u2014 direct proof that this " +
-                "RiPP drug scaffold is portable between organisms.</p>" +
-                "<h3>Try this</h3>" +
-                "<ul>" +
-                "<li><strong>Find <code>patE</code>.</strong> It's the shortest CDS in the " +
-                "cluster \u2014 the precursor peptide itself, 71 aa. Toggle translations " +
-                "on, zoom in, and look for the core sequence <code>ITACITFC</code> (or " +
-                "similar) \u2014 those 8 residues become the mature patellamide after " +
-                "cleavage + heterocyclization.</li>" +
-                "<li><strong>Compare to <a href=\"./example.html?id=bottromycin-academic\">" +
-                "bottromycin</a>.</strong> Both are RiPPs; both have a tiny precursor " +
-                "CDS surrounded by much larger modification enzymes. Patellamides are " +
-                "cyclic peptides; bottromycins are macroamidines \u2014 different tailoring, " +
-                "same ribosomal-peptide origin story.</li>" +
-                "<li><strong>Flip to circular.</strong> The whole cluster is only 13 kb, so " +
-                "even the circular view is a compact summary of the biosynthesis.</li>" +
-                "<li><strong>Look at the compound card below</strong> to see the thiazoline + " +
-                "oxazoline heterocycles that decorate the macrocycle. Every other residue " +
-                "carries one \u2014 characteristic cyanobactin geometry.</li>" +
-                "</ul>" +
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/lissoclinum-patella.jpg\" " +
+                         "alt=\"A chartreuse tunicate colony, Lissoclinum patella, " +
+                              "attached to a coral-reef substrate. The green colour " +
+                              "comes from its intracellular cyanobacterial symbiont, " +
+                              "Prochloron didemni.\">" +
+                    "<figcaption><em>Lissoclinum patella</em>, a colonial ascidian on " +
+                    "Indo-Pacific coral reefs. The chartreuse colour is not the tunicate; " +
+                    "it is <em>Prochloron didemni</em>, an obligate cyanobacterial " +
+                    "symbiont that lives in the ascidian's extracellular spaces and " +
+                    "synthesises the patellamides. Image: Nhobgood / Wikimedia Commons " +
+                    "(CC BY-SA 3.0).</figcaption>" +
+                "</figure>" +
+                "<figure class=\"compound-figure figure-left\">" +
+                    "<img src=\"./assets/molecules/patellamide-a.svg\" " +
+                         "alt=\"Skeletal structure of patellamide A, a cyclic octapeptide " +
+                              "with alternating thiazoline and oxazoline heterocycles.\">" +
+                    "<figcaption>Patellamide A. An eight-residue head-to-tail cyclic " +
+                    "peptide; every other residue has been dehydrated into a thiazoline " +
+                    "or oxazoline ring. Image: Wikimedia Commons (public domain).</figcaption>" +
+                "</figure>" +
+                "<p>Pick a <em>Lissoclinum patella</em> colony off an Indo-Pacific reef " +
+                "and crack it open and you will find, in its intracellular spaces, the " +
+                "reason it looks chartreuse: a thick suspension of " +
+                "<em>Prochloron didemni</em>, an obligate cyanobacterium that the tunicate " +
+                "does not grow outside of and cannot be grown without. " +
+                "<em>Prochloron</em> provides photosynthate to its host, UV-absorbing " +
+                "pigments, and, as a chemical bonus, a class of cyclic peptides called " +
+                "the <strong>patellamides</strong>: eight-residue macrocycles dressed " +
+                "with alternating thiazoline and oxazoline rings, and cytotoxic enough " +
+                "to have been pursued as anticancer leads since the mid-1980s.</p>" +
+                "<p>The patellamides looked, at first glance, like exactly the sort of " +
+                "peptide a large " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Nonribosomal_peptide\" target=\"_blank\" rel=\"noopener\">" +
+                "nonribosomal peptide synthetase</a> would build. The amino-acid " +
+                "sequence is chemically exotic, the heterocycles are not standard " +
+                "ribosomal chemistry, and the macrocyclisation needs dedicated " +
+                "enzymology. The 2005 cluster paper overturned all of it. The " +
+                "<em>pat</em> locus is only about thirteen kilobases, and sitting " +
+                "inside it is a single 213-base open reading frame, <code>patE</code>, " +
+                "that encodes a seventy-one-residue precursor peptide. Eight residues " +
+                "of PatE are the core. The remaining <em>pat</em> genes encode a " +
+                "protease, two heterocyclisation enzymes, and a macrocyclase, all of " +
+                "which act <em>after</em> translation to deliver the mature drug " +
+                "scaffold.</p>" +
+                "<div class=\"inline-viewer\" " +
+                     "data-accession=\"AY986476\" " +
+                     "data-viewer=\"circular\" " +
+                     "data-height=\"420px\" " +
+                     "data-caption=\"The 13 kb pat cluster in circular view. patE is " +
+                                    "the shortest CDS in the cluster; patG and the other " +
+                                    "tailoring enzymes take up most of the real estate.\"></div>" +
+                "<p>This was one of the founding " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Ribosomally_synthesized_and_post-translationally_modified_peptides\" target=\"_blank\" rel=\"noopener\">" +
+                "RiPP</a> papers, the template that tied cyanobactins, lantibiotics, " +
+                "sactipeptides, and later the " +
+                "<a href=\"./example.html?id=bottromycin-academic\">bottromycins</a> into " +
+                "one biosynthetic logic. It also provided a decisive experimental " +
+                "handle. Because the chemistry happens after the ribosome, and because " +
+                "the enzymes are few and small, the full <em>pat</em> pathway could be " +
+                "lifted out of <em>Prochloron</em> and refactored in <em>E. coli</em> " +
+                "in 2008. Patellamides A and C came out of the heterologous host at " +
+                "detectable titer. A tunicate-bound symbiosis had been reduced to a " +
+                "single plasmid.</p>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Schmidt EW, Nelson JT, Rasko DA, Sudek S, Eisen JA, Haygood MG, Ravel J. " +
@@ -2376,7 +2401,7 @@
                 "A global assembly line for cyanobactins.</a> " +
                 "<em>Nat Chem Biol</em> 4(6):341-343 (2008). PMID: 18425111. " +
                 "(Heterologous expression of <em>pat</em> and related cyanobactin pathways " +
-                "in <em>E. coli</em> \u2014 the receipts for \"a ribosomal-peptide drug " +
+                "in <em>E. coli</em>; the receipts for \"a ribosomal-peptide drug " +
                 "scaffold is portable between organisms\".)</li>" +
                 "</ul>",
             pythonSnippet:

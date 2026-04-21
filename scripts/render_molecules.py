@@ -303,11 +303,9 @@ STANDALONE_COMPOUNDS: List[Node] = [
     # here -- the handcrafted SVG at docs/assets/molecules/bryostatin-1
     # .svg is the canonical asset and would be overwritten if this
     # script renders it.
-    Node(
-        "Patellamide A",
-        "CCC(C)C1C2=NC(CO2)C(=O)NC(C3=NC(=CS3)C(=O)NC(C4=NC(C(O4)C)"
-        "C(=O)NC(C5=NC(=CS5)C(=O)N1)C(C)C)C(C)CC)C(C)C",
-    ),
+    # Patellamide A: manually sourced from Wikimedia Commons
+    # (File:Patellamide_A.svg, public domain). Do NOT re-add a
+    # Node here or the handcrafted asset will be overwritten.
     Node(
         "Jamaicamide A",
         "CC1C=CC(=O)N1C(=O)C=C(CCNC(=O)CCC=CC(C)CCC(=CCl)CCCC#CBr)OC",
