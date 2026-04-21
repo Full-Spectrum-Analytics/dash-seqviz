@@ -349,10 +349,9 @@ STANDALONE_COMPOUNDS: List[Node] = [
     # taxane core and side chain with correct wedge stereochemistry;
     # CoordGen on the connectivity SMILES puts the four-ring core
     # in a strained arrangement. Do NOT re-add a Node here.
-    Node(
-        "Camptothecin",
-        "CC[C@@]1(C2=C(COC1=O)C(=O)N3CC4=CC5=CC=CC=C5N=C4C3=C2)O",
-    ),
+    # Camptothecin: manually sourced from Wikimedia Commons
+    # (File:Camptothecin_structure.svg, public domain). Do NOT
+    # re-add a Node here or the hand-drawn asset will be overwritten.
     Node(
         "Silybin A",
         "COC1=C(C=CC(=C1)[C@@H]2[C@H](OC3=C(O2)C=C(C=C3)[C@@H]4"

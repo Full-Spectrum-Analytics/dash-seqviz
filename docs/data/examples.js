@@ -3235,8 +3235,8 @@
         },
         {
             id: "strictosidine-synthase-cpt",
-            title: "Strictosidine synthase \u2014 Gateway enzyme to camptothecin and the TIA alkaloids",
-            summary: "The 993 bp Camptotheca acuminata CaPSTR cDNA. STR is the Pictet-Spenglerase that funnels tryptamine into the terpenoid indole alkaloid pathway \u2014 the committed step on the way to camptothecin and its derivatives topotecan/irinotecan.",
+            title: "Strictosidine synthase: gateway enzyme to camptothecin and the TIA alkaloids",
+            summary: "One enzyme, three thousand alkaloids.",
             category: "academic",
             tags: ["natural-product", "plant", "alkaloid", "pharma", "anticancer"],
             complexity: 3,
@@ -3244,7 +3244,7 @@
             compound: {
                 name: "Camptothecin",
                 smiles: "CC[C@@]1(C2=C(COC1=O)C(=O)N3CC4=CC5=CC=CC=C5N=C4C3=C2)O",
-                description: "A pentacyclic quinoline alkaloid from the Chinese happy tree (Camptotheca acuminata). Isolated in 1966, five years before paclitaxel, at the same research institute. Clinical derivatives topotecan and irinotecan are topoisomerase-I inhibitors used against ovarian, colorectal, and small-cell lung cancer."
+                description: "A pentacyclic quinoline alkaloid from the Chinese happy tree (Camptotheca acuminata). Isolated in 1966, five years before paclitaxel, at the same research institute. Too toxic for the clinic in its native form, but its semi-synthetic derivatives topotecan and irinotecan are topoisomerase-I inhibitors used worldwide against ovarian, colorectal, cervical, and small-cell lung cancer."
             },
             seqvizProps: {
                 viewer: "both",
@@ -3252,46 +3252,71 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
-                "<h3>The other cancer drug from the Research Triangle</h3>" +
-                "<p><strong>Camptothecin</strong> is the pentacyclic alkaloid isolated " +
-                "from the Chinese happy tree (<em>Camptotheca acuminata</em>) at the " +
-                "Research Triangle Institute Natural Products Laboratory in 1966 \u2014 " +
-                "five years before the same institute's more famous " +
-                "<a href=\"./example.html?id=taxadiene-synthase\">taxol</a> discovery. " +
-                "Camptothecin itself was too toxic for the clinic, but its " +
-                "semi-synthetic derivatives <strong>topotecan</strong> and " +
-                "<strong>irinotecan</strong> are topoisomerase-I inhibitors used " +
-                "worldwide against ovarian, colorectal, cervical, and small-cell lung " +
-                "cancer.</p>" +
-                "<p>Camptothecin belongs to the <strong>terpenoid indole alkaloid</strong> " +
-                "(TIA) family, a 3000-member natural-product class that also includes " +
-                "vincristine, vinblastine, strychnine, quinine, and reserpine. The key " +
-                "committed step shared by the entire family is a Pictet-Spengler " +
-                "condensation of tryptamine with secologanin to give strictosidine, " +
-                "catalysed by <strong>strictosidine synthase</strong> (STR). The " +
-                "accession shown here is <code>JF508375</code>, the <em>Camptotheca " +
-                "acuminata</em> STR (CaPSTR) \u2014 68% amino-acid identity to the " +
-                "<em>Catharanthus roseus</em> STR that kicks off vincristine/" +
-                "vinblastine biosynthesis in Madagascar periwinkle.</p>" +
-                "<h3>Try this</h3>" +
-                "<ul>" +
-                "<li><strong>Read the CDS.</strong> STR is a modest ~340-residue " +
-                "enzyme \u2014 compact compared to the massive PKS megasynthases in " +
-                "the symbiont clusters elsewhere in this gallery. Plant natural-product " +
-                "chemistry tends to come in small single-function enzymes organised " +
-                "across multiple chromosomes, not in bacterial-style clusters.</li>" +
-                "<li><strong>Compare to " +
-                "<a href=\"./example.html?id=taxadiene-synthase\">taxadiene synthase</a>." +
-                "</strong> Two \"first committed step\" enzymes for two anticancer " +
-                "drugs from the same era of natural-product chemistry. TDC1 is a " +
-                "class-I terpene synthase; STR is a Pictet-Spenglerase. Different " +
-                "chemistry, same architectural theme: plant NP biosynthesis gates on " +
-                "a single committed step, with the diversity downstream.</li>" +
-                "<li><strong>Look at the compound card below</strong> to see the planar " +
-                "pentacyclic scaffold of camptothecin \u2014 the E-ring lactone that " +
-                "intercalates into topoisomerase-I\u2013DNA complexes is the piece " +
-                "topotecan and irinotecan variously modify.</li>" +
-                "</ul>" +
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/camptotheca-acuminata.jpg\" " +
+                         "alt=\"Trunk of Camptotheca acuminata, the Chinese happy tree, " +
+                              "a deciduous tree native to southern China.\">" +
+                    "<figcaption><em>Camptotheca acuminata</em>, the Chinese happy " +
+                    "tree. Native to southern China; its bark and leaves were the " +
+                    "original source of camptothecin. Image: Geographer / Wikimedia " +
+                    "Commons (CC BY-SA 3.0).</figcaption>" +
+                "</figure>" +
+                "<figure class=\"compound-figure figure-left\">" +
+                    "<img src=\"./assets/molecules/camptothecin.svg\" " +
+                         "alt=\"Skeletal structure of camptothecin, a planar pentacyclic " +
+                              "quinoline alkaloid with a chiral alpha-hydroxy-delta-lactone.\">" +
+                    "<figcaption>Camptothecin. The pentacyclic core intercalates into " +
+                    "topoisomerase-I cleavage complexes; the E-ring alpha-hydroxy " +
+                    "lactone is the pharmacophore modified in topotecan and irinotecan. " +
+                    "Image: Wikimedia Commons (public domain).</figcaption>" +
+                "</figure>" +
+                "<p><strong>Camptothecin</strong> was isolated in 1966 from the bark " +
+                "and leaves of the Chinese happy tree, <em>Camptotheca acuminata</em>, " +
+                "as part of the same mid-century natural-product screening programme " +
+                "that would later yield " +
+                "<a href=\"./example.html?id=taxadiene-synthase\">paclitaxel</a>. The " +
+                "compound turned out to be the first known inhibitor of topoisomerase " +
+                "I, the enzyme that relieves DNA torsional stress during replication " +
+                "and transcription. Early clinical trials of camptothecin itself " +
+                "failed on toxicity, but the two semi-synthetic derivatives the " +
+                "chemistry eventually produced, <strong>topotecan</strong> and " +
+                "<strong>irinotecan</strong>, are still clinical mainstays against " +
+                "ovarian, colorectal, cervical, and small-cell lung cancer.</p>" +
+                "<p>Camptothecin is also a member of one of the largest natural-" +
+                "product families in biology. The <strong>terpenoid indole alkaloids</strong> " +
+                "(TIAs) are a class of roughly three thousand plant secondary " +
+                "metabolites, and along with camptothecin it includes vincristine " +
+                "and vinblastine (the anticancer alkaloids of Madagascar periwinkle), " +
+                "strychnine, quinine, and reserpine. Every one of these molecules " +
+                "passes through the same gateway: a Pictet-Spengler condensation of " +
+                "tryptamine and secologanin that forms strictosidine, catalysed by " +
+                "<strong>strictosidine synthase</strong> (STR).</p>" +
+                "<p>The CDS shown here is <code>JF508375</code>, the " +
+                "<em>Camptotheca acuminata</em> strictosidine synthase (CaPSTR). A " +
+                "modest ~340-residue enzyme, roughly 68% identical in amino-acid " +
+                "sequence to the <em>Catharanthus roseus</em> STR that starts " +
+                "vincristine biosynthesis. Plant natural-product pathways are usually " +
+                "scattered across multiple chromosomes rather than clustered, and " +
+                "this single enzyme is the upstream fork from which three thousand " +
+                "related molecules downstream all diverge.</p>" +
+                "<div class=\"inline-viewer\" " +
+                     "data-accession=\"JF508375.1\" " +
+                     "data-viewer=\"linear\" " +
+                     "data-zoom=\"60\" " +
+                     "data-show-translations=\"true\" " +
+                     "data-height=\"340px\" " +
+                     "data-caption=\"The CaPSTR cDNA with translation enabled. The mature " +
+                                    "enzyme is a compact six-bladed beta-propeller; the " +
+                                    "catalytic glutamate that protonates the iminium " +
+                                    "intermediate sits around residue 309.\"></div>" +
+                "<p>The contrast with the cluster examples elsewhere in the gallery " +
+                "is the point. <a href=\"./example.html?id=bryostatin-cluster\">" +
+                "Bryostatin</a> and <a href=\"./example.html?id=lagriamide-cluster\">" +
+                "lagriamide</a> spend tens of kilobases on single compounds; " +
+                "camptothecin's gateway enzyme spends roughly one. What the plant " +
+                "has that the bacterium does not is the rest of the genome, and " +
+                "over three thousand variations on the strictosidine theme are " +
+                "distributed across it.</p>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Wall ME, Wani MC, Cook CE, Palmer KH, McPhail AT, Sim GA. " +
