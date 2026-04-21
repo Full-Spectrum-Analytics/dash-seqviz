@@ -1949,7 +1949,7 @@
             compound: {
                 name: "Bryostatin 1",
                 smiles: "CCCC=CC=CC(=O)OC1C(=CC(=O)OC)CC2CC(OC(=O)CC(CC3CC(C(C(O3)(CC4CC(=CC(=O)OC)CC(O4)C=CC(C1(O2)O)(C)C)O)(C)C)OC(=O)C)O)C(C)O",
-                description: "A macrolactone PKC modulator isolated from the marine bryozoan Bugula neritina. The producer is an uncultured bacterial symbiont (Candidatus Endobugula sertula); you can't grow it on a plate, but you can read its genome straight off the metagenome."
+                description: "A macrocyclic lactone that binds and activates protein kinase C, a family of enzymes central to mammalian cell signalling. Isolated from the marine bryozoan Bugula neritina, but the chemistry is done by an obligate bacterial symbiont, Candidatus Endobugula sertula, which has so far resisted isolation into pure culture."
             },
             seqvizProps: {
                 viewer: "both",
@@ -1963,72 +1963,90 @@
                 "molecules in marine pharmacology. The bryozoan is unassuming: " +
                 "centimeters tall, beige, twig-like, a filter feeder whose larvae " +
                 "brood in ovicells before release. What lives inside it is not. Deep " +
-                "in the larval tissue sits an uncultured bacterial symbiont, " +
+                "in the larval tissue sits an obligate bacterial symbiont, " +
                 "<em>Candidatus</em> Endobugula sertula, which produces " +
-                "<strong>bryostatin 1</strong>, a macrolactone the US National Cancer " +
-                "Institute has carried through five decades of clinical trials for " +
+                "<strong>bryostatin 1</strong>. The compound is a " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Protein_kinase_C\" target=\"_blank\" rel=\"noopener\">" +
+                "protein kinase C</a> modulator, and the US National Cancer Institute " +
+                "has carried it through five decades of clinical evaluation for " +
                 "leukemia, melanoma, and Alzheimer's disease.</p>" +
                 "<p>Molecules like this one are why \"the Supply Problem\" became " +
-                "founding vocabulary for pharmacognosy. The symbiont will not grow in " +
-                "culture. The host is slow-breeding. The compound sits at vanishing " +
-                "parts-per-million. For much of the late 20th century the only way to " +
-                "get more bryostatin was to take a boat and a net. One NCI collection " +
-                "effort in the 1980s pulled more than ten thousand kilograms of " +
-                "<em>B. neritina</em> from Californian waters to yield a handful of " +
-                "grams of drug. Total synthesis, when it arrived, was a tour de force, " +
-                "too long and too low-yielding to feed a clinical program.</p>" +
+                "founding vocabulary for pharmacognosy. The symbiont is not a hard " +
+                "case of uncultivable: it lives inside <em>B. neritina</em>, and the " +
+                "bryozoan itself can be brought into closed-system aquaculture, so in " +
+                "principle a bryozoan farm can produce bryostatin indirectly. What " +
+                "nobody has yet done is grow the symbiont on its own, isolated in a " +
+                "flask or on a plate, where titer and biomass could actually be " +
+                "engineered. Until that happens, scale stays lashed to the host's " +
+                "slow biology, and the compound sits in marine tissue at parts-per-" +
+                "million. One US National Cancer Institute collection effort in the " +
+                "1980s pulled on the order of ten thousand kilograms of <em>B. neritina" +
+                "</em> from Californian waters to yield about eighteen grams of drug. " +
+                "A 29-step total synthesis reported in 2017 finally put gram-scale " +
+                "bryostatin within reach at the bench, but the pull of biology remains: " +
+                "a producer you could actually culture would change the arithmetic " +
+                "again.</p>" +
                 "<div class=\"inline-viewer\" " +
                      "data-accession=\"DQ889941\" " +
                      "data-viewer=\"linear\" " +
                      "data-zoom=\"1\" " +
                      "data-height=\"320px\" " +
-                     "data-caption=\"The 73 kb bryABCDX cluster laid out end to end, " +
-                                    "assembled directly from a Bugula neritina metagenome. " +
-                                    "Five genes, one storyline. The large open reading " +
-                                    "frame near center-left is bryA.\"></div>" +
-                "<p>The deadlock broke in 2007. Direct sequencing of the bryozoan " +
-                "metagenome, skipping the producer entirely and reading its DNA off " +
-                "the host tissue, assembled the 73 kb <strong>bryABCDX</strong> " +
-                "polyketide synthase cluster as a single continuous block. Sixteen " +
-                "kilobases of that block are one open reading frame. <code>bryA</code> " +
-                "is a single polypeptide encoding an assembly line of catalytic modules " +
-                "that add building block after building block to a growing chain. One " +
-                "gene, one mRNA, one translated protein, threading carbon after carbon " +
-                "until a full macrolactone spools off the end.</p>" +
-                "<div class=\"inline-viewer\" " +
-                     "data-accession=\"DQ889941\" " +
-                     "data-viewer=\"linear\" " +
-                     "data-zoom=\"35\" " +
-                     "data-show-translations=\"true\" " +
-                     "data-height=\"420px\" " +
-                     "data-caption=\"Zoomed into bryA with translations on. The catalytic " +
-                                    "modules resolve as domain-scale repeats within a single " +
-                                    "open reading frame. Scroll right to watch the assembly " +
-                                    "line continue.\"></div>" +
-                "<p>The story did not stop at <em>Bugula neritina</em>. Comparative " +
-                "genomics has since reached across the bryozoan clade, and the plot " +
-                "thickens. <em>Bugulina simplex</em> hosts a closely related symbiont " +
-                "(<em>Ca.</em> E. glebosa) that carries a homologous <em>bry</em> " +
-                "cluster, and its tissues still test positive for bryostatin-like " +
-                "activity. But <em>Crisularia pacifica</em> hosts a third cousin, " +
-                "<em>Ca.</em> Endobugula tacita, that has lost <em>bry</em> entirely " +
-                "and replaced it with an unrelated trans-AT PKS. Same ecological niche, " +
-                "same invertebrate-symbiont architecture, two solutions. Bryostatin " +
-                "chemistry, it turns out, is one answer to a defensive problem this " +
-                "bryozoan clade has solved at least twice.</p>" +
+                     "data-annotation-min-length=\"10000\" " +
+                     "data-annotation-hide-names=\"bryostatin ABCDX gene cluster\" " +
+                     "data-caption=\"The 73 kb bryABCDX cluster, laid out end to end. " +
+                                    "Five polyketide-synthase genes account for almost " +
+                                    "all of it; bryA is the large open reading frame near " +
+                                    "center-left.\"></div>" +
+                "<p>The deadlock began to loosen in 2007. Total DNA extracted from " +
+                "<em>B. neritina</em> tissue is a mixture: host chromatin, " +
+                "<em>Ca.</em> E. sertula, a tail of cohabitant bacteria, environmental " +
+                "hitchhikers. Shotgun " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Metagenomics\" target=\"_blank\" rel=\"noopener\">" +
+                "metagenomic</a> sequencing reads it all at once, and the producer's " +
+                "contribution is separated out computationally. From one such dataset " +
+                "emerged the 73 kb <strong>bryABCDX</strong> " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase\" target=\"_blank\" rel=\"noopener\">" +
+                "polyketide synthase</a> cluster, assembled as a single continuous " +
+                "block without anyone ever isolating the bacterium that encodes it. " +
+                "Sixteen kilobases of that block belong to one open reading frame: " +
+                "<code>bryA</code> encodes a multi-module assembly line in a single " +
+                "translated protein, threading carbon after carbon onto a growing " +
+                "chain until a macrolactone falls off the end.</p>" +
+                "<p>The story may not stop at <em>Bugula neritina</em>. A recent " +
+                "comparative-genomic survey of bugulid bryozoans, not yet peer-" +
+                "reviewed at the time of writing, suggests a complicated pattern. " +
+                "<em>Bugulina simplex</em> appears to host a closely related symbiont " +
+                "(tentatively <em>Ca.</em> E. glebosa) that carries a homologous " +
+                "<em>bry</em>-like cluster, and its tissues test positive for " +
+                "bryostatin-like PKC-binding activity. The symbiont associated with " +
+                "<em>Crisularia pacifica</em>, provisionally named <em>Ca.</em> " +
+                "Endobugula tacita, appears instead to carry an unrelated trans-AT " +
+                "PKS in roughly the same genomic neighbourhood, with no detectable " +
+                "<em>bry</em> cluster. If those findings hold up to further work, the " +
+                "bugulid lineage may have arrived at more than one chemical solution " +
+                "to the same ecological problem. Until then, these remain questions " +
+                "worth asking, not answers.</p>" +
                 "<div class=\"inline-viewer\" " +
                      "data-accession=\"DQ889941\" " +
                      "data-viewer=\"circular\" " +
                      "data-height=\"380px\" " +
-                     "data-caption=\"The same 73 kb, wrapped. Five Ca. Endobugula sertula " +
-                                    "bry genes account for almost all of it. When one symbiont " +
-                                    "keeps this cluster and a cousin loses it, what remains " +
-                                    "behind takes on new evolutionary weight.\"></div>" +
-                "<p>A closely related story sits one example over in " +
-                "<a href=\"./example.html?id=pederin-cluster\">pederin</a>: the same " +
-                "trans-AT PKS architecture, the same uncultured-symbiont arrangement, " +
-                "but hosted by a beetle rather than a bryozoan. Read the two together " +
-                "and the outline of a biosynthetic family starts to emerge.</p>" +
+                     "data-annotation-min-length=\"10000\" " +
+                     "data-annotation-hide-names=\"bryostatin ABCDX gene cluster\" " +
+                     "data-caption=\"The same 73 kb, this time wrapped. With the sub-" +
+                                    "gene features filtered out, the five bry genes " +
+                                    "resolve cleanly around the circle.\"></div>" +
+                "<p>The <a href=\"./example.html?id=pederin-cluster\">pederin</a> " +
+                "cluster, one example over, offers a useful comparison. Pederin is " +
+                "also a polyketide produced by an uncultured bacterial symbiont of an " +
+                "invertebrate (a rove beetle in that case), and its gene cluster is " +
+                "also organised as a " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase#Trans-AT_PKSs\" target=\"_blank\" rel=\"noopener\">" +
+                "trans-AT polyketide synthase</a>. Modular layout and chemistry " +
+                "diverge between the two, and the clusters are not understood to " +
+                "share a close biosynthetic origin. What they share is a discovery " +
+                "pattern: the symbionts were for years invisible to standard " +
+                "microbiology, and the sequences that encode their drug payloads had " +
+                "to be read out of host metagenomes.</p>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Sudek S, Lopanik NB, Waggoner LE, Hildebrand M, Anderson C, Liu H " +
@@ -2050,6 +2068,34 @@
                 "<a href=\"https://pubmed.ncbi.nlm.nih.gov/12085154/\" target=\"_blank\" rel=\"noopener\">" +
                 "The chemistry and biology of the bryostatin antitumour macrolides.</a> " +
                 "<em>Nat Prod Rep</em> 19(4):413-53 (2002). PMID: 12085154.</li>" +
+                "<li>Wender PA, DeBrabander J, Harran PG, Jimenez JM, Koehler MF, " +
+                "Lippa B, Park CM, Siedenbiedel C, Pettit GR. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/9618462/\" target=\"_blank\" rel=\"noopener\">" +
+                "The design, computer modeling, solution structure, and biological " +
+                "evaluation of synthetic analogs of bryostatin 1.</a> " +
+                "<em>Proc Natl Acad Sci USA</em> 95(12):6624-6629 (1998). " +
+                "PMID: 9618462. " +
+                "(Early design of simplified bryostatin analogs, the bryologs, " +
+                "that preserve PKC-binding activity while stripping the macrolactone " +
+                "down to the essentials.)</li>" +
+                "<li>Wender PA, Hardman CT, Ho S, Jeffreys MS, Maclaren JK, " +
+                "Quiroz RV, Ryckbosch SM, Shimizu AJ, Sloane JL, Stevens MC. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/29026042/\" target=\"_blank\" rel=\"noopener\">" +
+                "Scalable synthesis of bryostatin 1 and analogs, adjuvant leads " +
+                "against latent HIV.</a> " +
+                "<em>Science</em> 358(6360):218-223 (2017). PMID: 29026042. " +
+                "(A 29-step route delivering gram quantities of bryostatin 1, " +
+                "reframing the Supply Problem as a chemistry problem that has been " +
+                "largely solved.)</li>" +
+                "<li>Buchholz TJ, Rath CM, Lopanik NB, Gardner NP, H\u00e5kansson K, " +
+                "Sherman DH. " +
+                "<a href=\"https://pubmed.ncbi.nlm.nih.gov/21035732/\" target=\"_blank\" rel=\"noopener\">" +
+                "Polyketide \u03b2-branching in bryostatin biosynthesis: " +
+                "identification of surrogate acetyl-ACP donors for BryR, an HMG-ACP " +
+                "synthase.</a> " +
+                "<em>Chem Biol</em> 17(10):1092-1100 (2010). PMID: 21035732. " +
+                "(Mechanistic dissection of the BryR \u03b2-branching step, one of " +
+                "the chemically distinctive moves the bryostatin PKS makes.)</li>" +
                 "<li>Rees ER. " +
                 "<a href=\"https://asset.library.wisc.edu/1711.dl/MRXGAWLDM2ADQ8W/R/file-d3a3f.pdf\" target=\"_blank\" rel=\"noopener\">" +
                 "Development and Application of Metagenomic and Comparative Genomic " +

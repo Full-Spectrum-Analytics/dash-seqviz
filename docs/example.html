@@ -6,7 +6,7 @@
     <title>Example &mdash; dash-seqviz</title>
     <meta name="description" content="Interactive example — one curated construct visualized with dash-seqviz, with a ready-to-paste Python snippet.">
 
-    <link rel="stylesheet" href="./assets/site.css?v=10">
+    <link rel="stylesheet" href="./assets/site.css?v=11">
 </head>
 <body data-page="examples">
 
@@ -145,7 +145,7 @@
 <script crossorigin src="https://unpkg.com/smiles-drawer@2.2.1/dist/smiles-drawer.min.js"></script>
 <script src="./assets/nav.js"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
-<script src="./data/examples.js?v=12"></script>
+<script src="./data/examples.js?v=13"></script>
 
 <script>
     (function () {
@@ -1141,10 +1141,41 @@
                     searchProp = { query: searchQuery, mismatch: 0 };
                 }
 
+                // Annotation filtering. GenBank records can carry dozens of
+                // overlapping sub-features (a CDS plus every misc_feature
+                // domain it contains, repeat regions, source spans) and
+                // dumping them all onto a circular viewer turns it into
+                // spaghetti. These three data-* attrs let an author keep
+                // the snapshot clean for the narrative beat it illustrates:
+                //   data-annotation-names="bryA,bryB"          allowlist
+                //   data-annotation-hide-names="repeat A"      blocklist
+                //   data-annotation-min-length="10000"         drop sub-10kb
+                var annotations = rec.annotations || [];
+                var allowNames = div.getAttribute("data-annotation-names");
+                var hideNames = div.getAttribute("data-annotation-hide-names");
+                var minLen = parseInt(div.getAttribute("data-annotation-min-length") || "0", 10);
+                if (allowNames) {
+                    var allowSet = new Set(
+                        allowNames.split(",").map(function (s) { return s.trim(); })
+                    );
+                    annotations = annotations.filter(function (a) { return allowSet.has(a.name); });
+                }
+                if (hideNames) {
+                    var hideSet = new Set(
+                        hideNames.split(",").map(function (s) { return s.trim(); })
+                    );
+                    annotations = annotations.filter(function (a) { return !hideSet.has(a.name); });
+                }
+                if (minLen > 0) {
+                    annotations = annotations.filter(function (a) {
+                        return (a.end - a.start) >= minLen;
+                    });
+                }
+
                 window.SeqVizSite.renderViewer(viewerHost.id, {
                     name: rec.name,
                     seq: rec.seq,
-                    annotations: rec.annotations,
+                    annotations: annotations,
                     translations: showTranslations ? rec.translations : [],
                     viewer: viewerMode,
                     zoom: { linear: zoomLinear, circular: zoomCircular },

@@ -508,6 +508,22 @@ footer a:hover { text-decoration: underline; }
     line-height: 1.55;
 }
 
+/* Subtle in-prose anchors for technical jargon. Dotted underline signals
+   "hover to see URL, click to read more" without the shouty blue of the
+   primary narrative link style. Used for terms a generalist reader might
+   not recognise (PKC, polyketide synthase, metagenome, trans-AT). */
+.narrative a.jargon {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dotted var(--color-text-muted);
+    cursor: help;
+}
+.narrative a.jargon:hover {
+    text-decoration: none;
+    border-bottom-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
 /* ---- Cross-example link pills ---- */
 /* Anchor tags inside a narrative that point at another example page
    (href="./example.html?id=<slug>") get auto-promoted to pill-style
