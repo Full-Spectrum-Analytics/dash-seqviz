@@ -2963,17 +2963,17 @@
         },
         {
             id: "lasonolide-cluster",
-            title: "Lasonolide A \u2014 NCI anticancer lead tied to its producer via metagenomics",
-            summary: "The 102 kb las trans-AT PKS cluster from the uncultured Ca. Thermopylae lasonolidus inside Forcepia sponges \u2014 a genome-resolved metagenomics showcase.",
+            title: "Lasonolide A: an NCI anticancer lead tied to its producer via metagenomics",
+            summary: "An NCI-60 orphan, finally given a producer.",
             category: "industrial",
-            tags: ["natural-product", "PKS", "trans-AT", "symbiont", "pharma", "anticancer", "autometa"],
+            tags: ["natural-product", "PKS", "trans-AT", "symbiont", "pharma", "anticancer"],
             complexity: 5,
             accession: "ON409580.1",
             featured: true,
             compound: {
                 name: "Lasonolide A",
                 smiles: "C[C@@H]1[C@H](C[C@@H]2C/C=C/C=C/C(=O)O[C@@H]3C[C@@H](/C=C/C/C=C/C(=C\\[C@H]1O2)/C)O[C@H]([C@]3(C)CO)C/C=C\\C[C@H](C(=O)OCC(=C)CCC(C)C)O)O",
-                description: "A macrolactone polyketide from deep-water Forcepia sp. sponges with sub-nanomolar cytotoxicity and a one-of-a-kind NCI-60 fingerprint \u2014 no other compound in the screen phenocopies it, suggesting a novel mechanism. The producer is an uncultured Verrucomicrobium, Candidatus Thermopylae lasonolidus."
+                description: "A macrolactone polyketide from deep-water Forcepia sp. sponges. Sub-nanomolar cytotoxic on the NCI-60 panel with an activity fingerprint unlike any other compound in the COMPARE database, a signature usually reserved for novel mechanisms of action. The producer is an uncultured Verrucomicrobium, Candidatus Thermopylae lasonolidus."
             },
             seqvizProps: {
                 viewer: "both",
@@ -2981,44 +2981,65 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
-                "<h3>An NCI-60 orphan, finally given a producer</h3>" +
-                "<p><strong>Lasonolide A</strong> has been on the NCI radar for 30 years. " +
-                "Isolated from the deep-water Caribbean sponge <em>Forcepia</em> sp., it " +
-                "is sub-nanomolar cytotoxic against the NCI-60 panel, and its activity " +
-                "fingerprint is an orphan \u2014 no other compound in the COMPARE " +
-                "database reproduces it, which usually means an unprecedented mechanism. " +
-                "The obstacle, as with bryostatin, was <strong>supply</strong>: " +
-                "<em>Forcepia</em> lives several hundred meters down, yields trace " +
-                "quantities, and nobody had been able to culture the actual producer.</p>" +
-                "<p>A 2022 <em>mBio</em> study solved the biosynthesis end of the " +
-                "problem using <strong>genome-resolved metagenomics</strong>. Sequencing " +
-                "the <em>Forcepia</em> metagenome and binning the contigs revealed a " +
-                "previously-unknown Verrucomicrobium \u2014 named <em>Candidatus</em> " +
-                "Thermopylae lasonolidus \u2014 whose draft genome carried three copies " +
-                "of a 102 kb trans-AT PKS cluster encoding exactly the right chemistry " +
-                "for lasonolide A.</p>" +
-                "<p>This is the modern extension of the same move made for " +
-                "<a href=\"./example.html?id=pederin-cluster\">pederin</a> in 2002 and " +
-                "<a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a> in 2007, " +
-                "but done end-to-end with open-source metagenomic binning tooling. The " +
-                "<em>las</em> cluster you're looking at is one of the three copies " +
-                "retrieved from the symbiont bin.</p>" +
-                "<h3>Try this</h3>" +
-                "<ul>" +
-                "<li><strong>Inspect the 102 kb cluster.</strong> At linear zoom=1 the " +
-                "<em>las</em> megasynthase genes dwarf their tailoring partners. This " +
-                "is a classical trans-AT PKS layout \u2014 the same architecture as " +
+                "<figure class=\"compound-figure figure-left\">" +
+                    "<img src=\"./assets/molecules/lasonolide-a.svg\" " +
+                         "alt=\"Skeletal structure of lasonolide A, a macrolactone " +
+                              "polyketide with two fused tetrahydropyran rings, a long " +
+                              "unsaturated side chain, and a conjugated diene in the " +
+                              "macrocycle.\">" +
+                    "<figcaption>Lasonolide A. Two fused tetrahydropyran rings, an " +
+                    "extended unsaturated side chain, and a conjugated diene embedded " +
+                    "in the 20-membered macrolactone.</figcaption>" +
+                "</figure>" +
+                "<p>Deep-water sponges of the genus <em>Forcepia</em> live several " +
+                "hundred metres below the surface on Caribbean carbonate banks. They " +
+                "have been on the US National Cancer Institute's radar since the 1980s " +
+                "because their extracts carry <strong>lasonolide A</strong>, a " +
+                "macrolactone polyketide that kills cancer cells at sub-nanomolar " +
+                "concentrations. What has kept lasonolide interesting long after the " +
+                "initial excitement is the way it fails to match anything else: in the " +
+                "NCI's COMPARE algorithm, which correlates a compound's activity " +
+                "fingerprint across sixty tumour cell lines to the fingerprints of " +
+                "known mechanisms, lasonolide is an orphan. No existing drug behaves " +
+                "quite like it. That is usually read as a signal of a mechanism no one " +
+                "has seen.</p>" +
+                "<p>The problem, as with so many marine natural products, was supply. " +
+                "<em>Forcepia</em> yields lasonolide at parts-per-million and lives at " +
+                "a depth that rules out ordinary collection. Total synthesis is " +
+                "available but not scalable. And the actual biosynthetic producer, " +
+                "assumed for years to be one of the sponge's many bacterial tenants, " +
+                "had never been identified, let alone cultured.</p>" +
+                "<p>A 2022 study closed the biosynthesis end of the problem using " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Metagenomics\" target=\"_blank\" rel=\"noopener\">" +
+                "genome-resolved metagenomics</a>. Shotgun sequencing the sponge gave " +
+                "total DNA from every organism in it; computational binning recovered " +
+                "discrete genomes. One of them was a previously-unknown member of the " +
+                "<em>Verrucomicrobia</em>, named <em>Candidatus</em> Thermopylae " +
+                "lasonolidus, and its draft genome carried not one but <em>three</em> " +
+                "essentially identical copies of a 102 kb " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase#Trans-AT_PKSs\" target=\"_blank\" rel=\"noopener\">" +
+                "trans-AT polyketide synthase</a> locus whose predicted chemistry " +
+                "matched lasonolide A module by module.</p>" +
+                "<div class=\"inline-viewer\" " +
+                     "data-accession=\"ON409580.1\" " +
+                     "data-viewer=\"circular\" " +
+                     "data-height=\"420px\" " +
+                     "data-annotation-min-length=\"8000\" " +
+                     "data-caption=\"One of the three near-identical copies of the " +
+                                    "las cluster pulled from the Ca. T. lasonolidus bin. " +
+                                    "The producer's genome devotes roughly 300 kb, " +
+                                    "in triplicate, to this single molecule.\"></div>" +
+                "<p>Three copies of a hundred-kilobase cluster in one bacterial genome " +
+                "is an unusual amount of redundancy. It could be a dosage play, " +
+                "boosting titer in an obligate symbiont that cannot scale by dividing " +
+                "faster. It could be insurance against the gene decay that tends to " +
+                "chew away at reduced symbiont genomes over evolutionary time. Either " +
+                "way, the arithmetic is striking. Lasonolide is the extension of the " +
                 "<a href=\"./example.html?id=pederin-cluster\">pederin</a> and " +
-                "<a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a>, which " +
-                "is not a coincidence.</li>" +
-                "<li><strong>Think about cluster duplication.</strong> The " +
-                "<em>Ca.</em> T. lasonolidus genome carries <em>three</em> copies of " +
-                "this cluster. Why? One possibility: gene-dosage amplification to boost " +
-                "lasonolide titer in an obligate symbiont that can't scale by culture. " +
-                "Another: insurance against the kind of gene decay that tends to hit " +
-                "reduced genomes. Multiple copies of a 100 kb cluster in one genome is " +
-                "a visual rarity in the natural-product world.</li>" +
-                "</ul>" +
+                "<a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a> " +
+                "metagenomic template into a deeper water column and a stranger host " +
+                "phylogeny, and it was the triplicated locus, not the single-copy one, " +
+                "that the sequencer finally caught.</p>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Uppal S, Metz JL, Xavier RKM, Nepal KK, Xu D, Wang G, Kwan JC. " +
