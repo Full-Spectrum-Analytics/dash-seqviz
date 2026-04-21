@@ -2805,8 +2805,8 @@
         // ------------------------------------------------------------------
         {
             id: "lagriamide-cluster",
-            title: "Lagriamide \u2014 Beetle-egg defensive PKS from a horizontally acquired symbiont",
-            summary: "The 99 kb lga trans-AT PKS/NRPS cluster from Burkholderia gladioli Lv-StB, the antifungal symbiont Lagria villosa beetles smear on their eggs to ward off pathogenic fungi.",
+            title: "Lagriamide: a beetle-egg defensive PKS from a horizontally acquired symbiont",
+            summary: "A mother beetle coats her eggs in antifungal bacteria.",
             category: "academic",
             tags: ["natural-product", "PKS", "NRPS", "symbiont", "defensive", "graduate"],
             complexity: 5,
@@ -2814,7 +2814,7 @@
             compound: {
                 name: "Lagriamide",
                 smiles: "CC1CCC(OC1CC(=O)NCC(C(C)C(=O)NCCCC2C(CCC3(O2)CCCC(O3)CCC(C)/C=C(\\C)/CCC(=O)O)C)O)CC(=O)C4C(O4)C",
-                description: "An antifungal hybrid polyketide-peptide with a spiroacetal, tetrahydropyran, and pendant epoxide. Produced by Burkholderia gladioli Lv-StB \u2014 an uncultured symbiont Lagria villosa beetles pass to their eggs as a chemical shield against soil fungi."
+                description: "An antifungal hybrid polyketide-peptide carrying a spiroacetal, a tetrahydropyran, and a pendant epoxide. Produced by an obligate Burkholderia gladioli lineage (Lv-StB) that Lagria villosa beetles transfer to their eggs as a chemical shield against soil-dwelling fungi."
             },
             seqvizProps: {
                 viewer: "both",
@@ -2822,52 +2822,64 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
-                "<h3>A mother beetle coats her eggs in antifungal bacteria</h3>" +
-                "<p><strong>Lagriamide</strong> is the antifungal polyketide a beetle " +
-                "mother hands to her offspring \u2014 literally. Female <em>Lagria " +
-                "villosa</em> beetles deposit defensive <em>Burkholderia gladioli</em> " +
-                "symbionts onto the surface of their eggs, and the bacteria produce " +
-                "lagriamide in situ to ward off soil-borne fungal pathogens during " +
-                "embryonic development. Without the symbiont, the eggs succumb to fungal " +
-                "infection at dramatically elevated rates.</p>" +
-                "<p>The 2018 cluster paper sequenced the <strong>lga</strong> locus " +
-                "from the uncultured symbiont Lv-StB and assembled a 99 kb hybrid " +
-                "trans-AT PKS/NRPS encoding 17 modules. The cluster sits on a genomic " +
-                "island with all the signatures of horizontal-gene-transfer, so the " +
-                "beetle's defensive chemistry wasn't invented by its resident symbiont " +
-                "\u2014 it was inherited from somewhere else in the <em>Burkholderia</em> " +
-                "world and retained under selection.</p>" +
-                "<p>This is the terrestrial counterpart to " +
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/lagria-villosa.jpeg\" " +
+                         "alt=\"A Lagria villosa beetle, showing the dark elongate " +
+                              "body and orange-red soft-haired prothorax characteristic " +
+                              "of the species.\">" +
+                    "<figcaption><em>Lagria villosa</em>, the hairy darkling beetle. " +
+                    "Native to sub-Saharan Africa and invasive in Brazil, where it " +
+                    "feeds on soybean and other legumes. Image: Wikimedia Commons " +
+                    "(CC0).</figcaption>" +
+                "</figure>" +
+                "<p>A female <em>Lagria villosa</em> beetle lays her eggs on damp " +
+                "soil, and before she walks away she smears them with bacteria. The " +
+                "smear is precise, repeated on every egg in a clutch, and it is not " +
+                "accidental. The bacteria are strains of <em>Burkholderia gladioli</em> " +
+                "that the beetle has cultivated in specialised abdominal glands; on " +
+                "the egg surface they begin producing an antifungal compound called " +
+                "<strong>lagriamide</strong>, a hybrid polyketide-peptide potent " +
+                "enough to shut out the soil fungi that would otherwise consume the " +
+                "embryos before they hatch. Eggs experimentally stripped of their " +
+                "smear die at dramatically elevated rates.</p>" +
+                "<p>One of the beetle's <em>Burkholderia</em> strains, known as " +
+                "Lv-StB, is the sole producer. It has resisted every attempt to grow " +
+                "it on its own outside the beetle, and sequencing shows why: its " +
+                "genome has lost the usual complement of free-living <em>Burkholderia</em> " +
+                "genes and shrunk into something that can survive only in the very " +
+                "specific nutritional environment of its host. What it has kept, in " +
+                "near-pristine condition, is a 99 kb " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase#Trans-AT_PKSs\" target=\"_blank\" rel=\"noopener\">" +
+                "trans-AT PKS</a>/NRPS cluster (<em>lgaA</em>\u2013<em>lgaM</em>) " +
+                "encoding seventeen catalytic modules that together draw out " +
+                "lagriamide's carbon skeleton.</p>" +
+                "<div class=\"inline-viewer\" " +
+                     "data-accession=\"MH171092.1\" " +
+                     "data-viewer=\"circular\" " +
+                     "data-height=\"420px\" " +
+                     "data-annotation-min-length=\"5000\" " +
+                     "data-caption=\"The 99 kb lga locus pulled from the Lv-StB genome. " +
+                                    "Most of the footprint is multi-module PKS/NRPS " +
+                                    "megasynthases; the trans-AT partner and tailoring " +
+                                    "enzymes cluster around the periphery.\"></div>" +
+                "<p>The cluster itself is a clue about where lagriamide came from. It " +
+                "sits on a clearly delineated genomic island, flanked by the sequence " +
+                "signatures of a past " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Horizontal_gene_transfer\" target=\"_blank\" rel=\"noopener\">" +
+                "horizontal gene transfer</a> event. The beetle's defensive chemistry, " +
+                "in other words, was not invented by the resident symbiont. It was " +
+                "acquired, probably from a free-living relative, and then retained " +
+                "under selection strong enough to keep it intact while the rest of " +
+                "the symbiont genome eroded.</p>" +
+                "<p>The pattern is familiar by now: a drug-grade compound produced by " +
+                "an uncultured bacterial symbiont of an invertebrate, recovered only " +
+                "by sequencing the host metagenome. Lagriamide is the terrestrial " +
+                "cousin to " +
                 "<a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a>, " +
+                "<a href=\"./example.html?id=pederin-cluster\">pederin</a>, and " +
                 "<a href=\"./example.html?id=trabectedin-cluster\">ET-743</a>, and " +
-                "<a href=\"./example.html?id=pederin-cluster\">pederin</a>: a drug-grade " +
-                "natural product from an uncultured invertebrate symbiont, only " +
-                "accessible by sequencing the metagenome. Follow-up work on Lv-StB added " +
-                "the genome-reduction story \u2014 the symbiont has undergone substantial " +
-                "gene loss while keeping <em>lga</em> intact, a textbook obligate " +
-                "defensive symbiont.</p>" +
-                "<h3>Try this</h3>" +
-                "<ul>" +
-                "<li><strong>Zoom out across 99 kb.</strong> At linear zoom=1 the full " +
-                "<em>lgaA</em>\u2013<em>lgaM</em> run is visible. The PKS megasynthases " +
-                "are the enormous ORFs; auxiliary enzymes (acyltransferase, " +
-                "methyltransferases, tailoring oxidoreductases) cluster at the edges.</li>" +
-                "<li><strong>Look for the trans-AT partner.</strong> Unlike classical " +
-                "modular PKS where the acyltransferase is embedded in every module, a " +
-                "trans-AT PKS encodes AT as a separate gene. Finding it in the " +
-                "<em>lga</em> region is a practical exercise in spotting a hallmark " +
-                "architecture \u2014 the same architecture shared with pederin, " +
-                "bryostatin, and lasonolide.</li>" +
-                "<li><strong>Compare to " +
-                "<a href=\"./example.html?id=pederin-cluster\">pederin</a> and " +
-                "<a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a>.</strong> " +
-                "Three invertebrate-symbiont trans-AT PKS clusters side by side. Same " +
-                "architecture, same \"uncultured symbiont of an invertebrate\" story, " +
-                "three different hosts and three different chemical payloads.</li>" +
-                "<li><strong>Look at the compound card below</strong> to see the spiroacetal and " +
-                "tetrahydropyran rings that come off the PKS after release from the " +
-                "assembly line.</li>" +
-                "</ul>" +
+                "the beetle is one more host whose biology we can read only through " +
+                "its passengers.</p>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Fl\u00f3rez LV, Scherlach K, Miller IJ, Rodrigues A, Kwan JC, " +
@@ -2892,7 +2904,7 @@
                 "Discovery of the polyketide lagriamide B by integrated genome mining, " +
                 "isotopic labeling, and untargeted metabolomics.</a> " +
                 "<em>Chem Sci</em> 15(19):7126\u20137139 (2024). " +
-                "(Lagriamide B discovered by genome mining a cultured relative \u2014 " +
+                "(Lagriamide B discovered by genome mining a cultured relative; " +
                 "the same template extended to the next molecule.)</li>" +
                 "</ul>",
             pythonSnippet:
