@@ -6,7 +6,7 @@
     <title>Example &mdash; dash-seqviz</title>
     <meta name="description" content="Interactive example — one curated construct visualized with dash-seqviz, with a ready-to-paste Python snippet.">
 
-    <link rel="stylesheet" href="./assets/site.css?v=11">
+    <link rel="stylesheet" href="./assets/site.css?v=16">
 </head>
 <body data-page="examples">
 
@@ -25,11 +25,11 @@
     <div class="container">
         <div class="example-body">
 
-            <!-- ① About this example + Try this (narrative contains enzyme buttons) -->
-            <div class="ex-section">
-                <h3 style="margin-top: 0;">About this example</h3>
-                <div id="ex-narrative" class="narrative"></div>
-            </div>
+            <!-- ① Narrative. No heading, no bordered card; the story flows
+                 directly below the page's title/deck and is the experience.
+                 Inline viewers, figures, and any other media sit within
+                 this single block. -->
+            <div id="ex-narrative" class="narrative narrative-lead"></div>
 
             <!-- ② Live viewer -->
             <div class="ex-section">
@@ -109,23 +109,27 @@
                 <div id="pathway-row" class="pathway-row"></div>
             </div>
 
-            <!-- ⑤ Python snippet -->
-            <div class="ex-section">
-                <h3 style="margin-top: 0;">Python snippet</h3>
+            <!-- ⑤ Python snippet (tucked behind a clickable summary so it
+                 doesn't interrupt the narrative; readers who want to
+                 reproduce the viewer themselves can expand it) -->
+            <details class="ex-section">
+                <summary>Python snippet</summary>
                 <p style="color: var(--color-text-muted); font-size: 0.88rem; margin-bottom: 12px;">
                     Paste this into a file, <code>pip install dash-seqviz</code>, and run.
                 </p>
                 <div class="snippet">
                     <pre id="ex-snippet"><code></code></pre>
                 </div>
-            </div>
+            </details>
 
             <!-- ⑥ References (populated from narrative HTML or separate field) -->
             <div id="ex-references" class="narrative"></div>
 
-            <!-- ⑦ More examples -->
-            <div class="ex-section">
-                <h3 style="margin-top: 0;">More examples</h3>
+            <!-- ⑦ Related stories. Editorial "Continue reading" label
+                 rather than "More examples"; the card strip below is the
+                 gallery's journal-style navigation between pieces. -->
+            <div class="ex-section ex-section-related">
+                <h3 class="section-label-subtle">Continue reading</h3>
                 <div id="ex-next" class="next-examples"></div>
             </div>
 
@@ -145,7 +149,7 @@
 <script crossorigin src="https://unpkg.com/smiles-drawer@2.2.1/dist/smiles-drawer.min.js"></script>
 <script src="./assets/nav.js"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
-<script src="./data/examples.js?v=13"></script>
+<script src="./data/examples.js?v=19"></script>
 
 <script>
     (function () {
@@ -497,28 +501,16 @@
             return;
         }
 
-        // Header
-        document.title = ex.title + " — dash-seqviz";
-        eyebrowEl.textContent = ex.category === "academic" ? "Academia example" : "Industry example";
+        // Header. The reader already knows from the gallery page what
+        // kind of example this is; re-showing category + complexity +
+        // every tag as a pill row on the article page is tag-cloud
+        // noise, not editorial apparatus. The meta-row is reserved for
+        // the sparse byline (NCBI accession, sequence length), set
+        // below in the accession-normalization block.
+        document.title = ex.title + " \u00B7 dash-seqviz";
+        eyebrowEl.textContent = ex.category === "academic" ? "Academia" : "Industry";
         titleEl.textContent = ex.title;
         summaryEl.textContent = ex.summary;
-
-        var catBadge = document.createElement("span");
-        catBadge.className = "badge " + (ex.category === "academic" ? "badge-academic" : "badge-industrial");
-        catBadge.textContent = ex.category === "academic" ? "academia" : "industry";
-        metaEl.appendChild(catBadge);
-
-        var cxBadge = document.createElement("span");
-        cxBadge.className = "badge badge-complexity";
-        cxBadge.textContent = "complexity " + (ex.complexity || "?");
-        metaEl.appendChild(cxBadge);
-
-        (ex.tags || []).forEach(function (t) {
-            var b = document.createElement("span");
-            b.className = "badge badge-tag";
-            b.textContent = t;
-            metaEl.appendChild(b);
-        });
 
         // Normalize the accession schema. Entries carry:
         //   id        — NCBI accession (required)
@@ -550,17 +542,26 @@
             accessionsList = [];
         }
 
-        // Accession badges in the header dedupe — a multi-viewer page
-        // that points at the same record twice (overview + zoom) only
-        // needs one NCBI badge, not two.
+        // Byline: deduplicated NCBI accessions rendered as quiet inline
+        // text (not pills), typographically closer to a magazine's
+        // "Source: ..." line than a tag cloud. Multi-viewer pages that
+        // point at the same record twice only show one entry.
         var seenAccIds = {};
         accessionsList.forEach(function (a) {
             if (seenAccIds[a.id]) return;
             seenAccIds[a.id] = true;
-            var accBadge = document.createElement("span");
-            accBadge.className = "badge badge-tag";
-            accBadge.textContent = "NCBI " + a.id;
-            metaEl.appendChild(accBadge);
+            var link = document.createElement("a");
+            link.className = "byline-accession";
+            link.href = "https://www.ncbi.nlm.nih.gov/nuccore/" + encodeURIComponent(a.id);
+            link.target = "_blank";
+            link.rel = "noopener";
+            link.textContent = a.id;
+            if (metaEl.childElementCount > 0) {
+                metaEl.appendChild(document.createTextNode(" \u00B7 "));
+            } else {
+                metaEl.appendChild(document.createTextNode("NCBI "));
+            }
+            metaEl.appendChild(link);
         });
 
         narrativeEl.innerHTML = ex.narrative || "";
@@ -571,9 +572,15 @@
         // Pathway panel (multi-step biosynthetic route) takes priority over
         // the single-compound panel. Each node is a product in the chain;
         // `enzyme` + `cosubstrates` annotate the arrow arriving into it.
+        //
+        // If the narrative already weaves a <figure class="compound-figure">
+        // inline, the separate Key Product panel at the bottom of the page
+        // would be a duplicate card. Skip the standalone card in that case;
+        // the story is doing its own visual work.
+        var narrativeHasInlineCompound = !!narrativeEl.querySelector(".compound-figure");
         if (ex.pathway && Array.isArray(ex.pathway.nodes) && ex.pathway.nodes.length && window.SmilesDrawer) {
             renderPathway(ex.pathway);
-        } else if (ex.compound && ex.compound.smiles) {
+        } else if (ex.compound && ex.compound.smiles && !narrativeHasInlineCompound) {
             var card = document.getElementById("compound-card");
             document.getElementById("compound-label").textContent = "Key product";
             document.getElementById("compound-name").textContent = ex.compound.name;

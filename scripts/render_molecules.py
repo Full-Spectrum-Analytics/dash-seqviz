@@ -295,11 +295,14 @@ STANDALONE_COMPOUNDS: List[Node] = [
     # 6437364 / 157454 / 49787031 / 5281967 / 5701995 and the ET-743
     # canonical notation).
     # ----------------------------------------------------------------
-    Node(
-        "Bryostatin 1",
-        "CCCC=CC=CC(=O)OC1C(=CC(=O)OC)CC2CC(OC(=O)CC(CC3CC(C(C(O3)"
-        "(CC4CC(=CC(=O)OC)CC(O4)C=CC(C1(O2)O)(C)C)O)(C)C)OC(=O)C)O)C(C)O",
-    ),
+    # Bryostatin 1 is manually sourced from Wikimedia Commons (File:
+    # Bryostatin_1_ACS.svg, public domain) rather than RDKit-rendered,
+    # because the ACS-style publication layout has cleaner bond angles
+    # and explicit stereochemistry that CoordGen doesn't match on this
+    # 20-member macrolactone. Do NOT re-add a Node for Bryostatin 1
+    # here -- the handcrafted SVG at docs/assets/molecules/bryostatin-1
+    # .svg is the canonical asset and would be overwritten if this
+    # script renders it.
     Node(
         "Patellamide A",
         "CCC(C)C1C2=NC(CO2)C(=O)NC(C3=NC(=CS3)C(=O)NC(C4=NC(C(O4)C)"
@@ -409,6 +412,131 @@ def render(node: Node, template: Optional[Chem.Mol], out_dir: str) -> str:
     return path
 
 
+def render_rgroup_fragment(
+    slug: str,
+    smiles: str,
+    out_dir: str,
+    width: int = 180,
+    height: int = 110,
+) -> str:
+    """Render a small R-group substituent fragment (e.g. the C7
+    acetate, the C20 octadienoate) for use inline in the bryostatin-
+    family R-group table. The '*' dummy atom in the SMILES marks the
+    attachment point; RDKit draws it as a single bond leading to a
+    small open circle, which is the convention for "R" in R-group
+    tables. Output is a compact SVG sized to sit in a table cell.
+    """
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        raise ValueError(f"Invalid R-group SMILES: {smiles}")
+
+    # The dummy atom gets a blank label so it renders as just the
+    # wedge bond with a floating "~" marker where the attachment is;
+    # setting atomLabel to empty keeps the visual minimal.
+    for atom in mol.GetAtoms():
+        if atom.GetSymbol() == "*":
+            atom.SetAtomMapNum(0)
+            atom.SetProp("atomLabel", "R")
+
+    rdCoordGen.AddCoords(mol)
+    drawer = rdMolDraw2D.MolDraw2DSVG(width, height)
+    opts = drawer.drawOptions()
+    opts.bondLineWidth = 1.3
+    opts.padding = 0.12
+    opts.baseFontSize = 0.9
+    opts.clearBackground = False
+    drawer.DrawMolecule(mol)
+    drawer.FinishDrawing()
+    svg = drawer.GetDrawingText()
+    svg = re.sub(r"<\?xml[^?]*\?>\s*", "", svg)
+
+    path = os.path.join(out_dir, f"rgroup-{slug}.svg")
+    with open(path, "w") as f:
+        f.write(svg)
+    return path
+
+
+# R-group fragments observed in the bryostatin family. SMILES use '*'
+# as the attachment point. These get rendered as small inline SVGs
+# in the R-group table row cells.
+BRYOSTATIN_RGROUPS = [
+    # Acetate ester at C7 (bryostatins 1, 3, 5, 7, 9, ...)
+    ("acetate", "*OC(=O)C"),
+    # Free hydroxyl at C7 (bryostatin 2)
+    ("hydroxyl", "*O"),
+    # Pivalate ester at C7 (bryostatins 4, 10, ...)
+    ("pivalate", "*OC(=O)C(C)(C)C"),
+    # Butanoate ester (bryostatins 4, 6, 8, 9, ...) at R2
+    ("butanoate", "*OC(=O)CCC"),
+    # (2E,4E)-octa-2,4-dienoate at C20 (bryostatins 1, 2, ...)
+    ("octa-2-4-dienoate", "*OC(=O)/C=C/C=C/CCC"),
+    # Free H (bryostatin 10 at R2)
+    ("hydrogen", "[H]*"),
+]
+
+
+def render_bryostatin_scaffold(out_dir: str) -> str:
+    """Render the bryostatin macrolactone scaffold with R1 / R2 labels
+    at the C7 and C20 substituent positions. This is the "class"
+    figure: one drawing that makes clear bryostatin is a family of
+    compounds whose core is conserved and whose variation is local.
+
+    SMILES is the full bryostatin 1 isomeric form with the C7 acetyl
+    and the C20 octadienoyl groups replaced by dummy atoms carrying
+    atom-map numbers 1 and 2 respectively. RDKit renders dummy atoms
+    as '*' by default; we override via atomLabel so the glyphs appear
+    as R1 and R2.
+    """
+    # Derived from the PubChem isomeric SMILES of bryostatin 1
+    # (CID 5280757) with two substitutions: the C20 octadienoate
+    # acyl ('CCC/C=C/C=C/C(=O)O' prefix) replaced by [*:2], and the
+    # C7 acetyl ('OC(=O)C' inside the ring chain) replaced by [*:1].
+    # Stereochemistry is preserved so RDKit's CoordGen lays the
+    # macrolactone out with correct bond angles and wedges instead
+    # of the flattened-spaghetti depiction you get from a stereo-
+    # stripped SMILES.
+    scaffold_smiles = (
+        "[*:2][C@H]1/C(=C/C(=O)OC)/C[C@H]2C[C@@H](OC(=O)C[C@@H]"
+        "(C[C@@H]3C[C@@H](C([C@@](O3)(C[C@@H]4C/C(=C/C(=O)OC)/"
+        "C[C@@H](O4)/C=C/C([C@@]1(O2)O)(C)C)O)(C)C)[*:1])O)[C@@H](C)O"
+    )
+    mol = Chem.MolFromSmiles(scaffold_smiles)
+    if mol is None:
+        raise ValueError(f"Invalid scaffold SMILES: {scaffold_smiles}")
+
+    # Attach display labels to the two dummy atoms. RDKit will use the
+    # atomLabel property as the rendered glyph when set; we clear the
+    # atom-map number so it doesn't override the label at draw time,
+    # and use plain "R1" / "R2" strings because RDKit's path-stroked
+    # text doesn't include superscript Unicode coverage (R\u00B9
+    # renders as a blank / missing glyph).
+    label_by_mapnum = {1: "R1", 2: "R2"}
+    for atom in mol.GetAtoms():
+        if atom.GetSymbol() == "*":
+            map_num = atom.GetAtomMapNum()
+            if map_num in label_by_mapnum:
+                atom.SetProp("atomLabel", label_by_mapnum[map_num])
+                atom.SetAtomMapNum(0)
+
+    rdCoordGen.AddCoords(mol)
+
+    drawer = rdMolDraw2D.MolDraw2DSVG(560, 440)
+    opts = drawer.drawOptions()
+    opts.bondLineWidth = 1.6
+    opts.padding = 0.1
+    opts.baseFontSize = 0.75
+    opts.clearBackground = False
+    drawer.DrawMolecule(mol)
+    drawer.FinishDrawing()
+    svg = drawer.GetDrawingText()
+    svg = re.sub(r"<\?xml[^?]*\?>\s*", "", svg)
+
+    path = os.path.join(out_dir, "bryostatin-scaffold.svg")
+    with open(path, "w") as f:
+        f.write(svg)
+    return path
+
+
 def main() -> None:
     repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     out_dir = os.path.join(repo_root, "docs", "assets", "molecules")
@@ -443,6 +571,32 @@ def main() -> None:
         rel = os.path.relpath(path, repo_root)
         print(f"  wrote   {rel}")
         total += 1
+
+    # Bryostatin scaffold: special-case render because it uses
+    # labelled dummy atoms (R1 / R2) rather than a standalone SMILES
+    # that a Node could carry.
+    try:
+        path = render_bryostatin_scaffold(out_dir)
+        rel = os.path.relpath(path, repo_root)
+        print(f"\n[scaffold]  bryostatin class scaffold")
+        print(f"  wrote   {rel}")
+        total += 1
+    except Exception as exc:
+        failures.append(f"scaffold/bryostatin: {exc}")
+        print(f"  FAILED  bryostatin scaffold: {exc}")
+
+    # Bryostatin R-group fragments (OAc, OH, OPiv, OBu, octadienoate,
+    # H). Small SVGs sized to sit in an R-group table row cell.
+    print(f"\n[rgroups]  {len(BRYOSTATIN_RGROUPS)} fragments")
+    for slug, smi in BRYOSTATIN_RGROUPS:
+        try:
+            path = render_rgroup_fragment(slug, smi, out_dir)
+            rel = os.path.relpath(path, repo_root)
+            print(f"  wrote   {rel}")
+            total += 1
+        except Exception as exc:
+            failures.append(f"rgroup/{slug}: {exc}")
+            print(f"  FAILED  rgroup {slug}: {exc}")
 
     print(f"\nDone — {total} SVGs written to {os.path.relpath(out_dir, repo_root)}")
     if failures:

@@ -1940,7 +1940,7 @@
         {
             id: "bryostatin-cluster",
             title: "Bryostatin: an anticancer PKS from an uncultured bryozoan symbiont",
-            summary: "The ~73 kb bryABCDX cluster from the uncultured symbiont of Bugula neritina. The lead compound spent years in NCI trials for leukemia and Alzheimer's.",
+            summary: "A cancer drug whose producer you cannot grow.",
             category: "industrial",
             tags: ["natural-product", "PKS", "symbiont", "pharma", "anticancer"],
             complexity: 5,
@@ -1957,7 +1957,14 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
-                "<h3>A cancer drug whose producer you can't grow</h3>" +
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/bugula-neritina.jpg\" " +
+                         "alt=\"A colony of Bugula neritina, a marine bryozoan, " +
+                              "appearing as a soft brown twig-like arborescent growth.\">" +
+                    "<figcaption><em>Bugula neritina</em>. A cosmopolitan fouling " +
+                    "organism on docks, ship hulls, and coastal substrates. " +
+                    "Image: Wikimedia Commons (CC BY-SA).</figcaption>" +
+                "</figure>" +
                 "<p>Pluck a frond of <em>Bugula neritina</em> off a dock piling and " +
                 "you are handling, in gram quantities, one of the most studied " +
                 "molecules in marine pharmacology. The bryozoan is unassuming: " +
@@ -1986,17 +1993,46 @@
                 "bryostatin within reach at the bench, but the pull of biology remains: " +
                 "a producer you could actually culture would change the arithmetic " +
                 "again.</p>" +
-                "<div class=\"inline-viewer\" " +
-                     "data-accession=\"DQ889941\" " +
-                     "data-viewer=\"linear\" " +
-                     "data-zoom=\"1\" " +
-                     "data-height=\"320px\" " +
-                     "data-annotation-min-length=\"10000\" " +
-                     "data-annotation-hide-names=\"bryostatin ABCDX gene cluster\" " +
-                     "data-caption=\"The 73 kb bryABCDX cluster, laid out end to end. " +
-                                    "Five polyketide-synthase genes account for almost " +
-                                    "all of it; bryA is the large open reading frame near " +
-                                    "center-left.\"></div>" +
+                "<figure class=\"class-figure scaffold-figure\">" +
+                    "<img class=\"scaffold-core\" " +
+                         "src=\"./assets/molecules/bryostatin-1.svg\" " +
+                         "alt=\"Bryostatin 1 skeletal structure with stereochemistry. " +
+                              "The 20-member macrolactone core is conserved across the " +
+                              "bryostatin family; the C7 substituent (here an acetate " +
+                              "ester, R\u00B9 in the table below) and the C20 " +
+                              "substituent (here an octa-2,4-dienoate ester, R\u00B2) " +
+                              "are the two positions that vary across natural bryostatins.\">" +
+                    "<table class=\"r-group-table\">" +
+                        "<thead><tr>" +
+                            "<th scope=\"col\">Bryostatin</th>" +
+                            "<th scope=\"col\">R\u00B9 at C7</th>" +
+                            "<th scope=\"col\">R\u00B2 at C20</th>" +
+                        "</tr></thead>" +
+                        "<tbody>" +
+                            "<tr><th scope=\"row\">1</th>" +
+                                "<td><img src=\"./assets/molecules/rgroup-acetate.svg\" alt=\"acetate ester\"></td>" +
+                                "<td><img src=\"./assets/molecules/rgroup-octa-2-4-dienoate.svg\" alt=\"(2E,4E)-octa-2,4-dienoate ester\"></td></tr>" +
+                            "<tr><th scope=\"row\">2</th>" +
+                                "<td><img src=\"./assets/molecules/rgroup-hydroxyl.svg\" alt=\"free hydroxyl\"></td>" +
+                                "<td><img src=\"./assets/molecules/rgroup-octa-2-4-dienoate.svg\" alt=\"(2E,4E)-octa-2,4-dienoate ester\"></td></tr>" +
+                            "<tr><th scope=\"row\">4</th>" +
+                                "<td><img src=\"./assets/molecules/rgroup-pivalate.svg\" alt=\"pivalate ester\"></td>" +
+                                "<td><img src=\"./assets/molecules/rgroup-butanoate.svg\" alt=\"butanoate ester\"></td></tr>" +
+                            "<tr><th scope=\"row\">7</th>" +
+                                "<td><img src=\"./assets/molecules/rgroup-acetate.svg\" alt=\"acetate ester\"></td>" +
+                                "<td><img src=\"./assets/molecules/rgroup-acetate.svg\" alt=\"acetate ester\"></td></tr>" +
+                            "<tr><th scope=\"row\">10</th>" +
+                                "<td><img src=\"./assets/molecules/rgroup-pivalate.svg\" alt=\"pivalate ester\"></td>" +
+                                "<td><img src=\"./assets/molecules/rgroup-hydrogen.svg\" alt=\"free hydrogen, no substituent\"></td></tr>" +
+                        "</tbody>" +
+                    "</table>" +
+                    "<figcaption>Bryostatin 1 shown in full. The macrolactone " +
+                    "core is conserved across the family; variation concentrates " +
+                    "at C7 (R\u00B9) and C20 (R\u00B2), where different ester " +
+                    "substituents (or, in bryostatin 10, an unsubstituted H at C20) " +
+                    "define each member. Bryostatin 1 is the clinical candidate and " +
+                    "the most potent PKC binder in the series.</figcaption>" +
+                "</figure>" +
                 "<p>The deadlock began to loosen in 2007. Total DNA extracted from " +
                 "<em>B. neritina</em> tissue is a mixture: host chromatin, " +
                 "<em>Ca.</em> E. sertula, a tail of cohabitant bacteria, environmental " +
@@ -2012,6 +2048,18 @@
                 "<code>bryA</code> encodes a multi-module assembly line in a single " +
                 "translated protein, threading carbon after carbon onto a growing " +
                 "chain until a macrolactone falls off the end.</p>" +
+                "<div class=\"inline-viewer\" " +
+                     "data-accession=\"DQ889941\" " +
+                     "data-viewer=\"circular\" " +
+                     "data-height=\"420px\" " +
+                     "data-annotation-min-length=\"10000\" " +
+                     "data-annotation-hide-names=\"bryostatin ABCDX gene cluster\" " +
+                     "data-caption=\"The 73 kb bryABCDX cluster pulled straight from " +
+                                    "the bryozoan metagenome. With the sub-gene features " +
+                                    "filtered out, the five bry genes resolve cleanly " +
+                                    "around the contig. Note how much of the record is " +
+                                    "one open reading frame: bryA spans roughly a " +
+                                    "quarter of the circle.\"></div>" +
                 "<p>The story may not stop at <em>Bugula neritina</em>. A recent " +
                 "comparative-genomic survey of bugulid bryozoans, not yet peer-" +
                 "reviewed at the time of writing, suggests a complicated pattern. " +
@@ -2026,15 +2074,6 @@
                 "bugulid lineage may have arrived at more than one chemical solution " +
                 "to the same ecological problem. Until then, these remain questions " +
                 "worth asking, not answers.</p>" +
-                "<div class=\"inline-viewer\" " +
-                     "data-accession=\"DQ889941\" " +
-                     "data-viewer=\"circular\" " +
-                     "data-height=\"380px\" " +
-                     "data-annotation-min-length=\"10000\" " +
-                     "data-annotation-hide-names=\"bryostatin ABCDX gene cluster\" " +
-                     "data-caption=\"The same 73 kb, this time wrapped. With the sub-" +
-                                    "gene features filtered out, the five bry genes " +
-                                    "resolve cleanly around the circle.\"></div>" +
                 "<p>The <a href=\"./example.html?id=pederin-cluster\">pederin</a> " +
                 "cluster, one example over, offers a useful comparison. Pederin is " +
                 "also a polyketide produced by an uncultured bacterial symbiont of an " +

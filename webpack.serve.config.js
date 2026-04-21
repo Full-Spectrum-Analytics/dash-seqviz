@@ -11,4 +11,5 @@ config.output = {
 config.mode = 'development';
 config.externals = undefined; // eslint-disable-line
 config.devtool = 'inline-source-map';
+config.devServer = Object.assign({}, config.devServer, { port: 8888 });
 module.exports = config;
