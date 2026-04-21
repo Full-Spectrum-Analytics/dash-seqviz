@@ -2176,16 +2176,16 @@
         },
         {
             id: "pederin-cluster",
-            title: "Pederin — The beetle blister toxin from an uncultured Pseudomonas-like symbiont",
-            summary: "The ~54 kb ped cluster from the symbiont of Paederus fuscipes rove beetles. First trans-AT PKS cluster ever linked to a bacterial-symbiont-derived natural product (2002).",
+            title: "Pederin: a beetle blister toxin from an uncultured bacterial symbiont",
+            summary: "Two centuries of dermatitis. The chemist turned out to be a bacterium.",
             category: "academic",
             tags: ["natural-product", "PKS", "trans-AT", "symbiont", "graduate"],
             complexity: 5,
             accession: "AH013687.2",
             compound: {
                 name: "Pederin",
-                smiles: "CC1C(OC(CC1=C)(C(C(=O)NC(C2CC(C(C(O2)CC(COC)OC)(C)C)O)OC)O)OC)C",
-                description: "A potent protein-synthesis inhibitor produced by an uncultured Pseudomonas-like bacterial symbiont of Paederus rove beetles. Contact with the beetle's hemolymph causes severe skin blistering \u2014 hence \"Paederus dermatitis,\" known to farmers and naturalists for centuries before the chemistry was worked out."
+                smiles: "C[C@H]1[C@H](O[C@](CC1=C)([C@@H](C(=O)N[C@H]([C@@H]2C[C@H](C([C@H](O2)C[C@@H](COC)OC)(C)C)O)OC)O)OC)C",
+                description: "A potent eukaryotic protein-synthesis inhibitor. Crushed Paederus rove beetles release it onto skin via their hemolymph; the result is a blistering dermatitis known to agricultural workers across the tropics and subtropics for centuries before the responsible chemistry, let alone the responsible organism, was known."
             },
             seqvizProps: {
                 viewer: "both",
@@ -2193,45 +2193,59 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
-                "<h3>The first trans-AT PKS cluster from an uncultured symbiont</h3>" +
-                "<p><strong>Pederin</strong> is the blistering agent that gives " +
-                "<em>Paederus</em> rove beetles their reputation \u2014 crush one against " +
-                "your skin and the toxin does the rest. For most of the 20th century the " +
-                "compound was assumed to be beetle-derived. The 2002 cluster paper " +
-                "overturned that: the producer is an uncultured Pseudomonas-like " +
-                "endosymbiont living in female beetles, and the cluster could be assembled " +
-                "straight from the beetle metagenome.</p>" +
-                "<p>This was a landmark result. The <strong>ped</strong> cluster turned out " +
-                "to use a <em>trans</em>-AT PKS architecture \u2014 acyltransferase domains " +
-                "supplied in <em>trans</em> by a separate protein rather than embedded in " +
-                "each module \u2014 which at the time was a rare and poorly understood " +
-                "organization. Follow-up work established that the same architecture " +
-                "appears in the <a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a>, " +
-                "psymberin, and onnamide clusters, all from uncultured symbionts of marine " +
-                "invertebrates. Pederin was the cornerstone that made the whole family " +
-                "make sense.</p>" +
-                "<h3>Try this</h3>" +
-                "<ul>" +
-                "<li><strong>Find <code>pedF</code> and <code>pedI</code>.</strong> " +
-                "These are the two giant multi-module PKS genes at the heart of the cluster. " +
-                "Zoom to 1 in the linear view and look for the longest CDSs \u2014 like " +
-                "<code>bryA</code>, they're single open reading frames encoding many " +
-                "catalytic modules.</li>" +
-                "<li><strong>Look for the missing AT domains.</strong> A hallmark of " +
-                "<em>trans</em>-AT PKSs is that the acyltransferase is encoded separately " +
-                "(here, <code>pedC</code> and <code>pedD</code>). Compare domain density " +
-                "between these small genes and the large ped PKS polypeptides \u2014 the " +
-                "modules are functionally incomplete without the <em>trans</em>-AT partners.</li>" +
-                "<li><strong>Flip to circular.</strong> This is a metagenomic contig, not a " +
-                "closed genome, but the circular view makes the 101 kb footprint tangible " +
-                "and emphasises how much real estate the cluster occupies in a reduced " +
-                "symbiont genome.</li>" +
-                "<li><strong>Compare to <a href=\"./example.html?id=bryostatin-cluster\">" +
-                "bryostatin</a>.</strong> Both are <em>trans</em>-AT PKSs from uncultured " +
-                "symbionts of marine/terrestrial invertebrates. The architectures are near " +
-                "cousins \u2014 two sister cluster discoveries that together launched " +
-                "modern natural-product metagenomics.</li>" +
-                "</ul>" +
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/paederus-rove-beetle.jpg\" " +
+                         "alt=\"A rove beetle of the genus Paederus, showing the " +
+                              "characteristic slender black-and-orange body.\">" +
+                    "<figcaption><em>Paederus</em> sp. rove beetle. Slate and orange, " +
+                    "a few millimetres long, phototropic at night; the carrier of " +
+                    "pederin. Image: gailhampshire / Wikimedia Commons (CC BY 2.0).</figcaption>" +
+                "</figure>" +
+                "<p>The <em>Paederus</em> rove beetles have been poisoning farm workers " +
+                "for at least two centuries. Crush one against skin by accident, and the " +
+                "insect releases a clear fluid from its hemolymph that raises a severe " +
+                "blister within a day or two. Agricultural workers across Asia, Africa, " +
+                "and Latin America have their own names for the reaction; Western " +
+                "clinical literature settled on Paederus dermatitis. The responsible " +
+                "molecule, isolated in 1952, is a compact macrolactone called <strong>" +
+                "pederin</strong>, one of the most potent eukaryotic protein-synthesis " +
+                "inhibitors ever characterised.</p>" +
+                "<p>For the rest of the twentieth century the working assumption was that " +
+                "the beetle itself made pederin. The chemistry did not quite fit any " +
+                "insect biosynthetic machinery anyone knew, and culturable bacteria from " +
+                "the beetle gut produced none of it. Total synthesis took decades and " +
+                "never approached the scales needed for biological study. The producer " +
+                "was somewhere, and somewhere kept being nowhere anyone could isolate.</p>" +
+                "<p>In 2002 the producer arrived by a different route. Shotgun sequencing " +
+                "of the bulk DNA from female <em>Paederus fuscipes</em> beetles, including " +
+                "whatever uncultured bacteria they carried, recovered a 54 kb " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase\" target=\"_blank\" rel=\"noopener\">" +
+                "polyketide synthase</a> cluster whose predicted chemistry matched pederin " +
+                "atom for atom. The cluster used a " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase#Trans-AT_PKSs\" target=\"_blank\" rel=\"noopener\">" +
+                "trans-AT PKS</a> architecture, at the time a rarely-seen organisation in " +
+                "which the acyltransferase activity lives on a separate protein rather " +
+                "than in every module. The producer was a Pseudomonas-like " +
+                "endosymbiont that lives in the beetle's reproductive tract, passes " +
+                "vertically to eggs, and has so far refused every attempt to isolate it " +
+                "into pure culture.</p>" +
+                "<div class=\"inline-viewer\" " +
+                     "data-accession=\"AH013687.2\" " +
+                     "data-viewer=\"circular\" " +
+                     "data-height=\"420px\" " +
+                     "data-annotation-min-length=\"6000\" " +
+                     "data-caption=\"The ped cluster wrapped. Two enormous open reading " +
+                                    "frames encode the PKS assembly line; a handful of " +
+                                    "smaller genes supply the trans-AT activity and the " +
+                                    "tailoring steps.\"></div>" +
+                "<p>Pederin's discovery turned out to be the first of a family. The same " +
+                "trans-AT PKS signature appeared in the " +
+                "<a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a>, " +
+                "onnamide, psymberin, and theopederin clusters over the following decade, " +
+                "each from an uncultured bacterial symbiont of an invertebrate host. The " +
+                "producers were invisible to standard microbiology; the sequences that " +
+                "encoded their drug-grade payloads were invisible until shotgun " +
+                "sequencing reached the hosts that held them.</p>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Piel J. " +
@@ -2239,7 +2253,7 @@
                 "A polyketide synthase-peptide synthetase gene cluster from an uncultured " +
                 "bacterial symbiont of Paederus beetles.</a> " +
                 "<em>Proc Natl Acad Sci USA</em> 99(22):14002-14007 (2002). PMID: 12381784. " +
-                "(The foundational paper \u2014 first trans-AT PKS cluster linked to an " +
+                "(The foundational paper, and the first trans-AT PKS cluster linked to an " +
                 "uncultured insect symbiont.)</li>" +
                 "<li>Piel J, Hofer I, Hui D. " +
                 "<a href=\"https://pubmed.ncbi.nlm.nih.gov/14973122/\" target=\"_blank\" rel=\"noopener\">" +
@@ -2253,7 +2267,7 @@
                 "polyketides of the pederin family.</a> " +
                 "<em>J Nat Prod</em> 68(3):472-479 (2005). PMID: 15828666. " +
                 "(Ties pederin architecturally to the onnamide/theopederin family from " +
-                "marine sponge symbionts \u2014 the uncultured-symbiont trans-AT PKS " +
+                "marine sponge symbionts; the uncultured-symbiont trans-AT PKS " +
                 "story generalising across host phyla.)</li>" +
                 "</ul>",
             pythonSnippet:

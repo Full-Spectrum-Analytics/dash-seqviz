@@ -324,7 +324,8 @@ STANDALONE_COMPOUNDS: List[Node] = [
     ),
     Node(
         "Pederin",
-        "CC1C(OC(CC1=C)(C(C(=O)NC(C2CC(C(C(O2)CC(COC)OC)(C)C)O)OC)O)OC)C",
+        "C[C@H]1[C@H](O[C@](CC1=C)([C@@H](C(=O)N[C@H]([C@@H]2C[C@H]"
+        "(C([C@H](O2)C[C@@H](COC)OC)(C)C)O)OC)O)OC)C",
     ),
     # ----------------------------------------------------------------
     # Plant + symbiont natural products from the expanded gallery set.
