@@ -1464,8 +1464,8 @@
         },
         {
             id: "lovastatin-cluster",
-            title: "Lovastatin biosynthetic cluster \u2014 The textbook fungal polyketide",
-            summary: "Aspergillus terreus lovA/lovB/lovC/lovD/lovF cluster. A cholesterol-lowering blockbuster built by a classic iterative polyketide synthase (PKS).",
+            title: "Lovastatin: the iterative fungal PKS that founded a drug class",
+            summary: "One megasynthase, nine condensations, a statin.",
             category: "academic",
             tags: ["graduate", "biosynthesis", "polyketide", "fungal", "cluster"],
             complexity: 4,
@@ -1477,7 +1477,7 @@
             // reads as a single teaching unit.
             accessions: [
                 { id: "AH007774",   label: "Core cluster (lovA / lovC / lovD / lovF)" },
-                { id: "AF151722.1", label: "LovB \u2014 nonaketide synthase" }
+                { id: "AF151722.1", label: "LovB, the nonaketide synthase" }
             ],
             compound: {
                 name: "Lovastatin",
@@ -1540,62 +1540,60 @@
                 style: { height: "520px", width: "100%" }
             },
             narrative:
-                "<h3>A fungal polyketide that moved a global cholesterol market</h3>" +
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/aspergillus-terreus.jpg\" " +
+                         "alt=\"A Petri dish culture of Aspergillus terreus, showing " +
+                             "a brownish velvety colony with concentric zones.\">" +
+                    "<figcaption><em>Aspergillus terreus</em>, a soil and litter " +
+                    "fungus with a cinnamon-brown colony and a pharmacologically " +
+                    "prolific secondary metabolism. Image: Wikimedia Commons (CC0)." +
+                    "</figcaption>" +
+                "</figure>" +
                 "<p><span class=\"info-term\" data-term=\"lovastatin\">Lovastatin</span> " +
-                "was the first statin approved (Merck's Mevacor, 1987) and the " +
-                "proof-of-concept for a drug class that now underpins cardiovascular medicine. " +
-                "It's also the <strong>textbook example</strong> for how fungal iterative " +
-                "polyketide synthases (PKSs) work.</p>" +
-                "<p>Two NCBI records tell the full story and they're shown side by side in " +
-                "the live viewer above: <strong>AH007774</strong> is the segmented-set " +
-                "deposit covering <code>lovA</code>, <code>lovC</code>, <code>lovD</code>, " +
-                "<code>lovF</code>, and the accessory transport/regulatory genes; " +
-                "<strong>AF151722</strong> is the ~11 kb <code>lovB</code> megasynthase CDS, " +
-                "deposited separately. The topology toggle and zoom slider apply to both at " +
-                "once \u2014 the multi-viewer pattern is a taste of how to compose " +
-                "<code>dash-seqviz</code> components with shared state in a real Dash app " +
-                "(see the snippet below).</p>" +
-                "<h3>The five enzymes and what they do</h3>" +
-                "<ul>" +
-                "<li><strong><code>lovB</code></strong> (~10 kb CDS!) is the <em>nonaketide " +
-                "synthase</em> \u2014 one enormous megasynthase that threads an acetyl-CoA " +
-                "starter plus eight malonyl-CoA extenders through its own active site, running " +
-                "a programmed sequence of condensation, ketoreduction, dehydration, and Diels\u2013" +
-                "Alder-like cyclization. Two of the rounds include a SAM-dependent C-methylation " +
-                "via its own MT domain. LovB releases <em>dihydromonacolin L acid</em> and " +
-                "lactonizes it.</li>" +
-                "<li><strong><code>lovC</code></strong> is a <em>trans-acting enoyl reductase</em>. " +
-                "LovB's own ER domain is only active for some rounds \u2014 LovC shows up " +
-                "in trans during rounds 2\u20133 to finish the job. Without LovC the chain " +
-                "stalls.</li>" +
-                "<li><strong><code>lovA</code></strong> is a <em>cytochrome P450</em> that " +
-                "performs two successive oxidations on the released scaffold: first two " +
-                "desaturations (Dihydromonacolin L \u2192 Monacolin L), then a C8 hydroxylation " +
-                "(Monacolin L \u2192 Monacolin J).</li>" +
-                "<li><strong><code>lovF</code></strong> is a <em>separate diketide synthase</em> " +
-                "that builds the (S)-2-methylbutyryl-CoA side chain from malonyl-CoA + SAM in " +
-                "parallel with the main nonaketide stream.</li>" +
-                "<li><strong><code>lovD</code></strong> is the <em>acyltransferase</em> that " +
-                "transesterifies LovF's 2-methylbutyryl group onto Monacolin J's C8 hydroxyl " +
-                "\u2014 the final step that distinguishes lovastatin from simvastatin/monacolin J.</li>" +
-                "</ul>" +
-                "<h3>Try this</h3>" +
-                "<ul>" +
-                "<li>Switch the topology to <em>Linear</em> and watch both sequences jump to " +
-                "the linear track at the same time \u2014 a single toggle drives every viewer " +
-                "in the card.</li>" +
-                "<li>In the <strong>AH007774</strong> viewer, zoom out to see the four " +
-                "<em>lov</em> CDSs on this record \u2014 <code>lovA</code> (P450), " +
-                "<code>lovC</code> (trans-ER), <code>lovD</code> (acyltransferase), and " +
-                "<code>lovF</code> (diketide synthase for the 2-methylbutyryl side chain) " +
-                "\u2014 plus the accessory transport/regulatory genes.</li>" +
-                "<li>In the <strong>AF151722</strong> viewer, note <code>lovB</code>'s " +
-                "single enormous CDS \u2014 the megasynthase is one polypeptide doing the " +
-                "work of a seven-domain assembly line.</li>" +
-                "<li>Use the pathway panel to follow the decalin scaffold from acetyl-CoA all " +
-                "the way to lovastatin. Toggle \"Full reaction scheme\" to see the starter, " +
-                "extender, and side-chain cosubstrates drawn inline.</li>" +
-                "</ul>" +
+                "was approved by the FDA as Mevacor in 1987, the first of the statins " +
+                "and the molecule that would launch the single most prescribed drug " +
+                "class in medical history. The compound came out of an " +
+                "<em>Aspergillus terreus</em> fermentation as part of Merck's " +
+                "cholesterol-lowering programme; it bound " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/HMG-CoA_reductase\" target=\"_blank\" rel=\"noopener\">" +
+                "HMG-CoA reductase</a>, the rate-limiting enzyme of cholesterol " +
+                "biosynthesis, at nanomolar concentrations; and the decalin-lactone " +
+                "scaffold it advanced became the structural template that simvastatin, " +
+                "atorvastatin, and rosuvastatin would all modify.</p>" +
+                "<p>Lovastatin is also the textbook case study for how a fungal " +
+                "<em>iterative</em> " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase\" target=\"_blank\" rel=\"noopener\">" +
+                "polyketide synthase</a> works. Bacterial systems build complex " +
+                "polyketides with modular PKSs, where a separate set of domains is " +
+                "dedicated to each round of condensation (see " +
+                "<a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a>). " +
+                "Fungal iterative PKSs do the opposite. <strong>LovB</strong>, the ten- " +
+                "thousand-base open reading frame that dominates the lovastatin cluster, " +
+                "carries <em>one</em> set of domains and reuses them for nine rounds in " +
+                "a row, executing a different programme each round: sometimes " +
+                "ketoreduction, sometimes dehydration, sometimes methylation, sometimes " +
+                "a Diels-Alder-like cyclisation. No one has ever written a full " +
+                "predictive model for how the enzyme chooses.</p>" +
+                "<p>The full producing cluster is deposited in GenBank in two pieces. " +
+                "<code>AH007774</code> is the segmented record covering the accessory " +
+                "genes (<code>lovA</code> P450, <code>lovC</code> trans-enoyl reductase, " +
+                "<code>lovD</code> acyltransferase, <code>lovF</code> diketide synthase, " +
+                "plus transport and regulatory genes). <code>AF151722</code> is the " +
+                "<code>lovB</code> megasynthase on its own. The viewers below show both " +
+                "records at the same time; the topology and zoom controls apply to both " +
+                "in parallel, so flipping between circular and linear takes you from " +
+                "cluster-overview to megasynthase-on-one-polypeptide with a single " +
+                "click.</p>" +
+                "<p>The downstream steps are captured in the biosynthesis panel below. " +
+                "LovB builds the decalin scaffold and releases dihydromonacolin L. " +
+                "LovA (a cytochrome P450) oxidises the scaffold twice, first installing " +
+                "a pair of double bonds and then a C8 hydroxyl, to produce monacolin J. " +
+                "LovF, a separate diketide synthase, independently makes (S)-2-methyl- " +
+                "butyryl-CoA out of malonyl-CoA and S-adenosylmethionine. LovD then " +
+                "transesterifies that side chain onto the monacolin J hydroxyl. The " +
+                "finished lovastatin molecule is that ester; without the LovD step, the " +
+                "output is monacolin J (essentially simvastatin's acid form). That " +
+                "single step is the difference between two different drugs.</p>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Kennedy J, Auclair K, Kendrew SG, Park C, Vederas JC, Hutchinson CR. " +
@@ -1614,7 +1612,7 @@
                 "\n" +
                 "Shows the multi-viewer pattern used on the web page: two SeqViz\n" +
                 "components driven by a single topology radio. The grid layout\n" +
-                "also flips with topology \u2014 side-by-side for Circular so the\n" +
+                "also flips with topology: side-by-side for Circular so the\n" +
                 "plasmids sit next to each other, stacked for Linear so each\n" +
                 "sequence gets the full card width to scroll through.\n" +
                 "\"\"\"\n" +
@@ -1624,7 +1622,7 @@
                 "\n" +
                 "ACCESSIONS = [\n" +
                 "    (\"AH007774\",   \"Core cluster (lovA / lovC / lovD / lovF)\"),\n" +
-                "    (\"AF151722.1\", \"LovB \u2014 nonaketide synthase\"),\n" +
+                "    (\"AF151722.1\", \"LovB, the nonaketide synthase\"),\n" +
                 "]\n" +
                 "\n" +
                 "# Layout presets keyed by the topology value. Keeping them at\n" +
@@ -1665,10 +1663,10 @@
                 "        id=\"viewer-grid\",\n" +
                 "        children=[\n" +
                 "            html.Div([\n" +
-                "                html.Div([html.Strong(acc), html.Span(f\" \u2014 {label}\")]),\n" +
+                "                html.Div([html.Strong(acc), html.Span(f\": {label}\")]),\n" +
                 "                SeqViz(\n" +
                 "                    id={\"type\": \"viz\", \"acc\": acc},\n" +
-                "                    name=f\"{acc} \u2014 {label}\",\n" +
+                "                    name=f\"{acc}: {label}\",\n" +
                 "                    file=records[acc],\n" +
                 "                    viewer=\"circular\",\n" +
                 "                    # Fully zoomed out so the linear view lands on an\n" +
