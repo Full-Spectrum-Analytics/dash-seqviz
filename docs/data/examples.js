@@ -2672,8 +2672,8 @@
         },
         {
             id: "trabectedin-cluster",
-            title: "Trabectedin (ET-743) \u2014 FDA-approved anticancer drug from a tunicate symbiont",
-            summary: "The 35 kb ET-743 NRPS cluster from an uncultured endosymbiont of Ecteinascidia turbinata. Yondelis was approved for soft-tissue sarcoma in the EU (2007) and US (2015).",
+            title: "Trabectedin (ET-743): an FDA-approved anticancer drug from a tunicate symbiont",
+            summary: "A bacterium that spends a quarter of its genome on one molecule.",
             category: "industrial",
             tags: ["natural-product", "NRPS", "symbiont", "pharma", "anticancer"],
             complexity: 5,
@@ -2682,7 +2682,7 @@
             compound: {
                 name: "Trabectedin",
                 smiles: "CC1=CC2=C(C3C4C5C6=C(C(=C7C(=C6C(N4C(C(C2)N3C)O)COC(=O)C8(CS5)C9=CC(=C(C=C9CCN8)O)OC)OCO7)C)OC(=O)C)C(=C1OC)O",
-                description: "An alkylating tetrahydroisoquinoline alkaloid isolated from the Caribbean mangrove tunicate Ecteinascidia turbinata. The actual producer is an uncultured bacterial endosymbiont, Candidatus Endoecteinascidia frumentensis. Sold as Yondelis\u00ae for soft-tissue sarcoma + advanced ovarian cancer."
+                description: "A pentacyclic tetrahydroisoquinoline alkaloid that alkylates DNA in the minor groove. Isolated from the Caribbean mangrove tunicate Ecteinascidia turbinata; biosynthesised by an obligate uncultured bacterial endosymbiont, Candidatus Endoecteinascidia frumentensis. Marketed as Yondelis for soft-tissue sarcoma and advanced ovarian cancer."
             },
             seqvizProps: {
                 viewer: "both",
@@ -2690,53 +2690,71 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
-                "<h3>A marine drug that actually made it to the clinic</h3>" +
-                "<p><strong>Trabectedin</strong> (Yondelis\u00ae) is one of the few marine " +
-                "natural products to make it all the way through the clinic: EMA approval " +
-                "in 2007, FDA approval in 2015, both for <strong>soft-tissue sarcoma</strong>. " +
-                "The compound was originally isolated from <em>Ecteinascidia turbinata</em>, " +
-                "a mangrove tunicate, but \u2014 as with bryostatin \u2014 the actual " +
-                "producer is a bacterial endosymbiont (<em>Candidatus Endoecteinascidia " +
-                "frumentensis</em>) living inside the tunicate.</p>" +
-                "<p>A 2011 meta-omic study pulled partial biosynthetic contigs " +
-                "directly out of the tunicate metagenome. <code>HQ609499.1</code> is " +
-                "one of those contigs \u2014 35 kb of NRPS genes responsible for " +
-                "building the pentacyclic core scaffold of ET-743. A 2015 follow-up " +
-                "assembled the complete ~631 kb symbiont genome, but the cluster itself " +
-                "spans >170 kb and is still partially fragmented across contigs.</p>" +
-                "<h3>Try this</h3>" +
-                "<ul>" +
-                "<li><strong>Zoom out in the linear view to see the full 35 kb span.</strong> " +
-                "Even though this is a partial sequence, it contains three NRPS modules that " +
-                "assemble the tetrahydroisoquinoline core. Each module has the canonical " +
-                "C-A-T (condensation-adenylation-thiolation) domain order \u2014 toggle " +
-                "translations and scan for the motif.</li>" +
-                "<li><strong>Compare to <a href=\"./example.html?id=bryostatin-cluster\">" +
-                "bryostatin</a>.</strong> Both drugs are from uncultured bacterial symbionts " +
-                "of marine invertebrates. Both reached (or nearly reached) the clinic " +
-                "decades after the natural product was discovered. The sequence-first " +
-                "meta-omic approach shown here is the modern template for turning an " +
-                "\"interesting compound in a marine invertebrate\" into a druggable " +
-                "biosynthetic hypothesis.</li>" +
-                "<li><strong>Look at the compound card below</strong> to see the pentacyclic core " +
-                "of trabectedin \u2014 three fused tetrahydroisoquinoline rings plus the " +
-                "pendant C-ring that alkylates DNA in the minor groove.</li>" +
-                "<li><strong>Think about genome reduction.</strong> The producer's full " +
-                "genome is only ~631 kb \u2014 one of the smallest bacterial genomes known. " +
-                "This cluster alone is ~170 kb, which means <em>more than a quarter of the " +
-                "organism's genome is devoted to making one molecule</em>. Extreme " +
-                "metabolic specialization driven by obligate symbiosis.</li>" +
-                "<li><strong>Trace the template.</strong> " +
-                "<a href=\"./example.html?id=bryostatin-cluster\">Bryostatin</a>, " +
-                "<a href=\"./example.html?id=pederin-cluster\">pederin</a>, " +
-                "<a href=\"./example.html?id=lagriamide-cluster\">lagriamide</a>, " +
-                "<a href=\"./example.html?id=lasonolide-cluster\">lasonolide</a>, and " +
-                "ET-743 are all in this gallery and all fit the same pattern: a marine " +
-                "or terrestrial invertebrate harbors an uncultured symbiont producing a " +
-                "drug-grade compound, and the only way into the chemistry is to sequence " +
-                "the metagenome. Lining up the five clusters side-by-side is roughly what " +
-                "a decade of symbiont-derived natural-product discovery looks like.</li>" +
-                "</ul>" +
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/ecteinascidia-turbinata.jpeg\" " +
+                         "alt=\"A colony of zooids of the mangrove tunicate Ecteinascidia " +
+                              "turbinata, translucent orange tubular animals attached to a " +
+                              "substrate underwater.\">" +
+                    "<figcaption><em>Ecteinascidia turbinata</em>, the mangrove tunicate. " +
+                    "Translucent orange zooids attached to mangrove roots and dock " +
+                    "pilings in the Caribbean. Image: NIH / Wikimedia Commons " +
+                    "(public domain).</figcaption>" +
+                "</figure>" +
+                "<figure class=\"compound-figure figure-left\">" +
+                    "<img src=\"./assets/molecules/trabectedin.svg\" " +
+                         "alt=\"Skeletal structure of trabectedin, a pentacyclic tetra" +
+                              "hydroisoquinoline alkaloid with three fused rings in a " +
+                              "bridged core and a pendant alkylating C-ring.\">" +
+                    "<figcaption>Trabectedin. Three fused tetrahydroisoquinoline rings " +
+                    "form the core; the pendant C-ring bears the carbinolamine that " +
+                    "alkylates DNA. Image: Wikimedia Commons (public domain).</figcaption>" +
+                "</figure>" +
+                "<p><strong>Trabectedin</strong>, marketed as Yondelis, is one of the " +
+                "few marine natural products to have made it through late-stage clinical " +
+                "trials into approved therapy. The European Medicines Agency cleared " +
+                "it for advanced soft-tissue sarcoma in 2007, the US Food and Drug " +
+                "Administration followed in 2015, and it is now a second-line option " +
+                "for patients whose sarcomas have progressed through anthracyclines. " +
+                "Mechanistically it is a minor-groove DNA alkylator, binding at guanine " +
+                "N2 and bending the duplex enough to recruit a broken-transcription " +
+                "response that kills dividing cells.</p>" +
+                "<p>The compound was isolated decades earlier, in the late 1980s, from " +
+                "the Caribbean mangrove tunicate <em>Ecteinascidia turbinata</em>. " +
+                "Getting enough material to study it meant dredging up tons of tunicate " +
+                "colonies from Florida and the Bahamas, and even then yields were in the " +
+                "parts-per-million range. Industrial supply was eventually solved by " +
+                "semi-synthesis from a fermentation-derived bacterial intermediate, but " +
+                "the biological producer inside the tunicate itself remained unknown " +
+                "through the entire approval process.</p>" +
+                "<p>The metagenomic trail arrived after the clinical trials did. A 2011 " +
+                "shotgun-sequencing study of <em>E. turbinata</em> tissue recovered " +
+                "partial " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Nonribosomal_peptide\" target=\"_blank\" rel=\"noopener\">" +
+                "nonribosomal peptide synthetase</a> (NRPS) biosynthetic contigs " +
+                "matching ET-743's chemistry. A 2015 follow-up completed the picture: " +
+                "the full genome of the producer, <em>Candidatus</em> Endoecteinascidia " +
+                "frumentensis, is only about 631 kilobases, one of the smallest " +
+                "bacterial genomes ever sequenced. The ET-743 biosynthetic locus inside " +
+                "it spans more than 170 kilobases. More than a quarter of the " +
+                "organism's DNA is dedicated to making this single molecule.</p>" +
+                "<div class=\"inline-viewer\" " +
+                     "data-accession=\"HQ609499.1\" " +
+                     "data-viewer=\"linear\" " +
+                     "data-zoom=\"1\" " +
+                     "data-height=\"340px\" " +
+                     "data-caption=\"A 35 kb partial contig from the ET-743 biosynthetic " +
+                                    "locus. Three NRPS modules visible here encode the " +
+                                    "tetrahydroisoquinoline core; the full cluster extends " +
+                                    "well past this contig into neighbouring " +
+                                    "ones.\"></div>" +
+                "<p>The <a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a> " +
+                "and <a href=\"./example.html?id=pederin-cluster\">pederin</a> stories " +
+                "share an arc with trabectedin: a striking natural product is isolated " +
+                "from an invertebrate; its chemistry resists synthesis at scale; the " +
+                "producer is not the invertebrate but a bacterial symbiont that will " +
+                "not grow in isolation; and the biosynthetic genes are recovered, " +
+                "years or decades later, by sequencing the host metagenome. Trabectedin " +
+                "is the member of the set that has gone furthest into the clinic.</p>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Rath CM, Janto B, Earl J, Ahmed A, Hu FZ, Hiller L <em>et al.</em> " +

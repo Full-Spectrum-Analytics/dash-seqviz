@@ -317,11 +317,13 @@ STANDALONE_COMPOUNDS: List[Node] = [
         "Barbamide",
         "CC(CC(=CC(=O)N(C)C(CC1=CC=CC=C1)C2=NC=CS2)OC)C(Cl)(Cl)Cl",
     ),
-    Node(
-        "Trabectedin",
-        "CC1=CC2=C(C3C4C5C6=C(C(=C7C(=C6C(N4C(C(C2)N3C)O)COC(=O)C8(CS5)"
-        "C9=CC(=C(C=C9CCN8)O)OC)OCO7)C)OC(=O)C)C(=C1OC)O",
-    ),
+    # Trabectedin: manually sourced from Wikimedia Commons
+    # (File:Trabectedin_structure.svg, public domain) rather than
+    # RDKit-rendered, because the AI-drawn Adobe Illustrator SVG
+    # has publication-quality stereochemistry and layout that
+    # CoordGen doesn't match for this heavily fused pentacyclic
+    # tetrahydroisoquinoline alkaloid. Do NOT re-add a Node here
+    # or the handcrafted asset will be overwritten.
     Node(
         "Pederin",
         "C[C@H]1[C@H](O[C@](CC1=C)([C@@H](C(=O)N[C@H]([C@@H]2C[C@H]"
