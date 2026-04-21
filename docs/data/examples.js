@@ -3097,8 +3097,8 @@
         // ------------------------------------------------------------------
         {
             id: "taxadiene-synthase",
-            title: "Taxadiene synthase \u2014 The committed step of Taxol biosynthesis",
-            summary: "The 2.7 kb Taxus brevifolia TDC1 cDNA (1996). First enzyme on the paclitaxel pathway \u2014 the drug whose supply crisis helped launch modern pharmacognosy.",
+            title: "Taxadiene synthase: the committed step of Taxol biosynthesis",
+            summary: "Thirteen thousand kilograms of bark for two kilograms of drug.",
             category: "academic",
             tags: ["natural-product", "terpene-synthase", "plant", "pharma", "anticancer", "graduate"],
             complexity: 3,
@@ -3106,7 +3106,7 @@
             compound: {
                 name: "Paclitaxel (Taxol)",
                 smiles: "CC1=C2[C@H](C(=O)[C@@]3([C@H](C[C@@H]4[C@]([C@H]3[C@@H]([C@@](C2(C)C)(C[C@@H]1OC(=O)[C@@H]([C@H](C5=CC=CC=C5)NC(=O)C6=CC=CC=C6)O)O)OC(=O)C7=CC=CC=C7)(CO4)OC(=O)C)O)C)OC(=O)C",
-                description: "A microtubule-stabilising diterpenoid from the Pacific yew (Taxus brevifolia). First isolated in 1971; now a billion-dollar cancer drug with dozens of indications. Taxadiene synthase (TDC1) catalyses the first committed step \u2014 the cyclisation of geranylgeranyl diphosphate into taxa-4(5),11(12)-diene."
+                description: "A microtubule-stabilising diterpenoid from the bark of the Pacific yew (Taxus brevifolia); now approved for ovarian, breast, lung, pancreatic, Kaposi sarcoma, and several other cancers. Taxadiene synthase (TDC1) catalyses the first committed step of its biosynthesis, the cyclisation of geranylgeranyl diphosphate into taxa-4(5),11(12)-diene."
             },
             seqvizProps: {
                 viewer: "both",
@@ -3114,44 +3114,76 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
-                "<h3>One gene, the first step, a billion-dollar drug</h3>" +
-                "<p><strong>Paclitaxel</strong> (Taxol\u00ae) is the microtubule-stabilising " +
-                "anticancer drug isolated from the bark of the Pacific yew " +
-                "<em>Taxus brevifolia</em>. The molecule was isolated and structurally " +
-                "characterised in 1971, but the Supply Problem nearly killed it: " +
-                "harvesting enough yew bark to treat American ovarian-cancer patients in " +
-                "the early 1990s meant stripping mature Pacific yews across the Pacific " +
-                "Northwest. Taxol's supply crisis became the canonical example that " +
-                "natural-product chemistry <em>needs</em> biosynthesis.</p>" +
-                "<p>The 1996 cloning of <strong>taxadiene synthase</strong> (TDC1) was " +
-                "the first step toward making that happen. TDC1 is a class-I terpene " +
-                "synthase that cyclises geranylgeranyl diphosphate into " +
-                "taxa-4(5),11(12)-diene, the scaffold that tailoring P450s and " +
-                "acyltransferases later decorate into paclitaxel. That single cDNA " +
-                "(<code>U48796</code>) kicked off thirty years of biosynthesis research, " +
-                "engineered <em>E. coli</em> and yeast platforms for taxadiene " +
-                "production, and eventually the chromosome-scale <em>Taxus</em> genome " +
-                "assembly.</p>" +
-                "<h3>Try this</h3>" +
-                "<ul>" +
-                "<li><strong>Scan for the DDxxD motif.</strong> Class-I terpene " +
-                "synthases share a conserved aspartate-rich DDxxD motif that " +
-                "coordinates Mg<sup>2+</sup> at the active site. Toggle translations " +
-                "on and zoom into the CDS \u2014 the aspartate pair sits around " +
-                "residue 613 of TDC1, recognisable as two D's separated by two " +
-                "residues and then a third D. It's the signature of the cyclisation " +
-                "chemistry.</li>" +
-                "<li><strong>Read this as a counterweight to the cluster examples.</strong> " +
-                "Unlike bacterial PKS/NRPS, plant natural-product genes are scattered " +
-                "across chromosomes, not clustered. Taxadiene synthase is just one " +
-                "gene \u2014 the first committed step. Turning it into paclitaxel " +
-                "takes a dozen more enzymes (T5\u03b1H, T10\u03b2H, T13\u03b1H, DBAT, " +
-                "BAPT, \u2026) spread across the <em>Taxus</em> genome.</li>" +
-                "<li><strong>Look at the compound card below</strong> to see the 2D structure " +
-                "of paclitaxel \u2014 the taxane core that TDC1 builds sits at the " +
-                "centre, with the benzamide side chain that was the chemical synthesis " +
-                "bottleneck for decades.</li>" +
-                "</ul>" +
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/taxus-brevifolia.jpg\" " +
+                         "alt=\"Foliage and red aril-covered fruit of Taxus brevifolia, " +
+                              "the Pacific yew, a slow-growing coniferous tree of the " +
+                              "Pacific Northwest.\">" +
+                    "<figcaption><em>Taxus brevifolia</em>, the Pacific yew. A slow- " +
+                    "growing understory tree of the Pacific Northwest whose bark was " +
+                    "the first source of paclitaxel. Image: Jason Hollinger / Wikimedia " +
+                    "Commons (CC BY 2.0).</figcaption>" +
+                "</figure>" +
+                "<figure class=\"compound-figure figure-left\">" +
+                    "<img src=\"./assets/molecules/paclitaxel-taxol.svg\" " +
+                         "alt=\"Skeletal structure of paclitaxel, with its fused four-ring " +
+                              "taxane core and a benzamide-substituted side chain " +
+                              "attached at C13.\">" +
+                    "<figcaption>Paclitaxel. The fused taxane core was the target of " +
+                    "biosynthesis efforts; the C13 side chain was the target of " +
+                    "chemistry. Image: Wikimedia Commons (public domain).</figcaption>" +
+                "</figure>" +
+                "<p>The story of <strong>paclitaxel</strong> is the story of how a " +
+                "single natural product reset the expectations of an entire field. " +
+                "Isolated in 1971 from the bark of the Pacific yew, the compound turned " +
+                "out to bind microtubules in a way no previous drug did: stabilising " +
+                "rather than disrupting them, locking mitotic spindles in place, and " +
+                "killing dividing cancer cells through an unusual mechanism of action. " +
+                "By the late 1980s the US National Cancer Institute had it in clinical " +
+                "trials for refractory ovarian cancer with striking results.</p>" +
+                "<p>The problem was where to get it. The Pacific yew is a slow-growing " +
+                "understory tree; paclitaxel lives at parts-per-million in its bark; " +
+                "and harvesting the bark kills the tree. One 1980s NCI collection " +
+                "effort took roughly thirteen thousand kilograms of yew bark from the " +
+                "Pacific Northwest and yielded around two kilograms of drug. Clinical " +
+                "demand projected to require much more. Conservation alarm about the " +
+                "yew grew in parallel with patient demand, and the pharmaceutical " +
+                "community, for the first time in recent memory, had to reckon with " +
+                "the idea that its supply chain was ecologically unsustainable. The " +
+                "Supply Problem, as pharmacognosy came to call it, became the canonical " +
+                "case for needing biosynthetic access to complex natural products.</p>" +
+                "<p>The biosynthetic door opened in 1996 with the cloning of " +
+                "<strong>taxadiene synthase</strong> (TDC1), the first committed step " +
+                "of the pathway. TDC1 is a class-I " +
+                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Terpene_synthase\" target=\"_blank\" rel=\"noopener\">" +
+                "terpene synthase</a> that cyclises geranylgeranyl diphosphate into " +
+                "taxa-4(5),11(12)-diene, the scaffold that a dozen downstream " +
+                "tailoring enzymes then decorate into paclitaxel. The cDNA (GenBank " +
+                "<code>U48796</code>) has since been the starting point for " +
+                "<em>E. coli</em> and yeast fermentation platforms that produce " +
+                "taxadiene at gram-per-litre scale, and was one of the anchors used " +
+                "in the 2021 chromosome-scale assembly of the <em>Taxus</em> genome.</p>" +
+                "<div class=\"inline-viewer\" " +
+                     "data-accession=\"U48796.1\" " +
+                     "data-viewer=\"linear\" " +
+                     "data-zoom=\"45\" " +
+                     "data-show-translations=\"true\" " +
+                     "data-height=\"360px\" " +
+                     "data-caption=\"The TDC1 cDNA with translation turned on. A class-I " +
+                                    "terpene synthase of ~860 residues; the conserved " +
+                                    "aspartate-rich DDxxD motif that coordinates the " +
+                                    "catalytic Mg2+ sits near residue 613.\"></div>" +
+                "<p>Taxol is not a cluster story. Plant natural-product genes do not " +
+                "sit next to each other the way bacterial " +
+                "<a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a> or " +
+                "<a href=\"./example.html?id=pederin-cluster\">pederin</a> genes do; " +
+                "they are scattered across large, repetitive gymnosperm chromosomes. " +
+                "The cDNA shown here, a single 2.7 kb mRNA for a single enzyme, is " +
+                "one piece of a biosynthesis that proceeds through roughly nineteen " +
+                "steps across as many genes. But it is the piece that first turned " +
+                "taxol from a harvesting problem into a sequence on a screen, which " +
+                "is what every biosynthetic engineering project since has needed to " +
+                "start with.</p>" +
                 "<h3>References</h3>" +
                 "<ul>" +
                 "<li>Wildung MR, Croteau R. " +

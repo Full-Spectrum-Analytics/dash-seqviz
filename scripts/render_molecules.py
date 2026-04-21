@@ -344,13 +344,11 @@ STANDALONE_COMPOUNDS: List[Node] = [
         "(/C=C/C/C=C/C(=C\\[C@H]1O2)/C)O[C@H]([C@]3(C)CO)C/C=C\\C"
         "[C@H](C(=O)OCC(=C)CCC(C)C)O)O",
     ),
-    Node(
-        "Paclitaxel (Taxol)",
-        "CC1=C2[C@H](C(=O)[C@@]3([C@H](C[C@@H]4[C@]([C@H]3[C@@H]"
-        "([C@@](C2(C)C)(C[C@@H]1OC(=O)[C@@H]([C@H](C5=CC=CC=C5)"
-        "NC(=O)C6=CC=CC=C6)O)O)OC(=O)C7=CC=CC=C7)(CO4)OC(=O)C)O)C)"
-        "OC(=O)C",
-    ),
+    # Paclitaxel (Taxol): manually sourced from Wikimedia Commons
+    # (File:Taxol.svg, public domain). The hand-drawn SVG renders the
+    # taxane core and side chain with correct wedge stereochemistry;
+    # CoordGen on the connectivity SMILES puts the four-ring core
+    # in a strained arrangement. Do NOT re-add a Node here.
     Node(
         "Camptothecin",
         "CC[C@@]1(C2=C(COC1=O)C(=O)N3CC4=CC5=CC=CC=C5N=C4C3=C2)O",
