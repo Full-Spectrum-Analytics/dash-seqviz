@@ -6,7 +6,7 @@
     <title>Example &mdash; dash-seqviz</title>
     <meta name="description" content="Interactive example — one curated construct visualized with dash-seqviz, with a ready-to-paste Python snippet.">
 
-    <link rel="stylesheet" href="./assets/site.css?v=17">
+    <link rel="stylesheet" href="./assets/site.css?v=18">
 </head>
 <body data-page="examples">
 
@@ -149,7 +149,7 @@
 <script crossorigin src="https://unpkg.com/smiles-drawer@2.2.1/dist/smiles-drawer.min.js"></script>
 <script src="./assets/nav.js"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
-<script src="./data/examples.js?v=29"></script>
+<script src="./data/examples.js?v=32"></script>
 
 <script>
     (function () {
@@ -501,6 +501,233 @@
                     "The clinical target of the statin drug class, founded " +
                     "by lovastatin's approval as Mevacor in 1987.",
                 wiki: "https://en.wikipedia.org/wiki/HMG-CoA_reductase"
+            },
+
+            // ---- organism-level tooltips (photo card) --------------------
+            // Supporting organisms referenced in the narrative but not
+            // centred as a figure on the page. The tooltip opens a small
+            // card with a photograph (or text-only for organisms we have
+            // no free-licence photo of), a one-line blurb, and a link.
+            "prochloron-didemni": {
+                name: "Prochloron didemni",
+                italic: true,
+                description:
+                    "The obligate cyanobacterial symbiont of the tunicate " +
+                    "<em>Lissoclinum patella</em>, and the actual biosynthetic " +
+                    "producer of the patellamides. Large (7\u201325 \u00b5m), " +
+                    "chlorophyll b-containing, and never cultured outside its " +
+                    "host despite decades of attempts.",
+                wiki: "https://en.wikipedia.org/wiki/Prochloron"
+            },
+            "catharanthus-roseus": {
+                name: "Catharanthus roseus",
+                italic: true,
+                photo: "./assets/images/catharanthus-roseus.jpg",
+                description:
+                    "Madagascar periwinkle, the source of the anticancer " +
+                    "alkaloids vincristine and vinblastine. A sister traveler " +
+                    "through the strictosidine gateway; its own STR shares " +
+                    "the same Pictet-Spengler chemistry that launches the " +
+                    "camptothecin pathway.",
+                wiki: "https://en.wikipedia.org/wiki/Catharanthus_roseus"
+            },
+            "endobugula-sertula": {
+                name: "Candidatus Endobugula sertula",
+                italic: true,
+                description:
+                    "An obligate \u03b3-proteobacterial endosymbiont of the " +
+                    "bryozoan <em>Bugula neritina</em>, and the producer of " +
+                    "bryostatin 1. Localised to larval tissue, passes " +
+                    "vertically between generations, and has so far resisted " +
+                    "every attempt to culture it in isolation.",
+                wiki: "https://en.wikipedia.org/wiki/Endobugula_sertula"
+            },
+            "bugulina-simplex": {
+                name: "Bugulina simplex",
+                italic: true,
+                description:
+                    "A sister bryozoan to <em>Bugula neritina</em>, recently " +
+                    "reported to host a closely related endosymbiont " +
+                    "(tentatively <em>Ca.</em> Endobugula glebosa) carrying " +
+                    "a homologous <em>bry</em>-like polyketide synthase cluster. " +
+                    "Suggests bryostatin-like chemistry may extend beyond the " +
+                    "<em>B. neritina</em> symbiosis.",
+                wiki: "https://en.wikipedia.org/wiki/Bugulina_simplex"
+            },
+            "crisularia-pacifica": {
+                name: "Crisularia pacifica",
+                italic: true,
+                description:
+                    "A Pacific bugulid bryozoan. Comparative-genomic work " +
+                    "suggests it hosts its own defensive symbiont " +
+                    "(tentatively <em>Ca.</em> Endobugula tacita) carrying an " +
+                    "unrelated trans-AT polyketide synthase cluster rather " +
+                    "than the <em>bry</em> locus \u2014 a different chemical " +
+                    "solution in the same genomic neighbourhood.",
+                wiki: "https://en.wikipedia.org/wiki/Bugulina"
+            },
+            "endoecteinascidia-frumentensis": {
+                name: "Candidatus Endoecteinascidia frumentensis",
+                italic: true,
+                description:
+                    "The obligate bacterial endosymbiont of the Caribbean " +
+                    "mangrove tunicate <em>Ecteinascidia turbinata</em> and " +
+                    "the producer of ET-743. Its 631 kb genome is among the " +
+                    "smallest ever sequenced; roughly 27% of it encodes the " +
+                    "scattered ET-743 biosynthetic machinery.",
+                wiki: "https://en.wikipedia.org/wiki/Ecteinascidia_turbinata"
+            },
+            "burkholderia-gladioli-lv-stb": {
+                name: "Burkholderia gladioli Lv-StB",
+                italic: true,
+                description:
+                    "The reduced-genome <em>Burkholderia</em> strain resident " +
+                    "in <em>Lagria villosa</em> beetles and the sole producer " +
+                    "of lagriamide. Defensively applied to eggs by the beetle " +
+                    "mother; uncultivable outside the host despite its " +
+                    "cultivable free-living relatives.",
+                wiki: "https://en.wikipedia.org/wiki/Burkholderia_gladioli"
+            },
+            "thermopylae-lasonolidus": {
+                name: "Candidatus Thermopylae lasonolidus",
+                italic: true,
+                description:
+                    "The uncultured verrucomicrobial symbiont of deep-water " +
+                    "<em>Forcepia</em> sponges. Its draft genome carries three " +
+                    "near-identical copies of a 98 kb trans-AT PKS cluster " +
+                    "encoding lasonolide A \u2014 an unusual triplication for " +
+                    "a reduced-genome symbiont.",
+                wiki: "https://en.wikipedia.org/wiki/Verrucomicrobiota"
+            },
+            "forcepia-sponge": {
+                name: "Forcepia sp.",
+                italic: true,
+                photo: "./assets/images/forcepia-sponge.jpg",
+                description:
+                    "Deep-water demosponges collected at several hundred " +
+                    "metres on Caribbean carbonate banks. The genus has " +
+                    "been on the NCI's radar since the 1980s as the source " +
+                    "of lasonolide A, an NCI-60 orphan with sub-nanomolar " +
+                    "cytotoxicity and no matching mechanism in the COMPARE " +
+                    "database.",
+                wiki: "https://en.wikipedia.org/wiki/Forcepia"
+            },
+            "streptomyces": {
+                name: "Streptomyces",
+                italic: true,
+                description:
+                    "Filamentous soil Actinobacteria with enormous secondary- " +
+                    "metabolite gene cluster repertoires. Native producers of " +
+                    "more than half of the clinically deployed antibiotics " +
+                    "(streptomycin, tetracyclines, erythromycin, bottromycin, " +
+                    "vancomycin) and a dominant chassis for natural-product " +
+                    "drug discovery.",
+                wiki: "https://en.wikipedia.org/wiki/Streptomyces"
+            },
+            "agrobacterium-tumefaciens": {
+                name: "Agrobacterium tumefaciens",
+                italic: true,
+                description:
+                    "A soil-dwelling plant pathogen that transfers a defined " +
+                    "segment of its Ti plasmid (the T-DNA) into plant nuclei. " +
+                    "Repurposed for plant biotech: the same machinery that " +
+                    "gives the bacterium crown-gall disease delivers transgenes " +
+                    "for every dicot transformation platform in agriculture.",
+                wiki: "https://en.wikipedia.org/wiki/Agrobacterium_tumefaciens"
+            },
+            "saccharomyces-cerevisiae": {
+                name: "Saccharomyces cerevisiae",
+                italic: true,
+                description:
+                    "Baker's yeast. A single-celled eukaryote with a fully " +
+                    "mapped genome, textbook homologous recombination, and a " +
+                    "century of industrial fermentation behind it. The " +
+                    "standard chassis for strain-engineering pipelines that " +
+                    "need eukaryotic post-translational modifications.",
+                wiki: "https://en.wikipedia.org/wiki/Saccharomyces_cerevisiae"
+            },
+            "streptococcus-pyogenes": {
+                name: "Streptococcus pyogenes",
+                italic: true,
+                description:
+                    "A Gram-positive human pathogen best known to clinicians " +
+                    "as the cause of strep throat. Best known to molecular " +
+                    "biologists as the source of the Cas9 endonuclease that " +
+                    "anchored the modern CRISPR genome-editing revolution.",
+                wiki: "https://en.wikipedia.org/wiki/Streptococcus_pyogenes"
+            },
+            "pantoea-ananatis": {
+                name: "Pantoea ananatis (Erwinia uredovora)",
+                italic: true,
+                description:
+                    "A \u03b3-proteobacterium originally described as " +
+                    "<em>Erwinia uredovora</em> and later reclassified into " +
+                    "<em>Pantoea</em>. Its <em>crtEBIYZ</em> carotenoid " +
+                    "cluster was ported into <em>E. coli</em> in 1990 and " +
+                    "has been the reference heterologous carotenoid pathway " +
+                    "ever since \u2014 a textbook example of pathway " +
+                    "engineering by colour.",
+                wiki: "https://en.wikipedia.org/wiki/Pantoea_ananatis"
+            },
+            "aequorea-victoria": {
+                name: "Aequorea victoria",
+                italic: true,
+                photo: "./assets/images/aequorea-victoria.jpg",
+                description:
+                    "A hydrozoan jellyfish (crystal jelly) of the Pacific " +
+                    "Northwest coast. The source of the original GFP cDNA " +
+                    "cloned by Prasher in 1992 \u2014 the reporter gene that " +
+                    "launched modern fluorescence biology.",
+                wiki: "https://en.wikipedia.org/wiki/Aequorea_victoria"
+            },
+            "chromobacterium-violaceum": {
+                name: "Chromobacterium violaceum",
+                italic: true,
+                photo: "./assets/images/chromobacterium-violaceum.jpg",
+                description:
+                    "A Gram-negative \u03b2-proteobacterium from tropical " +
+                    "and subtropical soil and water. Produces violacein " +
+                    "endogenously from two L-tryptophans, giving colonies " +
+                    "their distinctive deep-violet cast; the five-gene " +
+                    "<em>vioABCDE</em> pathway is a teaching-standard " +
+                    "example of metabolic engineering.",
+                wiki: "https://en.wikipedia.org/wiki/Chromobacterium_violaceum"
+            },
+            "humulus-lupulus": {
+                name: "Humulus lupulus",
+                italic: true,
+                photo: "./assets/images/humulus-lupulus.jpg",
+                description:
+                    "Common hop. A perennial climbing plant whose female " +
+                    "cones carry glandular trichomes packed with the " +
+                    "monoterpenes (linalool, geraniol), acyl-phloroglucinols " +
+                    "(humulones, lupulones), and thiols that define beer " +
+                    "aroma.",
+                wiki: "https://en.wikipedia.org/wiki/Humulus_lupulus"
+            },
+            "lyngbya-majuscula": {
+                name: "Lyngbya majuscula (Moorena producens)",
+                italic: true,
+                photo: "./assets/images/lyngbya-majuscula.jpg",
+                description:
+                    "A filamentous tropical marine cyanobacterium, recently " +
+                    "reclassified into the genus <em>Moorena</em>. Source " +
+                    "of jamaicamides, curacin A, barbamide, apratoxins, and " +
+                    "a long roster of other halogenated PKS-NRPS natural " +
+                    "products with pharmacological activity.",
+                wiki: "https://en.wikipedia.org/wiki/Moorena"
+            },
+            "aspergillus-terreus": {
+                name: "Aspergillus terreus",
+                italic: true,
+                photo: "./assets/images/aspergillus-terreus.jpg",
+                description:
+                    "A cosmopolitan soil and litter ascomycete with a " +
+                    "cinnamon-brown colony morphology and a pharmacologically " +
+                    "prolific secondary metabolism. Best known as the " +
+                    "producer of lovastatin, the fungal polyketide Merck " +
+                    "commercialised as Mevacor in 1987.",
+                wiki: "https://en.wikipedia.org/wiki/Aspergillus_terreus"
             }
         };
 
@@ -525,19 +752,31 @@
         }
         function showInfoTooltip(entry, anchorEl) {
             var tip = getInfoTooltip();
-            // Entries that describe compounds have a 2D structure SVG;
-            // entries that describe concepts (metagenomics, polyketide
-            // synthase, etc.) don't. Render the image only when present.
-            var imgHtml = entry.svg
-                ? '<img src="' + entry.svg + '" alt="' + entry.name + ' structure">'
-                : "";
+            // Three entry flavours:
+            //   - compound: has .svg (chemical structure, contain-fit)
+            //   - organism: has .photo (photograph, cover-fit)
+            //   - concept:  has neither (text-only card)
+            var imgHtml = "";
+            if (entry.svg) {
+                imgHtml = '<img src="' + entry.svg +
+                          '" alt="' + entry.name + ' structure">';
+            } else if (entry.photo) {
+                imgHtml = '<img class="info-tooltip-photo" src="' + entry.photo +
+                          '" alt="' + entry.name + '">';
+            }
+            // Scientific names render in italics inside the title.
+            var titleHtml = entry.italic
+                ? '<em>' + entry.name + '</em>'
+                : entry.name;
             tip.innerHTML =
                 imgHtml +
-                '<div class="info-tooltip-title">' + entry.name + '</div>' +
+                '<div class="info-tooltip-title">' + titleHtml + '</div>' +
                 '<div class="info-tooltip-desc">' + entry.description + '</div>' +
                 '<a class="info-tooltip-link" href="' + entry.wiki +
                 '" target="_blank" rel="noopener">Read on Wikipedia \u2192</a>';
-            tip.classList.toggle("info-tooltip--concept", !entry.svg);
+            tip.classList.toggle("info-tooltip--concept",
+                                 !entry.svg && !entry.photo);
+            tip.classList.toggle("info-tooltip--organism", !!entry.photo);
             // Position below + slightly left of the anchor. If it would clip
             // the right edge of the viewport, pull it back.
             var rect = anchorEl.getBoundingClientRect();

@@ -44,6 +44,16 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/aequorea-victoria.jpg\" " +
+                         "alt=\"A crystal jelly, Aequorea victoria, in an aquarium, " +
+                              "its translucent bell and radial canals visible against " +
+                              "dark water.\">" +
+                    "<figcaption><em>Aequorea victoria</em>, the crystal jelly. A " +
+                    "hydromedusa of the Pacific Northwest coast; the source of the " +
+                    "original GFP cDNA in 1992. Image: Sierra Blakely / Wikimedia " +
+                    "Commons (CC BY-SA 4.0).</figcaption>" +
+                "</figure>" +
                 "<h3>Why GFP?</h3>" +
                 "<p>Green Fluorescent Protein (GFP) from <em>Aequorea victoria</em> is the " +
                 "most taught reporter gene in biology. Students can <em>see</em> its 238-amino-acid " +
@@ -277,6 +287,16 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/chromobacterium-violaceum.jpg\" " +
+                         "alt=\"Blood agar plate culture of Chromobacterium violaceum " +
+                              "showing deep-violet pigmented colonies caused by the " +
+                              "endogenous violacein.\">" +
+                    "<figcaption><em>Chromobacterium violaceum</em> on blood agar. The " +
+                    "violet colour is violacein, produced endogenously by the vioABCDE " +
+                    "cluster. Image: CDC / Dr. W.A. Clark / Wikimedia Commons " +
+                    "(public domain).</figcaption>" +
+                "</figure>" +
                 "<h3>Five genes, one violet pigment</h3>" +
                 "<p><span class=\"info-term\" data-term=\"violacein\">Violacein</span> is a " +
                 "deep-purple indole pigment and a favorite teaching target for pathway " +
@@ -414,7 +434,9 @@
             },
             narrative:
                 "<h3>Color in a dish</h3>" +
-                "<p>The <em>Erwinia uredovora</em> carotenoid cluster converts " +
+                "<p>The " +
+                "<span class=\"info-term\" data-term=\"pantoea-ananatis\">" +
+                "<em>Erwinia uredovora</em></span> carotenoid cluster converts " +
                 "<span class=\"info-term\" data-term=\"fpp\">farnesyl pyrophosphate</span> " +
                 "into " +
                 "<span class=\"info-term\" data-term=\"beta-carotene\">\u03b2-carotene</span>, " +
@@ -534,7 +556,9 @@
             },
             narrative:
                 "<h3>A complete natural-product cluster</h3>" +
-                "<p>Bottromycins are macrocyclic peptides produced by <em>Streptomyces</em>. " +
+                "<p>Bottromycins are macrocyclic peptides produced by " +
+                "<span class=\"info-term\" data-term=\"streptomyces\">" +
+                "<em>Streptomyces</em></span>. " +
                 "The cluster spans ~20 kb and includes a precursor peptide, radical-SAM " +
                 "enzymes, a YcaO-type heterocyclase, and transport machinery &mdash; a " +
                 "perfect teaching example for <strong>RiPP biosynthesis</strong>.</p>" +
@@ -651,6 +675,16 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/humulus-lupulus.jpg\" " +
+                         "alt=\"A close-up of pale-green Humulus lupulus hop cones on " +
+                              "the vine, showing the imbricated bracts that store the " +
+                              "aroma compounds.\">" +
+                    "<figcaption><em>Humulus lupulus</em>, common hop. The cone's " +
+                    "bracts harbour glandular trichomes packed with the monoterpenes " +
+                    "and acyl-phloroglucinols that flavour beer. Image: H. Zell / " +
+                    "Wikimedia Commons (CC BY-SA 3.0).</figcaption>" +
+                "</figure>" +
                 "<h3>A smell you can ship</h3>" +
                 "<p>Monoterpene synthases are the enzymes that turn " +
                 "<span class=\"info-term\" data-term=\"gpp\">geranyl pyrophosphate</span> " +
@@ -756,7 +790,9 @@
                 "<h3>Try this</h3>" +
                 "<ul>" +
                 "<li><strong>Locate the Cas9 CDS.</strong> Zoom fully out and look for " +
-                "the one huge ORF \u2014 <em>S. pyogenes</em> Cas9 is ~4.1 kb and dwarfs " +
+                "the one huge ORF \u2014 " +
+                "<span class=\"info-term\" data-term=\"streptococcus-pyogenes\">" +
+                "<em>S. pyogenes</em></span> Cas9 is ~4.1 kb and dwarfs " +
                 "everything else on the plasmid. Search for <code>ATGGA</code> to land on " +
                 "the canonical SpCas9 start codon, then flip <em>Show translations</em> on " +
                 "to confirm you're reading into the Cas9 polypeptide rather than an " +
@@ -861,9 +897,11 @@
                 "<h3>Same cluster, different chassis</h3>" +
                 "<p>You already saw this cluster in the " +
                 "<a href=\"./example.html?id=violacein-cluster\">academic example</a>. In " +
-                "industrial practice, the native <em>Chromobacterium</em> version is rarely " +
-                "used directly &mdash; teams rebuild the five enzymes in <em>E. coli</em> " +
-                "with refactored promoters, codon-optimized CDSs, and designed RBSs.</p>" +
+                "industrial practice, the native " +
+                "<span class=\"info-term\" data-term=\"chromobacterium-violaceum\">" +
+                "<em>Chromobacterium</em></span> version is rarely used directly &mdash; " +
+                "teams rebuild the five enzymes in <em>E. coli</em> with refactored " +
+                "promoters, codon-optimized CDSs, and designed RBSs.</p>" +
                 "<p>Both viewers above point at the same GenBank record so the comparison " +
                 "is apples-to-apples: the left panel is your <em>as-deposited</em> reference, " +
                 "the right panel is the same DNA we're about to <em>domesticate</em> for " +
@@ -1047,7 +1085,9 @@
             },
             narrative:
                 "<h3>Why move a natural-product cluster?</h3>" +
-                "<p>Native <em>Streptomyces</em> hosts are slow, hard to engineer, and " +
+                "<p>Native " +
+                "<span class=\"info-term\" data-term=\"streptomyces\">" +
+                "<em>Streptomyces</em></span> hosts are slow, hard to engineer, and " +
                 "fermentations are finicky. Pharma R&amp;D teams routinely port a cluster " +
                 "into a faster chassis (<em>S. coelicolor</em> M1152, <em>S. albus</em> J1074, " +
                 "or even <em>E. coli</em>) to evaluate yield, titer, and analog variability.</p>" +
@@ -1145,8 +1185,10 @@
             },
             narrative:
                 "<h3>The ag-biotech reference plasmid</h3>" +
-                "<p><strong>pBI121</strong> is the binary vector nearly every Agrobacterium-" +
-                "mediated plant transformation paper cites. It carries the " +
+                "<p><strong>pBI121</strong> is the binary vector nearly every " +
+                "<span class=\"info-term\" data-term=\"agrobacterium-tumefaciens\">" +
+                "<em>Agrobacterium</em></span>-mediated plant transformation paper cites. " +
+                "It carries the " +
                 "<code>uidA</code> (GUS) reporter under a 35S promoter with an NPTII " +
                 "(<span class=\"info-term\" data-term=\"kanamycin\">kanamycin</span>) " +
                 "selection marker, flanked by T-DNA left and right borders.</p>" +
@@ -1272,6 +1314,15 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/waxy-corn.jpg\" " +
+                         "alt=\"Ears of waxy maize with the pale, dull-white glutinous " +
+                              "kernels characteristic of amylose-free starch.\">" +
+                    "<figcaption>Waxy maize, the glutinous variety of <em>Zea mays</em>. " +
+                    "The kernels lack amylose and are almost pure amylopectin, giving " +
+                    "them a dull, waxy appearance. Image: National Institute of Korean " +
+                    "Language / Wikimedia Commons (CC BY-SA 2.0 KR).</figcaption>" +
+                "</figure>" +
                 "<h3>The first CRISPR crop Corteva put in the ground</h3>" +
                 "<p>The <em>Waxy</em> (<code>Wx1</code>) locus in maize encodes <em>granule-bound " +
                 "starch synthase I</em> (GBSSI), the enzyme that stitches glucose units into " +
@@ -1969,7 +2020,8 @@
                 "centimeters tall, beige, twig-like, a filter feeder whose larvae " +
                 "brood in ovicells before release. What lives inside it is not. Deep " +
                 "in the larval tissue sits an obligate bacterial symbiont, " +
-                "<em>Candidatus</em> Endobugula sertula, which produces " +
+                "<span class=\"info-term\" data-term=\"endobugula-sertula\">" +
+                "<em>Candidatus</em> Endobugula sertula</span>, which produces " +
                 "<strong>bryostatin 1</strong>. The compound is a " +
                 "<span class=\"info-term\" data-term=\"protein-kinase-c\">" +
                 "protein kinase C</span> modulator, and the US National Cancer Institute " +
@@ -2062,17 +2114,19 @@
                 "<p>The story may not stop at <em>Bugula neritina</em>. A recent " +
                 "comparative-genomic survey of bugulid bryozoans, not yet peer-" +
                 "reviewed at the time of writing, suggests a complicated pattern. " +
-                "<em>Bugulina simplex</em> appears to host a closely related symbiont " +
-                "(tentatively <em>Ca.</em> E. glebosa) that carries a homologous " +
-                "<em>bry</em>-like cluster, and its tissues test positive for " +
-                "bryostatin-like PKC-binding activity. The symbiont associated with " +
-                "<em>Crisularia pacifica</em>, provisionally named <em>Ca.</em> " +
-                "Endobugula tacita, appears instead to carry an unrelated trans-AT " +
-                "PKS in roughly the same genomic neighbourhood, with no detectable " +
-                "<em>bry</em> cluster. If those findings hold up to further work, the " +
-                "bugulid lineage may have arrived at more than one chemical solution " +
-                "to the same ecological problem. Until then, these remain questions " +
-                "worth asking, not answers.</p>" +
+                "<span class=\"info-term\" data-term=\"bugulina-simplex\">" +
+                "<em>Bugulina simplex</em></span> appears to host a closely related " +
+                "symbiont (tentatively <em>Ca.</em> E. glebosa) that carries a " +
+                "homologous <em>bry</em>-like cluster, and its tissues test positive " +
+                "for bryostatin-like PKC-binding activity. The symbiont associated " +
+                "with <span class=\"info-term\" data-term=\"crisularia-pacifica\">" +
+                "<em>Crisularia pacifica</em></span>, provisionally named " +
+                "<em>Ca.</em> Endobugula tacita, appears instead to carry an " +
+                "unrelated trans-AT PKS in roughly the same genomic neighbourhood, " +
+                "with no detectable <em>bry</em> cluster. If those findings hold up " +
+                "to further work, the bugulid lineage may have arrived at more than " +
+                "one chemical solution to the same ecological problem. Until then, " +
+                "these remain questions worth asking, not answers.</p>" +
                 "<p>The <a href=\"./example.html?id=pederin-cluster\">pederin</a> " +
                 "cluster, one example over, offers a useful comparison. Pederin is " +
                 "also a polyketide produced by an uncultured bacterial symbiont of an " +
@@ -2331,6 +2385,17 @@
                     "synthesises the patellamides. Image: Nhobgood / Wikimedia Commons " +
                     "(CC BY-SA 3.0).</figcaption>" +
                 "</figure>" +
+                "<p>Pick a <em>Lissoclinum patella</em> colony off an Indo-Pacific reef " +
+                "and crack it open and you will find, in its intracellular spaces, the " +
+                "reason it looks chartreuse: a thick suspension of " +
+                "<span class=\"info-term\" data-term=\"prochloron-didemni\">" +
+                "<em>Prochloron didemni</em></span>, an obligate cyanobacterium that " +
+                "the tunicate does not grow outside of and cannot be grown without. " +
+                "<em>Prochloron</em> provides photosynthate to its host, UV-absorbing " +
+                "pigments, and, as a chemical bonus, a class of cyclic peptides called " +
+                "the <strong>patellamides</strong>: eight-residue macrocycles dressed " +
+                "with alternating thiazoline and oxazoline rings, and cytotoxic enough " +
+                "to have been pursued as anticancer leads since the mid-1980s.</p>" +
                 "<figure class=\"compound-figure figure-left\">" +
                     "<img src=\"./assets/molecules/patellamide-a.svg\" " +
                          "alt=\"Skeletal structure of patellamide A, a cyclic octapeptide " +
@@ -2339,16 +2404,6 @@
                     "peptide; every other residue has been dehydrated into a thiazoline " +
                     "or oxazoline ring. Image: Wikimedia Commons (public domain).</figcaption>" +
                 "</figure>" +
-                "<p>Pick a <em>Lissoclinum patella</em> colony off an Indo-Pacific reef " +
-                "and crack it open and you will find, in its intracellular spaces, the " +
-                "reason it looks chartreuse: a thick suspension of " +
-                "<em>Prochloron didemni</em>, an obligate cyanobacterium that the tunicate " +
-                "does not grow outside of and cannot be grown without. " +
-                "<em>Prochloron</em> provides photosynthate to its host, UV-absorbing " +
-                "pigments, and, as a chemical bonus, a class of cyclic peptides called " +
-                "the <strong>patellamides</strong>: eight-residue macrocycles dressed " +
-                "with alternating thiazoline and oxazoline rings, and cytotoxic enough " +
-                "to have been pursued as anticancer leads since the mid-1980s.</p>" +
                 "<p>The patellamides looked, at first glance, like exactly the sort of " +
                 "peptide a large " +
                 "<span class=\"info-term\" data-term=\"nonribosomal-peptide-synthetase\">" +
@@ -2356,7 +2411,7 @@
                 "sequence is chemically exotic, the heterocycles are not standard " +
                 "ribosomal chemistry, and the macrocyclisation needs dedicated " +
                 "enzymology. The 2005 cluster paper overturned all of it. The " +
-                "<em>pat</em> locus is only about thirteen kilobases, and sitting " +
+                "<em>pat</em> locus is only about eleven kilobases, and sitting " +
                 "inside it is a single 213-base open reading frame, <code>patE</code>, " +
                 "that encodes a seventy-one-residue precursor peptide. Eight residues " +
                 "of PatE are the core. The remaining <em>pat</em> genes encode a " +
@@ -2367,7 +2422,7 @@
                      "data-accession=\"AY986476\" " +
                      "data-viewer=\"circular\" " +
                      "data-height=\"420px\" " +
-                     "data-caption=\"The 13 kb pat cluster in circular view. patE is " +
+                     "data-caption=\"The 11 kb pat cluster in circular view. patE is " +
                                     "the shortest CDS in the cluster; patG and the other " +
                                     "tailoring enzymes take up most of the real estate.\"></div>" +
                 "<p>This was one of the founding " +
@@ -2452,6 +2507,17 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/lyngbya-majuscula.jpg\" " +
+                         "alt=\"A tuft of Lyngbya majuscula, a dark-olive filamentous " +
+                              "marine cyanobacterium, attached to submerged reef " +
+                              "substrate on Reunion Island.\">" +
+                    "<figcaption><em>Lyngbya majuscula</em> (recently reclassified " +
+                    "<em>Moorena producens</em>), a filamentous marine cyanobacterium. " +
+                    "The chemical source of jamaicamides, curacin A, barbamide, and " +
+                    "many other halogenated PKS-NRPS natural products. Image: Philippe " +
+                    "Bourjon / Wikimedia Commons (CC BY-SA 4.0).</figcaption>" +
+                "</figure>" +
                 "<h3>A cyanobacterium that halogenates like it's going out of style</h3>" +
                 "<p><strong>Jamaicamides</strong> are hybrid PKS-NRPS lipopeptides from the " +
                 "marine cyanobacterium <em>Lyngbya majuscula</em> (now <em>Moorena " +
@@ -2539,6 +2605,17 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/lyngbya-majuscula.jpg\" " +
+                         "alt=\"A tuft of Lyngbya majuscula, a dark-olive filamentous " +
+                              "marine cyanobacterium, growing on a submerged reef.\">" +
+                    "<figcaption><em>Lyngbya majuscula</em> (<em>Moorena producens</em>). " +
+                    "The same tropical cyanobacterial lineage that produces the " +
+                    "<a href=\"./example.html?id=jamaicamide-cluster\">jamaicamides</a> " +
+                    "and <a href=\"./example.html?id=barbamide-cluster\">barbamide</a>. " +
+                    "Image: Philippe Bourjon / Wikimedia Commons (CC BY-SA 4.0)." +
+                    "</figcaption>" +
+                "</figure>" +
                 "<h3>How do you put a cyclopropane ring on a PKS product?</h3>" +
                 "<p><strong>Curacin A</strong> is one of the most chemically distinctive " +
                 "marine natural products: it combines a thiazoline ring, a terminal alkene, " +
@@ -2627,6 +2704,18 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/lyngbya-majuscula.jpg\" " +
+                         "alt=\"A tuft of Lyngbya majuscula, a dark-olive filamentous " +
+                              "marine cyanobacterium, growing on a submerged reef.\">" +
+                    "<figcaption><em>Lyngbya majuscula</em> (<em>Moorena producens</em>). " +
+                    "Same tropical cyanobacterium that produces the " +
+                    "<a href=\"./example.html?id=jamaicamide-cluster\">jamaicamides</a> " +
+                    "and <a href=\"./example.html?id=curacin-a-cluster\">curacin A</a> " +
+                    "\u2014 a single producer lineage with three very different " +
+                    "halogenation chemistries. Image: Philippe Bourjon / Wikimedia " +
+                    "Commons (CC BY-SA 4.0).</figcaption>" +
+                "</figure>" +
                 "<h3>Three chlorines on one methyl \u2014 built by an enzyme</h3>" +
                 "<p>If you synthesized <strong>barbamide</strong> in an undergraduate " +
                 "organic lab, you'd make the <strong>-CCl\u2083</strong> group via radical " +
@@ -2725,15 +2814,6 @@
                     "pilings in the Caribbean. Image: NIH / Wikimedia Commons " +
                     "(public domain).</figcaption>" +
                 "</figure>" +
-                "<figure class=\"compound-figure figure-left\">" +
-                    "<img src=\"./assets/molecules/trabectedin.svg\" " +
-                         "alt=\"Skeletal structure of trabectedin, a pentacyclic tetra" +
-                              "hydroisoquinoline alkaloid with three fused rings in a " +
-                              "bridged core and a pendant alkylating C-ring.\">" +
-                    "<figcaption>Trabectedin. Three fused tetrahydroisoquinoline rings " +
-                    "form the core; the pendant C-ring bears the carbinolamine that " +
-                    "alkylates DNA. Image: Wikimedia Commons (public domain).</figcaption>" +
-                "</figure>" +
                 "<p><strong>Trabectedin</strong>, marketed as Yondelis, is one of the " +
                 "few marine natural products to have made it through late-stage clinical " +
                 "trials into approved therapy. The European Medicines Agency cleared " +
@@ -2743,6 +2823,15 @@
                 "Mechanistically it is a minor-groove DNA alkylator, binding at guanine " +
                 "N2 and bending the duplex enough to recruit a broken-transcription " +
                 "response that kills dividing cells.</p>" +
+                "<figure class=\"compound-figure figure-left\">" +
+                    "<img src=\"./assets/molecules/trabectedin.svg\" " +
+                         "alt=\"Skeletal structure of trabectedin, a pentacyclic tetra" +
+                              "hydroisoquinoline alkaloid with three fused rings in a " +
+                              "bridged core and a pendant alkylating C-ring.\">" +
+                    "<figcaption>Trabectedin. Three fused tetrahydroisoquinoline rings " +
+                    "form the core; the pendant C-ring bears the carbinolamine that " +
+                    "alkylates DNA. Image: Wikimedia Commons (public domain).</figcaption>" +
+                "</figure>" +
                 "<p>The compound was isolated decades earlier, in the late 1980s, from " +
                 "the Caribbean mangrove tunicate <em>Ecteinascidia turbinata</em>. " +
                 "Getting enough material to study it meant dredging up tons of tunicate " +
@@ -2757,21 +2846,26 @@
                 "<span class=\"info-term\" data-term=\"nonribosomal-peptide-synthetase\">" +
                 "nonribosomal peptide synthetase</span> (NRPS) biosynthetic contigs " +
                 "matching ET-743's chemistry. A 2015 follow-up completed the picture: " +
-                "the full genome of the producer, <em>Candidatus</em> Endoecteinascidia " +
-                "frumentensis, is only about 631 kilobases, one of the smallest " +
-                "bacterial genomes ever sequenced. The ET-743 biosynthetic locus inside " +
-                "it spans more than 170 kilobases. More than a quarter of the " +
-                "organism's DNA is dedicated to making this single molecule.</p>" +
+                "the full genome of the producer, " +
+                "<span class=\"info-term\" data-term=\"endoecteinascidia-frumentensis\">" +
+                "<em>Candidatus</em> Endoecteinascidia frumentensis</span>, is only " +
+                "about 631 kilobases, one of the smallest bacterial genomes ever " +
+                "sequenced. The ET-743 biosynthetic genes are not arranged as a " +
+                "single contiguous cluster the way most bacterial secondary-metabolite " +
+                "loci are; they are scattered across three distinct regions of the " +
+                "chromosome that together span roughly 173 kilobases. Even broken " +
+                "apart like that, more than a quarter of the organism's DNA is " +
+                "dedicated to making this single molecule.</p>" +
                 "<div class=\"inline-viewer\" " +
                      "data-accession=\"HQ609499.1\" " +
                      "data-viewer=\"linear\" " +
                      "data-zoom=\"1\" " +
                      "data-height=\"340px\" " +
-                     "data-caption=\"A 35 kb partial contig from the ET-743 biosynthetic " +
-                                    "locus. Three NRPS modules visible here encode the " +
-                                    "tetrahydroisoquinoline core; the full cluster extends " +
-                                    "well past this contig into neighbouring " +
-                                    "ones.\"></div>" +
+                     "data-caption=\"A 35 kb partial contig carrying part of the ET-743 " +
+                                    "biosynthetic machinery. Three NRPS modules visible " +
+                                    "here encode the tetrahydroisoquinoline core; the " +
+                                    "rest of the pathway lives on other contigs elsewhere " +
+                                    "in the 631 kb genome.\"></div>" +
                 "<p>The <a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a> " +
                 "and <a href=\"./example.html?id=pederin-cluster\">pederin</a> stories " +
                 "share an arc with trabectedin: a striking natural product is isolated " +
@@ -2867,23 +2961,24 @@
                 "enough to shut out the soil fungi that would otherwise consume the " +
                 "embryos before they hatch. Eggs experimentally stripped of their " +
                 "smear die at dramatically elevated rates.</p>" +
-                "<p>One of the beetle's <em>Burkholderia</em> strains, known as " +
-                "Lv-StB, is the sole producer. It has resisted every attempt to grow " +
-                "it on its own outside the beetle, and sequencing shows why: its " +
-                "genome has lost the usual complement of free-living <em>Burkholderia</em> " +
-                "genes and shrunk into something that can survive only in the very " +
-                "specific nutritional environment of its host. What it has kept, in " +
-                "near-pristine condition, is a 99 kb " +
+                "<p>One of the beetle's <em>Burkholderia</em> strains, " +
+                "<span class=\"info-term\" data-term=\"burkholderia-gladioli-lv-stb\">" +
+                "known as Lv-StB</span>, is the sole producer. It has resisted every " +
+                "attempt to grow it on its own outside the beetle, and sequencing " +
+                "shows why: its genome has lost the usual complement of free-living " +
+                "<em>Burkholderia</em> genes and shrunk into something that can " +
+                "survive only in the very specific nutritional environment of its " +
+                "host. What it has kept, in near-pristine condition, is a " +
                 "<span class=\"info-term\" data-term=\"trans-at-pks\">" +
                 "trans-AT PKS</span>/NRPS cluster (<em>lgaA</em>\u2013<em>lgaM</em>) " +
-                "encoding seventeen catalytic modules that together draw out " +
-                "lagriamide's carbon skeleton.</p>" +
+                "whose seventeen catalytic modules draw out lagriamide's carbon " +
+                "skeleton.</p>" +
                 "<div class=\"inline-viewer\" " +
                      "data-accession=\"MH171092.1\" " +
                      "data-viewer=\"circular\" " +
                      "data-height=\"420px\" " +
                      "data-annotation-min-length=\"5000\" " +
-                     "data-caption=\"The 99 kb lga locus pulled from the Lv-StB genome. " +
+                     "data-caption=\"The lga locus pulled from the Lv-StB genome. " +
                                     "Most of the footprint is multi-module PKS/NRPS " +
                                     "megasynthases; the trans-AT partner and tailoring " +
                                     "enzymes cluster around the periphery.\"></div>" +
@@ -2981,6 +3076,30 @@
                 style: { height: "560px", width: "100%" }
             },
             narrative:
+                "<figure class=\"organism-figure figure-right\">" +
+                    "<img src=\"./assets/images/forcepia-sponge.jpg\" " +
+                         "alt=\"A Forcepia sp. sponge photographed on the seafloor " +
+                              "several hundred metres below the Caribbean surface, " +
+                              "during an NCI-affiliated deep-sea collection expedition.\">" +
+                    "<figcaption><em>Forcepia</em> sp., a deep-water Caribbean " +
+                    "demosponge. The NCI-affiliated expedition photograph shows " +
+                    "an individual specimen at collection depth. Image: NOAA " +
+                    "Ocean Explorer / Wikimedia Commons (public domain).</figcaption>" +
+                "</figure>" +
+                "<p>Deep-water sponges of the genus " +
+                "<span class=\"info-term\" data-term=\"forcepia-sponge\">" +
+                "<em>Forcepia</em></span> live several hundred metres below the " +
+                "surface on Caribbean carbonate banks. They have been on the US " +
+                "National Cancer Institute's radar since the 1980s because their " +
+                "extracts carry <strong>lasonolide A</strong>, a macrolactone " +
+                "polyketide that kills cancer cells at sub-nanomolar concentrations. " +
+                "What has kept lasonolide interesting long after the initial " +
+                "excitement is the way it fails to match anything else: in the " +
+                "NCI's COMPARE algorithm, which correlates a compound's activity " +
+                "fingerprint across sixty tumour cell lines to the fingerprints of " +
+                "known mechanisms, lasonolide is an orphan. No existing drug behaves " +
+                "quite like it. That is usually read as a signal of a mechanism no one " +
+                "has seen.</p>" +
                 "<figure class=\"compound-figure figure-left\">" +
                     "<img src=\"./assets/molecules/lasonolide-a.svg\" " +
                          "alt=\"Skeletal structure of lasonolide A, a macrolactone " +
@@ -2991,18 +3110,6 @@
                     "extended unsaturated side chain, and a conjugated diene embedded " +
                     "in the 20-membered macrolactone.</figcaption>" +
                 "</figure>" +
-                "<p>Deep-water sponges of the genus <em>Forcepia</em> live several " +
-                "hundred metres below the surface on Caribbean carbonate banks. They " +
-                "have been on the US National Cancer Institute's radar since the 1980s " +
-                "because their extracts carry <strong>lasonolide A</strong>, a " +
-                "macrolactone polyketide that kills cancer cells at sub-nanomolar " +
-                "concentrations. What has kept lasonolide interesting long after the " +
-                "initial excitement is the way it fails to match anything else: in the " +
-                "NCI's COMPARE algorithm, which correlates a compound's activity " +
-                "fingerprint across sixty tumour cell lines to the fingerprints of " +
-                "known mechanisms, lasonolide is an orphan. No existing drug behaves " +
-                "quite like it. That is usually read as a signal of a mechanism no one " +
-                "has seen.</p>" +
                 "<p>The problem, as with so many marine natural products, was supply. " +
                 "<em>Forcepia</em> yields lasonolide at parts-per-million and lives at " +
                 "a depth that rules out ordinary collection. Total synthesis is " +
@@ -3014,9 +3121,11 @@
                 "genome-resolved metagenomics</span>. Shotgun sequencing the sponge gave " +
                 "total DNA from every organism in it; computational binning recovered " +
                 "discrete genomes. One of them was a previously-unknown member of the " +
-                "<em>Verrucomicrobia</em>, named <em>Candidatus</em> Thermopylae " +
-                "lasonolidus, and its draft genome carried not one but <em>three</em> " +
-                "essentially identical copies of a 102 kb " +
+                "<em>Verrucomicrobia</em>, named " +
+                "<span class=\"info-term\" data-term=\"thermopylae-lasonolidus\">" +
+                "<em>Candidatus</em> Thermopylae lasonolidus</span>, and its draft " +
+                "genome carried not one but <em>three</em> near-identical copies of " +
+                "a ~98 kilobase " +
                 "<span class=\"info-term\" data-term=\"trans-at-pks\">" +
                 "trans-AT polyketide synthase</span> locus whose predicted chemistry " +
                 "matched lasonolide A module by module.</p>" +
@@ -3029,12 +3138,13 @@
                                     "las cluster pulled from the Ca. T. lasonolidus bin. " +
                                     "The producer's genome devotes roughly 300 kb, " +
                                     "in triplicate, to this single molecule.\"></div>" +
-                "<p>Three copies of a hundred-kilobase cluster in one bacterial genome " +
-                "is an unusual amount of redundancy. It could be a dosage play, " +
-                "boosting titer in an obligate symbiont that cannot scale by dividing " +
-                "faster. It could be insurance against the gene decay that tends to " +
-                "chew away at reduced symbiont genomes over evolutionary time. Either " +
-                "way, the arithmetic is striking. Lasonolide is the extension of the " +
+                "<p>Three copies of a ~100 kilobase cluster in one small bacterial " +
+                "genome is an unusual amount of redundancy. It could be a dosage " +
+                "play, boosting titer in an obligate symbiont that cannot scale by " +
+                "dividing faster. It could be insurance against the gene decay that " +
+                "tends to chew away at reduced symbiont genomes over evolutionary " +
+                "time. Either way, the arithmetic is striking. Lasonolide is the " +
+                "extension of the " +
                 "<a href=\"./example.html?id=pederin-cluster\">pederin</a> and " +
                 "<a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a> " +
                 "metagenomic template into a deeper water column and a stranger host " +
@@ -3124,6 +3234,14 @@
                     "the first source of paclitaxel. Image: Jason Hollinger / Wikimedia " +
                     "Commons (CC BY 2.0).</figcaption>" +
                 "</figure>" +
+                "<p>The story of <strong>paclitaxel</strong> is the story of how a " +
+                "single natural product reset the expectations of an entire field. " +
+                "Isolated in 1971 from the bark of the Pacific yew, the compound turned " +
+                "out to bind microtubules in a way no previous drug did: stabilising " +
+                "rather than disrupting them, locking mitotic spindles in place, and " +
+                "killing dividing cancer cells through an unusual mechanism of action. " +
+                "By the late 1980s the US National Cancer Institute had it in clinical " +
+                "trials for refractory ovarian cancer with striking results.</p>" +
                 "<figure class=\"compound-figure figure-left\">" +
                     "<img src=\"./assets/molecules/paclitaxel-taxol.svg\" " +
                          "alt=\"Skeletal structure of paclitaxel, with its fused four-ring " +
@@ -3133,14 +3251,6 @@
                     "biosynthesis efforts; the C13 side chain was the target of " +
                     "chemistry. Image: Wikimedia Commons (public domain).</figcaption>" +
                 "</figure>" +
-                "<p>The story of <strong>paclitaxel</strong> is the story of how a " +
-                "single natural product reset the expectations of an entire field. " +
-                "Isolated in 1971 from the bark of the Pacific yew, the compound turned " +
-                "out to bind microtubules in a way no previous drug did: stabilising " +
-                "rather than disrupting them, locking mitotic spindles in place, and " +
-                "killing dividing cancer cells through an unusual mechanism of action. " +
-                "By the late 1980s the US National Cancer Institute had it in clinical " +
-                "trials for refractory ovarian cancer with striking results.</p>" +
                 "<p>The problem was where to get it. The Pacific yew is a slow- " +
                 "growing understory tree; paclitaxel lives at parts-per-million in " +
                 "its bark; and harvesting the bark kills the tree. A 1991 NCI order " +
@@ -3262,15 +3372,6 @@
                     "original source of camptothecin. Image: Geographer / Wikimedia " +
                     "Commons (CC BY-SA 3.0).</figcaption>" +
                 "</figure>" +
-                "<figure class=\"compound-figure figure-left\">" +
-                    "<img src=\"./assets/molecules/camptothecin.svg\" " +
-                         "alt=\"Skeletal structure of camptothecin, a planar pentacyclic " +
-                              "quinoline alkaloid with a chiral alpha-hydroxy-delta-lactone.\">" +
-                    "<figcaption>Camptothecin. The pentacyclic core intercalates into " +
-                    "topoisomerase-I cleavage complexes; the E-ring alpha-hydroxy " +
-                    "lactone is the pharmacophore modified in topotecan and irinotecan. " +
-                    "Image: Wikimedia Commons (public domain).</figcaption>" +
-                "</figure>" +
                 "<p><strong>Camptothecin</strong> was isolated in 1966 from the bark " +
                 "and leaves of the Chinese happy tree, <em>Camptotheca acuminata</em>, " +
                 "as part of the same mid-century natural-product screening programme " +
@@ -3283,23 +3384,34 @@
                 "chemistry eventually produced, <strong>topotecan</strong> and " +
                 "<strong>irinotecan</strong>, are still clinical mainstays against " +
                 "ovarian, colorectal, cervical, and small-cell lung cancer.</p>" +
+                "<figure class=\"compound-figure figure-left\">" +
+                    "<img src=\"./assets/molecules/camptothecin.svg\" " +
+                         "alt=\"Skeletal structure of camptothecin, a planar pentacyclic " +
+                              "quinoline alkaloid with a chiral alpha-hydroxy-delta-lactone.\">" +
+                    "<figcaption>Camptothecin. The pentacyclic core intercalates into " +
+                    "topoisomerase-I cleavage complexes; the E-ring alpha-hydroxy " +
+                    "lactone is the pharmacophore modified in topotecan and irinotecan. " +
+                    "Image: Wikimedia Commons (public domain).</figcaption>" +
+                "</figure>" +
                 "<p>Camptothecin is also a member of one of the largest natural-" +
                 "product families in biology. The <strong>terpenoid indole alkaloids</strong> " +
                 "(TIAs) are a class of roughly three thousand plant secondary " +
                 "metabolites, and along with camptothecin it includes vincristine " +
-                "and vinblastine (the anticancer alkaloids of Madagascar periwinkle), " +
-                "strychnine, quinine, and reserpine. Every one of these molecules " +
-                "passes through the same gateway: a Pictet-Spengler condensation of " +
-                "tryptamine and secologanin that forms strictosidine, catalysed by " +
-                "<strong>strictosidine synthase</strong> (STR).</p>" +
+                "and vinblastine (the anticancer alkaloids of " +
+                "<span class=\"info-term\" data-term=\"catharanthus-roseus\">" +
+                "Madagascar periwinkle</span>), strychnine, quinine, and reserpine. " +
+                "Every one of these molecules passes through the same gateway: a " +
+                "Pictet-Spengler condensation of tryptamine and secologanin that " +
+                "forms strictosidine, catalysed by <strong>strictosidine synthase</strong> " +
+                "(STR).</p>" +
                 "<p>The CDS shown here is <code>JF508375</code>, the " +
-                "<em>Camptotheca acuminata</em> strictosidine synthase (CaPSTR). A " +
-                "modest ~340-residue enzyme, roughly 68% identical in amino-acid " +
-                "sequence to the <em>Catharanthus roseus</em> STR that starts " +
-                "vincristine biosynthesis. Plant natural-product pathways are usually " +
-                "scattered across multiple chromosomes rather than clustered, and " +
-                "this single enzyme is the upstream fork from which three thousand " +
-                "related molecules downstream all diverge.</p>" +
+                "<em>Camptotheca acuminata</em> strictosidine synthase (CaPSTR), a " +
+                "compact plant STR that phylogenetic analyses place among the " +
+                "TIA-pathway STRs of alkaloid-producing plants including " +
+                "<em>Catharanthus roseus</em>. Plant natural-product pathways are " +
+                "usually scattered across multiple chromosomes rather than clustered, " +
+                "and this single enzyme is the upstream fork from which three " +
+                "thousand related molecules downstream all diverge.</p>" +
                 "<div class=\"inline-viewer\" " +
                      "data-accession=\"JF508375.1\" " +
                      "data-viewer=\"linear\" " +
@@ -3393,16 +3505,6 @@
                     "source of silymarin. Image: Wikimedia Commons (CC BY-SA 3.0)." +
                     "</figcaption>" +
                 "</figure>" +
-                "<figure class=\"compound-figure figure-left\">" +
-                    "<img src=\"./assets/molecules/silybin-a.svg\" " +
-                         "alt=\"Skeletal structure of silybin A, a flavonolignan built " +
-                              "from a taxifolin flavanonol linked through a 1,4-dioxane " +
-                              "to a coniferyl-alcohol-derived aryl unit.\">" +
-                    "<figcaption>Silybin A. The flavanonol on the left derives from " +
-                    "the flavonoid pathway; the benzodioxane ring in the middle is " +
-                    "the oxidative-coupling handiwork linking it to the monolignol " +
-                    "on the right. Image: Wikimedia Commons (public domain).</figcaption>" +
-                "</figure>" +
                 "<p>Milk thistle shows up in Dioscorides's <em>De Materia Medica</em> " +
                 "in the first century AD, recommended for liver complaints. The plant " +
                 "appears in European herbal traditions continuously from that point " +
@@ -3413,6 +3515,16 @@
                 "extractable from the seed, dominated by <strong>silybin</strong> " +
                 "(itself a roughly 1:1 mix of diastereomers silybin A and silybin " +
                 "B).</p>" +
+                "<figure class=\"compound-figure figure-left\">" +
+                    "<img src=\"./assets/molecules/silybin-a.svg\" " +
+                         "alt=\"Skeletal structure of silybin A, a flavonolignan built " +
+                              "from a taxifolin flavanonol linked through a 1,4-dioxane " +
+                              "to a coniferyl-alcohol-derived aryl unit.\">" +
+                    "<figcaption>Silybin A. The flavanonol on the left derives from " +
+                    "the flavonoid pathway; the benzodioxane ring in the middle is " +
+                    "the oxidative-coupling handiwork linking it to the monolignol " +
+                    "on the right. Image: Wikimedia Commons (public domain).</figcaption>" +
+                "</figure>" +
                 "<p>Silybin is a biosynthetic hybrid, and that is what makes it " +
                 "unusual among plant natural products. Most flavonoids are purely " +
                 "flavonoid, most lignans are purely phenylpropanoid, but silybin is " +
