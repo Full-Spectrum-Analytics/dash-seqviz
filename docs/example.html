@@ -6,7 +6,7 @@
     <title>Example &mdash; dash-seqviz</title>
     <meta name="description" content="Interactive example — one curated construct visualized with dash-seqviz, with a ready-to-paste Python snippet.">
 
-    <link rel="stylesheet" href="./assets/site.css?v=16">
+    <link rel="stylesheet" href="./assets/site.css?v=17">
 </head>
 <body data-page="examples">
 
@@ -149,7 +149,7 @@
 <script crossorigin src="https://unpkg.com/smiles-drawer@2.2.1/dist/smiles-drawer.min.js"></script>
 <script src="./assets/nav.js"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
-<script src="./data/examples.js?v=28"></script>
+<script src="./data/examples.js?v=29"></script>
 
 <script>
     (function () {
@@ -405,6 +405,102 @@
                     "selectable marker that lets you pick transformed plant cells on " +
                     "kanamycin plates.",
                 wiki: "https://en.wikipedia.org/wiki/Kanamycin_A"
+            },
+
+            // ---- concept-level tooltips (no structure SVG) ---------------
+            // These replace the older inline .jargon anchors. The SVG slot
+            // is deliberately absent; the tooltip render path treats this
+            // as a concept card.
+            "polyketide-synthase": {
+                name: "Polyketide synthase (PKS)",
+                description:
+                    "A family of enzymes that condense small acyl-CoA building " +
+                    "blocks (acetyl, malonyl, methylmalonyl) into long carbon " +
+                    "chains via repeated Claisen-type condensations. Bacterial " +
+                    "modular PKSs dedicate one set of domains per condensation " +
+                    "round; fungal iterative PKSs reuse one set of domains for " +
+                    "every round.",
+                wiki: "https://en.wikipedia.org/wiki/Polyketide_synthase"
+            },
+            "trans-at-pks": {
+                name: "Trans-AT polyketide synthase",
+                description:
+                    "A PKS variant in which the acyltransferase (AT) activity " +
+                    "lives on a separate protein rather than inside every " +
+                    "elongation module. First recognised in pederin, then " +
+                    "bryostatin, onnamide, and many other symbiont-derived " +
+                    "natural products.",
+                wiki: "https://en.wikipedia.org/wiki/Polyketide_synthase#Trans-AT_PKSs"
+            },
+            "nonribosomal-peptide-synthetase": {
+                name: "Nonribosomal peptide synthetase (NRPS)",
+                description:
+                    "A family of megaenzymes that assemble peptides without a " +
+                    "ribosome or mRNA, using adenylation (A), thiolation (T), " +
+                    "and condensation (C) domains to load and couple amino " +
+                    "acids in a programmed order. The source of vancomycin, " +
+                    "cyclosporin, penicillin, and many other therapeutics.",
+                wiki: "https://en.wikipedia.org/wiki/Nonribosomal_peptide"
+            },
+            "metagenomics": {
+                name: "Metagenomics",
+                description:
+                    "Sequencing the combined DNA of an entire microbial " +
+                    "community straight from an environmental sample. The " +
+                    "contribution of each member is separated out " +
+                    "computationally, making it possible to recover genomes " +
+                    "from organisms no one has ever grown in the lab.",
+                wiki: "https://en.wikipedia.org/wiki/Metagenomics"
+            },
+            "horizontal-gene-transfer": {
+                name: "Horizontal gene transfer (HGT)",
+                description:
+                    "The movement of genetic material between organisms by " +
+                    "mechanisms other than inheritance from parent to " +
+                    "offspring, typically via plasmids, bacteriophages, or " +
+                    "genomic islands. Signatures of HGT include unusual GC " +
+                    "content, flanking insertion sequences, and phylogenetic " +
+                    "conflict with host markers.",
+                wiki: "https://en.wikipedia.org/wiki/Horizontal_gene_transfer"
+            },
+            "ripp": {
+                name: "RiPP (ribosomally synthesised, post-translationally modified peptide)",
+                description:
+                    "A natural-product class whose precursor is a short " +
+                    "ribosomally translated peptide that post-translational " +
+                    "enzymes then cleave, cyclise, heterocyclise, or otherwise " +
+                    "decorate into a mature drug-like scaffold. Patellamides, " +
+                    "lantibiotics, and bottromycins are all RiPPs.",
+                wiki: "https://en.wikipedia.org/wiki/Ribosomally_synthesized_and_post-translationally_modified_peptides"
+            },
+            "protein-kinase-c": {
+                name: "Protein kinase C (PKC)",
+                description:
+                    "A family of serine/threonine protein kinases activated " +
+                    "by diacylglycerol and calcium at the plasma membrane. " +
+                    "Central to signal transduction in immune, neuronal, and " +
+                    "proliferative pathways; a longstanding pharmacological " +
+                    "target and the binding site for bryostatin.",
+                wiki: "https://en.wikipedia.org/wiki/Protein_kinase_C"
+            },
+            "terpene-synthase": {
+                name: "Terpene synthase",
+                description:
+                    "An enzyme that cyclises a linear prenyl diphosphate " +
+                    "(GPP, FPP, or GGPP) into a terpenoid skeleton. Class-I " +
+                    "terpene synthases use a Mg-coordinating DDxxD motif to " +
+                    "initiate a cationic cascade; the taxadiene synthase " +
+                    "at the start of the taxol pathway is a canonical example.",
+                wiki: "https://en.wikipedia.org/wiki/Terpene_synthase"
+            },
+            "hmg-coa-reductase": {
+                name: "HMG-CoA reductase",
+                description:
+                    "The rate-limiting enzyme of the cholesterol biosynthesis " +
+                    "mevalonate pathway, converting HMG-CoA to mevalonate. " +
+                    "The clinical target of the statin drug class, founded " +
+                    "by lovastatin's approval as Mevacor in 1987.",
+                wiki: "https://en.wikipedia.org/wiki/HMG-CoA_reductase"
             }
         };
 
@@ -429,12 +525,19 @@
         }
         function showInfoTooltip(entry, anchorEl) {
             var tip = getInfoTooltip();
+            // Entries that describe compounds have a 2D structure SVG;
+            // entries that describe concepts (metagenomics, polyketide
+            // synthase, etc.) don't. Render the image only when present.
+            var imgHtml = entry.svg
+                ? '<img src="' + entry.svg + '" alt="' + entry.name + ' structure">'
+                : "";
             tip.innerHTML =
-                '<img src="' + entry.svg + '" alt="' + entry.name + ' structure">' +
+                imgHtml +
                 '<div class="info-tooltip-title">' + entry.name + '</div>' +
                 '<div class="info-tooltip-desc">' + entry.description + '</div>' +
                 '<a class="info-tooltip-link" href="' + entry.wiki +
                 '" target="_blank" rel="noopener">Read on Wikipedia \u2192</a>';
+            tip.classList.toggle("info-tooltip--concept", !entry.svg);
             // Position below + slightly left of the anchor. If it would clip
             // the right edge of the viewport, pull it back.
             var rect = anchorEl.getBoundingClientRect();
@@ -466,6 +569,41 @@
                 el.addEventListener("blur",       hideInfoTooltip);
                 el.setAttribute("tabindex", "0");
             });
+        }
+
+        // Wrap the first visible character of the narrative's opening
+        // paragraph in a <span class="drop-cap">, so we can reliably
+        // float it regardless of whether the paragraph starts with
+        // plain text, a <strong>, or a <span class="info-term">.
+        // CSS ::first-letter is well-specified but renders unevenly
+        // when the letter is inside inline markup; a real element
+        // gives precise control.
+        function applyDropCap(root) {
+            if (!root || !root.classList.contains("narrative-lead")) return;
+            var p = Array.prototype.slice.call(root.children)
+                .find(function (c) { return c.tagName === "P"; });
+            if (!p) return;
+            var walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT);
+            var firstTextNode = null;
+            while (walker.nextNode()) {
+                if (/\S/.test(walker.currentNode.nodeValue)) {
+                    firstTextNode = walker.currentNode;
+                    break;
+                }
+            }
+            if (!firstTextNode) return;
+            var m = firstTextNode.nodeValue.match(/^(\s*)(\S)([\s\S]*)$/);
+            if (!m) return;
+            var leading = m[1], letter = m[2], rest = m[3];
+            var span = document.createElement("span");
+            span.className = "drop-cap";
+            span.textContent = letter;
+            var parent = firstTextNode.parentNode;
+            if (leading) {
+                parent.insertBefore(document.createTextNode(leading), firstTextNode);
+            }
+            parent.insertBefore(span, firstTextNode);
+            firstTextNode.nodeValue = rest;
         }
 
         // Promote anchor tags that point to another example page into
@@ -567,6 +705,7 @@
         narrativeEl.innerHTML = ex.narrative || "";
         wireInfoTerms(narrativeEl);
         promoteExampleLinks(narrativeEl);
+        applyDropCap(narrativeEl);
         snippetEl.textContent = ex.pythonSnippet || "";
 
         // Pathway panel (multi-step biosynthetic route) takes priority over

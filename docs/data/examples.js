@@ -1555,15 +1555,15 @@
                 "class in medical history. The compound came out of an " +
                 "<em>Aspergillus terreus</em> fermentation as part of Merck's " +
                 "cholesterol-lowering programme; it bound " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/HMG-CoA_reductase\" target=\"_blank\" rel=\"noopener\">" +
-                "HMG-CoA reductase</a>, the rate-limiting enzyme of cholesterol " +
+                "<span class=\"info-term\" data-term=\"hmg-coa-reductase\">" +
+                "HMG-CoA reductase</span>, the rate-limiting enzyme of cholesterol " +
                 "biosynthesis, at nanomolar concentrations; and the decalin-lactone " +
                 "scaffold it advanced became the structural template that simvastatin, " +
                 "atorvastatin, and rosuvastatin would all modify.</p>" +
                 "<p>Lovastatin is also the textbook case study for how a fungal " +
                 "<em>iterative</em> " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase\" target=\"_blank\" rel=\"noopener\">" +
-                "polyketide synthase</a> works. Bacterial systems build complex " +
+                "<span class=\"info-term\" data-term=\"polyketide-synthase\">" +
+                "polyketide synthase</span> works. Bacterial systems build complex " +
                 "polyketides with modular PKSs, where a separate set of domains is " +
                 "dedicated to each round of condensation (see " +
                 "<a href=\"./example.html?id=bryostatin-cluster\">bryostatin</a>). " +
@@ -1971,8 +1971,8 @@
                 "in the larval tissue sits an obligate bacterial symbiont, " +
                 "<em>Candidatus</em> Endobugula sertula, which produces " +
                 "<strong>bryostatin 1</strong>. The compound is a " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Protein_kinase_C\" target=\"_blank\" rel=\"noopener\">" +
-                "protein kinase C</a> modulator, and the US National Cancer Institute " +
+                "<span class=\"info-term\" data-term=\"protein-kinase-c\">" +
+                "protein kinase C</span> modulator, and the US National Cancer Institute " +
                 "has carried it through five decades of clinical evaluation for " +
                 "leukemia, melanoma, and Alzheimer's disease.</p>" +
                 "<p>Molecules like this one are why \"the Supply Problem\" became " +
@@ -1984,9 +1984,10 @@
                 "flask or on a plate, where titer and biomass could actually be " +
                 "engineered. Until that happens, scale stays lashed to the host's " +
                 "slow biology, and the compound sits in marine tissue at parts-per-" +
-                "million. One US National Cancer Institute collection effort in the " +
-                "1980s pulled on the order of ten thousand kilograms of <em>B. neritina" +
-                "</em> from Californian waters to yield about eighteen grams of drug. " +
+                "million. A single US National Cancer Institute collection in 1991 " +
+                "pulled roughly fourteen tons of <em>B. neritina</em> off the Californian " +
+                "coast, shipped to Maryland in a hundred and twenty fifty-five-gallon " +
+                "drums, and yielded about eighteen grams of drug. " +
                 "A 29-step total synthesis reported in 2017 finally put gram-scale " +
                 "bryostatin within reach at the bench, but the pull of biology remains: " +
                 "a producer you could actually culture would change the arithmetic " +
@@ -2035,12 +2036,12 @@
                 "<em>B. neritina</em> tissue is a mixture: host chromatin, " +
                 "<em>Ca.</em> E. sertula, a tail of cohabitant bacteria, environmental " +
                 "hitchhikers. Shotgun " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Metagenomics\" target=\"_blank\" rel=\"noopener\">" +
-                "metagenomic</a> sequencing reads it all at once, and the producer's " +
+                "<span class=\"info-term\" data-term=\"metagenomics\">" +
+                "metagenomic</span> sequencing reads it all at once, and the producer's " +
                 "contribution is separated out computationally. From one such dataset " +
                 "emerged the 73 kb <strong>bryABCDX</strong> " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase\" target=\"_blank\" rel=\"noopener\">" +
-                "polyketide synthase</a> cluster, assembled as a single continuous " +
+                "<span class=\"info-term\" data-term=\"polyketide-synthase\">" +
+                "polyketide synthase</span> cluster, assembled as a single continuous " +
                 "block without anyone ever isolating the bacterium that encodes it. " +
                 "Sixteen kilobases of that block belong to one open reading frame: " +
                 "<code>bryA</code> encodes a multi-module assembly line in a single " +
@@ -2077,8 +2078,8 @@
                 "also a polyketide produced by an uncultured bacterial symbiont of an " +
                 "invertebrate (a rove beetle in that case), and its gene cluster is " +
                 "also organised as a " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase#Trans-AT_PKSs\" target=\"_blank\" rel=\"noopener\">" +
-                "trans-AT polyketide synthase</a>. Modular layout and chemistry " +
+                "<span class=\"info-term\" data-term=\"trans-at-pks\">" +
+                "trans-AT polyketide synthase</span>. Modular layout and chemistry " +
                 "diverge between the two, and the clusters are not understood to " +
                 "share a close biosynthetic origin. What they share is a discovery " +
                 "pattern: the symbionts were for years invisible to standard " +
@@ -2205,7 +2206,8 @@
                 "blister within a day or two. Agricultural workers across Asia, Africa, " +
                 "and Latin America have their own names for the reaction; Western " +
                 "clinical literature settled on Paederus dermatitis. The responsible " +
-                "molecule, isolated in 1952, is a compact macrolactone called <strong>" +
+                "molecule, crystallised in 1953 and its structure nailed down in " +
+                "1966, is a compact vinyl-amide macrolactone called <strong>" +
                 "pederin</strong>, one of the most potent eukaryotic protein-synthesis " +
                 "inhibitors ever characterised.</p>" +
                 "<p>For the rest of the twentieth century the working assumption was that " +
@@ -2217,11 +2219,11 @@
                 "<p>In 2002 the producer arrived by a different route. Shotgun sequencing " +
                 "of the bulk DNA from female <em>Paederus fuscipes</em> beetles, including " +
                 "whatever uncultured bacteria they carried, recovered a 54 kb " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase\" target=\"_blank\" rel=\"noopener\">" +
-                "polyketide synthase</a> cluster whose predicted chemistry matched pederin " +
+                "<span class=\"info-term\" data-term=\"polyketide-synthase\">" +
+                "polyketide synthase</span> cluster whose predicted chemistry matched pederin " +
                 "atom for atom. The cluster used a " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase#Trans-AT_PKSs\" target=\"_blank\" rel=\"noopener\">" +
-                "trans-AT PKS</a> architecture, at the time a rarely-seen organisation in " +
+                "<span class=\"info-term\" data-term=\"trans-at-pks\">" +
+                "trans-AT PKS</span> architecture, at the time a rarely-seen organisation in " +
                 "which the acyltransferase activity lives on a separate protein rather " +
                 "than in every module. The producer was a Pseudomonas-like " +
                 "endosymbiont that lives in the beetle's reproductive tract, passes " +
@@ -2349,8 +2351,8 @@
                 "to have been pursued as anticancer leads since the mid-1980s.</p>" +
                 "<p>The patellamides looked, at first glance, like exactly the sort of " +
                 "peptide a large " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Nonribosomal_peptide\" target=\"_blank\" rel=\"noopener\">" +
-                "nonribosomal peptide synthetase</a> would build. The amino-acid " +
+                "<span class=\"info-term\" data-term=\"nonribosomal-peptide-synthetase\">" +
+                "nonribosomal peptide synthetase</span> would build. The amino-acid " +
                 "sequence is chemically exotic, the heterocycles are not standard " +
                 "ribosomal chemistry, and the macrocyclisation needs dedicated " +
                 "enzymology. The 2005 cluster paper overturned all of it. The " +
@@ -2369,8 +2371,8 @@
                                     "the shortest CDS in the cluster; patG and the other " +
                                     "tailoring enzymes take up most of the real estate.\"></div>" +
                 "<p>This was one of the founding " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Ribosomally_synthesized_and_post-translationally_modified_peptides\" target=\"_blank\" rel=\"noopener\">" +
-                "RiPP</a> papers, the template that tied cyanobactins, lantibiotics, " +
+                "<span class=\"info-term\" data-term=\"ripp\">" +
+                "RiPP</span> papers, the template that tied cyanobactins, lantibiotics, " +
                 "sactipeptides, and later the " +
                 "<a href=\"./example.html?id=bottromycin-academic\">bottromycins</a> into " +
                 "one biosynthetic logic. It also provided a decisive experimental " +
@@ -2752,8 +2754,8 @@
                 "<p>The metagenomic trail arrived after the clinical trials did. A 2011 " +
                 "shotgun-sequencing study of <em>E. turbinata</em> tissue recovered " +
                 "partial " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Nonribosomal_peptide\" target=\"_blank\" rel=\"noopener\">" +
-                "nonribosomal peptide synthetase</a> (NRPS) biosynthetic contigs " +
+                "<span class=\"info-term\" data-term=\"nonribosomal-peptide-synthetase\">" +
+                "nonribosomal peptide synthetase</span> (NRPS) biosynthetic contigs " +
                 "matching ET-743's chemistry. A 2015 follow-up completed the picture: " +
                 "the full genome of the producer, <em>Candidatus</em> Endoecteinascidia " +
                 "frumentensis, is only about 631 kilobases, one of the smallest " +
@@ -2872,8 +2874,8 @@
                 "genes and shrunk into something that can survive only in the very " +
                 "specific nutritional environment of its host. What it has kept, in " +
                 "near-pristine condition, is a 99 kb " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase#Trans-AT_PKSs\" target=\"_blank\" rel=\"noopener\">" +
-                "trans-AT PKS</a>/NRPS cluster (<em>lgaA</em>\u2013<em>lgaM</em>) " +
+                "<span class=\"info-term\" data-term=\"trans-at-pks\">" +
+                "trans-AT PKS</span>/NRPS cluster (<em>lgaA</em>\u2013<em>lgaM</em>) " +
                 "encoding seventeen catalytic modules that together draw out " +
                 "lagriamide's carbon skeleton.</p>" +
                 "<div class=\"inline-viewer\" " +
@@ -2888,8 +2890,8 @@
                 "<p>The cluster itself is a clue about where lagriamide came from. It " +
                 "sits on a clearly delineated genomic island, flanked by the sequence " +
                 "signatures of a past " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Horizontal_gene_transfer\" target=\"_blank\" rel=\"noopener\">" +
-                "horizontal gene transfer</a> event. The beetle's defensive chemistry, " +
+                "<span class=\"info-term\" data-term=\"horizontal-gene-transfer\">" +
+                "horizontal gene transfer</span> event. The beetle's defensive chemistry, " +
                 "in other words, was not invented by the resident symbiont. It was " +
                 "acquired, probably from a free-living relative, and then retained " +
                 "under selection strong enough to keep it intact while the rest of " +
@@ -3008,15 +3010,15 @@
                 "assumed for years to be one of the sponge's many bacterial tenants, " +
                 "had never been identified, let alone cultured.</p>" +
                 "<p>A 2022 study closed the biosynthesis end of the problem using " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Metagenomics\" target=\"_blank\" rel=\"noopener\">" +
-                "genome-resolved metagenomics</a>. Shotgun sequencing the sponge gave " +
+                "<span class=\"info-term\" data-term=\"metagenomics\">" +
+                "genome-resolved metagenomics</span>. Shotgun sequencing the sponge gave " +
                 "total DNA from every organism in it; computational binning recovered " +
                 "discrete genomes. One of them was a previously-unknown member of the " +
                 "<em>Verrucomicrobia</em>, named <em>Candidatus</em> Thermopylae " +
                 "lasonolidus, and its draft genome carried not one but <em>three</em> " +
                 "essentially identical copies of a 102 kb " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase#Trans-AT_PKSs\" target=\"_blank\" rel=\"noopener\">" +
-                "trans-AT polyketide synthase</a> locus whose predicted chemistry " +
+                "<span class=\"info-term\" data-term=\"trans-at-pks\">" +
+                "trans-AT polyketide synthase</span> locus whose predicted chemistry " +
                 "matched lasonolide A module by module.</p>" +
                 "<div class=\"inline-viewer\" " +
                      "data-accession=\"ON409580.1\" " +
@@ -3096,7 +3098,7 @@
         {
             id: "taxadiene-synthase",
             title: "Taxadiene synthase: the committed step of Taxol biosynthesis",
-            summary: "Thirteen thousand kilograms of bark for two kilograms of drug.",
+            summary: "Thirteen thousand trees for eight kilograms of drug.",
             category: "academic",
             tags: ["natural-product", "terpene-synthase", "plant", "pharma", "anticancer", "graduate"],
             complexity: 3,
@@ -3139,12 +3141,13 @@
                 "killing dividing cancer cells through an unusual mechanism of action. " +
                 "By the late 1980s the US National Cancer Institute had it in clinical " +
                 "trials for refractory ovarian cancer with striking results.</p>" +
-                "<p>The problem was where to get it. The Pacific yew is a slow-growing " +
-                "understory tree; paclitaxel lives at parts-per-million in its bark; " +
-                "and harvesting the bark kills the tree. One 1980s NCI collection " +
-                "effort took roughly thirteen thousand kilograms of yew bark from the " +
-                "Pacific Northwest and yielded around two kilograms of drug. Clinical " +
-                "demand projected to require much more. Conservation alarm about the " +
+                "<p>The problem was where to get it. The Pacific yew is a slow- " +
+                "growing understory tree; paclitaxel lives at parts-per-million in " +
+                "its bark; and harvesting the bark kills the tree. A 1991 NCI order " +
+                "to the US Forest Service was for three quarters of a million pounds " +
+                "of yew bark, about 340 tonnes, estimated to require the felling of " +
+                "roughly 150,000 mature trees. And clinical demand projected to " +
+                "require much more. Conservation alarm about the " +
                 "yew grew in parallel with patient demand, and the pharmaceutical " +
                 "community, for the first time in recent memory, had to reckon with " +
                 "the idea that its supply chain was ecologically unsustainable. The " +
@@ -3153,8 +3156,8 @@
                 "<p>The biosynthetic door opened in 1996 with the cloning of " +
                 "<strong>taxadiene synthase</strong> (TDC1), the first committed step " +
                 "of the pathway. TDC1 is a class-I " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Terpene_synthase\" target=\"_blank\" rel=\"noopener\">" +
-                "terpene synthase</a> that cyclises geranylgeranyl diphosphate into " +
+                "<span class=\"info-term\" data-term=\"terpene-synthase\">" +
+                "terpene synthase</span> that cyclises geranylgeranyl diphosphate into " +
                 "taxa-4(5),11(12)-diene, the scaffold that a dozen downstream " +
                 "tailoring enzymes then decorate into paclitaxel. The cDNA (GenBank " +
                 "<code>U48796</code>) has since been the starting point for " +
@@ -3422,8 +3425,8 @@
                 "finished flavonolignan.</p>" +
                 "<p>The gene shown here sits far upstream of that coupling. " +
                 "<strong>Chalcone synthase 3</strong> (CHS3) is a type-III " +
-                "<a class=\"jargon\" href=\"https://en.wikipedia.org/wiki/Polyketide_synthase\" target=\"_blank\" rel=\"noopener\">" +
-                "polyketide synthase</a>, a small homodimeric enzyme that condenses " +
+                "<span class=\"info-term\" data-term=\"polyketide-synthase\">" +
+                "polyketide synthase</span>, a small homodimeric enzyme that condenses " +
                 "one 4-coumaroyl-CoA with three malonyl-CoAs to give naringenin " +
                 "chalcone, the precursor to every flavonoid in the plant. A few " +
                 "enzymatic steps later naringenin chalcone has become taxifolin, and " +

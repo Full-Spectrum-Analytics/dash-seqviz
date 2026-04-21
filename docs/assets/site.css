@@ -748,11 +748,14 @@ details.ex-section {
     clear: both;
 }
 
-/* Drop cap on the opening paragraph of a narrative: a subtle
-   journal-typography flourish that signals the start of the piece
-   without shouting. Applied only to the first <p> sibling of the
-   narrative, so follow-up paragraphs stay plain. */
-.narrative > p:first-of-type::first-letter {
+/* Drop cap on the opening paragraph of a narrative. Previously
+   implemented via ::first-letter, which in theory applies across
+   inline wrappers but in practice renders inconsistently when the
+   first letter sits inside <strong> or <span class="info-term">.
+   The JS pass in example.html wraps the first visible character of
+   the first <p> in a .drop-cap span, wherever it lives, giving a
+   real element to style. */
+.narrative .drop-cap {
     float: left;
     font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
     font-size: 3.2em;
@@ -760,6 +763,9 @@ details.ex-section {
     padding: 4px 10px 0 0;
     font-weight: 700;
     color: var(--color-text);
+    /* Keep jargon / strong styling out of the drop cap. */
+    border: none;
+    text-decoration: none;
 }
 
 /* Apparatus headings (References, Continue reading) should read as
@@ -832,21 +838,9 @@ details.ex-section[open] > summary::before {
 details.ex-section > summary:hover { color: var(--color-primary); }
 details.ex-section > *:not(summary) { margin-top: 12px; }
 
-/* Subtle in-prose anchors for technical jargon. Dotted underline signals
-   "hover to see URL, click to read more" without the shouty blue of the
-   primary narrative link style. Used for terms a generalist reader might
-   not recognise (PKC, polyketide synthase, metagenome, trans-AT). */
-.narrative a.jargon {
-    color: inherit;
-    text-decoration: none;
-    border-bottom: 1px dotted var(--color-text-muted);
-    cursor: help;
-}
-.narrative a.jargon:hover {
-    text-decoration: none;
-    border-bottom-color: var(--color-primary);
-    color: var(--color-primary);
-}
+/* (.jargon class retired — all jargon now rendered as
+   <span class="info-term"> with a rich hover tooltip; see the
+   .info-term rules above and INFO_TERMS in example.html.) */
 
 /* ---- Cross-example link pills ---- */
 /* Anchor tags inside a narrative that point at another example page
@@ -900,10 +894,25 @@ details.ex-section > *:not(summary) { margin-top: 12px; }
    example.html script pops up a floating card with a 2D structure
    SVG, name, blurb, and a Wikipedia link. */
 .info-term {
-    border-bottom: 1px dotted var(--color-primary);
+    /* Plain body colour with a dotted underline and a ? cursor. The
+       underline signals "hover for more"; the cursor reinforces it.
+       The blue-bold treatment was too loud in prose and read as a
+       link rather than a hint. */
+    border-bottom: 1px dotted var(--color-text-muted);
     cursor: help;
+    color: inherit;
+    font-weight: inherit;
+    transition: border-bottom-color 120ms, color 120ms;
+}
+.info-term:hover {
+    border-bottom-color: var(--color-primary);
     color: var(--color-primary);
-    font-weight: 600;
+}
+/* Concept-only tooltips (no structure SVG) sit tighter on top of the
+   content. The .info-tooltip--concept class is toggled on the shared
+   tooltip element at render time. */
+.info-tooltip.info-tooltip--concept {
+    width: 320px;
 }
 .info-tooltip {
     position: absolute;
