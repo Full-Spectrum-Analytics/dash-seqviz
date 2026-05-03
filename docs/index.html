@@ -77,8 +77,8 @@
         <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square">
     </div>
     <div class="hero-actions">
-        <a class="btn btn-light" href="./examples.html">See examples</a>
-        <a class="btn btn-outline" href="./explorer.html">Open Explorer</a>
+        <a class="btn btn-light" href="./explorer.html">Open Explorer</a>
+        <a class="btn btn-outline" href="./reference.html">Read the Reference</a>
     </div>
 </header>
 
@@ -98,7 +98,6 @@
                     <li>Annotations, translations, restriction maps, motif search</li>
                     <li>Works in JupyterLab, Dash, or a static HTML page</li>
                 </ul>
-                <a class="cta" href="./examples.html?category=academic">Academia examples &rarr;</a>
             </div>
             <div class="audience-card industrial">
                 <div class="audience-icon">&#x1F3ED;</div>
@@ -112,7 +111,6 @@
                     <li>Restriction-site QC for Golden Gate / MoClo pipelines</li>
                     <li>Embed inside internal Dash dashboards and LIMS frontends</li>
                 </ul>
-                <a class="cta" href="./examples.html?category=industrial">Industry examples &rarr;</a>
             </div>
         </div>
         <div class="logo-row" aria-label="Representative industry targets">
@@ -123,17 +121,6 @@
             <span>Consumer synbio</span>
             <span>Teaching labs</span>
         </div>
-    </div>
-</section>
-
-<!-- Featured examples strip -->
-<section class="featured-strip" id="featured">
-    <div class="container">
-        <h2>Featured examples</h2>
-        <p style="color: var(--color-text-muted); margin-bottom: 20px;">
-            A few to start with. Browse the full <a href="./examples.html">gallery</a> for all ten.
-        </p>
-        <div id="featured-examples" class="featured-grid"></div>
     </div>
 </section>
 
@@ -229,51 +216,8 @@ if __name__ == "__main__":
 
 <script src="./assets/nav.js"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
-<script src="./data/examples.js?v=33"></script>
 
 <script>
-    (function renderFeatured() {
-        var mount = document.getElementById("featured-examples");
-        var list = (window.DASH_SEQVIZ_EXAMPLES || []).filter(function (e) { return e.featured; });
-        if (!mount || list.length === 0) return;
-        list.forEach(function (ex) {
-            var a = document.createElement("a");
-            a.className = "gallery-card";
-            a.href = "./example.html?id=" + encodeURIComponent(ex.id);
-
-            var badges = document.createElement("div");
-            badges.className = "card-badges";
-
-            var catBadge = document.createElement("span");
-            catBadge.className = "badge " + (ex.category === "academic" ? "badge-academic" : "badge-industrial");
-            catBadge.textContent = ex.category === "academic" ? "academia" : "industry";
-            badges.appendChild(catBadge);
-
-            (ex.tags || []).slice(0, 2).forEach(function (t) {
-                var b = document.createElement("span");
-                b.className = "badge badge-tag";
-                b.textContent = t;
-                badges.appendChild(b);
-            });
-            a.appendChild(badges);
-
-            var h = document.createElement("h3");
-            h.textContent = ex.title;
-            a.appendChild(h);
-
-            var p = document.createElement("p");
-            p.textContent = ex.summary;
-            a.appendChild(p);
-
-            var meta = document.createElement("div");
-            meta.className = "card-meta";
-            meta.textContent = ex.accession;
-            a.appendChild(meta);
-
-            mount.appendChild(a);
-        });
-    })();
-
     if (window.SeqVizSite && window.SeqVizSite.wireCopy) {
         window.SeqVizSite.wireCopy(document);
     }
