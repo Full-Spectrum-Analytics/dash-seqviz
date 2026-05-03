@@ -9,3 +9,5 @@ dependencies:
   - conda-forge::biopython
   - conda-forge::yaml
   - conda-forge::pyyaml
+  - conda-forge::rdkit==2024.09.4
+  - conda-forge::poppler

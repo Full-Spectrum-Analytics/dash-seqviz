@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reference &mdash; dash-seqviz</title>
+    <meta name="description" content="Full API reference for the dash-seqviz SeqViz component. Every prop with its type, default, description, and a Python example you can paste into a Dash app.">
+
+    <link rel="stylesheet" href="./assets/site.css?v=21">
+    <style>
+        /* Reference-page layout: sticky sidebar + prop blocks. */
+        .reference-container {
+            display: grid;
+            grid-template-columns: 220px minmax(0, 1fr);
+            gap: 40px;
+            align-items: start;
+        }
+
+        .reference-sidebar {
+            position: sticky;
+            top: 72px;
+            max-height: calc(100vh - 96px);
+            overflow-y: auto;
+            padding-right: 8px;
+            font-size: 0.88rem;
+        }
+        .reference-sidebar h4 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--color-text-muted);
+            margin: 16px 0 6px;
+            font-weight: 700;
+        }
+        .reference-sidebar h4:first-child { margin-top: 0; }
+        .reference-sidebar ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+        .reference-sidebar a {
+            display: block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-family: "SFMono-Regular", Consolas, monospace;
+            font-size: 0.82rem;
+        }
+        .reference-sidebar a:hover {
+            background: var(--color-bg);
+            color: var(--color-text);
+        }
+        .reference-sidebar a.active {
+            background: #eff6ff;
+            color: var(--color-primary);
+        }
+
+        .reference-main { min-width: 0; }
+        .ref-intro {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 32px;
+        }
+        .ref-intro p { color: var(--color-text-muted); font-size: 0.95rem; }
+        .ref-intro p + p { margin-top: 8px; }
+        .ref-intro code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        .ref-group {
+            margin-bottom: 40px;
+            scroll-margin-top: 72px;
+        }
+        .ref-group > h2 {
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+            padding-top: 20px;
+            border-top: 2px solid var(--color-border);
+        }
+        .ref-group > p.group-desc {
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .prop {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            scroll-margin-top: 72px;
+        }
+        .prop:target {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px #bfdbfe;
+        }
+        .prop-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .prop-head h3 {
+            font-family: "SFMono-Regular", Consolas, monospace;
+            font-size: 1.05rem;
+            color: var(--color-text);
+            text-transform: none;
+            letter-spacing: 0;
+            margin: 0;
+            font-weight: 700;
+        }
+        .prop-head h3 a.anchor {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            margin-left: 6px;
+            opacity: 0;
+            transition: opacity 0.15s;
+            font-weight: 400;
+        }
+        .prop:hover .prop-head h3 a.anchor { opacity: 1; }
+
+        .pill {
+            font-family: "SFMono-Regular", Consolas, monospace;
+            font-size: 0.75rem;
+            padding: 2px 9px;
+            border-radius: 999px;
+            border: 1px solid var(--color-border);
+            background: var(--color-bg);
+            color: var(--color-text-muted);
+            white-space: nowrap;
+        }
+        .pill.type { background: #f8fafc; }
+        .pill.default {
+            background: #eff6ff;
+            color: var(--color-primary);
+            border-color: #bfdbfe;
+        }
+        .pill.readonly {
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fcd34d;
+        }
+
+        .prop-body p {
+            font-size: 0.93rem;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+        .prop-body p code {
+            background: #f1f5f9;
+            color: var(--color-text);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+        .prop-body .snippet { margin-top: 12px; }
+        .prop-body .snippet pre { font-size: 0.82rem; }
+
+        .shape-def {
+            background: #f8fafc;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-family: "SFMono-Regular", Consolas, monospace;
+            font-size: 0.82rem;
+            margin: 8px 0 12px;
+            color: var(--color-text);
+            overflow-x: auto;
+        }
+
+        /* Narrow viewports: stack sidebar above main, render the TOC as a
+           compact boxed two-column "jump to" list instead of a tall sticky
+           rail. Must come after the desktop rules above so it overrides. */
+        @media (max-width: 880px) {
+            .reference-container {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .reference-sidebar {
+                position: static;
+                max-height: none;
+                overflow: visible;
+                padding: 14px 16px;
+                background: var(--color-surface);
+                border: 1px solid var(--color-border);
+                border-radius: var(--radius);
+            }
+            .reference-sidebar nav {
+                columns: 2;
+                column-gap: 20px;
+            }
+            .reference-sidebar h4 {
+                margin-top: 4px;
+                break-after: avoid;
+                break-inside: avoid;
+            }
+            .reference-sidebar ul {
+                break-inside: avoid;
+                margin-bottom: 10px;
+            }
+        }
+        @media (max-width: 480px) {
+            .reference-sidebar nav { columns: 1; }
+        }
+    </style>
+</head>
+<body data-page="reference">
+
+<div id="site-nav-mount"></div>
+
+<header class="hero">
+    <h1>Reference</h1>
+    <p>Complete prop reference for the <code>SeqViz</code> Dash component &mdash; every attribute, its type and default, and a Python example you can paste into a Dash app.</p>
+    <div class="hero-actions">
+        <a class="btn btn-light" href="./explorer.html">Try props interactively</a>
+        <a class="btn btn-outline" href="https://github.com/Full-Spectrum-Analytics/dash-seqviz" target="_blank" rel="noopener">GitHub</a>
+    </div>
+</header>
+
+<section>
+    <div class="container reference-container">
+
+        <aside class="reference-sidebar" aria-label="Reference navigation">
+            <nav>
+                <h4>Core</h4>
+                <ul>
+                    <li><a href="#id">id</a></li>
+                    <li><a href="#seq">seq</a></li>
+                    <li><a href="#name">name</a></li>
+                    <li><a href="#viewer">viewer</a></li>
+                    <li><a href="#style">style</a></li>
+                </ul>
+                <h4>Content layers</h4>
+                <ul>
+                    <li><a href="#annotations">annotations</a></li>
+                    <li><a href="#primers">primers</a></li>
+                    <li><a href="#highlights">highlights</a></li>
+                    <li><a href="#translations">translations</a></li>
+                    <li><a href="#enzymes">enzymes</a></li>
+                    <li><a href="#search">search</a></li>
+                </ul>
+                <h4>Appearance</h4>
+                <ul>
+                    <li><a href="#colors">colors</a></li>
+                    <li><a href="#bpColors">bpColors</a></li>
+                    <li><a href="#zoom">zoom</a></li>
+                    <li><a href="#showComplement">showComplement</a></li>
+                </ul>
+                <h4>Behavior</h4>
+                <ul>
+                    <li><a href="#rotateOnScroll">rotateOnScroll</a></li>
+                    <li><a href="#disableExternalFonts">disableExternalFonts</a></li>
+                    <li><a href="#enableCopyEvent">enableCopyEvent</a></li>
+                    <li><a href="#enableSelectAllEvent">enableSelectAllEvent</a></li>
+                </ul>
+                <h4>State &amp; events</h4>
+                <ul>
+                    <li><a href="#selection">selection</a></li>
+                    <li><a href="#searchResults">searchResults</a></li>
+                    <li><a href="#onSelection">onSelection</a></li>
+                    <li><a href="#onSearch">onSearch</a></li>
+                </ul>
+                <h4>Dash internal</h4>
+                <ul>
+                    <li><a href="#setProps">setProps</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="reference-main">
+
+            <div class="ref-intro">
+                <p><strong>Import:</strong> <code>from dash_seqviz import SeqViz</code></p>
+                <p>All props are optional. Position and range fields (<code>start</code>, <code>end</code>) are zero-indexed base positions. Direction fields use <code>1</code> for forward strand, <code>-1</code> for reverse, <code>0</code> for none. Want to drive every prop live? Open the <a href="./explorer.html">component explorer</a>.</p>
+            </div>
+
+            <!-- ============================= CORE ============================= -->
+            <div class="ref-group" id="group-core">
+                <h2>Core</h2>
+                <p class="group-desc">The minimum set to render a sequence.</p>
+
+                <article class="prop" id="id">
+                    <div class="prop-head">
+                        <h3>id<a class="anchor" href="#id" aria-label="Permalink to id">#</a></h3>
+                        <span class="pill type">string</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>The identifier used to reference this component in Dash callbacks. Required if you intend to read or write the component's props from a callback.</p>
+                        <div class="snippet"><pre><code>SeqViz(
+    id="my-seqviz",
+    seq="ATGCATGCATGC",
+)</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="seq">
+                    <div class="prop-head">
+                        <h3>seq<a class="anchor" href="#seq" aria-label="Permalink to seq">#</a></h3>
+                        <span class="pill type">string</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>The sequence to render. Accepts DNA, RNA, or amino-acid sequences. Case is preserved but not meaningful; whitespace is ignored.</p>
+                        <div class="snippet"><pre><code>SeqViz(seq="ATGCGTACGTTAGCGATCGATCGATAGCTAGCTAG")</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="name">
+                    <div class="prop-head">
+                        <h3>name<a class="anchor" href="#name" aria-label="Permalink to name">#</a></h3>
+                        <span class="pill type">string</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Display name for the sequence. Rendered in the center of the circular viewer, and used as a label elsewhere in the UI.</p>
+                        <div class="snippet"><pre><code>SeqViz(
+    seq="...",
+    name="pUC19",
+)</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="viewer">
+                    <div class="prop-head">
+                        <h3>viewer<a class="anchor" href="#viewer" aria-label="Permalink to viewer">#</a></h3>
+                        <span class="pill type">"linear" | "circular" | "both" | "both_flip"</span>
+                        <span class="pill default">default: "both"</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Layout of the viewers. <code>"both"</code> shows circular on the left, linear on the right; <code>"both_flip"</code> swaps them. <code>"linear"</code> and <code>"circular"</code> render a single view.</p>
+                        <div class="snippet"><pre><code>SeqViz(seq="...", viewer="circular")</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="style">
+                    <div class="prop-head">
+                        <h3>style<a class="anchor" href="#style" aria-label="Permalink to style">#</a></h3>
+                        <span class="pill type">dict (CSS)</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>CSS styles applied to the component's outer container. Almost always used to set <code>height</code> and <code>width</code>.</p>
+                        <div class="snippet"><pre><code>SeqViz(
+    seq="...",
+    style={"height": "500px", "width": "100%", "border": "1px solid #e2e8f0"},
+)</code></pre></div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- ======================= CONTENT LAYERS ========================= -->
+            <div class="ref-group" id="group-content">
+                <h2>Content layers</h2>
+                <p class="group-desc">Overlays that annotate or decorate regions of the sequence.</p>
+
+                <article class="prop" id="annotations">
+                    <div class="prop-head">
+                        <h3>annotations<a class="anchor" href="#annotations" aria-label="Permalink to annotations">#</a></h3>
+                        <span class="pill type">list of shape</span>
+                        <span class="pill default">default: []</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Named, optionally directional regions drawn as labeled arcs (circular) or bars (linear) above the sequence. Use for genes, CDS, promoters, terminators, RBS, etc.</p>
+                        <div class="shape-def">{"start": int, "end": int, "name": str, "direction"?: 1 | -1 | 0, "color"?: str}</div>
+                        <div class="snippet"><pre><code>SeqViz(
+    seq="...",
+    annotations=[
+        {"start": 100, "end": 400, "name": "GFP",
+         "direction": 1, "color": "#2a9d8f"},
+        {"start": 450, "end": 500, "name": "Terminator",
+         "direction": 0, "color": "#6c757d"},
+    ],
+)</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="primers">
+                    <div class="prop-head">
+                        <h3>primers<a class="anchor" href="#primers" aria-label="Permalink to primers">#</a></h3>
+                        <span class="pill type">list of shape</span>
+                        <span class="pill default">default: []</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Directional primers rendered as arrows. <code>direction</code> is required: <code>1</code> for forward, <code>-1</code> for reverse.</p>
+                        <div class="shape-def">{"start": int, "end": int, "name": str, "direction": 1 | -1, "color"?: str}</div>
+                        <div class="snippet"><pre><code>SeqViz(
+    seq="...",
+    primers=[
+        {"start": 0,   "end": 22,   "name": "M13F",
+         "direction": 1,  "color": "#2563eb"},
+        {"start": 980, "end": 1000, "name": "M13R",
+         "direction": -1, "color": "#e76f51"},
+    ],
+)</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="highlights">
+                    <div class="prop-head">
+                        <h3>highlights<a class="anchor" href="#highlights" aria-label="Permalink to highlights">#</a></h3>
+                        <span class="pill type">list of shape</span>
+                        <span class="pill default">default: []</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Colored background fills behind a range of bases. Useful for drawing attention to regions without labeling them.</p>
+                        <div class="shape-def">{"start": int, "end": int, "color"?: str}</div>
+                        <div class="snippet"><pre><code>SeqViz(
+    seq="...",
+    highlights=[
+        {"start": 50, "end": 75, "color": "#fde68a"},
+    ],
+)</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="translations">
+                    <div class="prop-head">
+                        <h3>translations<a class="anchor" href="#translations" aria-label="Permalink to translations">#</a></h3>
+                        <span class="pill type">list of shape</span>
+                        <span class="pill default">default: []</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Ranges whose amino-acid translation is drawn beneath the sequence. <code>direction</code> is required: <code>1</code> translates the forward strand, <code>-1</code> the reverse strand.</p>
+                        <div class="shape-def">{"start": int, "end": int, "direction": 1 | -1, "name"?: str, "color"?: str}</div>
+                        <div class="snippet"><pre><code>SeqViz(
+    seq="...",
+    translations=[
+        {"start": 100, "end": 499, "direction": 1, "name": "GFP ORF"},
+    ],
+)</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="enzymes">
+                    <div class="prop-head">
+                        <h3>enzymes<a class="anchor" href="#enzymes" aria-label="Permalink to enzymes">#</a></h3>
+                        <span class="pill type">list of (string | shape)</span>
+                        <span class="pill default">default: []</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Restriction enzymes whose recognition sites should be marked on the sequence. Pass built-in enzyme names as strings (250+ bundled with seqviz) or define custom enzymes with a shape.</p>
+                        <div class="shape-def">str  # built-in enzyme name
+{"name": str, "rseq": str, "fcut": int, "rcut": int,
+ "color"?: str, "range"?: {"start": int, "end": int}}</div>
+                        <div class="snippet"><pre><code># Built-in enzymes by name
+SeqViz(seq="...", enzymes=["EcoRI", "BamHI", "HindIII"])
+
+# Custom enzyme
+SeqViz(
+    seq="...",
+    enzymes=[
+        {"name": "MyCutter", "rseq": "GAATTC",
+         "fcut": 1, "rcut": 5, "color": "#e76f51"},
+    ],
+)</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="search">
+                    <div class="prop-head">
+                        <h3>search<a class="anchor" href="#search" aria-label="Permalink to search">#</a></h3>
+                        <span class="pill type">shape</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Motif to highlight throughout the sequence. <code>mismatch</code> allows fuzzy matching (number of allowed substitutions, default 0). The resulting match ranges are emitted on <a href="#searchResults"><code>searchResults</code></a>.</p>
+                        <div class="shape-def">{"query": str, "mismatch"?: int}</div>
+                        <div class="snippet"><pre><code>SeqViz(
+    seq="...",
+    search={"query": "TTGACA", "mismatch": 1},
+)</code></pre></div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- ========================== APPEARANCE ========================== -->
+            <div class="ref-group" id="group-appearance">
+                <h2>Appearance</h2>
+                <p class="group-desc">Colors, zoom, and layout details.</p>
+
+                <article class="prop" id="colors">
+                    <div class="prop-head">
+                        <h3>colors<a class="anchor" href="#colors" aria-label="Permalink to colors">#</a></h3>
+                        <span class="pill type">list of str</span>
+                        <span class="pill default">default: []</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Fallback palette for annotations, translations, and highlights that do not set their own <code>color</code>. Colors are assigned in order and wrap around.</p>
+                        <div class="snippet"><pre><code>SeqViz(
+    seq="...",
+    colors=["#2a9d8f", "#e76f51", "#f4a261", "#264653"],
+    annotations=[
+        {"start": 0,   "end": 100, "name": "A"},
+        {"start": 200, "end": 300, "name": "B"},
+    ],
+)</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="bpColors">
+                    <div class="prop-head">
+                        <h3>bpColors<a class="anchor" href="#bpColors" aria-label="Permalink to bpColors">#</a></h3>
+                        <span class="pill type">dict</span>
+                        <span class="pill default">default: {}</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Per-base coloring. Keys are either bases (<code>"A"</code>, <code>"T"</code>, <code>"G"</code>, <code>"C"</code>) for all occurrences, or integer indexes for coloring specific positions.</p>
+                        <div class="snippet"><pre><code># Color every base by identity
+SeqViz(
+    seq="...",
+    bpColors={
+        "A": "#ff6b6b", "T": "#4ecdc4",
+        "G": "#ffe66d", "C": "#95e1d3",
+    },
+)
+
+# Color only specific positions
+SeqViz(seq="...", bpColors={42: "#e76f51", 43: "#e76f51"})</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="zoom">
+                    <div class="prop-head">
+                        <h3>zoom<a class="anchor" href="#zoom" aria-label="Permalink to zoom">#</a></h3>
+                        <span class="pill type">shape</span>
+                        <span class="pill default">default: {"linear": 50}</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Zoom level of the linear viewer. <code>0</code> is maximum overview (whole sequence in one row); <code>100</code> is base-level detail.</p>
+                        <div class="shape-def">{"linear": int  # 0-100}</div>
+                        <div class="snippet"><pre><code>SeqViz(seq="...", zoom={"linear": 80})</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="showComplement">
+                    <div class="prop-head">
+                        <h3>showComplement<a class="anchor" href="#showComplement" aria-label="Permalink to showComplement">#</a></h3>
+                        <span class="pill type">bool</span>
+                        <span class="pill default">default: True</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Whether to render the complement strand beneath the sequence in the linear viewer. Set <code>False</code> for a single-strand view (useful for protein or RNA sequences).</p>
+                        <div class="snippet"><pre><code>SeqViz(seq="...", showComplement=False)</code></pre></div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- =========================== BEHAVIOR =========================== -->
+            <div class="ref-group" id="group-behavior">
+                <h2>Behavior</h2>
+                <p class="group-desc">Input and runtime knobs.</p>
+
+                <article class="prop" id="rotateOnScroll">
+                    <div class="prop-head">
+                        <h3>rotateOnScroll<a class="anchor" href="#rotateOnScroll" aria-label="Permalink to rotateOnScroll">#</a></h3>
+                        <span class="pill type">bool</span>
+                        <span class="pill default">default: True</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>When <code>True</code>, scrolling over the circular viewer rotates it. Set <code>False</code> so the page scrolls normally through the viewer &mdash; preferred when embedding inside a longer Dash layout.</p>
+                        <div class="snippet"><pre><code>SeqViz(seq="...", rotateOnScroll=False)</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="disableExternalFonts">
+                    <div class="prop-head">
+                        <h3>disableExternalFonts<a class="anchor" href="#disableExternalFonts" aria-label="Permalink to disableExternalFonts">#</a></h3>
+                        <span class="pill type">bool</span>
+                        <span class="pill default">default: False</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Set <code>True</code> to skip downloading the external web fonts used by seqviz. Useful for offline or air-gapped deployments where font CDNs are unreachable.</p>
+                        <div class="snippet"><pre><code>SeqViz(seq="...", disableExternalFonts=True)</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="enableCopyEvent">
+                    <div class="prop-head">
+                        <h3>enableCopyEvent<a class="anchor" href="#enableCopyEvent" aria-label="Permalink to enableCopyEvent">#</a></h3>
+                        <span class="pill type">bool</span>
+                        <span class="pill default">default: True</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>When <code>True</code>, <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>C</kbd> inside the viewer copies the currently selected sequence range to the clipboard. Set <code>False</code> to leave copy handling to the surrounding page.</p>
+                        <div class="snippet"><pre><code>SeqViz(seq="...", enableCopyEvent=False)</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="enableSelectAllEvent">
+                    <div class="prop-head">
+                        <h3>enableSelectAllEvent<a class="anchor" href="#enableSelectAllEvent" aria-label="Permalink to enableSelectAllEvent">#</a></h3>
+                        <span class="pill type">bool</span>
+                        <span class="pill default">default: True</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>When <code>True</code>, <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> inside the viewer selects the entire sequence. Set <code>False</code> to defer to the browser's default Select-All.</p>
+                        <div class="snippet"><pre><code>SeqViz(seq="...", enableSelectAllEvent=False)</code></pre></div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- ======================= STATE & EVENTS ========================= -->
+            <div class="ref-group" id="group-state">
+                <h2>State &amp; events</h2>
+                <p class="group-desc">Props you read from &mdash; or write to &mdash; in Dash callbacks.</p>
+
+                <article class="prop" id="selection">
+                    <div class="prop-head">
+                        <h3>selection<a class="anchor" href="#selection" aria-label="Permalink to selection">#</a></h3>
+                        <span class="pill type">shape</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>The currently selected range. Read via <code>Input(..., "selection")</code> to react to user selections, or write via <code>Output(..., "selection")</code> to programmatically select a range.</p>
+                        <div class="shape-def">{"start": int, "end": int, "clockwise"?: bool}</div>
+                        <div class="snippet"><pre><code>from dash import Input, Output, callback
+
+@callback(
+    Output("info", "children"),
+    Input("seqviz", "selection"),
+)
+def show_selection(sel):
+    if not sel:
+        return "No selection"
+    return f"Selected {sel['start']} - {sel['end']}"</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="searchResults">
+                    <div class="prop-head">
+                        <h3>searchResults<a class="anchor" href="#searchResults" aria-label="Permalink to searchResults">#</a></h3>
+                        <span class="pill type">list</span>
+                        <span class="pill readonly">read-only</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Match ranges produced by the <a href="#search"><code>search</code></a> prop. Updated by the component; treat as read-only.</p>
+                        <div class="snippet"><pre><code>@callback(
+    Output("hit-count", "children"),
+    Input("seqviz", "searchResults"),
+)
+def count_hits(results):
+    return f"{len(results or [])} matches"</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="onSelection">
+                    <div class="prop-head">
+                        <h3>onSelection<a class="anchor" href="#onSelection" aria-label="Permalink to onSelection">#</a></h3>
+                        <span class="pill type">function</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>JavaScript callback invoked on every selection change. Passed through to the underlying <code>seqviz</code> library for JS-only consumers &mdash; in a Dash app, prefer reading the <a href="#selection"><code>selection</code></a> prop via <code>Input</code>.</p>
+                    </div>
+                </article>
+
+                <article class="prop" id="onSearch">
+                    <div class="prop-head">
+                        <h3>onSearch<a class="anchor" href="#onSearch" aria-label="Permalink to onSearch">#</a></h3>
+                        <span class="pill type">function</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>JavaScript callback invoked when search results change. In a Dash app, prefer reading <a href="#searchResults"><code>searchResults</code></a> via <code>Input</code>.</p>
+                    </div>
+                </article>
+            </div>
+
+            <!-- ========================= DASH INTERNAL ======================== -->
+            <div class="ref-group" id="group-internal">
+                <h2>Dash internal</h2>
+                <p class="group-desc">Managed automatically by Dash &mdash; you do not set these yourself.</p>
+
+                <article class="prop" id="setProps">
+                    <div class="prop-head">
+                        <h3>setProps<a class="anchor" href="#setProps" aria-label="Permalink to setProps">#</a></h3>
+                        <span class="pill type">function</span>
+                        <span class="pill readonly">internal</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Dash supplies this automatically so the component can report prop changes back to the Python callback layer. You never set this manually.</p>
+                    </div>
+                </article>
+            </div>
+
+        </main>
+    </div>
+</section>
+
+<footer>
+    <p>
+        Built by <a href="https://github.com/Full-Spectrum-Analytics" target="_blank" rel="noopener">Full Spectrum Analytics</a>
+        &middot; Powered by <a href="https://github.com/Lattice-Automation/seqviz" target="_blank" rel="noopener">seqviz</a>
+        &middot; <a href="https://github.com/Full-Spectrum-Analytics/dash-seqviz" target="_blank" rel="noopener">Source on GitHub</a>
+    </p>
+</footer>
+
+<script src="./assets/nav.js"></script>
+
+<script>
+    // Wire up snippet copy buttons.
+    (function () {
+        document.querySelectorAll(".snippet").forEach(function (snip) {
+            if (snip.querySelector(".snippet-copy")) return;
+            var pre = snip.querySelector("pre");
+            if (!pre) return;
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "snippet-copy";
+            btn.textContent = "Copy";
+            btn.addEventListener("click", function () {
+                var code = pre.innerText;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(code).then(function () {
+                        btn.classList.add("copied");
+                        setTimeout(function () {
+                            btn.classList.remove("copied");
+                        }, 1000);
+                    });
+                }
+            });
+            snip.appendChild(btn);
+        });
+    })();
+
+    // Sidebar active-link highlighting as the user scrolls.
+    (function () {
+        var sidebarLinks = Array.prototype.slice.call(
+            document.querySelectorAll(".reference-sidebar a[href^='#']")
+        );
+        if (!sidebarLinks.length) return;
+        var linkById = {};
+        var targets = [];
+        sidebarLinks.forEach(function (a) {
+            var id = a.getAttribute("href").slice(1);
+            var target = document.getElementById(id);
+            if (target) {
+                linkById[id] = a;
+                targets.push(target);
+            }
+        });
+
+        if (!("IntersectionObserver" in window)) return;
+
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                var link = linkById[entry.target.id];
+                if (!link) return;
+                if (entry.isIntersecting) {
+                    sidebarLinks.forEach(function (l) { l.classList.remove("active"); });
+                    link.classList.add("active");
+                }
+            });
+        }, { rootMargin: "-40% 0px -55% 0px", threshold: 0 });
+
+        targets.forEach(function (t) { observer.observe(t); });
+    })();
+</script>
+
+</body>
+</html>
