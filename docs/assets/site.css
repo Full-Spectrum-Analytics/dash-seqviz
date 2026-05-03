@@ -221,14 +221,41 @@ p code {
     border: 1px solid rgba(255,255,255,0.15);
     border-radius: 4px;
     padding: 3px 10px;
+    /* min-width locks the box size so the "Copy" ↔ "Copied!" swap
+       never resizes the button. Sized to fit "COPIED!". */
+    min-width: 72px;
+    text-align: center;
     font-size: 0.75rem;
     cursor: pointer;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     font-weight: 600;
+    overflow: hidden;
+    transition: color 0.25s ease;
 }
 .snippet-copy:hover { background: rgba(255,255,255,0.15); }
-.snippet-copy.copied { background: rgba(42, 157, 143, 0.25); border-color: var(--color-accent-promoter); }
+
+/* "Copied!" label — crossfades with the real "Copy" text on the same
+   position. Same color as the base button text, so only the word changes;
+   no background, border, or hue shifts. */
+.snippet-copy::after {
+    content: "Copied!";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-code-text);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+.snippet-copy.copied { color: transparent; }
+.snippet-copy.copied::after { opacity: 1; }
 
 /* ---- Footer ---- */
 footer {

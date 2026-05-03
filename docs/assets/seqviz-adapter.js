@@ -170,12 +170,10 @@
                 var code = pre.innerText;
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(code).then(function () {
-                        btn.textContent = "Copied";
                         btn.classList.add("copied");
                         setTimeout(function () {
-                            btn.textContent = "Copy";
                             btn.classList.remove("copied");
-                        }, 1600);
+                        }, 1000);
                     });
                 }
             });

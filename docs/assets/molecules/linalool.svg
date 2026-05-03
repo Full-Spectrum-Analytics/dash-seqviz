@@ -10,7 +10,7 @@ width='360px' height='280px' viewBox='0 0 360 280'>
 <path class='bond-1 atom-1 atom-2' d='M 287.7,181.0 L 244.5,156.1' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.4px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <path class='bond-2 atom-2 atom-3' d='M 244.5,156.1 L 269.4,112.9' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.4px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <path class='bond-3 atom-2 atom-4' d='M 244.5,156.1 L 236.8,142.7' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.4px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
-<path class='bond-3 atom-2 atom-4' d='M 236.8,142.7 L 229.0,129.4' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:1.4px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-3 atom-2 atom-4' d='M 236.8,142.7 L 229.0,129.4' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.4px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <path class='bond-4 atom-2 atom-5' d='M 244.5,156.1 L 201.4,181.0' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.4px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <path class='bond-5 atom-5 atom-6' d='M 201.4,181.0 L 158.2,156.2' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.4px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <path class='bond-6 atom-6 atom-7' d='M 158.2,156.2 L 115.1,181.1' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.4px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
@@ -35,7 +35,7 @@ L 182.4 114.2
 L 182.4 127.3
 L 178.6 127.3
 L 178.6 99.0
-' fill='#FF0000'/>
+' fill='#000000'/>
 <path class='atom-4' d='M 206.6 113.0
 Q 206.6 106.2, 209.9 102.4
 Q 213.3 98.6, 219.6 98.6
@@ -54,5 +54,5 @@ Q 215.2 101.8, 212.9 104.6
 Q 210.6 107.4, 210.6 113.0
 Q 210.6 118.8, 212.9 121.6
 Q 215.2 124.5, 219.6 124.5
-' fill='#FF0000'/>
+' fill='#000000'/>
 </svg>
