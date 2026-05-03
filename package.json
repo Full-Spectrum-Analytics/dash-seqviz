@@ -4,12 +4,26 @@
   "description": "A wrapper of the javascript DNA, RNA and protein sequence viewer",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Full-Spectrum-Analytics/dash-seqviz.git"
+    "url": "git+https://github.com/Full-Spectrum-Analytics/dash-seqviz.git"
   },
   "bugs": {
     "url": "https://github.com/Full-Spectrum-Analytics/dash-seqviz/issues"
   },
-  "homepage": "https://github.com/Full-Spectrum-Analytics/dash-seqviz",
+  "homepage": "https://dash-seqviz.com",
+  "keywords": [
+    "dash",
+    "plotly",
+    "dash-component",
+    "react-component",
+    "seqviz",
+    "dna",
+    "rna",
+    "protein",
+    "sequence-visualization",
+    "bioinformatics",
+    "synthetic-biology",
+    "plasmid"
+  ],
   "main": "build/index.js",
   "files": [
     "dash_seqviz",
@@ -24,9 +38,7 @@
     "prepublishOnly": "npm run validate-init",
     "build:js": "webpack --mode production",
     "build:backends": "dash-generate-components ./src/lib/components dash_seqviz -p package-info.json --ignore \\.test\\.",
-    "build:backends-activated": "(. venv/bin/activate || venv\\scripts\\activate && npm run build:backends)",
-    "build": "npm run build:js && npm run build:backends",
-    "build:activated": "npm run build:js && npm run build:backends-activated"
+    "build": "npm run build:js && npm run build:backends"
   },
   "author": "Evan Rees <evanroyrees@gmail.com>",
   "license": "MIT",
@@ -56,7 +68,7 @@
     "webpack-dev-server": "^4.15.0"
   },
   "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=8.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }
