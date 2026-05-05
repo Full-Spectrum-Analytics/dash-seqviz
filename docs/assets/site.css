@@ -5,15 +5,21 @@
 :root {
     --color-bg: #f8fafc;
     --color-surface: #ffffff;
-    --color-primary: #2563eb;
-    --color-primary-dark: #1d4ed8;
-    --color-accent-promoter: #2a9d8f;
+    /* Full Spectrum Analytics palette (fullspec.dev). Primary is FSA cyan;
+       supporting accents come from the same palette so the docs site, OG
+       card, and parent FSA brand all sit in one tonal family. */
+    --color-primary: #00B1CD;        /* FSA cyan */
+    --color-primary-dark: #0090a8;   /* darker cyan for hover/active */
+    --color-accent-promoter: #91d16e;     /* lime green */
     --color-accent-terminator: #6c757d;
-    --color-accent-selection: #e76f51;
+    --color-accent-selection: #fe6f52;    /* coral */
+    --color-accent-blue: #2e93fe;         /* secondary blue */
+    --color-accent-purple: #775dba;
+    --color-accent-yellow: #fdd967;
     --color-text: #1e293b;
     --color-text-muted: #64748b;
     --color-border: #e2e8f0;
-    --color-code-bg: #1e293b;
+    --color-code-bg: #0d1117;
     --color-code-text: #e2e8f0;
     --radius: 8px;
     --max-width: 1200px;
@@ -75,7 +81,7 @@ a { color: var(--color-primary); }
 }
 .site-nav-links a:hover { background: var(--color-bg); color: var(--color-text); }
 .site-nav-links a.active {
-    background: #eff6ff;
+    background: #e6f7fb;
     color: var(--color-primary);
 }
 .site-nav-github {
@@ -96,7 +102,7 @@ a { color: var(--color-primary); }
 
 /* ---- Hero ---- */
 .hero {
-    background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+    background: linear-gradient(135deg, #0d1117 0%, #1a1a1a 60%, #2e93fe 100%);
     color: #fff;
     padding: 64px 24px 48px;
     text-align: center;
@@ -359,7 +365,7 @@ footer a:hover { text-decoration: underline; }
     letter-spacing: 0.03em;
     text-transform: uppercase;
 }
-.badge-academic   { background: #eff6ff; color: #1d4ed8; }
+.badge-academic   { background: #e6f7fb; color: #0090a8; }
 .badge-industrial { background: #fef3c7; color: #92400e; }
 .badge-tag        { background: var(--color-bg); color: var(--color-text-muted); }
 .badge-complexity { background: #f0fdf4; color: #166534; font-variant-numeric: tabular-nums; }
@@ -897,13 +903,13 @@ details.ex-section > *:not(summary) { margin-top: 12px; }
     border-color: var(--color-primary);
 }
 .narrative a.example-link.cat-academic {
-    background: #eff6ff;
-    color: #1d4ed8;
-    border-color: #bfdbfe;
+    background: #e6f7fb;
+    color: #0090a8;
+    border-color: #a3dfeb;
 }
 .narrative a.example-link.cat-academic:hover {
     background: #dbeafe;
-    border-color: #1d4ed8;
+    border-color: #0090a8;
 }
 .narrative a.example-link.cat-industrial {
     background: #fef3c7;
@@ -1075,7 +1081,7 @@ details.ex-section > *:not(summary) { margin-top: 12px; }
 }
 .enzyme-toggle:hover {
     border-color: var(--color-primary);
-    background: #eff6ff;
+    background: #e6f7fb;
 }
 .enzyme-toggle[aria-pressed="true"] {
     background: var(--color-primary);
@@ -1111,8 +1117,8 @@ details.ex-section > *:not(summary) { margin-top: 12px; }
    through cleanly without a white rectangle around the molecule. */
 .next-examples a:hover { border-color: var(--color-primary); }
 .next-examples a.cat-academic:hover {
-    border-color: #1d4ed8;
-    background: #eff6ff;
+    border-color: #0090a8;
+    background: #e6f7fb;
 }
 .next-examples a.cat-industrial:hover {
     border-color: #92400e;
