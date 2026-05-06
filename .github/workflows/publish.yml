@@ -93,15 +93,29 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           cache: npm
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
       - name: Upgrade npm to >=11.5.1 for trusted publishing
         run: npm install -g npm@latest
 
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
       - name: Build JS bundle
         run: npm run build:js
+
+      - name: Generate Dash component
+        run: npm run build:backends
 
       - name: Publish to npm
         run: npm publish --access public --provenance
         # Uses trusted publishing - configure at npmjs.com/package/dash_seqviz/access
+        # Python + dash are required because npm publish runs the prepublishOnly
+        # hook -> validate-init -> python _validate_init.py, which imports
+        # dash_seqviz (which in turn imports dash).
