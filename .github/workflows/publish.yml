@@ -89,7 +89,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: "22"
+          node-version: "24"  # ships with npm 11.x for trusted publishing
           registry-url: "https://registry.npmjs.org"
           cache: npm
 
@@ -97,9 +97,6 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-
-      - name: Upgrade npm to >=11.5.1 for trusted publishing
-        run: npm install -g npm@latest
 
       - name: Install npm dependencies
         run: npm ci
