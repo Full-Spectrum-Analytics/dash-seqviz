@@ -277,23 +277,23 @@
                 <h4>Appearance</h4>
                 <ul>
                     <li><a href="#colors">colors</a></li>
-                    <li><a href="#bpColors">bpColors</a></li>
+                    <li><a href="#bp_colors">bp_colors</a></li>
                     <li><a href="#zoom">zoom</a></li>
-                    <li><a href="#showComplement">showComplement</a></li>
+                    <li><a href="#show_complement">show_complement</a></li>
                 </ul>
                 <h4>Behavior</h4>
                 <ul>
-                    <li><a href="#rotateOnScroll">rotateOnScroll</a></li>
-                    <li><a href="#disableExternalFonts">disableExternalFonts</a></li>
-                    <li><a href="#enableCopyEvent">enableCopyEvent</a></li>
-                    <li><a href="#enableSelectAllEvent">enableSelectAllEvent</a></li>
+                    <li><a href="#rotate_on_scroll">rotate_on_scroll</a></li>
+                    <li><a href="#disable_external_fonts">disable_external_fonts</a></li>
+                    <li><a href="#enable_copy_event">enable_copy_event</a></li>
+                    <li><a href="#enable_select_all_event">enable_select_all_event</a></li>
                 </ul>
                 <h4>State &amp; events</h4>
                 <ul>
                     <li><a href="#selection">selection</a></li>
-                    <li><a href="#searchResults">searchResults</a></li>
-                    <li><a href="#onSelection">onSelection</a></li>
-                    <li><a href="#onSearch">onSearch</a></li>
+                    <li><a href="#search_results">search_results</a></li>
+                    <li><a href="#on_selection">on_selection</a></li>
+                    <li><a href="#on_search">on_search</a></li>
                 </ul>
                 <h4>Dash internal</h4>
                 <ul>
@@ -317,7 +317,7 @@
                 <article class="prop" id="id">
                     <div class="prop-head">
                         <h3>id<a class="anchor" href="#id" aria-label="Permalink to id">#</a></h3>
-                        <span class="pill type">string</span>
+                        <span class="pill type">str</span>
                     </div>
                     <div class="prop-body">
                         <p>The identifier used to reference this component in Dash callbacks. Required if you intend to read or write the component's props from a callback.</p>
@@ -331,7 +331,7 @@
                 <article class="prop" id="seq">
                     <div class="prop-head">
                         <h3>seq<a class="anchor" href="#seq" aria-label="Permalink to seq">#</a></h3>
-                        <span class="pill type">string</span>
+                        <span class="pill type">str</span>
                     </div>
                     <div class="prop-body">
                         <p>The sequence to render. Accepts DNA, RNA, or amino-acid sequences. Case is preserved but not meaningful; whitespace is ignored.</p>
@@ -342,7 +342,7 @@
                 <article class="prop" id="name">
                     <div class="prop-head">
                         <h3>name<a class="anchor" href="#name" aria-label="Permalink to name">#</a></h3>
-                        <span class="pill type">string</span>
+                        <span class="pill type">str</span>
                     </div>
                     <div class="prop-body">
                         <p>Display name for the sequence. Rendered in the center of the circular viewer, and used as a label elsewhere in the UI.</p>
@@ -356,7 +356,7 @@
                 <article class="prop" id="viewer">
                     <div class="prop-head">
                         <h3>viewer<a class="anchor" href="#viewer" aria-label="Permalink to viewer">#</a></h3>
-                        <span class="pill type">"linear" | "circular" | "both" | "both_flip"</span>
+                        <span class="pill type">Literal["linear", "circular", "both", "both_flip"]</span>
                         <span class="pill default">default: "both"</span>
                     </div>
                     <div class="prop-body">
@@ -388,12 +388,13 @@
                 <article class="prop" id="annotations">
                     <div class="prop-head">
                         <h3>annotations<a class="anchor" href="#annotations" aria-label="Permalink to annotations">#</a></h3>
-                        <span class="pill type">list of shape</span>
+                        <span class="pill type">list of dicts</span>
                         <span class="pill default">default: []</span>
                     </div>
                     <div class="prop-body">
                         <p>Named, optionally directional regions drawn as labeled arcs (circular) or bars (linear) above the sequence. Use for genes, CDS, promoters, terminators, RBS, etc.</p>
-                        <div class="shape-def">{"start": int, "end": int, "name": str, "direction"?: 1 | -1 | 0, "color"?: str}</div>
+                        <div class="shape-def">{"start": int, "end": int, "name": str,
+ "direction": Optional[Literal[1, -1, 0]], "color": Optional[str]}</div>
                         <div class="snippet"><pre><code>SeqViz(
     seq="...",
     annotations=[
@@ -409,12 +410,13 @@
                 <article class="prop" id="primers">
                     <div class="prop-head">
                         <h3>primers<a class="anchor" href="#primers" aria-label="Permalink to primers">#</a></h3>
-                        <span class="pill type">list of shape</span>
+                        <span class="pill type">list of dicts</span>
                         <span class="pill default">default: []</span>
                     </div>
                     <div class="prop-body">
                         <p>Directional primers rendered as arrows. <code>direction</code> is required: <code>1</code> for forward, <code>-1</code> for reverse.</p>
-                        <div class="shape-def">{"start": int, "end": int, "name": str, "direction": 1 | -1, "color"?: str}</div>
+                        <div class="shape-def">{"start": int, "end": int, "name": str,
+ "direction": Literal[1, -1], "color": Optional[str]}</div>
                         <div class="snippet"><pre><code>SeqViz(
     seq="...",
     primers=[
@@ -430,12 +432,12 @@
                 <article class="prop" id="highlights">
                     <div class="prop-head">
                         <h3>highlights<a class="anchor" href="#highlights" aria-label="Permalink to highlights">#</a></h3>
-                        <span class="pill type">list of shape</span>
+                        <span class="pill type">list of dicts</span>
                         <span class="pill default">default: []</span>
                     </div>
                     <div class="prop-body">
                         <p>Colored background fills behind a range of bases. Useful for drawing attention to regions without labeling them.</p>
-                        <div class="shape-def">{"start": int, "end": int, "color"?: str}</div>
+                        <div class="shape-def">{"start": int, "end": int, "color": Optional[str]}</div>
                         <div class="snippet"><pre><code>SeqViz(
     seq="...",
     highlights=[
@@ -448,12 +450,13 @@
                 <article class="prop" id="translations">
                     <div class="prop-head">
                         <h3>translations<a class="anchor" href="#translations" aria-label="Permalink to translations">#</a></h3>
-                        <span class="pill type">list of shape</span>
+                        <span class="pill type">list of dicts</span>
                         <span class="pill default">default: []</span>
                     </div>
                     <div class="prop-body">
                         <p>Ranges whose amino-acid translation is drawn beneath the sequence. <code>direction</code> is required: <code>1</code> translates the forward strand, <code>-1</code> the reverse strand.</p>
-                        <div class="shape-def">{"start": int, "end": int, "direction": 1 | -1, "name"?: str, "color"?: str}</div>
+                        <div class="shape-def">{"start": int, "end": int, "direction": Literal[1, -1],
+ "name": Optional[str], "color": Optional[str]}</div>
                         <div class="snippet"><pre><code>SeqViz(
     seq="...",
     translations=[
@@ -466,14 +469,15 @@
                 <article class="prop" id="enzymes">
                     <div class="prop-head">
                         <h3>enzymes<a class="anchor" href="#enzymes" aria-label="Permalink to enzymes">#</a></h3>
-                        <span class="pill type">list of (string | shape)</span>
+                        <span class="pill type">list of (str | dict)</span>
                         <span class="pill default">default: []</span>
                     </div>
                     <div class="prop-body">
-                        <p>Restriction enzymes whose recognition sites should be marked on the sequence. Pass built-in enzyme names as strings (250+ bundled with seqviz) or define custom enzymes with a shape.</p>
+                        <p>Restriction enzymes whose recognition sites should be marked on the sequence. Pass built-in enzyme names as strings (250+ bundled with seqviz) or define custom enzymes with a dict.</p>
                         <div class="shape-def">str  # built-in enzyme name
 {"name": str, "rseq": str, "fcut": int, "rcut": int,
- "color"?: str, "range"?: {"start": int, "end": int}}</div>
+ "color": Optional[str],
+ "range": Optional[{"start": Optional[int], "end": Optional[int]}]}</div>
                         <div class="snippet"><pre><code># Built-in enzymes by name
 SeqViz(seq="...", enzymes=["EcoRI", "BamHI", "HindIII"])
 
@@ -491,11 +495,11 @@ SeqViz(
                 <article class="prop" id="search">
                     <div class="prop-head">
                         <h3>search<a class="anchor" href="#search" aria-label="Permalink to search">#</a></h3>
-                        <span class="pill type">shape</span>
+                        <span class="pill type">dict</span>
                     </div>
                     <div class="prop-body">
-                        <p>Motif to highlight throughout the sequence. <code>mismatch</code> allows fuzzy matching (number of allowed substitutions, default 0). The resulting match ranges are emitted on <a href="#searchResults"><code>searchResults</code></a>.</p>
-                        <div class="shape-def">{"query": str, "mismatch"?: int}</div>
+                        <p>Motif to highlight throughout the sequence. <code>mismatch</code> allows fuzzy matching (number of allowed substitutions, default 0). The resulting match ranges are emitted on <a href="#search_results"><code>search_results</code></a>.</p>
+                        <div class="shape-def">{"query": str, "mismatch": Optional[int]}</div>
                         <div class="snippet"><pre><code>SeqViz(
     seq="...",
     search={"query": "TTGACA", "mismatch": 1},
@@ -528,9 +532,9 @@ SeqViz(
                     </div>
                 </article>
 
-                <article class="prop" id="bpColors">
+                <article class="prop" id="bp_colors">
                     <div class="prop-head">
-                        <h3>bpColors<a class="anchor" href="#bpColors" aria-label="Permalink to bpColors">#</a></h3>
+                        <h3>bp_colors<a class="anchor" href="#bp_colors" aria-label="Permalink to bp_colors">#</a></h3>
                         <span class="pill type">dict</span>
                         <span class="pill default">default: {}</span>
                     </div>
@@ -539,39 +543,39 @@ SeqViz(
                         <div class="snippet"><pre><code># Color every base by identity
 SeqViz(
     seq="...",
-    bpColors={
+    bp_colors={
         "A": "#ff6b6b", "T": "#4ecdc4",
         "G": "#ffe66d", "C": "#95e1d3",
     },
 )
 
 # Color only specific positions
-SeqViz(seq="...", bpColors={42: "#e76f51", 43: "#e76f51"})</code></pre></div>
+SeqViz(seq="...", bp_colors={42: "#e76f51", 43: "#e76f51"})</code></pre></div>
                     </div>
                 </article>
 
                 <article class="prop" id="zoom">
                     <div class="prop-head">
                         <h3>zoom<a class="anchor" href="#zoom" aria-label="Permalink to zoom">#</a></h3>
-                        <span class="pill type">shape</span>
+                        <span class="pill type">dict</span>
                         <span class="pill default">default: {"linear": 50}</span>
                     </div>
                     <div class="prop-body">
                         <p>Zoom level of the linear viewer. <code>0</code> is maximum overview (whole sequence in one row); <code>100</code> is base-level detail.</p>
-                        <div class="shape-def">{"linear": int  # 0-100}</div>
+                        <div class="shape-def">{"linear": Optional[int]  # 0-100}</div>
                         <div class="snippet"><pre><code>SeqViz(seq="...", zoom={"linear": 80})</code></pre></div>
                     </div>
                 </article>
 
-                <article class="prop" id="showComplement">
+                <article class="prop" id="show_complement">
                     <div class="prop-head">
-                        <h3>showComplement<a class="anchor" href="#showComplement" aria-label="Permalink to showComplement">#</a></h3>
+                        <h3>show_complement<a class="anchor" href="#show_complement" aria-label="Permalink to show_complement">#</a></h3>
                         <span class="pill type">bool</span>
                         <span class="pill default">default: True</span>
                     </div>
                     <div class="prop-body">
                         <p>Whether to render the complement strand beneath the sequence in the linear viewer. Set <code>False</code> for a single-strand view (useful for protein or RNA sequences).</p>
-                        <div class="snippet"><pre><code>SeqViz(seq="...", showComplement=False)</code></pre></div>
+                        <div class="snippet"><pre><code>SeqViz(seq="...", show_complement=False)</code></pre></div>
                     </div>
                 </article>
             </div>
@@ -581,51 +585,51 @@ SeqViz(seq="...", bpColors={42: "#e76f51", 43: "#e76f51"})</code></pre></div>
                 <h2>Behavior</h2>
                 <p class="group-desc">Input and runtime knobs.</p>
 
-                <article class="prop" id="rotateOnScroll">
+                <article class="prop" id="rotate_on_scroll">
                     <div class="prop-head">
-                        <h3>rotateOnScroll<a class="anchor" href="#rotateOnScroll" aria-label="Permalink to rotateOnScroll">#</a></h3>
+                        <h3>rotate_on_scroll<a class="anchor" href="#rotate_on_scroll" aria-label="Permalink to rotate_on_scroll">#</a></h3>
                         <span class="pill type">bool</span>
                         <span class="pill default">default: True</span>
                     </div>
                     <div class="prop-body">
                         <p>When <code>True</code>, scrolling over the circular viewer rotates it. Set <code>False</code> so the page scrolls normally through the viewer &mdash; preferred when embedding inside a longer Dash layout.</p>
-                        <div class="snippet"><pre><code>SeqViz(seq="...", rotateOnScroll=False)</code></pre></div>
+                        <div class="snippet"><pre><code>SeqViz(seq="...", rotate_on_scroll=False)</code></pre></div>
                     </div>
                 </article>
 
-                <article class="prop" id="disableExternalFonts">
+                <article class="prop" id="disable_external_fonts">
                     <div class="prop-head">
-                        <h3>disableExternalFonts<a class="anchor" href="#disableExternalFonts" aria-label="Permalink to disableExternalFonts">#</a></h3>
+                        <h3>disable_external_fonts<a class="anchor" href="#disable_external_fonts" aria-label="Permalink to disable_external_fonts">#</a></h3>
                         <span class="pill type">bool</span>
                         <span class="pill default">default: False</span>
                     </div>
                     <div class="prop-body">
                         <p>Set <code>True</code> to skip downloading the external web fonts used by seqviz. Useful for offline or air-gapped deployments where font CDNs are unreachable.</p>
-                        <div class="snippet"><pre><code>SeqViz(seq="...", disableExternalFonts=True)</code></pre></div>
+                        <div class="snippet"><pre><code>SeqViz(seq="...", disable_external_fonts=True)</code></pre></div>
                     </div>
                 </article>
 
-                <article class="prop" id="enableCopyEvent">
+                <article class="prop" id="enable_copy_event">
                     <div class="prop-head">
-                        <h3>enableCopyEvent<a class="anchor" href="#enableCopyEvent" aria-label="Permalink to enableCopyEvent">#</a></h3>
+                        <h3>enable_copy_event<a class="anchor" href="#enable_copy_event" aria-label="Permalink to enable_copy_event">#</a></h3>
                         <span class="pill type">bool</span>
                         <span class="pill default">default: True</span>
                     </div>
                     <div class="prop-body">
                         <p>When <code>True</code>, <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>C</kbd> inside the viewer copies the currently selected sequence range to the clipboard. Set <code>False</code> to leave copy handling to the surrounding page.</p>
-                        <div class="snippet"><pre><code>SeqViz(seq="...", enableCopyEvent=False)</code></pre></div>
+                        <div class="snippet"><pre><code>SeqViz(seq="...", enable_copy_event=False)</code></pre></div>
                     </div>
                 </article>
 
-                <article class="prop" id="enableSelectAllEvent">
+                <article class="prop" id="enable_select_all_event">
                     <div class="prop-head">
-                        <h3>enableSelectAllEvent<a class="anchor" href="#enableSelectAllEvent" aria-label="Permalink to enableSelectAllEvent">#</a></h3>
+                        <h3>enable_select_all_event<a class="anchor" href="#enable_select_all_event" aria-label="Permalink to enable_select_all_event">#</a></h3>
                         <span class="pill type">bool</span>
                         <span class="pill default">default: True</span>
                     </div>
                     <div class="prop-body">
                         <p>When <code>True</code>, <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> inside the viewer selects the entire sequence. Set <code>False</code> to defer to the browser's default Select-All.</p>
-                        <div class="snippet"><pre><code>SeqViz(seq="...", enableSelectAllEvent=False)</code></pre></div>
+                        <div class="snippet"><pre><code>SeqViz(seq="...", enable_select_all_event=False)</code></pre></div>
                     </div>
                 </article>
             </div>
@@ -638,11 +642,11 @@ SeqViz(seq="...", bpColors={42: "#e76f51", 43: "#e76f51"})</code></pre></div>
                 <article class="prop" id="selection">
                     <div class="prop-head">
                         <h3>selection<a class="anchor" href="#selection" aria-label="Permalink to selection">#</a></h3>
-                        <span class="pill type">shape</span>
+                        <span class="pill type">dict</span>
                     </div>
                     <div class="prop-body">
                         <p>The currently selected range. Read via <code>Input(..., "selection")</code> to react to user selections, or write via <code>Output(..., "selection")</code> to programmatically select a range.</p>
-                        <div class="shape-def">{"start": int, "end": int, "clockwise"?: bool}</div>
+                        <div class="shape-def">{"start": int, "end": int, "clockwise": Optional[bool]}</div>
                         <div class="snippet"><pre><code>from dash import Input, Output, callback
 
 @callback(
@@ -656,9 +660,9 @@ def show_selection(sel):
                     </div>
                 </article>
 
-                <article class="prop" id="searchResults">
+                <article class="prop" id="search_results">
                     <div class="prop-head">
-                        <h3>searchResults<a class="anchor" href="#searchResults" aria-label="Permalink to searchResults">#</a></h3>
+                        <h3>search_results<a class="anchor" href="#search_results" aria-label="Permalink to search_results">#</a></h3>
                         <span class="pill type">list</span>
                         <span class="pill readonly">read-only</span>
                     </div>
@@ -666,16 +670,16 @@ def show_selection(sel):
                         <p>Match ranges produced by the <a href="#search"><code>search</code></a> prop. Updated by the component; treat as read-only.</p>
                         <div class="snippet"><pre><code>@callback(
     Output("hit-count", "children"),
-    Input("seqviz", "searchResults"),
+    Input("seqviz", "search_results"),
 )
 def count_hits(results):
     return f"{len(results or [])} matches"</code></pre></div>
                     </div>
                 </article>
 
-                <article class="prop" id="onSelection">
+                <article class="prop" id="on_selection">
                     <div class="prop-head">
-                        <h3>onSelection<a class="anchor" href="#onSelection" aria-label="Permalink to onSelection">#</a></h3>
+                        <h3>on_selection<a class="anchor" href="#on_selection" aria-label="Permalink to on_selection">#</a></h3>
                         <span class="pill type">function</span>
                     </div>
                     <div class="prop-body">
@@ -683,13 +687,13 @@ def count_hits(results):
                     </div>
                 </article>
 
-                <article class="prop" id="onSearch">
+                <article class="prop" id="on_search">
                     <div class="prop-head">
-                        <h3>onSearch<a class="anchor" href="#onSearch" aria-label="Permalink to onSearch">#</a></h3>
+                        <h3>on_search<a class="anchor" href="#on_search" aria-label="Permalink to on_search">#</a></h3>
                         <span class="pill type">function</span>
                     </div>
                     <div class="prop-body">
-                        <p>JavaScript callback invoked when search results change. In a Dash app, prefer reading <a href="#searchResults"><code>searchResults</code></a> via <code>Input</code>.</p>
+                        <p>JavaScript callback invoked when search results change. In a Dash app, prefer reading <a href="#search_results"><code>search_results</code></a> via <code>Input</code>.</p>
                     </div>
                 </article>
             </div>

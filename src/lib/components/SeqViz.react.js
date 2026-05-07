@@ -23,13 +23,13 @@ SeqViz.defaultProps = {
     translations: [],
     enzymes: [],
     colors: [],
-    bpColors: {},
-    showComplement: true,
-    rotateOnScroll: true,
-    disableExternalFonts: false,
+    bp_colors: {},
+    show_complement: true,
+    rotate_on_scroll: true,
+    disable_external_fonts: false,
     zoom: { linear: 50 },
-    enableCopyEvent: true,
-    enableSelectAllEvent: true
+    enable_copy_event: true,
+    enable_select_all_event: true
 };
 
 SeqViz.propTypes = {
@@ -146,7 +146,7 @@ SeqViz.propTypes = {
     /**
      * Object mapping base pairs or indexes to custom colors.
      */
-    bpColors: PropTypes.object,
+    bp_colors: PropTypes.object,
 
     /**
      * CSS styles for the outer container div.
@@ -164,48 +164,95 @@ SeqViz.propTypes = {
     /**
      * Whether to show the complement sequence.
      */
-    showComplement: PropTypes.bool,
+    show_complement: PropTypes.bool,
 
     /**
      * Whether the circular viewer rotates on scroll.
      */
-    rotateOnScroll: PropTypes.bool,
+    rotate_on_scroll: PropTypes.bool,
 
     /**
      * Whether to disable downloading external fonts.
      */
-    disableExternalFonts: PropTypes.bool,
+    disable_external_fonts: PropTypes.bool,
 
     /**
      * Callback function for selection events.
      */
-    onSelection: PropTypes.func,
+    on_selection: PropTypes.func,
 
     /**
      * Callback function for search events.
      */
-    onSearch: PropTypes.func,
+    on_search: PropTypes.func,
 
     /**
      * When false, disables the default copyEvent (ctrl/cmd + C).
      */
-    enableCopyEvent: PropTypes.bool,
+    enable_copy_event: PropTypes.bool,
 
     /**
      * When false, disables the default selectAllEvent (ctrl/cmd + A).
      */
-    enableSelectAllEvent: PropTypes.bool,
+    enable_select_all_event: PropTypes.bool,
 
     /**
      * Search results emitted by seqviz (read-only for Dash usage).
      */
-    searchResults: PropTypes.array,
+    search_results: PropTypes.array,
 
     /**
      * Dash-assigned callback that should be called to report property changes
      * to Dash, to make them available for callbacks.
      */
-    setProps: PropTypes.func
+    setProps: PropTypes.func,
+
+    // ---- Deprecated camelCase aliases. Removed in dash-seqviz 0.3.0. ----
+
+    /**
+     * @deprecated since 0.2.2, use `bp_colors`. Removed in 0.3.0.
+     */
+    bpColors: PropTypes.object,
+
+    /**
+     * @deprecated since 0.2.2, use `show_complement`. Removed in 0.3.0.
+     */
+    showComplement: PropTypes.bool,
+
+    /**
+     * @deprecated since 0.2.2, use `rotate_on_scroll`. Removed in 0.3.0.
+     */
+    rotateOnScroll: PropTypes.bool,
+
+    /**
+     * @deprecated since 0.2.2, use `disable_external_fonts`. Removed in 0.3.0.
+     */
+    disableExternalFonts: PropTypes.bool,
+
+    /**
+     * @deprecated since 0.2.2, use `enable_copy_event`. Removed in 0.3.0.
+     */
+    enableCopyEvent: PropTypes.bool,
+
+    /**
+     * @deprecated since 0.2.2, use `enable_select_all_event`. Removed in 0.3.0.
+     */
+    enableSelectAllEvent: PropTypes.bool,
+
+    /**
+     * @deprecated since 0.2.2, use `on_selection`. Removed in 0.3.0.
+     */
+    onSelection: PropTypes.func,
+
+    /**
+     * @deprecated since 0.2.2, use `on_search`. Removed in 0.3.0.
+     */
+    onSearch: PropTypes.func,
+
+    /**
+     * @deprecated since 0.2.2, use `search_results`. Removed in 0.3.0.
+     */
+    searchResults: PropTypes.array
 };
 
 export default SeqViz;

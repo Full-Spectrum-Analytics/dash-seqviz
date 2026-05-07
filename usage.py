@@ -481,7 +481,7 @@ app.layout = html.Div(
                 ),
                 html.Div(
                     [
-                        html.Label("bpColors (A/T/C/G)"),
+                        html.Label("bp_colors (A/T/C/G)"),
                         html.Div(
                             [
                                 dcc.Input(
@@ -641,7 +641,7 @@ app.layout = html.Div(
             ],
             search={"query": "ttnnnaat"},
             zoom={"linear": 60},
-            showComplement=True,
+            show_complement=True,
             style={"height": "62vh", "width": "100%"},
         ),
         html.Div(id="selection-readout"),
@@ -677,7 +677,7 @@ def update_viewer_zoom(zoom):
 
 
 @app.callback(
-    Output("seqviz-demo", "showComplement"),
+    Output("seqviz-demo", "show_complement"),
     Input("show-complement", "value"),
 )
 def update_viewer_show_complement(show_complement_vals):
@@ -694,11 +694,11 @@ def expose_selection(selection):
 
 
 @app.callback(
-    Output("search-readout", "children"), Input("seqviz-demo", "searchResults")
+    Output("search-readout", "children"), Input("seqviz-demo", "search_results")
 )
 def expose_search_results(search_results):
     count = len(search_results) if isinstance(search_results, list) else 0
-    search_text = f"searchResults: {count}"
+    search_text = f"search_results: {count}"
     return search_text
 
 
@@ -792,7 +792,7 @@ def update_enzyme_options(source):
 
 
 @app.callback(
-    Output("seqviz-demo", "rotateOnScroll"),
+    Output("seqviz-demo", "rotate_on_scroll"),
     Input("rotate-on-scroll", "value"),
 )
 def update_rotate_on_scroll(vals: Optional[List[str]]) -> bool:
@@ -800,7 +800,7 @@ def update_rotate_on_scroll(vals: Optional[List[str]]) -> bool:
 
 
 @app.callback(
-    Output("seqviz-demo", "bpColors"),
+    Output("seqviz-demo", "bp_colors"),
     Input("bp-A", "value"),
     Input("bp-T", "value"),
     Input("bp-C", "value"),

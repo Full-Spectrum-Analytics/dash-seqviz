@@ -91,6 +91,66 @@ def test_properties():
         print(f"✗ Failed to verify component properties: {e}")
         return False
 
+def test_snake_case_props_silent():
+    """snake_case props should work without warnings."""
+    import warnings
+    import dash_seqviz
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter('always')
+        dash_seqviz.SeqViz(
+            seq='ATCG',
+            bp_colors={'A': '#fff'},
+            show_complement=False,
+            rotate_on_scroll=False,
+            disable_external_fonts=True,
+            enable_copy_event=False,
+            enable_select_all_event=False,
+            search_results=[],
+        )
+        assert not caught, [str(w.message) for w in caught]
+    print("✓ snake_case props are silent")
+    return True
+
+
+def test_camel_case_props_warn():
+    """camelCase props should still work but emit DeprecationWarning."""
+    import warnings
+    import dash_seqviz
+
+    deprecated_kwargs = {
+        'bpColors': {'A': '#fff'},
+        'showComplement': False,
+        'rotateOnScroll': False,
+        'disableExternalFonts': True,
+        'enableCopyEvent': False,
+        'enableSelectAllEvent': False,
+        'searchResults': [],
+    }
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter('always')
+        dash_seqviz.SeqViz(seq='ATCG', **deprecated_kwargs)
+        assert len(caught) == len(deprecated_kwargs), (
+            f'expected {len(deprecated_kwargs)} warnings, got {len(caught)}'
+        )
+        assert all(issubclass(w.category, DeprecationWarning) for w in caught)
+    print(f"✓ camelCase props emit {len(caught)} DeprecationWarnings")
+    return True
+
+
+def test_snake_case_wins_on_conflict():
+    """When both snake_case and camelCase are passed, snake_case wins."""
+    import warnings
+    import dash_seqviz
+
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', DeprecationWarning)
+        c = dash_seqviz.SeqViz(seq='ATCG', showComplement=False, show_complement=True)
+    assert c.show_complement is True
+    print("✓ snake_case wins when both forms are passed")
+    return True
+
+
 if __name__ == '__main__':
     print("Running basic tests for dash-seqviz component...")
     print("=" * 50)
@@ -98,7 +158,10 @@ if __name__ == '__main__':
     tests = [
         test_import,
         test_instantiation,
-        test_properties
+        test_properties,
+        test_snake_case_props_silent,
+        test_camel_case_props_warn,
+        test_snake_case_wins_on_conflict,
     ]
 
     passed = 0

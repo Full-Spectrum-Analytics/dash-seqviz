@@ -1,13 +1,12 @@
 import json
 import os as _os
 import sys as _sys
+import warnings as _warnings
 from pathlib import Path
 
 import dash as _dash
 
-# noinspection PyUnresolvedReferences
-from ._imports_ import *
-from ._imports_ import __all__
+from ._imports_ import SeqViz as _GeneratedSeqViz
 
 if not hasattr(_dash, 'development'):
     print(
@@ -63,6 +62,49 @@ _js_dist = [
 
 _css_dist = []
 
-for _component in __all__:
-    setattr(locals()[_component], '_js_dist', _js_dist)
-    setattr(locals()[_component], '_css_dist', _css_dist)
+
+# Map of deprecated camelCase prop names to their snake_case replacements.
+# Removed in dash-seqviz 0.3.0.
+#
+# Note: the upstream `onSelection` / `onSearch` JS callbacks are documented as
+# props but Dash filters function-typed props out of the constructor at
+# runtime, so they are not in this map — they were never settable from Python.
+_DEPRECATED_PROPS = {
+    "bpColors": "bp_colors",
+    "showComplement": "show_complement",
+    "rotateOnScroll": "rotate_on_scroll",
+    "disableExternalFonts": "disable_external_fonts",
+    "enableCopyEvent": "enable_copy_event",
+    "enableSelectAllEvent": "enable_select_all_event",
+    "searchResults": "search_results",
+}
+
+
+class SeqViz(_GeneratedSeqViz):
+    """SeqViz Dash component.
+
+    Wraps the auto-generated component to emit ``DeprecationWarning`` when any
+    of the legacy camelCase props are used. The deprecated names continue to
+    work in 0.2.x and are removed in 0.3.0.
+
+    See the auto-generated parent class for the full prop reference.
+    """
+
+    def __init__(self, *args, **kwargs):
+        for _old, _new in _DEPRECATED_PROPS.items():
+            if _old in kwargs:
+                _warnings.warn(
+                    f"`{_old}` is deprecated since dash-seqviz 0.2.2 and will "
+                    f"be removed in 0.3.0. Use `{_new}` instead.",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
+                # snake_case wins on conflict
+                kwargs.setdefault(_new, kwargs.pop(_old))
+        super().__init__(*args, **kwargs)
+
+
+SeqViz._js_dist = _js_dist
+SeqViz._css_dist = _css_dist
+
+__all__ = ["SeqViz"]
