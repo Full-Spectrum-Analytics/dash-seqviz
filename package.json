@@ -1,6 +1,6 @@
 {
   "name": "dash_seqviz",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A wrapper of the javascript DNA, RNA and protein sequence viewer",
   "repository": {
     "type": "git",
