@@ -1,9 +1,24 @@
 name: Publish to PyPI & npm
 
+# Triggered by:
+#   - A GitHub release being published (manual or via API)
+#   - workflow_dispatch with a `ref` input — used to retry a publish for an
+#     already-tagged release (the ref input controls which tag we check out
+#     and build; the workflow YAML itself is loaded from main)
+#
+# This workflow is NOT called as a reusable workflow — PyPI's Trusted
+# Publishing rejects reusable-workflow OIDC claims. release-please.yml
+# inlines its own copy of the publish jobs instead.
+
 on:
   release:
     types: [published]
-  workflow_call:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Tag/ref to build and publish (e.g. v0.2.2). Defaults to the workflow ref.'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -14,6 +29,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref || github.ref }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v5
@@ -85,6 +102,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref || github.ref }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v5
