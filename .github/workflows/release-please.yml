@@ -1,5 +1,23 @@
 name: Release
 
+# Runs on every push to main. release-please opens or updates a release PR
+# from conventional-commit messages. When that PR is merged, release-please
+# tags + creates a GitHub release on the same workflow run, then we dispatch
+# publish.yml against the new tag.
+#
+# Why dispatch instead of `uses: ./.github/workflows/publish.yml` (reusable
+# workflow) or inlining the jobs:
+#   - PyPI's Trusted Publishing rejects OIDC tokens from reusable workflows.
+#   - npm's Trusted Publisher allows only one configuration per package, so
+#     inlining publish jobs in two different workflow files won't work.
+# Dispatching publish.yml runs it as a top-level workflow, so its OIDC
+# token reports `publish.yml` as the workflow ref — the same as a manual
+# `release: published` event — and a single Trusted Publisher entry on
+# each registry covers both paths.
+#
+# GITHUB_TOKEN can trigger workflow_dispatch events (unlike release/push
+# events, which are suppressed to prevent recursion), so no PAT is needed.
+
 on:
   push:
     branches: [main]
@@ -21,11 +39,15 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-  publish:
+  dispatch-publish:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created == 'true' }}
-    uses: ./.github/workflows/publish.yml
+    runs-on: ubuntu-latest
     permissions:
-      contents: read
-      id-token: write
-    secrets: inherit
+      actions: write  # required to dispatch publish.yml
+    steps:
+      - name: Dispatch publish.yml for the new tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.release-please.outputs.tag_name }}
+        run: gh workflow run publish.yml --repo ${{ github.repository }} --ref main -f ref="$TAG"
