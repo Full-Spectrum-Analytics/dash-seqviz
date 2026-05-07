@@ -98,7 +98,7 @@
 
     function handleSearch(results) {
         var count = Array.isArray(results) ? results.length : 0;
-        el("search-readout").textContent = "searchResults: " + count;
+        el("search-readout").textContent = "search_results: " + count;
     }
 
     function getProps() {
@@ -186,12 +186,12 @@
 
         lines.push("        viewer=" + pyStr(s.viewer) + ",");
         lines.push("        zoom={\"linear\": " + (s.zoom && s.zoom.linear != null ? s.zoom.linear : 50) + "},");
-        lines.push("        showComplement=" + pyBool(s.showComplement) + ",");
+        lines.push("        show_complement=" + pyBool(s.showComplement) + ",");
         lines.push("        showTranslations=" + pyBool(s.showTranslations) + ",");
-        lines.push("        rotateOnScroll=" + pyBool(s.rotateOnScroll) + ",");
+        lines.push("        rotate_on_scroll=" + pyBool(s.rotateOnScroll) + ",");
 
         var bp = s.bpColors || {};
-        lines.push("        bpColors={" +
+        lines.push("        bp_colors={" +
                    '"A": ' + pyStr(bp.A || "") + ", " +
                    '"T": ' + pyStr(bp.T || "") + ", " +
                    '"C": ' + pyStr(bp.C || "") + ", " +

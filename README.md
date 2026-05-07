@@ -84,7 +84,7 @@ if __name__ == '__main__':
 
 - **`colors`** (list): Array of colors for annotations, translations, and highlights.
 
-- **`bpColors`** (dict): Object mapping base pairs or indexes to custom colors.
+- **`bp_colors`** (dict): Object mapping base pairs or indexes to custom colors.
   - Example: `{"A": "#FF0000", "T": "#00FF00", 12: "#0000FF"}`
 
 - **`style`** (dict): CSS styles for the outer container div.
@@ -94,13 +94,13 @@ if __name__ == '__main__':
   - Format: `{"linear": int}` (0-100)
   - Default: `{"linear": 50}`
 
-- **`showComplement`** (bool): Whether to show the complement sequence.
+- **`show_complement`** (bool): Whether to show the complement sequence.
   - Default: `true`
 
-- **`rotateOnScroll`** (bool): Whether the circular viewer rotates on scroll.
+- **`rotate_on_scroll`** (bool): Whether the circular viewer rotates on scroll.
   - Default: `true`
 
-- **`disableExternalFonts`** (bool): Whether to disable downloading external fonts.
+- **`disable_external_fonts`** (bool): Whether to disable downloading external fonts.
   - Default: `false`
 
 - Deprecated (prefer parsing externally with `seqparse`):
@@ -108,8 +108,8 @@ if __name__ == '__main__':
   - **`accession`** (string): NCBI accession-ID
 
 - Events / Read-only:
-  - **`onSelection`** (function): Called after selection events; selection returned also via `selection`
-  - **`onSearch`** (function): Called after search; results returned also via `searchResults` (read-only)
+  - **`on_selection`** (function): Called after selection events; selection returned also via `selection`
+  - **`on_search`** (function): Called after search; results returned also via `search_results` (read-only)
 
 ## Examples
 
