@@ -42,6 +42,14 @@
         { start: 36, end: 160, direction: 1, name: "ORF 1", color: "#fb7185" }
     ];
 
+    var SAMPLE_ACCESSIONS = [
+        "MN623123.1",   // SARS-CoV-2 isolate, linear ~30 kbp
+        "NM_000686",    // Human MAOA mRNA, linear ~3 kbp
+        "NC_001416.1",  // Lambda phage genome, linear ~48 kbp (dense CDS)
+        "J01749.1",     // pBR322 cloning vector, circular ~4.4 kbp
+        "NC_012920.1"   // Human mitochondrion, circular ~16.6 kbp
+    ];
+
     // ---- Annotation colors ---------------------------------------------------
 
     var ANNO_COLORS = [
@@ -66,7 +74,8 @@
         bpColors: { A: "#1f78b4", T: "#33a02c", C: "#e31a1c", G: "#ff7f00" },
         enzymes: ["PstI", "EcoRI", "XbaI", "SpeI"],
         enzymeFilter: "",
-        accession: null  // set when a sequence is fetched from NCBI
+        accession: null, // set when a sequence is fetched from NCBI
+        email: ""        // tracked from the email input so the snippet stays runnable
     };
 
     // ---- DOM refs ------------------------------------------------------------
@@ -163,7 +172,7 @@
             lines.push('    "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi",');
             lines.push('    params={"db": "nuccore", "id": ' + pyStr(s.accession) + ",");
             lines.push('            "rettype": "gb", "retmode": "text",');
-            lines.push('            "tool": "myapp", "email": "you@lab.org"},');
+            lines.push('            "tool": "myapp", "email": ' + pyStr(s.email || "<your_email>") + "},");
             lines.push("    timeout=10,");
             lines.push(").text");
             lines.push("");
@@ -187,8 +196,18 @@
         lines.push("        viewer=" + pyStr(s.viewer) + ",");
         lines.push("        zoom={\"linear\": " + (s.zoom && s.zoom.linear != null ? s.zoom.linear : 50) + "},");
         lines.push("        show_complement=" + pyBool(s.showComplement) + ",");
-        lines.push("        showTranslations=" + pyBool(s.showTranslations) + ",");
         lines.push("        rotate_on_scroll=" + pyBool(s.rotateOnScroll) + ",");
+
+        if (s.showTranslations && s.translations && s.translations.length) {
+            var trans = s.translations.map(function (t) {
+                return '{"start": ' + t.start +
+                       ', "end": ' + t.end +
+                       ', "direction": ' + t.direction +
+                       ', "name": ' + pyStr(t.name) +
+                       ', "color": ' + pyStr(t.color) + "}";
+            }).join(", ");
+            lines.push("        translations=[" + trans + "],");
+        }
 
         var bp = s.bpColors || {};
         lines.push("        bp_colors={" +
@@ -273,7 +292,6 @@
     var MAX_RETRIES    = 3;
     var LARGE_SEQ_WARN = 500000;       // 500 kb
     var DAILY_QUOTA    = 50;           // requests per browser per UTC day
-    var EMAIL_KEY      = "dashSeqviz.email";
     var QUOTA_KEY      = "dashSeqviz.quota";
 
     // Minimal client-side sanity check. We do NOT try to encode NCBI's full
@@ -427,7 +445,6 @@
             el("ctrl-email").focus();
             return;
         }
-        try { localStorage.setItem(EMAIL_KEY, email); } catch (_) { /* private mode — ignore */ }
 
         var accession = (accessionRaw || "").trim();
         if (!accession) {
@@ -653,11 +670,14 @@
 
     // ---- NCBI fetch wiring ---------------------------------------------------
 
-    // Restore saved email from localStorage (if any)
-    try {
-        var savedEmail = localStorage.getItem(EMAIL_KEY);
-        if (savedEmail) { el("ctrl-email").value = savedEmail; }
-    } catch (_) { /* private browsing — ignore */ }
+    // Keep state.email in sync with the input so the live Python snippet
+    // echoes whatever the user typed. Field starts empty each session — we
+    // intentionally don't restore from localStorage so users always confirm
+    // the email being sent to NCBI.
+    el("ctrl-email").addEventListener("input", function (ev) {
+        state.email = (ev.target.value || "").trim();
+        updateLiveSnippet();
+    });
 
     el("btn-fetch").addEventListener("click", function () {
         fetchAccession(el("ctrl-accession").value);
@@ -672,6 +692,17 @@
     });
 
     el("btn-reset").addEventListener("click", resetDemo);
+
+    el("btn-accession-sample").addEventListener("click", function () {
+        var input = el("ctrl-accession");
+        var current = input.value.trim();
+        // Avoid re-picking the current value so repeated clicks always cycle.
+        var pool = SAMPLE_ACCESSIONS.length > 1 && current
+            ? SAMPLE_ACCESSIONS.filter(function (a) { return a !== current; })
+            : SAMPLE_ACCESSIONS;
+        input.value = pool[Math.floor(Math.random() * pool.length)];
+        input.focus();
+    });
 
     // ---- Prevent page scroll while rotating circular viewer ------------------
 
