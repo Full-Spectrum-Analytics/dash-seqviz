@@ -46,29 +46,14 @@ Keyword arguments:
 
     - color (string; optional)
 
-- bpColors (dict; optional):
-    @deprecated since 0.2.2, use `bp_colors`. Removed in 0.3.0.
-
 - bp_colors (dict; optional):
     Object mapping base pairs or indexes to custom colors.
 
 - colors (list of strings; optional):
     Array of colors for annotations, translations, and highlights.
 
-- disableExternalFonts (boolean; optional):
-    @deprecated since 0.2.2, use `disable_external_fonts`. Removed in
-    0.3.0.
-
 - disable_external_fonts (boolean; default False):
     Whether to disable downloading external fonts.
-
-- enableCopyEvent (boolean; optional):
-    @deprecated since 0.2.2, use `enable_copy_event`. Removed in
-    0.3.0.
-
-- enableSelectAllEvent (boolean; optional):
-    @deprecated since 0.2.2, use `enable_select_all_event`. Removed in
-    0.3.0.
 
 - enable_copy_event (boolean; default True):
     When False, disables the default copyEvent (ctrl/cmd + C).
@@ -132,9 +117,6 @@ Keyword arguments:
 
     - color (string; optional)
 
-- rotateOnScroll (boolean; optional):
-    @deprecated since 0.2.2, use `rotate_on_scroll`. Removed in 0.3.0.
-
 - rotate_on_scroll (boolean; default True):
     Whether the circular viewer rotates on scroll.
 
@@ -146,9 +128,6 @@ Keyword arguments:
     - query (string; required)
 
     - mismatch (number; optional)
-
-- searchResults (list; optional):
-    @deprecated since 0.2.2, use `search_results`. Removed in 0.3.0.
 
 - search_results (list; optional):
     Search results emitted by seqviz (read-only for Dash usage).
@@ -167,9 +146,6 @@ Keyword arguments:
 
 - seq (string; optional):
     The sequence to render. Can be DNA, RNA, or amino acid sequence.
-
-- showComplement (boolean; optional):
-    @deprecated since 0.2.2, use `show_complement`. Removed in 0.3.0.
 
 - show_complement (boolean; default True):
     Whether to show the complement sequence.
@@ -317,20 +293,11 @@ Keyword arguments:
         enable_copy_event: typing.Optional[bool] = None,
         enable_select_all_event: typing.Optional[bool] = None,
         search_results: typing.Optional[typing.Sequence] = None,
-        bpColors: typing.Optional[dict] = None,
-        showComplement: typing.Optional[bool] = None,
-        rotateOnScroll: typing.Optional[bool] = None,
-        disableExternalFonts: typing.Optional[bool] = None,
-        enableCopyEvent: typing.Optional[bool] = None,
-        enableSelectAllEvent: typing.Optional[bool] = None,
-        onSelection: typing.Optional[typing.Any] = None,
-        onSearch: typing.Optional[typing.Any] = None,
-        searchResults: typing.Optional[typing.Sequence] = None,
         **kwargs
     ):
-        self._prop_names = ['id', 'annotations', 'bpColors', 'bp_colors', 'colors', 'disableExternalFonts', 'disable_external_fonts', 'enableCopyEvent', 'enableSelectAllEvent', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'highlights', 'name', 'primers', 'rotateOnScroll', 'rotate_on_scroll', 'search', 'searchResults', 'search_results', 'selection', 'seq', 'showComplement', 'show_complement', 'style', 'translations', 'viewer', 'zoom']
+        self._prop_names = ['id', 'annotations', 'bp_colors', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'translations', 'viewer', 'zoom']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'annotations', 'bpColors', 'bp_colors', 'colors', 'disableExternalFonts', 'disable_external_fonts', 'enableCopyEvent', 'enableSelectAllEvent', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'highlights', 'name', 'primers', 'rotateOnScroll', 'rotate_on_scroll', 'search', 'searchResults', 'search_results', 'selection', 'seq', 'showComplement', 'show_complement', 'style', 'translations', 'viewer', 'zoom']
+        self.available_properties = ['id', 'annotations', 'bp_colors', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'translations', 'viewer', 'zoom']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

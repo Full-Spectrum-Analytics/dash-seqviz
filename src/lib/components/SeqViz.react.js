@@ -205,54 +205,7 @@ SeqViz.propTypes = {
      * Dash-assigned callback that should be called to report property changes
      * to Dash, to make them available for callbacks.
      */
-    setProps: PropTypes.func,
-
-    // ---- Deprecated camelCase aliases. Removed in dash-seqviz 0.3.0. ----
-
-    /**
-     * @deprecated since 0.2.2, use `bp_colors`. Removed in 0.3.0.
-     */
-    bpColors: PropTypes.object,
-
-    /**
-     * @deprecated since 0.2.2, use `show_complement`. Removed in 0.3.0.
-     */
-    showComplement: PropTypes.bool,
-
-    /**
-     * @deprecated since 0.2.2, use `rotate_on_scroll`. Removed in 0.3.0.
-     */
-    rotateOnScroll: PropTypes.bool,
-
-    /**
-     * @deprecated since 0.2.2, use `disable_external_fonts`. Removed in 0.3.0.
-     */
-    disableExternalFonts: PropTypes.bool,
-
-    /**
-     * @deprecated since 0.2.2, use `enable_copy_event`. Removed in 0.3.0.
-     */
-    enableCopyEvent: PropTypes.bool,
-
-    /**
-     * @deprecated since 0.2.2, use `enable_select_all_event`. Removed in 0.3.0.
-     */
-    enableSelectAllEvent: PropTypes.bool,
-
-    /**
-     * @deprecated since 0.2.2, use `on_selection`. Removed in 0.3.0.
-     */
-    onSelection: PropTypes.func,
-
-    /**
-     * @deprecated since 0.2.2, use `on_search`. Removed in 0.3.0.
-     */
-    onSearch: PropTypes.func,
-
-    /**
-     * @deprecated since 0.2.2, use `search_results`. Removed in 0.3.0.
-     */
-    searchResults: PropTypes.array
+    setProps: PropTypes.func
 };
 
 export default SeqViz;
