@@ -91,63 +91,44 @@ def test_properties():
         print(f"✗ Failed to verify component properties: {e}")
         return False
 
-def test_snake_case_props_silent():
-    """snake_case props should work without warnings."""
-    import warnings
+def test_snake_case_props_accepted():
+    """All snake_case props should be accepted by the constructor."""
     import dash_seqviz
 
-    with warnings.catch_warnings(record=True) as caught:
-        warnings.simplefilter('always')
-        dash_seqviz.SeqViz(
-            seq='ATCG',
-            bp_colors={'A': '#fff'},
-            show_complement=False,
-            rotate_on_scroll=False,
-            disable_external_fonts=True,
-            enable_copy_event=False,
-            enable_select_all_event=False,
-            search_results=[],
-        )
-        assert not caught, [str(w.message) for w in caught]
-    print("✓ snake_case props are silent")
+    dash_seqviz.SeqViz(
+        seq='ATCG',
+        bp_colors={'A': '#fff'},
+        show_complement=False,
+        rotate_on_scroll=False,
+        disable_external_fonts=True,
+        enable_copy_event=False,
+        enable_select_all_event=False,
+        search_results=[],
+    )
+    print("✓ snake_case props are accepted")
     return True
 
 
-def test_camel_case_props_warn():
-    """camelCase props should still work but emit DeprecationWarning."""
-    import warnings
+def test_camel_case_props_rejected():
+    """camelCase props (deprecated in 0.2.2, removed in 0.3.0) should raise TypeError."""
     import dash_seqviz
 
-    deprecated_kwargs = {
-        'bpColors': {'A': '#fff'},
-        'showComplement': False,
-        'rotateOnScroll': False,
-        'disableExternalFonts': True,
-        'enableCopyEvent': False,
-        'enableSelectAllEvent': False,
-        'searchResults': [],
-    }
-    with warnings.catch_warnings(record=True) as caught:
-        warnings.simplefilter('always')
-        dash_seqviz.SeqViz(seq='ATCG', **deprecated_kwargs)
-        assert len(caught) == len(deprecated_kwargs), (
-            f'expected {len(deprecated_kwargs)} warnings, got {len(caught)}'
-        )
-        assert all(issubclass(w.category, DeprecationWarning) for w in caught)
-    print(f"✓ camelCase props emit {len(caught)} DeprecationWarnings")
-    return True
-
-
-def test_snake_case_wins_on_conflict():
-    """When both snake_case and camelCase are passed, snake_case wins."""
-    import warnings
-    import dash_seqviz
-
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore', DeprecationWarning)
-        c = dash_seqviz.SeqViz(seq='ATCG', showComplement=False, show_complement=True)
-    assert c.show_complement is True
-    print("✓ snake_case wins when both forms are passed")
+    legacy_names = [
+        'bpColors',
+        'showComplement',
+        'rotateOnScroll',
+        'disableExternalFonts',
+        'enableCopyEvent',
+        'enableSelectAllEvent',
+        'searchResults',
+    ]
+    for name in legacy_names:
+        try:
+            dash_seqviz.SeqViz(seq='ATCG', **{name: None})
+        except TypeError:
+            continue
+        raise AssertionError(f"expected TypeError when passing legacy `{name}`")
+    print(f"✓ {len(legacy_names)} legacy camelCase props now raise TypeError")
     return True
 
 
@@ -159,9 +140,8 @@ if __name__ == '__main__':
         test_import,
         test_instantiation,
         test_properties,
-        test_snake_case_props_silent,
-        test_camel_case_props_warn,
-        test_snake_case_wins_on_conflict,
+        test_snake_case_props_accepted,
+        test_camel_case_props_rejected,
     ]
 
     passed = 0
