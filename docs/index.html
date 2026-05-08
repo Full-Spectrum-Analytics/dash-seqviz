@@ -35,46 +35,6 @@
     <style>
         .home-hero p.lede { font-size: 1.25rem; opacity: 0.92; }
 
-        .audience-grid .audience-card {
-            display: flex; flex-direction: column; gap: 8px;
-        }
-        .audience-card .audience-icon {
-            width: 44px; height: 44px; border-radius: 10px;
-            display: inline-flex; align-items: center; justify-content: center;
-            font-size: 1.6rem;
-            margin-bottom: 4px;
-        }
-        .audience-card.academic .audience-icon { background: #eff6ff; }
-        .audience-card.industrial .audience-icon { background: #fef3c7; }
-        .audience-card ul { padding-left: 18px; font-size: 0.88rem; color: var(--color-text-muted); }
-        .audience-card ul li { margin: 4px 0; }
-        .audience-card a.cta {
-            display: inline-block; margin-top: 8px;
-            font-size: 0.88rem; font-weight: 600;
-            color: var(--color-primary); text-decoration: none;
-        }
-        .audience-card a.cta:hover { text-decoration: underline; }
-
-        .featured-strip {
-            background: var(--color-surface);
-            border-top: 1px solid var(--color-border);
-            border-bottom: 1px solid var(--color-border);
-        }
-        .featured-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 16px;
-        }
-
-        .logo-row {
-            display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;
-            color: var(--color-text-muted); font-size: 0.85rem;
-        }
-        .logo-row span {
-            padding: 4px 10px; background: var(--color-bg);
-            border: 1px solid var(--color-border); border-radius: 999px;
-        }
-
         .mini-example {
             background: var(--color-surface);
             border: 1px solid var(--color-border);
@@ -106,90 +66,6 @@
         <a class="btn btn-outline" href="./reference.html">Read the Reference</a>
     </div>
 </header>
-
-<!-- Audience split -->
-<section id="audiences">
-    <div class="container">
-        <h2>From the classroom to the foundry</h2>
-        <div class="audience-grid">
-            <div class="audience-card academic">
-                <div class="audience-icon">&#x1F393;</div>
-                <h3>Academia</h3>
-                <p>Drop a real NCBI accession into a Dash app and walk a student through it live.
-                   From high-school classrooms to graduate synthetic-biology labs, the same
-                   component scales with the lesson.</p>
-                <ul>
-                    <li>GFP, lac operon, carotenoid cluster &mdash; turnkey teaching demos</li>
-                    <li>Annotations, translations, restriction maps, motif search</li>
-                    <li>Works in JupyterLab, Dash, or a static HTML page</li>
-                </ul>
-            </div>
-            <div class="audience-card industrial">
-                <div class="audience-icon">&#x1F3ED;</div>
-                <h3>Industry &amp; biotech R&amp;D</h3>
-                <p>Biofoundries, ag-biotech, pharma R&amp;D, food &amp; beverage, consumer synbio.
-                   Use <code>dash-seqviz</code> to visualize what ships to a cloning robot or
-                   a production fermenter &mdash; without forcing scientists into a heavyweight
-                   desktop tool.</p>
-                <ul>
-                    <li>Binary vectors, CRISPR cassettes, natural-product clusters</li>
-                    <li>Restriction-site QC for Golden Gate / MoClo pipelines</li>
-                    <li>Embed inside internal Dash dashboards and LIMS frontends</li>
-                </ul>
-            </div>
-        </div>
-        <div class="logo-row" aria-label="Representative industry targets">
-            <span>Biofoundries</span>
-            <span>Ag-biotech</span>
-            <span>Pharma R&amp;D</span>
-            <span>Food &amp; beverage</span>
-            <span>Consumer synbio</span>
-            <span>Teaching labs</span>
-        </div>
-    </div>
-</section>
-
-<!-- Quick install -->
-<section id="install">
-    <div class="container">
-        <h2>Install</h2>
-        <div class="install-grid">
-            <div class="install-card">
-                <h3>Python (PyPI)</h3>
-                <pre><code>pip install dash-seqviz</code></pre>
-            </div>
-            <div class="install-card">
-                <h3>Conda</h3>
-                <pre><code>conda install -c conda-forge dash-seqviz</code></pre>
-            </div>
-        </div>
-        <div class="mini-example" style="margin-top: 24px;">
-            <h3 style="margin-bottom: 12px; color: var(--color-text); text-transform: none; letter-spacing: 0; font-size: 1rem;">30-second example</h3>
-            <div class="snippet">
-<pre><code>from dash import Dash, html
-from dash_seqviz import SeqViz
-
-app = Dash(__name__)
-app.layout = html.Div([
-    SeqViz(
-        id="demo",
-        name="pUC19 fragment",
-        seq="TTGACGGCTAGCTCAGTCCTAGGTACAGTGCTAGC",
-        annotations=[
-            {"start": 0, "end": 22, "name": "Promoter",
-             "direction": 1, "color": "#2a9d8f"},
-        ],
-        enzymes=["EcoRI", "XbaI", "SpeI"],
-        style={"height": "500px", "width": "100%"},
-    )
-])
-
-if __name__ == "__main__":
-    app.run(debug=True)</code></pre>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- Features -->
 <section id="features">
@@ -225,6 +101,48 @@ if __name__ == "__main__":
                 <div class="feature-icon" aria-hidden="true">&#x26A1;</div>
                 <h3>Dash callbacks</h3>
                 <p>React to selection, search_results, and copy events with standard Dash callbacks.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick install -->
+<section id="install">
+    <div class="container">
+        <h2>Install</h2>
+        <div class="install-grid">
+            <div class="install-card">
+                <h3>Conda</h3>
+                <pre><code>conda install -c conda-forge dash-seqviz</code></pre>
+            </div>
+            <div class="install-card">
+                <h3>Python (PyPI)</h3>
+                <pre><code>pip install dash-seqviz</code></pre>
+            </div>
+        </div>
+        <div class="mini-example" style="margin-top: 24px;">
+            <h3 style="margin-bottom: 12px; color: var(--color-text); text-transform: none; letter-spacing: 0; font-size: 1rem;">30-second example</h3>
+            <div class="snippet">
+<pre><code>from dash import Dash, html
+from dash_seqviz import SeqViz
+
+app = Dash(__name__)
+app.layout = html.Div([
+    SeqViz(
+        id="demo",
+        name="pUC19 fragment",
+        seq="TTGACGGCTAGCTCAGTCCTAGGTACAGTGCTAGC",
+        annotations=[
+            {"start": 0, "end": 22, "name": "Promoter",
+             "direction": 1, "color": "#2a9d8f"},
+        ],
+        enzymes=["EcoRI", "XbaI", "SpeI"],
+        style={"height": "500px", "width": "100%"},
+    )
+])
+
+if __name__ == "__main__":
+    app.run(debug=True)</code></pre>
             </div>
         </div>
     </div>

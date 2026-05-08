@@ -156,11 +156,16 @@
         <div class="demo-controls" style="grid-template-columns: 1fr 1fr auto auto;">
             <div class="ctrl">
                 <label for="ctrl-accession">NCBI accession</label>
-                <input id="ctrl-accession" type="text" value="" placeholder="e.g. MN623123.1, NC_000913.3, U00096.3">
+                <div style="display: flex; gap: 6px;">
+                    <button id="btn-accession-sample" type="button" class="btn btn-light"
+                            style="padding: 7px 12px; border: 1px solid var(--color-border); white-space: nowrap; font-size: 0.85rem;"
+                            title="Pick a random example accession">Try a sample</button>
+                    <input id="ctrl-accession" type="text" value="" placeholder="e.g. MN623123.1, NM_000686, NC_001416.1, J01749.1, NC_012920.1" style="flex: 1; min-width: 0;">
+                </div>
             </div>
             <div class="ctrl">
                 <label for="ctrl-email">Your email <span style="text-transform: none; font-weight: 400;">(required by NCBI)</span></label>
-                <input id="ctrl-email" type="email" placeholder="you@lab.org" autocomplete="email">
+                <input id="ctrl-email" type="email" placeholder="you@example.com" autocomplete="off" required>
             </div>
             <div class="ctrl" style="justify-content: end;">
                 <label>&nbsp;</label>
@@ -290,62 +295,32 @@
     </div>
 </section>
 
-<!-- Live Python snippet -->
-<section class="example-section">
-    <div class="container">
-        <h2>Python snippet</h2>
-        <p style="margin-bottom: 16px; color: var(--color-text-muted);">
-            Live preview of the Python code behind what you see above. Copy + paste into a file, <code>pip install dash-seqviz</code>, and run.
-        </p>
-        <div class="snippet">
-            <pre id="live-snippet"><code></code></pre>
-        </div>
-    </div>
-</section>
-
 <!-- Install -->
 <section id="install">
     <div class="container">
         <h2>Installation</h2>
         <div class="install-grid">
             <div class="install-card">
-                <h3>Python (PyPI)</h3>
-                <pre><code>pip install dash-seqviz</code></pre>
-            </div>
-            <div class="install-card">
                 <h3>Conda</h3>
                 <pre><code>conda install -c conda-forge dash-seqviz</code></pre>
+            </div>
+            <div class="install-card">
+                <h3>Python (PyPI)</h3>
+                <pre><code>pip install dash-seqviz</code></pre>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Quick Example -->
+<!-- Live Python snippet -->
 <section class="example-section">
     <div class="container">
-        <h2>Quick example</h2>
+        <h2>Python snippet</h2>
+        <p style="margin-bottom: 16px; color: var(--color-text-muted);">
+            Live preview of the Python code behind what you see above. Copy + paste into a file and run.
+        </p>
         <div class="snippet">
-<pre><code>from dash import Dash, html
-from dash_seqviz import SeqViz
-
-app = Dash(__name__)
-
-app.layout = html.Div([
-    SeqViz(
-        id="my-seqviz",
-        name="pUC19",
-        seq="TTGACGGCTAGCTCAGTCCTAGGTACAGTGCTAGC",
-        viewer="both",
-        annotations=[
-            {"start": 0, "end": 22, "name": "Promoter", "direction": 1, "color": "#2a9d8f"},
-        ],
-        enzymes=["PstI", "EcoRI", "XbaI", "SpeI"],
-        style={"height": "500px", "width": "100%"},
-    )
-])
-
-if __name__ == "__main__":
-    app.run(debug=True)</code></pre>
+            <pre id="live-snippet"><code></code></pre>
         </div>
     </div>
 </section>
@@ -370,7 +345,7 @@ if __name__ == "__main__":
 <script src="./assets/seqviz-adapter.js?v=2"></script>
 
 <!-- Explorer demo logic -->
-<script src="./demo.js?v=3"></script>
+<script src="./demo.js?v=9"></script>
 
 <script>
     if (window.SeqVizSite && window.SeqVizSite.wireCopy) {
