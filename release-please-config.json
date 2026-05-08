@@ -5,6 +5,7 @@
       "release-type": "node",
       "package-name": "dash-seqviz",
       "include-component-in-tag": false,
+      "bump-minor-pre-major": true,
       "changelog-sections": [
         { "type": "feat", "section": "Features" },
         { "type": "fix", "section": "Bug Fixes" },
