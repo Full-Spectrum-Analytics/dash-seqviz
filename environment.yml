@@ -11,3 +11,5 @@ dependencies:
   - conda-forge::pyyaml
   - conda-forge::rdkit==2024.09.4
   - conda-forge::poppler
+  # Optional: used only by examples/mlflow (SeqViz -> MLflow logging demo)
+  - conda-forge::mlflow
