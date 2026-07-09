@@ -203,6 +203,23 @@ SeqViz.propTypes = {
     search_results: PropTypes.array,
 
     /**
+     * Write prop to trigger a figure export. Set it to an object like
+     * { format: "svg" | "png", scale?: number, token?: any }; the component
+     * serializes the current viewer and puts a data URI in `export_result`.
+     * Include a changing `token` (e.g. an n_clicks counter) so repeated
+     * exports of the same format re-fire. `scale` (PNG only, default 2) sets
+     * the raster resolution multiplier.
+     */
+    export_request: PropTypes.object,
+
+    /**
+     * Read-only. The most recent export as a data URI (`data:image/svg+xml,…`
+     * or `data:image/png;base64,…`). Feed it to a download, e.g. set it as
+     * the href of an html.A(download=...) via a callback.
+     */
+    export_result: PropTypes.string,
+
+    /**
      * Read-only. The most recently clicked feature (annotation, primer,
      * enzyme, translation, highlight, or search hit), as
      * { type, name, start, end, direction, id, color }. Updated only when a
