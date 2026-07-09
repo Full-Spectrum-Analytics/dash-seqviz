@@ -10,6 +10,7 @@ from ._imports_ import *
 from ._imports_ import __all__
 from .parse import parse
 from .fetch import fetch_ncbi
+from .legend import legend
 from .types import (
     Annotation,
     Primer,
@@ -87,6 +88,7 @@ for _component in __all__:
 __all__ = __all__ + [
     'parse',
     'fetch_ncbi',
+    'legend',
     'Annotation',
     'Primer',
     'Highlight',
