@@ -189,6 +189,13 @@ validate_props(annotations=anns)   # raises ValueError on the first problem
 - Events / Read-only:
   - **`on_selection`** (function): Called after selection events; selection returned also via `selection`
   - **`on_search`** (function): Called after search; results returned also via `search_results` (read-only)
+  - **`clicked_element`** (dict, read-only): The most recently clicked feature
+    (annotation, primer, enzyme, translation, highlight, or search hit), as
+    `{"type", "name", "start", "end", "direction", "id", "color"}`. Updates
+    only on feature clicks (bare sequence selections leave it unchanged), so
+    `Input("id", "clicked_element")` gives clean feature-click events for
+    linked views. (seqviz exposes no hover or center-index callbacks, so
+    those are not available.)
 
 ## Examples
 

@@ -203,6 +203,20 @@ SeqViz.propTypes = {
     search_results: PropTypes.array,
 
     /**
+     * Read-only. The most recently clicked feature (annotation, primer,
+     * enzyme, translation, highlight, or search hit), as
+     * { type, name, start, end, direction, id, color }. Updated only when a
+     * feature is clicked (bare sequence selections leave it unchanged), so a
+     * callback with Input("id", "clicked_element") gets clean feature-click
+     * events. Use it to drive linked views (e.g. highlight a table row when
+     * its annotation is clicked).
+     *
+     * Note: seqviz exposes no hover or rotation/center-index callbacks, so
+     * those are not available as props.
+     */
+    clicked_element: PropTypes.object,
+
+    /**
      * Visual theme. The underlying seqviz library hardcodes dark-gray text,
      * so this prop applies CSS overrides (shipped with dash_seqviz) scoped
      * to a data-dash-seqviz-theme attribute on the wrapper, and — for the

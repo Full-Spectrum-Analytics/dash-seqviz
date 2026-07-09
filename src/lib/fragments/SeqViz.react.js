@@ -2,6 +2,20 @@ import React, {useCallback, useMemo} from 'react';
 import PropTypes from 'prop-types';
 import { SeqViz as SeqVizLib } from 'seqviz';
 
+// seqviz selection `type` values that represent a click on a rendered
+// feature (as opposed to a bare sequence range or empty selection). Used to
+// populate the read-only `clicked_element` prop. seqviz exposes no hover or
+// center-index callbacks, so those are intentionally not surfaced.
+const FEATURE_SELECTION_TYPES = new Set([
+    'ANNOTATION',
+    'PRIMER',
+    'ENZYME',
+    'TRANSLATION',
+    'TRANSLATION_HANDLE',
+    'HIGHLIGHT',
+    'FIND',
+]);
+
 // Color-vision-deficiency-safe qualitative palettes, used as the default
 // annotation/primer/translation color cycle when the theme requests them
 // and the user hasn't supplied their own `colors` prop. Per-annotation
@@ -68,7 +82,25 @@ const SeqViz = (props) => {
             on_selection(sel);
         }
         if (setProps) {
-            setProps({ selection: sel });
+            const update = { selection: sel };
+            // seqviz emits selections for bare sequence ranges *and* for
+            // clicks on features. When a feature was clicked, surface a
+            // trimmed clicked_element so Dash callbacks get a clean
+            // "user clicked annotation X" signal without inspecting
+            // selection.type. Bare sequence selections leave the last
+            // clicked_element untouched.
+            if (sel && FEATURE_SELECTION_TYPES.has(sel.type)) {
+                update.clicked_element = {
+                    type: sel.type,
+                    name: sel.name || '',
+                    start: sel.start,
+                    end: sel.end,
+                    direction: sel.direction,
+                    id: sel.id,
+                    color: sel.color,
+                };
+            }
+            setProps(update);
         }
     }, [setProps, on_selection]);
 
@@ -258,6 +290,7 @@ SeqViz.propTypes = {
     on_selection: PropTypes.func,
     on_search: PropTypes.func,
     search_results: PropTypes.array,
+    clicked_element: PropTypes.object,
     theme: PropTypes.oneOf([
         'light', 'dark', 'xkcd', 'xkcd-light', 'xkcd-dark',
         'okabe-ito-light', 'okabe-ito-dark',
