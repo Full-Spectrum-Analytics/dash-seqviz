@@ -1,5 +1,6 @@
 include dash_seqviz/dash_seqviz.min.js
 include dash_seqviz/dash_seqviz.min.js.map
+include dash_seqviz/dash_seqviz.css
 include dash_seqviz/async-*.js
 include dash_seqviz/async-*.js.map
 include dash_seqviz/*-shared.js

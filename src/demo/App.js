@@ -10,9 +10,13 @@ const App = () => {
     const [showComplement, setShowComplement] = useState(true);
     const [enzymes, setEnzymes] = useState(['PstI', 'EcoRI']);
     const [selection, setSelection] = useState(null);
+    const [theme, setTheme] = useState('light');
+
+    const bg = theme === 'dark' ? '#1a1b1e' : '#ffffff';
+    const fg = theme === 'dark' ? '#c1c2c5' : '#1a1b1e';
 
     return (
-        <div style={{ padding: 16, display: 'grid', gap: 16 }}>
+        <div style={{ padding: 16, display: 'grid', gap: 16, background: bg, color: fg, minHeight: '100vh' }}>
             {/* Controls */}
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
                 <div>
@@ -49,6 +53,14 @@ const App = () => {
                         </label>
                     ))}
                 </div>
+
+                <div>
+                    <label>Theme</label><br />
+                    <select value={theme} onChange={(e) => setTheme(e.target.value)}>
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </div>
             </div>
 
             {/* Viewer */}
@@ -67,13 +79,14 @@ const App = () => {
                     { start: 0, end: 30, direction: 1, name: 'ORF 1', color: '#FAA887' },
                     { start: 31, end: 60, direction: -1, name: '' }
                 ]}
-                bpColors={{ A: '#FF0000', T: 'blue', 12: '#00FFFF' }}
+                bp_colors={{ A: '#FF0000', T: 'blue', 12: '#00FFFF' }}
                 enzymes={enzymes}
                 zoom={{ linear: zoom }}
-                showComplement={showComplement}
+                show_complement={showComplement}
                 style={{ height: '460px', width: '100%' }}
                 selection={selection}
-                onSelection={(sel) => setSelection(sel)}
+                on_selection={(sel) => setSelection(sel)}
+                theme={theme}
             />
         </div>
     )

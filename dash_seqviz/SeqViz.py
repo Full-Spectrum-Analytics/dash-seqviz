@@ -150,6 +150,27 @@ Keyword arguments:
 - show_complement (boolean; default True):
     Whether to show the complement sequence.
 
+- theme (a value equal to: 'light', 'dark', 'xkcd', 'xkcd-light', 'xkcd-dark', 'okabe-ito-light', 'okabe-ito-dark', 'colorbrewer-light', 'colorbrewer-dark', 'tol-light', 'tol-dark'; default 'light'):
+    Visual theme. The underlying seqviz library hardcodes dark-gray
+    text, so this prop applies CSS overrides (shipped with
+    dash_seqviz) scoped to a data-dash-seqviz-theme attribute on the
+    wrapper, and — for the colorblind themes — injects a CVD-safe
+    qualitative palette into the `colors` prop when the user hasn't
+    supplied their own.  Available themes: - \"light\" (default) —
+    seqviz default. - \"dark\" — adjusts text/tick/selector colors for
+    dark backgrounds. - \"okabe-ito-light\", \"okabe-ito-dark\" —
+    Okabe & Ito's 7-color CVD-safe   palette. The de facto standard
+    for categorical CVD-safe data viz. - \"colorbrewer-light\",
+    \"colorbrewer-dark\" — ColorBrewer Set2 (light) /   Dark2 (dark).
+    CVD-safe qualitative palettes with pastel (Set2) or   saturated
+    (Dark2) tones. - \"tol-light\", \"tol-dark\" — Paul Tol's Bright.
+    7 colors engineered   for CVD distinction across deuteranopia,
+    protanopia, tritanopia.  Per-annotation `color` values supplied by
+    the user always override the theme palette, so explicit color
+    choices are preserved.  Wire this to a theme switcher via a Dash
+    callback — e.g. with dash-mantine-components, read the
+    `colorScheme` and push \"dark\" or \"light\" to this prop.
+
 - translations (list of dicts; optional):
     Array of translation objects. Each translation: { start: number,
     end: number, direction: number, name?: string, color?: string }.
@@ -293,11 +314,12 @@ Keyword arguments:
         enable_copy_event: typing.Optional[bool] = None,
         enable_select_all_event: typing.Optional[bool] = None,
         search_results: typing.Optional[typing.Sequence] = None,
+        theme: typing.Optional[Literal["light", "dark", "xkcd", "xkcd-light", "xkcd-dark", "okabe-ito-light", "okabe-ito-dark", "colorbrewer-light", "colorbrewer-dark", "tol-light", "tol-dark"]] = None,
         **kwargs
     ):
-        self._prop_names = ['id', 'annotations', 'bp_colors', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'translations', 'viewer', 'zoom']
+        self._prop_names = ['id', 'annotations', 'bp_colors', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'annotations', 'bp_colors', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'translations', 'viewer', 'zoom']
+        self.available_properties = ['id', 'annotations', 'bp_colors', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

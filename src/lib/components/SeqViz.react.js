@@ -29,7 +29,8 @@ SeqViz.defaultProps = {
     disable_external_fonts: false,
     zoom: { linear: 50 },
     enable_copy_event: true,
-    enable_select_all_event: true
+    enable_select_all_event: true,
+    theme: 'light'
 };
 
 SeqViz.propTypes = {
@@ -200,6 +201,38 @@ SeqViz.propTypes = {
      * Search results emitted by seqviz (read-only for Dash usage).
      */
     search_results: PropTypes.array,
+
+    /**
+     * Visual theme. The underlying seqviz library hardcodes dark-gray text,
+     * so this prop applies CSS overrides (shipped with dash_seqviz) scoped
+     * to a data-dash-seqviz-theme attribute on the wrapper, and — for the
+     * colorblind themes — injects a CVD-safe qualitative palette into the
+     * `colors` prop when the user hasn't supplied their own.
+     *
+     * Available themes:
+     * - "light" (default) — seqviz default.
+     * - "dark" — adjusts text/tick/selector colors for dark backgrounds.
+     * - "okabe-ito-light", "okabe-ito-dark" — Okabe & Ito's 7-color CVD-safe
+     *   palette. The de facto standard for categorical CVD-safe data viz.
+     * - "colorbrewer-light", "colorbrewer-dark" — ColorBrewer Set2 (light) /
+     *   Dark2 (dark). CVD-safe qualitative palettes with pastel (Set2) or
+     *   saturated (Dark2) tones.
+     * - "tol-light", "tol-dark" — Paul Tol's Bright. 7 colors engineered
+     *   for CVD distinction across deuteranopia, protanopia, tritanopia.
+     *
+     * Per-annotation `color` values supplied by the user always override
+     * the theme palette, so explicit color choices are preserved.
+     *
+     * Wire this to a theme switcher via a Dash callback — e.g. with
+     * dash-mantine-components, read the `colorScheme` and push "dark" or
+     * "light" to this prop.
+     */
+    theme: PropTypes.oneOf([
+        'light', 'dark', 'xkcd', 'xkcd-light', 'xkcd-dark',
+        'okabe-ito-light', 'okabe-ito-dark',
+        'colorbrewer-light', 'colorbrewer-dark',
+        'tol-light', 'tol-dark',
+    ]),
 
     /**
      * Dash-assigned callback that should be called to report property changes

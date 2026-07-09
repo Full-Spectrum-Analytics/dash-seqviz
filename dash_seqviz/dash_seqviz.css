@@ -1,0 +1,134 @@
+/*
+ * Dash SeqViz theme overrides.
+ *
+ * The underlying seqviz library hardcodes inline SVG `fill` and `stroke`
+ * styles tuned for light backgrounds (`rgb(42, 42, 42)` for text,
+ * `rgb(115, 119, 125)` for ticks/lines). Inline styles outrank external
+ * CSS, so these overrides require `!important` to win.
+ *
+ * Selectors use `[data-dash-seqviz-theme$="dark"]` (attribute-suffix) so
+ * every dark-background theme — "dark", "okabe-ito-dark",
+ * "colorbrewer-dark", "tol-dark", "xkcd-dark" — picks up the same text /
+ * tick / selector adjustments. Palette colors for the colorblind themes
+ * are injected via the `colors` prop by the React wrapper, not via CSS.
+ */
+
+[data-dash-seqviz-theme$="dark"] .la-vz-annotation-label,
+[data-dash-seqviz-theme$="dark"] .la-vz-circular-label,
+[data-dash-seqviz-theme$="dark"] .la-vz-primer-label,
+[data-dash-seqviz-theme$="dark"] .la-vz-handle-label,
+[data-dash-seqviz-theme$="dark"] .la-vz-translation-amino-acid-label,
+[data-dash-seqviz-theme$="dark"] .la-vz-cut-site-text,
+[data-dash-seqviz-theme$="dark"] .la-vz-seq,
+[data-dash-seqviz-theme$="dark"] .la-vz-comp-seq,
+[data-dash-seqviz-theme$="dark"] .la-vz-viewer-circular text:not([class]) {
+    fill: rgb(220, 220, 220) !important;
+}
+
+[data-dash-seqviz-theme$="dark"] .la-vz-index-tick-label {
+    fill: rgb(180, 180, 180) !important;
+}
+
+[data-dash-seqviz-theme$="dark"] .la-vz-index-tick,
+[data-dash-seqviz-theme$="dark"] .la-vz-index-line,
+[data-dash-seqviz-theme$="dark"] .la-vz-cut-site {
+    stroke: rgb(180, 180, 180) !important;
+}
+
+[data-dash-seqviz-theme$="dark"] .la-vz-label-line {
+    stroke: rgb(150, 150, 150) !important;
+}
+
+/*
+ * Selection cursor — seqviz renders it as a 1px-wide rect/path with inline
+ * fill+stroke: black, so when no range is selected the indicator collapses
+ * to a single black line that disappears on a dark background.
+ */
+[data-dash-seqviz-theme$="dark"] .la-vz-selection-edge {
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+/*
+ * Unlisted "xkcd" theme family — renders the component in the hand-drawn
+ * comic style of https://xkcd.com/. Overrides the seqviz monospace font
+ * with a Comic Sans-flavored stack and applies an SVG turbulence /
+ * displacement filter (injected by the React wrapper) to every visible
+ * path. The font + wobble apply to both xkcd-light and xkcd-dark; the ink
+ * color differs between them. Not documented in the README — pass
+ * theme="xkcd-light" or "xkcd-dark" (or the legacy bare "xkcd", which is
+ * normalized to xkcd-light) to summon.
+ */
+
+[data-dash-seqviz-theme^="xkcd"] .la-vz-annotation-label,
+[data-dash-seqviz-theme^="xkcd"] .la-vz-circular-label,
+[data-dash-seqviz-theme^="xkcd"] .la-vz-primer-label,
+[data-dash-seqviz-theme^="xkcd"] .la-vz-handle-label,
+[data-dash-seqviz-theme^="xkcd"] .la-vz-translation-amino-acid-label,
+[data-dash-seqviz-theme^="xkcd"] .la-vz-cut-site-text,
+[data-dash-seqviz-theme^="xkcd"] .la-vz-seq,
+[data-dash-seqviz-theme^="xkcd"] .la-vz-comp-seq,
+[data-dash-seqviz-theme^="xkcd"] .la-vz-index-tick-label,
+[data-dash-seqviz-theme^="xkcd"] .la-vz-viewer-circular text:not([class]) {
+    font-family: "xkcd Script", "xkcd", "Humor Sans", "Comic Sans MS",
+        "Patrick Hand", "Chalkboard SE", cursive !important;
+    font-weight: 400 !important;
+}
+
+[data-dash-seqviz-theme^="xkcd"] .la-vz-index-tick,
+[data-dash-seqviz-theme^="xkcd"] .la-vz-index-line,
+[data-dash-seqviz-theme^="xkcd"] .la-vz-cut-site,
+[data-dash-seqviz-theme^="xkcd"] .la-vz-label-line {
+    stroke-width: 1.5 !important;
+}
+
+[data-dash-seqviz-theme^="xkcd"] .la-vz-viewer-circular,
+[data-dash-seqviz-theme^="xkcd"] .la-vz-seqblock {
+    filter: url(#dash-seqviz-xkcd-wobble);
+}
+
+/* xkcd-light — black ink on paper-white */
+[data-dash-seqviz-theme="xkcd-light"] .la-vz-annotation-label,
+[data-dash-seqviz-theme="xkcd-light"] .la-vz-circular-label,
+[data-dash-seqviz-theme="xkcd-light"] .la-vz-primer-label,
+[data-dash-seqviz-theme="xkcd-light"] .la-vz-handle-label,
+[data-dash-seqviz-theme="xkcd-light"] .la-vz-translation-amino-acid-label,
+[data-dash-seqviz-theme="xkcd-light"] .la-vz-cut-site-text,
+[data-dash-seqviz-theme="xkcd-light"] .la-vz-seq,
+[data-dash-seqviz-theme="xkcd-light"] .la-vz-comp-seq,
+[data-dash-seqviz-theme="xkcd-light"] .la-vz-index-tick-label,
+[data-dash-seqviz-theme="xkcd-light"] .la-vz-viewer-circular text:not([class]) {
+    fill: #000 !important;
+}
+
+[data-dash-seqviz-theme="xkcd-light"] .la-vz-index-tick,
+[data-dash-seqviz-theme="xkcd-light"] .la-vz-index-line,
+[data-dash-seqviz-theme="xkcd-light"] .la-vz-cut-site,
+[data-dash-seqviz-theme="xkcd-light"] .la-vz-label-line {
+    stroke: #000 !important;
+}
+
+/*
+ * xkcd-dark — white ink on dark paper. Overrides the softer dark-mode
+ * grays (rgb(220,220,220) / rgb(180,180,180)) with pure white so the
+ * ink contrast matches xkcd-light's pure-black-on-white feel.
+ */
+[data-dash-seqviz-theme="xkcd-dark"] .la-vz-annotation-label,
+[data-dash-seqviz-theme="xkcd-dark"] .la-vz-circular-label,
+[data-dash-seqviz-theme="xkcd-dark"] .la-vz-primer-label,
+[data-dash-seqviz-theme="xkcd-dark"] .la-vz-handle-label,
+[data-dash-seqviz-theme="xkcd-dark"] .la-vz-translation-amino-acid-label,
+[data-dash-seqviz-theme="xkcd-dark"] .la-vz-cut-site-text,
+[data-dash-seqviz-theme="xkcd-dark"] .la-vz-seq,
+[data-dash-seqviz-theme="xkcd-dark"] .la-vz-comp-seq,
+[data-dash-seqviz-theme="xkcd-dark"] .la-vz-index-tick-label,
+[data-dash-seqviz-theme="xkcd-dark"] .la-vz-viewer-circular text:not([class]) {
+    fill: #ffffff !important;
+}
+
+[data-dash-seqviz-theme="xkcd-dark"] .la-vz-index-tick,
+[data-dash-seqviz-theme="xkcd-dark"] .la-vz-index-line,
+[data-dash-seqviz-theme="xkcd-dark"] .la-vz-cut-site,
+[data-dash-seqviz-theme="xkcd-dark"] .la-vz-label-line {
+    stroke: #ffffff !important;
+}
