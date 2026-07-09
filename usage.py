@@ -526,6 +526,21 @@ app.layout = html.Div(
                     ],
                     style={"minWidth": 220, "display": "flex", "alignItems": "end"},
                 ),
+                html.Div(
+                    [
+                        html.Label("Theme"),
+                        dcc.Dropdown(
+                            id="theme",
+                            options=[
+                                {"label": "Light", "value": "light"},
+                                {"label": "Dark", "value": "dark"},
+                            ],
+                            value="light",
+                            clearable=False,
+                        ),
+                    ],
+                    style={"minWidth": 160},
+                ),
             ],
             style={
                 "display": "flex",
@@ -797,6 +812,24 @@ def update_enzyme_options(source):
 )
 def update_rotate_on_scroll(vals: Optional[List[str]]) -> bool:
     return (vals or []) == ["on"]
+
+
+@app.callback(
+    Output("seqviz-demo", "theme"),
+    Output("seqviz-demo", "style"),
+    Input("theme", "value"),
+)
+def update_theme(theme: Optional[str]):
+    t = "dark" if theme == "dark" else "light"
+    bg = "#1a1b1e" if t == "dark" else "#ffffff"
+    fg = "#c1c2c5" if t == "dark" else "#1a1b1e"
+    style = {
+        "height": "62vh",
+        "width": "100%",
+        "background": bg,
+        "color": fg,
+    }
+    return t, style
 
 
 @app.callback(

@@ -103,6 +103,37 @@ if __name__ == '__main__':
 - **`disable_external_fonts`** (bool): Whether to disable downloading external fonts.
   - Default: `false`
 
+- **`theme`** (string): Visual theme. The underlying seqviz library
+  hardcodes dark-gray text and ticks tuned for light backgrounds, so on a
+  dark dashboard the annotation labels, index numbers, and ticks lose
+  contrast and effectively disappear. Setting a dark theme activates a
+  bundled CSS override that recolors those elements; the colorblind themes
+  additionally inject a CVD-safe qualitative palette into the `colors`
+  prop. Per-annotation `color` values you supply always win.
+
+  Available values:
+  - `"light"` (default) — seqviz default.
+  - `"dark"` — text / ticks / selector recolored for dark backgrounds.
+  - `"okabe-ito-light"`, `"okabe-ito-dark"` — Okabe & Ito's 7-color
+    CVD-safe palette. The de facto standard for categorical CVD-safe data
+    visualization.
+  - `"colorbrewer-light"`, `"colorbrewer-dark"` — ColorBrewer Set2 (pastel,
+    naturally light) / Dark2 (saturated, naturally dark). CVD-safe.
+  - `"tol-light"`, `"tol-dark"` — Paul Tol's Bright palette (7 colors
+    engineered for deuteranopia / protanopia / tritanopia distinction).
+
+  Wire this to a theme switcher with a Dash callback — for
+  dash-mantine-components, read the colorScheme and push it through:
+
+  ```python
+  @app.callback(
+      Output("seqviz", "theme"),
+      Input("mantine-provider", "forceColorScheme"),
+  )
+  def sync_theme(color_scheme):
+      return "dark" if color_scheme == "dark" else "light"
+  ```
+
 - Deprecated (prefer parsing externally with `seqparse`):
   - **`file`** (string | File): FASTA, GenBank, SnapGene, JBEI, or SBOL file
   - **`accession`** (string): NCBI accession-ID
