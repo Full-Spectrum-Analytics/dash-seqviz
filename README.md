@@ -90,6 +90,28 @@ anns: list[Annotation] = [{"start": 0, "end": 22, "name": "promoter", "direction
 validate_props(annotations=anns)   # raises ValueError on the first problem
 ```
 
+## Annotation legend
+
+`dash_seqviz.legend(annotations, theme=..., colors=...)` returns a Dash
+layout (`html.Div` of swatch + name rows) whose colors match what the viewer
+renders for the same annotations and theme:
+
+```python
+from dash import html
+from dash_seqviz import SeqViz, legend
+
+anns = [{"start": 0, "end": 20, "name": "promoter", "direction": 1}]
+html.Div([
+    SeqViz(id="v", seq=seq, annotations=anns, theme="okabe-ito-light"),
+    legend(anns, theme="okabe-ito-light", title="Features"),
+])
+```
+
+Per-annotation `color`s win; otherwise swatches follow the same palette the
+viewer uses (theme palette, or seqviz's default cycle). Supports
+`direction="horizontal"`, a `title`, and an `id` for callbacks — pair it with
+the viewer's `clicked_element` prop to highlight the clicked feature.
+
 ## Exporting figures (SVG / PNG)
 
 Export the current viewer as a publication-ready figure. Set `export_request`
