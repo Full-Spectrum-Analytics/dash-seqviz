@@ -46,6 +46,14 @@ Keyword arguments:
 
     - color (string; optional)
 
+- aria_label (string; optional):
+    Accessible name for the viewer. seqviz renders an unlabeled SVG,
+    so the component gives its container role=\"group\" with this
+    label (and labels the circular SVG as role=\"img\"). Defaults to
+    an auto-generated summary (\"Sequence viewer: <name>, <N> bp, <M>
+    annotations\"). Note: seqviz provides no keyboard navigation of
+    individual features, so this is screen-reader labeling only.
+
 - bp_colors (dict; optional):
     Object mapping base pairs or indexes to custom colors.
 
@@ -352,13 +360,14 @@ Keyword arguments:
         export_request: typing.Optional[dict] = None,
         export_result: typing.Optional[str] = None,
         max_seq_length: typing.Optional[NumberType] = None,
+        aria_label: typing.Optional[str] = None,
         clicked_element: typing.Optional[dict] = None,
         theme: typing.Optional[Literal["light", "dark", "auto", "xkcd", "xkcd-light", "xkcd-dark", "okabe-ito-light", "okabe-ito-dark", "colorbrewer-light", "colorbrewer-dark", "tol-light", "tol-dark"]] = None,
         **kwargs
     ):
-        self._prop_names = ['id', 'annotations', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'highlights', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
+        self._prop_names = ['id', 'annotations', 'aria_label', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'highlights', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'annotations', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'highlights', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
+        self.available_properties = ['id', 'annotations', 'aria_label', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'highlights', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

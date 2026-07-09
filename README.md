@@ -213,6 +213,13 @@ SVG is vector (best for papers/posters); PNG rasterizes at `scale`x (default
   For very long sequences that must render, prefer `viewer="circular"` (which
   seqviz renders without per-base DOM above its internal cutoff).
 
+- **`aria_label`** (string): Accessible name for the viewer. seqviz renders
+  an unlabeled SVG, so the component gives its container `role="group"` with
+  this label (and labels the circular SVG `role="img"`). Defaults to an
+  auto-generated summary (`"Sequence viewer: <name>, <N> bp, <M>
+  annotations"`). Note: seqviz provides no keyboard navigation of individual
+  features, so this is screen-reader labeling only.
+
 - **`theme`** (string): Visual theme. The underlying seqviz library
   hardcodes dark-gray text and ticks tuned for light backgrounds, so on a
   dark dashboard the annotation labels, index numbers, and ticks lose

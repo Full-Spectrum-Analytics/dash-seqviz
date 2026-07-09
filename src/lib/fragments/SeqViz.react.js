@@ -183,6 +183,7 @@ const SeqViz = (props) => {
         theme,
         export_request,
         max_seq_length,
+        aria_label,
     } = props;
 
     const containerRef = useRef(null);
@@ -347,8 +348,41 @@ const SeqViz = (props) => {
     const tooLong = typeof max_seq_length === 'number' &&
         max_seq_length >= 0 && seqLen > max_seq_length;
 
+    // Accessible name for the viewer. seqviz renders an unlabeled SVG, so we
+    // give the container a role + description (explicit aria_label, else an
+    // auto summary). Note: seqviz provides no keyboard navigation of
+    // individual features, so this covers labeling only, not focus nav.
+    const annCount = Array.isArray(annotations) ? annotations.length : 0;
+    const effectiveLabel = aria_label || (
+        `Sequence viewer${name ? ': ' + name : ''}` +
+        (seqLen ? `, ${seqLen.toLocaleString()} bp` : '') +
+        (annCount ? `, ${annCount} annotation${annCount === 1 ? '' : 's'}` : '')
+    );
+
+    // Best-effort: label the circular viewer SVG as an image once mounted.
+    useEffect(() => {
+        const root = containerRef.current;
+        if (!root) return undefined;
+        const label = () => {
+            root.querySelectorAll('.la-vz-viewer-circular').forEach((svg) => {
+                svg.setAttribute('role', 'img');
+                svg.setAttribute('aria-label', effectiveLabel);
+            });
+        };
+        label();
+        const observer = new MutationObserver(label);
+        observer.observe(root, { childList: true, subtree: true });
+        return () => observer.disconnect();
+    }, [effectiveLabel, viewer, seq]);
+
     return (
-        <div id={id} ref={containerRef} data-dash-seqviz-theme={resolvedTheme}>
+        <div
+            id={id}
+            ref={containerRef}
+            data-dash-seqviz-theme={resolvedTheme}
+            role="group"
+            aria-label={effectiveLabel}
+        >
             {tooLong ? (
                 <div
                     className="dash-seqviz-too-long"
@@ -483,6 +517,7 @@ SeqViz.propTypes = {
     export_request: PropTypes.object,
     export_result: PropTypes.string,
     max_seq_length: PropTypes.number,
+    aria_label: PropTypes.string,
     theme: PropTypes.oneOf([
         'light', 'dark', 'auto', 'xkcd', 'xkcd-light', 'xkcd-dark',
         'okabe-ito-light', 'okabe-ito-dark',

@@ -230,6 +230,16 @@ SeqViz.propTypes = {
     max_seq_length: PropTypes.number,
 
     /**
+     * Accessible name for the viewer. seqviz renders an unlabeled SVG, so the
+     * component gives its container role="group" with this label (and labels
+     * the circular SVG as role="img"). Defaults to an auto-generated summary
+     * ("Sequence viewer: <name>, <N> bp, <M> annotations"). Note: seqviz
+     * provides no keyboard navigation of individual features, so this is
+     * screen-reader labeling only.
+     */
+    aria_label: PropTypes.string,
+
+    /**
      * Read-only. The most recently clicked feature (annotation, primer,
      * enzyme, translation, highlight, or search hit), as
      * { type, name, start, end, direction, id, color }. Updated only when a
