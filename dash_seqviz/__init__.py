@@ -10,6 +10,14 @@ from ._imports_ import *
 from ._imports_ import __all__
 from .parse import parse
 from .fetch import fetch_ncbi
+from .types import (
+    Annotation,
+    Primer,
+    Highlight,
+    Translation,
+    Enzyme,
+    validate_props,
+)
 
 if not hasattr(_dash, 'development'):
     print(
@@ -76,4 +84,13 @@ for _component in __all__:
 
 # Python-side helpers (not Dash components; appended after the component loop
 # so the _js_dist/_css_dist assignment above does not try to treat them as one).
-__all__ = __all__ + ['parse', 'fetch_ncbi']
+__all__ = __all__ + [
+    'parse',
+    'fetch_ncbi',
+    'Annotation',
+    'Primer',
+    'Highlight',
+    'Translation',
+    'Enzyme',
+    'validate_props',
+]
