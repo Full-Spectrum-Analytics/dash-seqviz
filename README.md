@@ -90,6 +90,39 @@ anns: list[Annotation] = [{"start": 0, "end": 22, "name": "promoter", "direction
 validate_props(annotations=anns)   # raises ValueError on the first problem
 ```
 
+## Exporting figures (SVG / PNG)
+
+Export the current viewer as a publication-ready figure. Set `export_request`
+to `{"format": "svg" | "png", "token": <changing>, "scale"?: <n>}`; the
+component serializes the live viewer (theme and colors preserved) and returns
+a data URI in the read-only `export_result` prop, which you can wire to a
+download link:
+
+```python
+from dash import Dash, Input, Output, ctx, html
+from dash.exceptions import PreventUpdate
+from dash_seqviz import SeqViz
+
+@app.callback(Output("viewer", "export_request"),
+              Input("svg-btn", "n_clicks"), Input("png-btn", "n_clicks"),
+              prevent_initial_call=True)
+def request_export(svg_n, png_n):
+    fmt = "svg" if ctx.triggered_id == "svg-btn" else "png"
+    return {"format": fmt, "token": (svg_n or 0) + (png_n or 0)}
+
+@app.callback(Output("dl", "href"), Output("dl", "download"),
+              Input("viewer", "export_result"), prevent_initial_call=True)
+def to_download(uri):
+    if not uri:
+        raise PreventUpdate
+    ext = "png" if uri.startswith("data:image/png") else "svg"
+    return uri, f"figure.{ext}"
+```
+
+SVG is vector (best for papers/posters); PNG rasterizes at `scale`x (default
+2). A runnable version is in
+[`examples/recipes/export_figure.py`](examples/recipes/export_figure.py).
+
 ## API Reference
 
 ### SeqViz Properties

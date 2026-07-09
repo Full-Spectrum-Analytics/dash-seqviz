@@ -96,6 +96,20 @@ Keyword arguments:
 
         - end (number; optional)s
 
+- export_request (dict; optional):
+    Write prop to trigger a figure export. Set it to an object like {
+    format: \"svg\" | \"png\", scale?: number, token?: any }; the
+    component serializes the current viewer and puts a data URI in
+    `export_result`. Include a changing `token` (e.g. an n_clicks
+    counter) so repeated exports of the same format re-fire. `scale`
+    (PNG only, default 2) sets the raster resolution multiplier.
+
+- export_result (string; optional):
+    Read-only. The most recent export as a data URI
+    (`data:image/svg+xml,…` or `data:image/png;base64,…`). Feed it to
+    a download, e.g. set it as the href of an html.A(download=...) via
+    a callback.
+
 - highlights (list of dicts; optional):
     Array of highlight objects. Each highlight: { start: number, end:
     number, color?: string }.
@@ -325,13 +339,15 @@ Keyword arguments:
         enable_copy_event: typing.Optional[bool] = None,
         enable_select_all_event: typing.Optional[bool] = None,
         search_results: typing.Optional[typing.Sequence] = None,
+        export_request: typing.Optional[dict] = None,
+        export_result: typing.Optional[str] = None,
         clicked_element: typing.Optional[dict] = None,
         theme: typing.Optional[Literal["light", "dark", "xkcd", "xkcd-light", "xkcd-dark", "okabe-ito-light", "okabe-ito-dark", "colorbrewer-light", "colorbrewer-dark", "tol-light", "tol-dark"]] = None,
         **kwargs
     ):
-        self._prop_names = ['id', 'annotations', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
+        self._prop_names = ['id', 'annotations', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'annotations', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
+        self.available_properties = ['id', 'annotations', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

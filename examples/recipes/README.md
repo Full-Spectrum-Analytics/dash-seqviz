@@ -39,6 +39,12 @@ def select_from_grid(rows):
     return {"start": a["start"], "end": a["end"], "clockwise": True}
 ```
 
+## Export a figure (SVG / PNG)
+
+[`export_figure.py`](export_figure.py) — buttons that export the current
+viewer via the `export_request` / `export_result` props into a download
+link. SVG is vector (publication-ready); PNG rasterizes at `scale`x.
+
 ## dash-bio interop
 
 [dash-bio](https://dash.plotly.com/dash-bio) ships its own sequence widgets

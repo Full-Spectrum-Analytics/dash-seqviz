@@ -1,6 +1,98 @@
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef} from 'react';
 import PropTypes from 'prop-types';
 import { SeqViz as SeqVizLib } from 'seqviz';
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+// Collect the CSS rules that style the viewer (seqviz's own `.la-vz-*` rules
+// and this library's theme overrides) so an exported standalone SVG keeps
+// its appearance without the page's external stylesheets.
+function collectViewerCss() {
+    let out = '';
+    for (const sheet of Array.from(document.styleSheets || [])) {
+        let rules;
+        try {
+            rules = sheet.cssRules;
+        } catch (e) {
+            continue; // cross-origin stylesheet; skip
+        }
+        if (!rules) continue;
+        for (const rule of Array.from(rules)) {
+            const sel = rule.selectorText || '';
+            if (sel.indexOf('la-vz') !== -1 || sel.indexOf('data-dash-seqviz-theme') !== -1) {
+                out += rule.cssText + '\n';
+            }
+        }
+    }
+    return out;
+}
+
+// Build a self-contained SVG string from the viewer SVG(s) inside `root`.
+// Multiple SVGs (e.g. linear seqblocks, or circular+linear) are stacked
+// vertically as nested <svg> elements. Returns { svg, width, height } or null.
+function buildStandaloneSvg(root, theme, background) {
+    const svgs = Array.from(root.querySelectorAll('svg')).filter((s) => {
+        if (s.hasAttribute('aria-hidden')) return false; // xkcd wobble-filter defs
+        const r = s.getBoundingClientRect();
+        return r.width > 1 && r.height > 1;
+    });
+    if (!svgs.length) return null;
+
+    const serializer = new XMLSerializer();
+    let width = 0;
+    let height = 0;
+    let body = '';
+    for (const s of svgs) {
+        const r = s.getBoundingClientRect();
+        const w = Math.ceil(parseFloat(s.getAttribute('width')) || r.width);
+        const h = Math.ceil(parseFloat(s.getAttribute('height')) || r.height);
+        const clone = s.cloneNode(true);
+        clone.setAttribute('xmlns', SVG_NS);
+        clone.setAttribute('x', '0');
+        clone.setAttribute('y', String(height));
+        clone.setAttribute('width', String(w));
+        clone.setAttribute('height', String(h));
+        body += serializer.serializeToString(clone);
+        width = Math.max(width, w);
+        height += h;
+    }
+
+    const css = collectViewerCss().replace(/]]>/g, ']]&gt;');
+    const svg =
+        `<svg xmlns="${SVG_NS}" width="${width}" height="${height}" ` +
+        `viewBox="0 0 ${width} ${height}" data-dash-seqviz-theme="${theme}">` +
+        `<style><![CDATA[\n${css}]]></style>` +
+        `<rect x="0" y="0" width="${width}" height="${height}" fill="${background}"/>` +
+        body +
+        `</svg>`;
+    return { svg, width, height };
+}
+
+function svgToDataUri(svg) {
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+// Rasterize an SVG string to a PNG data URI at `scale`x resolution.
+function svgToPngDataUri(svg, width, height, scale) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.max(1, Math.round(width * scale));
+                canvas.height = Math.max(1, Math.round(height * scale));
+                const ctx = canvas.getContext('2d');
+                ctx.setTransform(scale, 0, 0, scale, 0, 0);
+                ctx.drawImage(img, 0, 0);
+                resolve(canvas.toDataURL('image/png'));
+            } catch (e) {
+                reject(e);
+            }
+        };
+        img.onerror = reject;
+        img.src = svgToDataUri(svg);
+    });
+}
 
 // seqviz selection `type` values that represent a click on a rendered
 // feature (as opposed to a bare sequence range or empty selection). Used to
@@ -75,7 +167,10 @@ const SeqViz = (props) => {
         on_selection,
         on_search,
         theme,
+        export_request,
     } = props;
+
+    const containerRef = useRef(null);
 
     const handleSelection = useCallback((sel) => {
         if (on_selection) {
@@ -153,6 +248,31 @@ const SeqViz = (props) => {
         ));
     };
 
+    // Export: when export_request changes (a new token), serialize the live
+    // viewer SVG(s) to a standalone SVG or a rasterized PNG data URI and hand
+    // it back via export_result for the app to download.
+    useEffect(() => {
+        if (!export_request || !setProps) return;
+        const root = containerRef.current;
+        if (!root) return;
+        const fmt = String(export_request.format || 'svg').toLowerCase();
+        const background = resolvedTheme.endsWith('dark') ? '#1a1b1e' : '#ffffff';
+        const built = buildStandaloneSvg(root, resolvedTheme, background);
+        if (!built) {
+            setProps({ export_result: null });
+            return;
+        }
+        if (fmt === 'png') {
+            const scale = export_request.scale || 2;
+            svgToPngDataUri(built.svg, built.width, built.height, scale)
+                .then((uri) => setProps({ export_result: uri }))
+                .catch(() => setProps({ export_result: null }));
+        } else {
+            setProps({ export_result: svgToDataUri(built.svg) });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [export_request]);
+
     const seqvizProps = {
         seq,
         name,
@@ -178,7 +298,7 @@ const SeqViz = (props) => {
     };
 
     return (
-        <div id={id} data-dash-seqviz-theme={resolvedTheme}>
+        <div id={id} ref={containerRef} data-dash-seqviz-theme={resolvedTheme}>
             {resolvedTheme.startsWith('xkcd') && (
                 <svg
                     aria-hidden="true"
@@ -291,6 +411,8 @@ SeqViz.propTypes = {
     on_search: PropTypes.func,
     search_results: PropTypes.array,
     clicked_element: PropTypes.object,
+    export_request: PropTypes.object,
+    export_result: PropTypes.string,
     theme: PropTypes.oneOf([
         'light', 'dark', 'xkcd', 'xkcd-light', 'xkcd-dark',
         'okabe-ito-light', 'okabe-ito-dark',
