@@ -122,6 +122,14 @@ Keyword arguments:
 
     - color (string; optional)
 
+- max_seq_length (number; optional):
+    Guard for very long sequences. seqviz's linear viewer renders
+    per-base DOM and can hang the tab on multi-megabase input. When
+    set and the sequence length exceeds this value, the component
+    renders a lightweight placeholder instead of mounting the viewer.
+    Omit (default) for no guard. For very long sequences that must
+    render, prefer viewer=\"circular\".
+
 - name (string; optional):
     The name of the sequence/plasmid. Shown at the center of the
     circular viewer.
@@ -343,13 +351,14 @@ Keyword arguments:
         search_results: typing.Optional[typing.Sequence] = None,
         export_request: typing.Optional[dict] = None,
         export_result: typing.Optional[str] = None,
+        max_seq_length: typing.Optional[NumberType] = None,
         clicked_element: typing.Optional[dict] = None,
         theme: typing.Optional[Literal["light", "dark", "auto", "xkcd", "xkcd-light", "xkcd-dark", "okabe-ito-light", "okabe-ito-dark", "colorbrewer-light", "colorbrewer-dark", "tol-light", "tol-dark"]] = None,
         **kwargs
     ):
-        self._prop_names = ['id', 'annotations', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
+        self._prop_names = ['id', 'annotations', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'highlights', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'annotations', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
+        self.available_properties = ['id', 'annotations', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'highlights', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

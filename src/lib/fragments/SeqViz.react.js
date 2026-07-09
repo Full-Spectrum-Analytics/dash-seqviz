@@ -182,6 +182,7 @@ const SeqViz = (props) => {
         on_search,
         theme,
         export_request,
+        max_seq_length,
     } = props;
 
     const containerRef = useRef(null);
@@ -339,8 +340,32 @@ const SeqViz = (props) => {
         onSearch: handleSearch,
     };
 
+    // Large-sequence guard: seqviz's linear viewer renders per-base DOM and
+    // can hang the tab on very long sequences. When max_seq_length is set and
+    // exceeded, show a lightweight placeholder instead of mounting the viewer.
+    const seqLen = typeof seq === 'string' ? seq.length : 0;
+    const tooLong = typeof max_seq_length === 'number' &&
+        max_seq_length >= 0 && seqLen > max_seq_length;
+
     return (
         <div id={id} ref={containerRef} data-dash-seqviz-theme={resolvedTheme}>
+            {tooLong ? (
+                <div
+                    className="dash-seqviz-too-long"
+                    style={{
+                        padding: '16px',
+                        border: '1px dashed currentColor',
+                        borderRadius: 6,
+                        opacity: 0.75,
+                        font: '14px sans-serif',
+                    }}
+                >
+                    {`Sequence not rendered: ${seqLen.toLocaleString()} bp exceeds ` +
+                        `max_seq_length (${max_seq_length.toLocaleString()} bp). ` +
+                        `Raise max_seq_length to render, or use viewer="circular" for very long sequences.`}
+                </div>
+            ) : (
+            <React.Fragment>
             {resolvedTheme.startsWith('xkcd') && (
                 <svg
                     aria-hidden="true"
@@ -362,6 +387,8 @@ const SeqViz = (props) => {
                 </svg>
             )}
             <SeqVizLib {...seqvizProps} />
+            </React.Fragment>
+            )}
         </div>
     );
 };
@@ -455,6 +482,7 @@ SeqViz.propTypes = {
     clicked_element: PropTypes.object,
     export_request: PropTypes.object,
     export_result: PropTypes.string,
+    max_seq_length: PropTypes.number,
     theme: PropTypes.oneOf([
         'light', 'dark', 'auto', 'xkcd', 'xkcd-light', 'xkcd-dark',
         'okabe-ito-light', 'okabe-ito-dark',
