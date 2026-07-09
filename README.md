@@ -42,6 +42,25 @@ if __name__ == '__main__':
     app.run(debug=True)
 ```
 
+## Parsing sequence files
+
+seqviz deprecated its in-browser `file` / `accession` props. Parse records
+in Python instead with `dash_seqviz.parse()` and spread the result into the
+component:
+
+```python
+from dash_seqviz import SeqViz, parse
+
+props = parse("plasmid.gb")        # FASTA or GenBank; format auto-detected
+app.layout = SeqViz(id="viewer", **props)
+```
+
+`parse(source, fmt=None, *, record=0, include_translations=True)` accepts a
+file path, an open text handle, or a raw FASTA/GenBank string, and returns
+`{"seq", "name", "annotations", "translations"}`. FASTA input yields the
+sequence and name; GenBank additionally extracts feature `annotations` and,
+for CDS features, `translations`. Requires Biopython (a project dependency).
+
 ## API Reference
 
 ### SeqViz Properties

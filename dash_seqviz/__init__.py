@@ -8,6 +8,7 @@ import dash as _dash
 # noinspection PyUnresolvedReferences
 from ._imports_ import *
 from ._imports_ import __all__
+from .parse import parse
 
 if not hasattr(_dash, 'development'):
     print(
@@ -71,3 +72,7 @@ _css_dist = [
 for _component in __all__:
     setattr(locals()[_component], '_js_dist', _js_dist)
     setattr(locals()[_component], '_css_dist', _css_dist)
+
+# Python-side helpers (not Dash components; appended after the component loop
+# so the _js_dist/_css_dist assignment above does not try to treat them as one).
+__all__ = __all__ + ['parse']
