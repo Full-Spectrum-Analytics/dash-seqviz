@@ -195,6 +195,11 @@ SVG is vector (best for papers/posters); PNG rasterizes at `scale`x (default
   Available values:
   - `"light"` (default) — seqviz default.
   - `"dark"` — text / ticks / selector recolored for dark backgrounds.
+  - `"auto"` — follow the page's color scheme automatically. Detects
+    `data-mantine-color-scheme` on `<html>` (set by a dash-mantine-components
+    theme switch) and updates live when it flips, falling back to the
+    `prefers-color-scheme` media query. Zero-boilerplate for Mantine
+    dashboards — no callback needed.
   - `"okabe-ito-light"`, `"okabe-ito-dark"` — Okabe & Ito's 7-color
     CVD-safe palette. The de facto standard for categorical CVD-safe data
     visualization.

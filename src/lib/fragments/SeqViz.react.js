@@ -1,6 +1,20 @@
-import React, {useCallback, useEffect, useMemo, useRef} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import { SeqViz as SeqVizLib } from 'seqviz';
+
+// Detect the page's active color scheme for theme="auto". Prefers Mantine's
+// `data-mantine-color-scheme` on <html> (set by dmc's theme switch), then
+// falls back to the prefers-color-scheme media query.
+function detectColorScheme() {
+    if (typeof document === 'undefined') return 'light';
+    const attr = document.documentElement.getAttribute('data-mantine-color-scheme');
+    if (attr === 'dark' || attr === 'light') return attr;
+    if (typeof window !== 'undefined' && window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+    }
+    return 'light';
+}
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -172,6 +186,32 @@ const SeqViz = (props) => {
 
     const containerRef = useRef(null);
 
+    // theme="auto" tracks the page's color scheme and updates live when a
+    // dashboard theme switch flips it.
+    const [autoScheme, setAutoScheme] = useState('light');
+    useEffect(() => {
+        if (theme !== 'auto' || typeof document === 'undefined') return undefined;
+        const update = () => setAutoScheme(detectColorScheme());
+        update();
+        const observer = new MutationObserver(update);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-mantine-color-scheme'],
+        });
+        const mql = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+        if (mql) {
+            if (mql.addEventListener) mql.addEventListener('change', update);
+            else mql.addListener(update);
+        }
+        return () => {
+            observer.disconnect();
+            if (mql) {
+                if (mql.removeEventListener) mql.removeEventListener('change', update);
+                else mql.removeListener(update);
+            }
+        };
+    }, [theme]);
+
     const handleSelection = useCallback((sel) => {
         if (on_selection) {
             on_selection(sel);
@@ -219,14 +259,16 @@ const SeqViz = (props) => {
     );
 
     const validThemes = new Set([
-        'light', 'dark', 'xkcd', 'xkcd-light', 'xkcd-dark',
+        'light', 'dark', 'auto', 'xkcd', 'xkcd-light', 'xkcd-dark',
         'okabe-ito-light', 'okabe-ito-dark',
         'colorbrewer-light', 'colorbrewer-dark',
         'tol-light', 'tol-dark',
     ]);
-    // Bare 'xkcd' is the historical name for the light variant; normalize
-    // it so CSS only ever sees the explicit -light / -dark suffixed form.
-    const rawTheme = validThemes.has(theme) ? theme : 'light';
+    // "auto" resolves to the detected page color scheme. Bare 'xkcd' is the
+    // historical name for the light variant; normalize it so CSS only ever
+    // sees the explicit -light / -dark suffixed form.
+    let rawTheme = validThemes.has(theme) ? theme : 'light';
+    if (rawTheme === 'auto') rawTheme = autoScheme;
     const resolvedTheme = rawTheme === 'xkcd' ? 'xkcd-light' : rawTheme;
 
     // For colorblind themes, walk every element without an explicit `color`
@@ -414,7 +456,7 @@ SeqViz.propTypes = {
     export_request: PropTypes.object,
     export_result: PropTypes.string,
     theme: PropTypes.oneOf([
-        'light', 'dark', 'xkcd', 'xkcd-light', 'xkcd-dark',
+        'light', 'dark', 'auto', 'xkcd', 'xkcd-light', 'xkcd-dark',
         'okabe-ito-light', 'okabe-ito-dark',
         'colorbrewer-light', 'colorbrewer-dark',
         'tol-light', 'tol-dark',

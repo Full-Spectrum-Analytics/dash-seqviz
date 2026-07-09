@@ -243,6 +243,8 @@ SeqViz.propTypes = {
      * Available themes:
      * - "light" (default) — seqviz default.
      * - "dark" — adjusts text/tick/selector colors for dark backgrounds.
+     * - "auto" — follow the page color scheme (Mantine
+     *   data-mantine-color-scheme, else prefers-color-scheme), updating live.
      * - "okabe-ito-light", "okabe-ito-dark" — Okabe & Ito's 7-color CVD-safe
      *   palette. The de facto standard for categorical CVD-safe data viz.
      * - "colorbrewer-light", "colorbrewer-dark" — ColorBrewer Set2 (light) /
@@ -259,7 +261,7 @@ SeqViz.propTypes = {
      * "light" to this prop.
      */
     theme: PropTypes.oneOf([
-        'light', 'dark', 'xkcd', 'xkcd-light', 'xkcd-dark',
+        'light', 'dark', 'auto', 'xkcd', 'xkcd-light', 'xkcd-dark',
         'okabe-ito-light', 'okabe-ito-dark',
         'colorbrewer-light', 'colorbrewer-dark',
         'tol-light', 'tol-dark',

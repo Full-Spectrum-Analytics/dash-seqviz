@@ -175,7 +175,7 @@ Keyword arguments:
 - show_complement (boolean; default True):
     Whether to show the complement sequence.
 
-- theme (a value equal to: 'light', 'dark', 'xkcd', 'xkcd-light', 'xkcd-dark', 'okabe-ito-light', 'okabe-ito-dark', 'colorbrewer-light', 'colorbrewer-dark', 'tol-light', 'tol-dark'; default 'light'):
+- theme (a value equal to: 'light', 'dark', 'auto', 'xkcd', 'xkcd-light', 'xkcd-dark', 'okabe-ito-light', 'okabe-ito-dark', 'colorbrewer-light', 'colorbrewer-dark', 'tol-light', 'tol-dark'; default 'light'):
     Visual theme. The underlying seqviz library hardcodes dark-gray
     text, so this prop applies CSS overrides (shipped with
     dash_seqviz) scoped to a data-dash-seqviz-theme attribute on the
@@ -183,9 +183,11 @@ Keyword arguments:
     qualitative palette into the `colors` prop when the user hasn't
     supplied their own.  Available themes: - \"light\" (default) —
     seqviz default. - \"dark\" — adjusts text/tick/selector colors for
-    dark backgrounds. - \"okabe-ito-light\", \"okabe-ito-dark\" —
-    Okabe & Ito's 7-color CVD-safe   palette. The de facto standard
-    for categorical CVD-safe data viz. - \"colorbrewer-light\",
+    dark backgrounds. - \"auto\" — follow the page color scheme
+    (Mantine   data-mantine-color-scheme, else prefers-color-scheme),
+    updating live. - \"okabe-ito-light\", \"okabe-ito-dark\" — Okabe &
+    Ito's 7-color CVD-safe   palette. The de facto standard for
+    categorical CVD-safe data viz. - \"colorbrewer-light\",
     \"colorbrewer-dark\" — ColorBrewer Set2 (light) /   Dark2 (dark).
     CVD-safe qualitative palettes with pastel (Set2) or   saturated
     (Dark2) tones. - \"tol-light\", \"tol-dark\" — Paul Tol's Bright.
@@ -342,7 +344,7 @@ Keyword arguments:
         export_request: typing.Optional[dict] = None,
         export_result: typing.Optional[str] = None,
         clicked_element: typing.Optional[dict] = None,
-        theme: typing.Optional[Literal["light", "dark", "xkcd", "xkcd-light", "xkcd-dark", "okabe-ito-light", "okabe-ito-dark", "colorbrewer-light", "colorbrewer-dark", "tol-light", "tol-dark"]] = None,
+        theme: typing.Optional[Literal["light", "dark", "auto", "xkcd", "xkcd-light", "xkcd-dark", "okabe-ito-light", "okabe-ito-dark", "colorbrewer-light", "colorbrewer-dark", "tol-light", "tol-dark"]] = None,
         **kwargs
     ):
         self._prop_names = ['id', 'annotations', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
