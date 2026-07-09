@@ -148,7 +148,8 @@ view can diff them:
    metrics plotted.
 5. Same-sequence variants share the `seq_sha256` tag.
 
-Reference implementation: [`seqviz_mlflow.py`](seqviz_mlflow.py) —
-`build_seqviz_html`, `_apply_palette`, `sequence_features`,
-`log_seqviz_run`, `log_variants`.
+Reference implementation: the packaged module
+`dash_seqviz/integrations/mlflow.py` — `build_seqviz_html`,
+`_apply_palette`, `sequence_features`, `log_seqviz_run`, `log_variants`.
+[`seqviz_mlflow.py`](seqviz_mlflow.py) is a runnable demo built on it.
 ```

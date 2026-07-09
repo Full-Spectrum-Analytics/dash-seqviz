@@ -3,6 +3,17 @@
 Log SeqViz visualizations to MLflow and compare variants of the same
 sequence (different annotations, themes, viewers) in the MLflow UI.
 
+The reusable logic ships in the package at `dash_seqviz.integrations.mlflow`
+(install the optional dep with `pip install dash-seqviz[mlflow]`):
+
+```python
+from dash_seqviz.integrations import mlflow as sv_mlflow
+
+sv_mlflow.log_seqviz_run({"name": "pUC19", "seq": seq, "annotations": [...]})
+```
+
+`seqviz_mlflow.py` in this folder is a runnable demo built on that module.
+
 ## Can you log a SeqViz component to MLflow?
 
 Yes. SeqViz is a browser component, so it can't be pickled like a model —
