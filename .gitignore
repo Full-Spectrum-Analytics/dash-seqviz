@@ -288,6 +288,8 @@ dash_seqviz/*
 !dash_seqviz/parse.py
 !dash_seqviz/fetch.py
 !dash_seqviz/types.py
+!dash_seqviz/integrations/
+!dash_seqviz/integrations/*.py
 usage.py
 
 # MLflow example output (created when running examples/mlflow/seqviz_mlflow.py)

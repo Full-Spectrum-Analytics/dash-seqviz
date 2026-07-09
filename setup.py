@@ -19,13 +19,17 @@ setup(
         'Bug Tracker': 'https://github.com/Full-Spectrum-Analytics/dash-seqviz/issues',
         'Documentation': 'https://dash-seqviz.com',
     },
-    packages=[package_name],
+    packages=[package_name, f'{package_name}.integrations'],
     include_package_data=True,
     license=package['license'],
     description=package.get('description', package_name),
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=['dash>=3.0.0'],
+    extras_require={
+        'parse': ['biopython'],
+        'mlflow': ['mlflow'],
+    },
     python_requires='>=3.9',
     keywords=(
         'dash plotly dash-component react-component seqviz '
