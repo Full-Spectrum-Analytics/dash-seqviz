@@ -39,5 +39,5 @@ def test_selection_and_search_emit_readouts(dash_duo):
     dash_duo.wait_for_text_to_equal('#selection-readout', 'selection: none')
     # searchResults count value should eventually be visible
     dash_duo.wait_for_text_to_equal('#search-readout', srch.text)  # stabilizes
-    # The element should contain the "searchResults: N" prefix
-    assert dash_duo.find_element('#search-readout').text.startswith('searchResults: ')
+    # The element should contain the "search_results: N" prefix
+    assert dash_duo.find_element('#search-readout').text.startswith('search_results: ')

@@ -13,3 +13,8 @@ dependencies:
   - conda-forge::poppler
   # Optional: used only by examples/mlflow (SeqViz -> MLflow logging demo)
   - conda-forge::mlflow
+  # Browser integration tests (dash.testing / selenium)
+  - conda-forge::selenium>=4.25
+  - conda-forge::multiprocess
+  - pip:
+      - percy

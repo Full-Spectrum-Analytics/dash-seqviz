@@ -27,20 +27,25 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install Chrome (for selenium integration tests)
+        uses: browser-actions/setup-chrome@v1
+        with:
+          install-chromedriver: true
+
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Build JS bundle
-        run: npm run build:js
+      - name: Build component (JS + Python)
+        run: npm run build
 
       - name: Install Python dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
+          pip install -r tests/requirements.txt
           pip install .
 
-      - name: Generate Dash component
-        run: npm run build:backends
-
       - name: Run Python tests
-        run: python test_basic.py
+        run: |
+          python test_basic.py
+          pytest --headless

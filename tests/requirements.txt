@@ -3,4 +3,7 @@
 # pip install -r requirements.txt
 
 dash[dev,testing]>=3.0.0
+# Modern selenium (>=4.6) ships Selenium Manager, which auto-provisions a
+# matching chromedriver; overrides the older pin dash[testing] may bring in.
+selenium>=4.25
 biopython>=1.83
