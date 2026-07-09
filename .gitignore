@@ -287,6 +287,7 @@ dash_seqviz/*
 !dash_seqviz/dash_seqviz.css
 !dash_seqviz/parse.py
 !dash_seqviz/fetch.py
+!dash_seqviz/types.py
 usage.py
 
 # MLflow example output (created when running examples/mlflow/seqviz_mlflow.py)

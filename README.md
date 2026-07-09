@@ -75,6 +75,21 @@ NCBI's E-utilities require a contact email: pass `email=` or set the
 `NCBI_EMAIL` environment variable (an optional `api_key=` / `NCBI_API_KEY`
 raises the rate limit).
 
+## Typed inputs & validation
+
+`dash_seqviz` ships `TypedDict`s (`Annotation`, `Primer`, `Highlight`,
+`Translation`, `Enzyme`) for editor autocomplete and static type-checking of
+your element lists, plus a runtime `validate_props()` helper that raises
+clear errors (missing keys, `start > end`, bad `direction`) before a silent
+mis-render reaches the browser:
+
+```python
+from dash_seqviz import Annotation, validate_props
+
+anns: list[Annotation] = [{"start": 0, "end": 22, "name": "promoter", "direction": 1}]
+validate_props(annotations=anns)   # raises ValueError on the first problem
+```
+
 ## API Reference
 
 ### SeqViz Properties
