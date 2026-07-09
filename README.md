@@ -61,6 +61,20 @@ file path, an open text handle, or a raw FASTA/GenBank string, and returns
 sequence and name; GenBank additionally extracts feature `annotations` and,
 for CDS features, `translations`. Requires Biopython (a project dependency).
 
+To pull a record straight from NCBI by accession, use `fetch_ncbi()`, which
+fetches a GenBank record and runs it through `parse()`:
+
+```python
+from dash_seqviz import SeqViz, fetch_ncbi
+
+props = fetch_ncbi("MN623123.1", email="you@example.com")
+SeqViz(id="viewer", **props)
+```
+
+NCBI's E-utilities require a contact email: pass `email=` or set the
+`NCBI_EMAIL` environment variable (an optional `api_key=` / `NCBI_API_KEY`
+raises the rate limit).
+
 ## API Reference
 
 ### SeqViz Properties
