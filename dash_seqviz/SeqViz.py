@@ -49,6 +49,17 @@ Keyword arguments:
 - bp_colors (dict; optional):
     Object mapping base pairs or indexes to custom colors.
 
+- clicked_element (dict; optional):
+    Read-only. The most recently clicked feature (annotation, primer,
+    enzyme, translation, highlight, or search hit), as { type, name,
+    start, end, direction, id, color }. Updated only when a feature is
+    clicked (bare sequence selections leave it unchanged), so a
+    callback with Input(\"id\", \"clicked_element\") gets clean
+    feature-click events. Use it to drive linked views (e.g. highlight
+    a table row when its annotation is clicked).  Note: seqviz exposes
+    no hover or rotation/center-index callbacks, so those are not
+    available as props.
+
 - colors (list of strings; optional):
     Array of colors for annotations, translations, and highlights.
 
@@ -314,12 +325,13 @@ Keyword arguments:
         enable_copy_event: typing.Optional[bool] = None,
         enable_select_all_event: typing.Optional[bool] = None,
         search_results: typing.Optional[typing.Sequence] = None,
+        clicked_element: typing.Optional[dict] = None,
         theme: typing.Optional[Literal["light", "dark", "xkcd", "xkcd-light", "xkcd-dark", "okabe-ito-light", "okabe-ito-dark", "colorbrewer-light", "colorbrewer-dark", "tol-light", "tol-dark"]] = None,
         **kwargs
     ):
-        self._prop_names = ['id', 'annotations', 'bp_colors', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
+        self._prop_names = ['id', 'annotations', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'annotations', 'bp_colors', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
+        self.available_properties = ['id', 'annotations', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'highlights', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()
