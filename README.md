@@ -206,6 +206,13 @@ SVG is vector (best for papers/posters); PNG rasterizes at `scale`x (default
 - **`disable_external_fonts`** (bool): Whether to disable downloading external fonts.
   - Default: `false`
 
+- **`max_seq_length`** (number): Guard for very long sequences. seqviz's
+  linear viewer renders per-base DOM and can hang the tab on multi-megabase
+  input. When set and the sequence length exceeds it, the component renders a
+  lightweight placeholder instead of mounting the viewer. Omit for no guard.
+  For very long sequences that must render, prefer `viewer="circular"` (which
+  seqviz renders without per-base DOM above its internal cutoff).
+
 - **`theme`** (string): Visual theme. The underlying seqviz library
   hardcodes dark-gray text and ticks tuned for light backgrounds, so on a
   dark dashboard the annotation labels, index numbers, and ticks lose

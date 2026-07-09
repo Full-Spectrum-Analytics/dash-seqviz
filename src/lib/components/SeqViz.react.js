@@ -220,6 +220,16 @@ SeqViz.propTypes = {
     export_result: PropTypes.string,
 
     /**
+     * Guard for very long sequences. seqviz's linear viewer renders per-base
+     * DOM and can hang the tab on multi-megabase input. When set and the
+     * sequence length exceeds this value, the component renders a lightweight
+     * placeholder instead of mounting the viewer. Omit (default) for no
+     * guard. For very long sequences that must render, prefer
+     * viewer="circular".
+     */
+    max_seq_length: PropTypes.number,
+
+    /**
      * Read-only. The most recently clicked feature (annotation, primer,
      * enzyme, translation, highlight, or search hit), as
      * { type, name, start, end, direction, id, color }. Updated only when a
