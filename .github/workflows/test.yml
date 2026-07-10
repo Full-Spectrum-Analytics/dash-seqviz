@@ -40,6 +40,9 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r tests/requirements.txt
+          # dash[testing] caps selenium<=4.2.0; upgrade separately for
+          # Selenium Manager (auto-provisions a matching chromedriver).
+          pip install -U "selenium>=4.25"
 
       - name: Build component (JS + Python)
         # build:backends runs dash-generate-components, which comes from the
