@@ -1,13 +1,15 @@
 /**
  * Shared site navigation.
  * Renders a sticky top bar into any element with id="site-nav-mount".
- * The active link is determined from <body data-page="home|explorer|reference">.
+ * The active link is determined from
+ * <body data-page="home|explorer|integrations|reference">.
  */
 (function () {
     var LINKS = [
-        { id: "home",      label: "Home",                href: "./" },
-        { id: "explorer",  label: "Component Explorer",  href: "./explorer.html" },
-        { id: "reference", label: "Reference",           href: "./reference.html" }
+        { id: "home",         label: "Home",               href: "./" },
+        { id: "explorer",     label: "Component Explorer", href: "./explorer.html" },
+        { id: "integrations", label: "Integrations",       href: "./integrations.html" },
+        { id: "reference",    label: "Reference",          href: "./reference.html" }
     ];
 
     function renderNav() {

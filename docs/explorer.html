@@ -32,6 +32,9 @@
     <meta name="twitter:image:alt" content="dash-seqviz — DNA, RNA & protein sequence visualization for Dash">
 
     <link rel="stylesheet" href="./assets/site.css?v=22">
+    <!-- SeqViz theme overrides (mirrors dash_seqviz/dash_seqviz.css) so the
+         theme control below actually recolors the viewer. -->
+    <link rel="stylesheet" href="./assets/seqviz-themes.css?v=1">
     <style>
         /* Explorer-specific controls — not shared with other pages */
         .demo-controls {
@@ -118,6 +121,19 @@
 
         .demo-section { background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
         .example-section { background: var(--color-surface); border-top: 1px solid var(--color-border); }
+
+        .export-actions { display: flex; align-items: center; gap: 8px; }
+
+        .seqviz-legend {
+            display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center;
+            margin-top: 12px; font-size: 0.85rem;
+        }
+        .seqviz-legend:empty { display: none; }
+        .seqviz-legend .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+        .seqviz-legend .legend-swatch {
+            width: 14px; height: 14px; border-radius: 3px; flex: 0 0 auto;
+            border: 1px solid rgba(0,0,0,0.15);
+        }
     </style>
 </head>
 <body data-page="explorer">
@@ -222,6 +238,20 @@
                 <input id="ctrl-zoom" type="range" min="1" max="100" value="60">
             </div>
             <div class="ctrl">
+                <label for="ctrl-theme">Theme</label>
+                <select id="ctrl-theme">
+                    <option value="light" selected>Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="auto">Auto (follow OS/page)</option>
+                    <option value="okabe-ito-light">Okabe-Ito (light)</option>
+                    <option value="okabe-ito-dark">Okabe-Ito (dark)</option>
+                    <option value="colorbrewer-light">ColorBrewer (light)</option>
+                    <option value="colorbrewer-dark">ColorBrewer (dark)</option>
+                    <option value="tol-light">Paul Tol (light)</option>
+                    <option value="tol-dark">Paul Tol (dark)</option>
+                </select>
+            </div>
+            <div class="ctrl">
                 <label>Toggles</label>
                 <label class="ctrl-inline">
                     <input id="ctrl-complement" type="checkbox" checked> Show complement
@@ -284,12 +314,22 @@
             <div id="enzyme-selected" class="enzyme-selected"></div>
         </div>
 
-        <h3 style="margin-top: 28px;">Viewer</h3>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 28px;">
+            <h3 style="margin: 0;">Viewer</h3>
+            <div class="export-actions">
+                <span style="font-size: 0.78rem; font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.03em;">Export figure</span>
+                <button id="btn-export-svg" type="button" class="btn btn-light" style="padding: 6px 14px; border: 1px solid var(--color-border); font-size: 0.85rem;">SVG</button>
+                <button id="btn-export-png" type="button" class="btn btn-light" style="padding: 6px 14px; border: 1px solid var(--color-border); font-size: 0.85rem;">PNG</button>
+            </div>
+        </div>
         <div id="seqviz-root"></div>
+
+        <div id="legend" class="seqviz-legend" aria-label="Annotation legend"></div>
 
         <div class="readouts">
             <div id="selection-readout" class="readout">selection: none</div>
             <div id="search-readout" class="readout">search_results: 0</div>
+            <div id="clicked-readout" class="readout">clicked_element: none</div>
             <div id="copied-banner" class="readout"></div>
         </div>
     </div>
@@ -341,11 +381,11 @@
 <script src="./enzymes.js"></script>
 
 <!-- Shared site nav + adapter -->
-<script src="./assets/nav.js"></script>
+<script src="./assets/nav.js?v=2"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
 
 <!-- Explorer demo logic -->
-<script src="./demo.js?v=9"></script>
+<script src="./demo.js?v=10"></script>
 
 <script>
     if (window.SeqVizSite && window.SeqVizSite.wireCopy) {
