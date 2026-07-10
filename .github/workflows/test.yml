@@ -31,9 +31,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Chrome (for selenium integration tests)
+        # Install Chrome only. Do NOT install a chromedriver: Selenium Manager
+        # (bundled with selenium >= 4.6) auto-provisions a driver matching the
+        # installed Chrome. A separately-installed chromedriver tends to drift
+        # a major version ahead of Chrome and breaks webdriver init.
         uses: browser-actions/setup-chrome@v1
-        with:
-          install-chromedriver: true
 
       - name: Install npm dependencies
         run: npm ci
