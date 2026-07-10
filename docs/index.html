@@ -41,6 +41,16 @@
             border-radius: var(--radius);
             padding: 20px;
         }
+
+        /* 12 feature cards -> a tidy 3 x 4 grid on desktop, collapsing
+           responsively. Scoped to features so the audience grid is untouched. */
+        #features .features-grid { grid-template-columns: repeat(3, 1fr); }
+        @media (max-width: 860px) {
+            #features .features-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 560px) {
+            #features .features-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body data-page="home">
@@ -119,8 +129,18 @@
             </div>
             <div class="feature-card">
                 <div class="feature-icon" aria-hidden="true">&#x267F;</div>
-                <h3>Accessible &amp; experiment-ready</h3>
-                <p>ARIA-labeled viewer, a <code>max_seq_length</code> guard for large genomes, and optional MLflow logging.</p>
+                <h3>Accessibility</h3>
+                <p>ARIA <code>role</code> and an auto-generated <code>aria_label</code> so screen readers announce the viewer meaningfully.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" aria-hidden="true">&#x1F6E1;&#xFE0F;</div>
+                <h3>Large-genome guard</h3>
+                <p><code>max_seq_length</code> renders a lightweight placeholder instead of hanging the tab on multi-megabase sequences.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" aria-hidden="true">&#x1F4C8;</div>
+                <h3>MLflow logging</h3>
+                <p>Optional integration: log a viewer as an interactive HTML artifact and compare variants across runs.</p>
             </div>
         </div>
     </div>
@@ -177,7 +197,7 @@ if __name__ == "__main__":
     </p>
 </footer>
 
-<script src="./assets/nav.js"></script>
+<script src="./assets/nav.js?v=2"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
 
 <script>

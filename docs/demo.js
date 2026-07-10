@@ -57,6 +57,49 @@
         "#06b6d4", "#84cc16", "#f97316", "#6366f1", "#14b8a6", "#e11d48"
     ];
 
+    // ---- Theming (mirrors src/lib/fragments/SeqViz.react.js) -----------------
+
+    // CVD-safe qualitative palettes. When a palette theme is active, element
+    // colors are seeded from these by index (same idea the Dash wrapper uses).
+    var PALETTES = {
+        "okabe-ito-light": ["#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"],
+        "okabe-ito-dark":  ["#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"],
+        "colorbrewer-light": ["#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3", "#a6d854", "#ffd92f", "#e5c494", "#b3b3b3"],
+        "colorbrewer-dark":  ["#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e", "#e6ab02", "#a6761d", "#666666"],
+        "tol-light": ["#4477AA", "#EE6677", "#228833", "#CCBB44", "#66CCEE", "#AA3377", "#BBBBBB"],
+        "tol-dark":  ["#4477AA", "#EE6677", "#228833", "#CCBB44", "#66CCEE", "#AA3377", "#BBBBBB"]
+    };
+
+    // seqviz selection types that count as a feature click (for clicked_element).
+    var FEATURE_TYPES = {
+        ANNOTATION: 1, PRIMER: 1, ENZYME: 1, TRANSLATION: 1,
+        TRANSLATION_HANDLE: 1, HIGHLIGHT: 1, FIND: 1
+    };
+
+    var SVG_NS = "http://www.w3.org/2000/svg";
+
+    function paletteFor(theme) { return PALETTES[theme] || null; }
+
+    // "auto" resolves to the OS/page color scheme.
+    function resolvedTheme() {
+        var t = state.theme || "light";
+        if (t === "auto") {
+            t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)
+                ? "dark" : "light";
+        }
+        return t;
+    }
+
+    function isDarkTheme(t) { return /dark$/.test(t); }
+
+    // Seed palette colors by index (used when a palette theme is active).
+    function applyPalette(items, palette) {
+        if (!palette || !items) { return items; }
+        return items.map(function (it, i) {
+            return Object.assign({}, it, { color: palette[i % palette.length] });
+        });
+    }
+
     // ---- State ---------------------------------------------------------------
 
     var state = {
@@ -72,6 +115,7 @@
         rotateOnScroll: true,
         showTranslations: true,
         bpColors: { A: "#1f78b4", T: "#33a02c", C: "#e31a1c", G: "#ff7f00" },
+        theme: "light",
         enzymes: ["PstI", "EcoRI", "XbaI", "SpeI"],
         enzymeFilter: "",
         accession: null, // set when a sequence is fetched from NCBI
@@ -103,6 +147,13 @@
         var end   = Math.max(sel.start, sel.end);
         var text  = state.seq.substring(start, end);
         banner.textContent = "Selection: " + text.substring(0, 50) + (text.length > 50 ? "..." : "");
+
+        // clicked_element: only updates on feature clicks (bare selections
+        // leave it), mirroring the component's read-only prop.
+        if (sel.type && FEATURE_TYPES[sel.type]) {
+            el("clicked-readout").textContent = "clicked_element: " + sel.type +
+                " " + (sel.name || "") + " (" + sel.start + ".." + sel.end + ")";
+        }
     }
 
     function handleSearch(results) {
@@ -110,14 +161,21 @@
         el("search-readout").textContent = "search_results: " + count;
     }
 
+    // Elements as the viewer will render them: for a palette theme, colors are
+    // seeded from the palette by index; otherwise the configured colors stand.
+    function resolvedAnnotations() {
+        return applyPalette(state.annotations, paletteFor(resolvedTheme()));
+    }
+
     function getProps() {
+        var palette = paletteFor(resolvedTheme());
         return {
             name: state.name,
             seq: state.seq,
             viewer: state.viewer,
-            annotations: state.annotations,
-            primers: state.primers,
-            translations: state.showTranslations ? state.translations : [],
+            annotations: resolvedAnnotations(),
+            primers: applyPalette(state.primers, palette),
+            translations: state.showTranslations ? applyPalette(state.translations, palette) : [],
             enzymes: state.enzymes,
             search: state.search,
             zoom: state.zoom,
@@ -130,13 +188,36 @@
         };
     }
 
+    // Apply the theme to the wrapper: the CSS in seqviz-themes.css is scoped
+    // to [data-dash-seqviz-theme], so setting it recolors the mounted viewer.
+    function applyThemeToDom() {
+        var t = resolvedTheme();
+        var root = el("seqviz-root");
+        root.setAttribute("data-dash-seqviz-theme", t);
+        root.style.background = isDarkTheme(t) ? "#1a1b1e" : "#fff";
+    }
+
+    function renderLegend() {
+        var host = el("legend");
+        if (!host) { return; }
+        var anns = resolvedAnnotations();
+        if (!anns || !anns.length) { host.innerHTML = ""; return; }
+        host.innerHTML = anns.map(function (a) {
+            var color = /^#[0-9a-zA-Z]+$|^[a-zA-Z]+$/.test(a.color || "") ? a.color : "#888";
+            return '<span class="legend-item"><span class="legend-swatch" style="background:' +
+                   color + '"></span>' + escapeHtml(a.name || "") + "</span>";
+        }).join("");
+    }
+
     function render() {
+        applyThemeToDom();
         if (!viewer) {
             viewer = seqviz.Viewer("seqviz-root", getProps());
             viewer.render();
         } else {
             viewer.setState(getProps());
         }
+        renderLegend();
         updateLiveSnippet();
     }
 
@@ -197,6 +278,9 @@
         lines.push("        zoom={\"linear\": " + (s.zoom && s.zoom.linear != null ? s.zoom.linear : 50) + "},");
         lines.push("        show_complement=" + pyBool(s.showComplement) + ",");
         lines.push("        rotate_on_scroll=" + pyBool(s.rotateOnScroll) + ",");
+        if (s.theme && s.theme !== "light") {
+            lines.push("        theme=" + pyStr(s.theme) + ",");
+        }
 
         if (s.showTranslations && s.translations && s.translations.length) {
             var trans = s.translations.map(function (t) {
@@ -546,6 +630,108 @@
         return div.innerHTML;
     }
 
+    // ---- Figure export (mirrors the component's export_request/result) -------
+    //
+    // Serializes the live viewer SVG(s) into a self-contained SVG (embedding
+    // the la-vz/theme CSS rules) and downloads it, or rasterizes to PNG.
+
+    function collectViewerCss() {
+        var out = "";
+        var sheets = Array.prototype.slice.call(document.styleSheets || []);
+        sheets.forEach(function (sheet) {
+            var rules;
+            try { rules = sheet.cssRules; } catch (e) { return; }
+            if (!rules) { return; }
+            Array.prototype.slice.call(rules).forEach(function (rule) {
+                var sel = rule.selectorText || "";
+                if (sel.indexOf("la-vz") !== -1 || sel.indexOf("data-dash-seqviz-theme") !== -1) {
+                    out += rule.cssText + "\n";
+                }
+            });
+        });
+        return out;
+    }
+
+    function buildStandaloneSvg(root, theme, background) {
+        var svgs = Array.prototype.slice.call(root.querySelectorAll("svg")).filter(function (s) {
+            if (s.hasAttribute("aria-hidden")) { return false; }
+            var r = s.getBoundingClientRect();
+            return r.width > 1 && r.height > 1;
+        });
+        if (!svgs.length) { return null; }
+
+        var serializer = new XMLSerializer();
+        var width = 0, height = 0, body = "";
+        svgs.forEach(function (s) {
+            var r = s.getBoundingClientRect();
+            var w = Math.ceil(parseFloat(s.getAttribute("width")) || r.width);
+            var h = Math.ceil(parseFloat(s.getAttribute("height")) || r.height);
+            var clone = s.cloneNode(true);
+            clone.setAttribute("xmlns", SVG_NS);
+            clone.setAttribute("x", "0");
+            clone.setAttribute("y", String(height));
+            clone.setAttribute("width", String(w));
+            clone.setAttribute("height", String(h));
+            body += serializer.serializeToString(clone);
+            width = Math.max(width, w);
+            height += h;
+        });
+
+        var css = collectViewerCss().replace(/]]>/g, "]]&gt;");
+        var svg =
+            '<svg xmlns="' + SVG_NS + '" width="' + width + '" height="' + height + '" ' +
+            'viewBox="0 0 ' + width + " " + height + '" data-dash-seqviz-theme="' + theme + '">' +
+            "<style><![CDATA[\n" + css + "]]></style>" +
+            '<rect x="0" y="0" width="' + width + '" height="' + height + '" fill="' + background + '"/>' +
+            body + "</svg>";
+        return { svg: svg, width: width, height: height };
+    }
+
+    function svgToDataUri(svg) {
+        return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    }
+
+    function svgToPngDataUri(svg, width, height, scale) {
+        return new Promise(function (resolve, reject) {
+            var img = new Image();
+            img.onload = function () {
+                try {
+                    var canvas = document.createElement("canvas");
+                    canvas.width = Math.max(1, Math.round(width * scale));
+                    canvas.height = Math.max(1, Math.round(height * scale));
+                    var ctx = canvas.getContext("2d");
+                    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+                    ctx.drawImage(img, 0, 0);
+                    resolve(canvas.toDataURL("image/png"));
+                } catch (e) { reject(e); }
+            };
+            img.onerror = reject;
+            img.src = svgToDataUri(svg);
+        });
+    }
+
+    function triggerDownload(uri, filename) {
+        var a = document.createElement("a");
+        a.href = uri;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    function exportFigure(fmt) {
+        var t = resolvedTheme();
+        var bg = isDarkTheme(t) ? "#1a1b1e" : "#ffffff";
+        var built = buildStandaloneSvg(el("seqviz-root"), t, bg);
+        if (!built) { return; }
+        if (fmt === "png") {
+            svgToPngDataUri(built.svg, built.width, built.height, 2)
+                .then(function (uri) { triggerDownload(uri, "seqviz-figure.png"); });
+        } else {
+            triggerDownload(svgToDataUri(built.svg), "seqviz-figure.svg");
+        }
+    }
+
     // ---- Enzyme multi-select -------------------------------------------------
 
     function renderEnzymeList() {
@@ -653,6 +839,22 @@
         state.showTranslations = ev.target.checked;
         render();
     });
+
+    el("ctrl-theme").addEventListener("change", function (ev) {
+        state.theme = ev.target.value;
+        render();
+    });
+
+    // Keep "auto" live: re-render if the OS scheme flips while auto is active.
+    if (window.matchMedia) {
+        var mql = window.matchMedia("(prefers-color-scheme: dark)");
+        var onSchemeChange = function () { if (state.theme === "auto") { render(); } };
+        if (mql.addEventListener) { mql.addEventListener("change", onSchemeChange); }
+        else if (mql.addListener) { mql.addListener(onSchemeChange); }
+    }
+
+    el("btn-export-svg").addEventListener("click", function () { exportFigure("svg"); });
+    el("btn-export-png").addEventListener("click", function () { exportFigure("png"); });
 
     function wireBpColor(inputId, base) {
         el(inputId).addEventListener("input", function (ev) {
