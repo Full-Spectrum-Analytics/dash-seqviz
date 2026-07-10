@@ -1,7 +1,6 @@
 import plotly.express as px
 import random
 from dash import Dash, html, dcc, Input, Output, ctx
-from dash.exceptions import PreventUpdate
 from typing import Optional, List, Dict
 from dash_seqviz import SeqViz, legend
 
@@ -688,9 +687,8 @@ app.layout = html.Div(
                         html.Button("Export SVG", id="export-svg"),
                         html.Button("Export PNG", id="export-png",
                                     style={"marginLeft": 8}),
-                        html.A("Download", id="export-download",
-                               download="seqviz-figure.svg", href="",
-                               style={"marginLeft": 16}),
+                        # hidden sink for the clientside auto-download callback
+                        html.Div(id="export-sink", style={"display": "none"}),
                     ],
                     style={"minWidth": 320},
                 ),
@@ -919,17 +917,26 @@ def request_export(svg_n, png_n):
     return {"format": "png", "token": png_n or 0, "scale": 2}
 
 
-@app.callback(
-    Output("export-download", "href"),
-    Output("export-download", "download"),
+# When an export lands, trigger the browser download directly (no manual
+# link). Runs clientside so it can synthesize and click an <a download>.
+app.clientside_callback(
+    """
+    function(uri) {
+        if (!uri) { return window.dash_clientside.no_update; }
+        var ext = uri.indexOf('data:image/png') === 0 ? 'png' : 'svg';
+        var a = document.createElement('a');
+        a.href = uri;
+        a.download = 'seqviz-figure.' + ext;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        return '';
+    }
+    """,
+    Output("export-sink", "children"),
     Input("seqviz-demo", "export_result"),
     prevent_initial_call=True,
 )
-def update_download(uri):
-    if not uri:
-        raise PreventUpdate
-    ext = "png" if uri.startswith("data:image/png") else "svg"
-    return uri, f"seqviz-figure.{ext}"
 
 
 @app.callback(
