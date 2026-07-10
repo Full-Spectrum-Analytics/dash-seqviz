@@ -56,22 +56,16 @@ python -m http.server 8899 --directory docs
 ### PR preview deployments
 
 Each pull request gets a live preview of the `docs/` site on **Cloudflare
-Pages** via the `docs-preview` GitHub Actions workflow, which comments the
-preview URL on the PR. It activates once these repository secrets are set
-(Settings -> Secrets and variables -> Actions):
+Pages**, via Cloudflare's native Git integration (no repo workflow or secrets
+required). One-time setup in the Cloudflare dashboard:
 
-- `CLOUDFLARE_API_TOKEN` — a token with the **Cloudflare Pages: Edit**
-  permission.
-- `CLOUDFLARE_ACCOUNT_ID` — your Cloudflare account id.
+1. Workers &amp; Pages -> Create -> Pages -> connect this GitHub repository.
+2. Build command: **(none)** &mdash; the site is static.
+3. Build output directory: **`docs`**.
 
-One-time: create the Pages project named `dash-seqviz` (Cloudflare dashboard,
-or `wrangler pages project create dash-seqviz`). Until the secrets exist, the
-workflow skips cleanly and adds no failing checks.
-
-Prefer zero repo config? Cloudflare Pages' native Git integration works too:
-in the Cloudflare dashboard create a Pages project connected to this repo with
-**build command: (none)** and **build output directory: `docs`** — it then
-builds every PR with an automatic preview URL and PR comment.
+Cloudflare then builds every pull request automatically, posts the preview URL
+as a PR comment, and serves the production branch (`main`) separately.
+GitHub Pages (`main:/docs`, serving <https://dash-seqviz.com>) is unaffected.
 
 ## Releases
 
