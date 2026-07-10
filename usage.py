@@ -1,8 +1,9 @@
 import plotly.express as px
 import random
-from dash import Dash, html, dcc, Input, Output
+from dash import Dash, html, dcc, Input, Output, ctx
+from dash.exceptions import PreventUpdate
 from typing import Optional, List, Dict
-from dash_seqviz import SeqViz
+from dash_seqviz import SeqViz, legend
 
 # NEB restriction enzyme names (for multi-select UI)
 NEB_ENZYME_NAMES: List[str] = [
@@ -534,12 +535,19 @@ app.layout = html.Div(
                             options=[
                                 {"label": "Light", "value": "light"},
                                 {"label": "Dark", "value": "dark"},
+                                {"label": "Auto (follow page)", "value": "auto"},
+                                {"label": "Okabe-Ito (light)", "value": "okabe-ito-light"},
+                                {"label": "Okabe-Ito (dark)", "value": "okabe-ito-dark"},
+                                {"label": "ColorBrewer (light)", "value": "colorbrewer-light"},
+                                {"label": "ColorBrewer (dark)", "value": "colorbrewer-dark"},
+                                {"label": "Paul Tol (light)", "value": "tol-light"},
+                                {"label": "Paul Tol (dark)", "value": "tol-dark"},
                             ],
                             value="light",
                             clearable=False,
                         ),
                     ],
-                    style={"minWidth": 160},
+                    style={"minWidth": 200},
                 ),
             ],
             style={
@@ -663,6 +671,41 @@ app.layout = html.Div(
         html.Div(id="search-readout"),
         html.Div(id="copied-banner", style={"marginTop": 6, "color": "gray"}),
         html.Div(id="file-load-status", style={"marginTop": 8, "fontStyle": "italic"}),
+        html.Hr(),
+        # --- roadmap feature showcase -------------------------------------
+        html.Div(
+            [
+                html.Div(
+                    [
+                        html.H4("Annotation legend (E2)"),
+                        html.Div(id="legend-area"),
+                    ],
+                    style={"minWidth": 260},
+                ),
+                html.Div(
+                    [
+                        html.H4("Export figure (B1)"),
+                        html.Button("Export SVG", id="export-svg"),
+                        html.Button("Export PNG", id="export-png",
+                                    style={"marginLeft": 8}),
+                        html.A("Download", id="export-download",
+                               download="seqviz-figure.svg", href="",
+                               style={"marginLeft": 16}),
+                    ],
+                    style={"minWidth": 320},
+                ),
+                html.Div(
+                    [
+                        html.H4("Clicked element (C1)"),
+                        html.Div("Click an annotation/primer in the viewer.",
+                                 id="clicked-readout",
+                                 style={"fontFamily": "monospace"}),
+                    ],
+                    style={"minWidth": 280},
+                ),
+            ],
+            style={"display": "flex", "gap": 32, "flexWrap": "wrap"},
+        ),
     ]
 )
 
@@ -820,9 +863,10 @@ def update_rotate_on_scroll(vals: Optional[List[str]]) -> bool:
     Input("theme", "value"),
 )
 def update_theme(theme: Optional[str]):
-    t = "dark" if theme == "dark" else "light"
-    bg = "#1a1b1e" if t == "dark" else "#ffffff"
-    fg = "#c1c2c5" if t == "dark" else "#1a1b1e"
+    t = theme or "light"
+    is_dark = t.endswith("dark")
+    bg = "#1a1b1e" if is_dark else "#ffffff"
+    fg = "#c1c2c5" if is_dark else "#1a1b1e"
     style = {
         "height": "62vh",
         "width": "100%",
@@ -852,6 +896,51 @@ def update_bp_colors(
     if isinstance(g, str) and g.strip():
         colors["G"] = g.strip()
     return colors
+
+
+@app.callback(
+    Output("legend-area", "children"),
+    Input("seqviz-demo", "annotations"),
+    Input("seqviz-demo", "theme"),
+)
+def update_legend(annotations, theme):
+    return legend(annotations or [], theme=theme)
+
+
+@app.callback(
+    Output("seqviz-demo", "export_request"),
+    Input("export-svg", "n_clicks"),
+    Input("export-png", "n_clicks"),
+    prevent_initial_call=True,
+)
+def request_export(svg_n, png_n):
+    if ctx.triggered_id == "export-svg":
+        return {"format": "svg", "token": svg_n or 0}
+    return {"format": "png", "token": png_n or 0, "scale": 2}
+
+
+@app.callback(
+    Output("export-download", "href"),
+    Output("export-download", "download"),
+    Input("seqviz-demo", "export_result"),
+    prevent_initial_call=True,
+)
+def update_download(uri):
+    if not uri:
+        raise PreventUpdate
+    ext = "png" if uri.startswith("data:image/png") else "svg"
+    return uri, f"seqviz-figure.{ext}"
+
+
+@app.callback(
+    Output("clicked-readout", "children"),
+    Input("seqviz-demo", "clicked_element"),
+    prevent_initial_call=True,
+)
+def show_clicked(el):
+    if not el:
+        return "none"
+    return f"{el.get('type')}: {el.get('name')} ({el.get('start')}..{el.get('end')})"
 
 
 if __name__ == "__main__":
