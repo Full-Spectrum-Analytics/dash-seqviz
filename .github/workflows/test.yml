@@ -35,15 +35,19 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Build component (JS + Python)
-        run: npm run build
-
       - name: Install Python dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r tests/requirements.txt
-          pip install .
+
+      - name: Build component (JS + Python)
+        # build:backends runs dash-generate-components, which comes from the
+        # dash package installed in the previous step, so deps must be first.
+        run: npm run build
+
+      - name: Install the built package
+        run: pip install .
 
       - name: Run Python tests
         run: |
