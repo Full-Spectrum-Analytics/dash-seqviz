@@ -31,7 +31,7 @@
     <meta name="twitter:image" content="https://dash-seqviz.com/assets/og-image.png">
     <meta name="twitter:image:alt" content="dash-seqviz — DNA, RNA & protein sequence visualization for Dash">
 
-    <link rel="stylesheet" href="./assets/site.css?v=22">
+    <link rel="stylesheet" href="./assets/site.css?v=23">
     <!-- SeqViz theme overrides (mirrors dash_seqviz/dash_seqviz.css) so the
          theme control below actually recolors the viewer. -->
     <link rel="stylesheet" href="./assets/seqviz-themes.css?v=1">
@@ -339,15 +339,30 @@
 <section id="install">
     <div class="container">
         <h2>Installation</h2>
-        <div class="install-grid">
-            <div class="install-card">
-                <h3>Conda</h3>
-                <pre><code>conda install -c conda-forge dash-seqviz</code></pre>
+        <div class="install-tabs" data-install>
+            <div class="install-tabs-bar" role="tablist" aria-label="Package manager">
+                <button class="install-tab is-active" data-target="pip" role="tab" aria-selected="true">pip</button>
+                <button class="install-tab" data-target="conda" role="tab" aria-selected="false">conda</button>
+                <button class="install-tab" data-target="mamba" role="tab" aria-selected="false">mamba</button>
+                <button class="install-tab" data-target="pixi" role="tab" aria-selected="false">pixi</button>
             </div>
-            <div class="install-card">
-                <h3>Python (PyPI)</h3>
-                <pre><code>pip install dash-seqviz</code></pre>
+            <div class="install-panel is-active" data-panel="pip">
+                <div class="snippet"><pre><code>pip install dash-seqviz</code></pre></div>
             </div>
+            <div class="install-panel" data-panel="conda">
+                <div class="snippet"><pre><code>conda install -c conda-forge dash-seqviz</code></pre></div>
+            </div>
+            <div class="install-panel" data-panel="mamba">
+                <div class="snippet"><pre><code>mamba install -c conda-forge dash-seqviz</code></pre></div>
+            </div>
+            <div class="install-panel" data-panel="pixi">
+                <div class="snippet"><pre><code>pixi add --pypi dash-seqviz</code></pre></div>
+            </div>
+            <p class="install-note">
+                <code>pip</code> and <code>pixi add --pypi</code> work today. conda-forge
+                availability (<code>conda</code> / <code>mamba</code> / <code>pixi add</code>) is pending review in
+                <a href="https://github.com/conda-forge/staged-recipes/pull/34159" target="_blank" rel="noopener">conda-forge/staged-recipes#34159</a>.
+            </p>
         </div>
     </div>
 </section>
@@ -383,6 +398,7 @@
 <!-- Shared site nav + adapter -->
 <script src="./assets/nav.js?v=2"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
+<script src="./assets/install.js?v=1"></script>
 
 <!-- Explorer demo logic -->
 <script src="./demo.js?v=10"></script>
