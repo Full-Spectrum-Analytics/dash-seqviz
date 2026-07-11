@@ -56,15 +56,22 @@ python -m http.server 8899 --directory docs
 ### PR preview deployments
 
 Each pull request gets a live preview of the `docs/` site on **Cloudflare
-Pages**, via Cloudflare's native Git integration (no repo workflow or secrets
-required). One-time setup in the Cloudflare dashboard:
+Workers** (static assets), via Cloudflare's native Git integration — no repo
+workflow or secrets. The [`wrangler.jsonc`](./wrangler.jsonc) at the repo
+root configures an assets-only Worker that serves `docs/`; Workers Builds
+reads it and deploys on every push.
 
-1. Workers &amp; Pages -> Create -> Pages -> connect this GitHub repository.
-2. Build command: **(none)** &mdash; the site is static.
-3. Build output directory: **`docs`**.
+One-time setup in the Cloudflare dashboard (Workers &amp; Pages → the
+`dash-seqviz` project connected to this repo):
 
-Cloudflare then builds every pull request automatically, posts the preview URL
-as a PR comment, and serves the production branch (`main`) separately.
+1. **Build command: empty.** The site is static — no build step. (Leaving it
+   as the repo's `npm run build` would build the Dash *component*, not the
+   docs, and fail.)
+2. **Deploy command:** `npx wrangler deploy` (the default) — it reads
+   `wrangler.jsonc` and uploads `docs/`.
+3. Enable **non-production branch builds** so each PR gets its own
+   `preview_urls` deployment (posted as a PR comment).
+
 GitHub Pages (`main:/docs`, serving <https://dash-seqviz.com>) is unaffected.
 
 ## Releases

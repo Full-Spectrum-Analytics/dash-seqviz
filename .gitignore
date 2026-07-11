@@ -300,3 +300,5 @@ mlruns/
 mlartifacts/
 
 .pypirc
+# Cloudflare Wrangler cache
+.wrangler/
