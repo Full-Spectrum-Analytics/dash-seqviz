@@ -134,6 +134,11 @@
             width: 14px; height: 14px; border-radius: 3px; flex: 0 0 auto;
             border: 1px solid rgba(0,0,0,0.15);
         }
+        .seqviz-guard {
+            margin: 40px; padding: 20px; border: 1px dashed var(--color-border);
+            border-radius: var(--radius); color: var(--color-text-muted);
+            font-size: 0.9rem; text-align: center;
+        }
     </style>
 </head>
 <body data-page="explorer">
@@ -262,6 +267,20 @@
                 <label class="ctrl-inline">
                     <input id="ctrl-translations" type="checkbox" checked> Show translations (CDS)
                 </label>
+                <label class="ctrl-inline">
+                    <input id="ctrl-primers" type="checkbox" checked> Show primers
+                </label>
+                <label class="ctrl-inline">
+                    <input id="ctrl-highlights" type="checkbox" checked> Show highlights
+                </label>
+            </div>
+            <div class="ctrl">
+                <label for="ctrl-maxlen">max_seq_length guard</label>
+                <input id="ctrl-maxlen" type="number" min="0" step="100"
+                       placeholder="e.g. 500 (blank = off)">
+                <span style="font-size: 0.72rem; color: var(--color-text-muted);">
+                    Renders a placeholder when the sequence is longer than this.
+                </span>
             </div>
         </div>
 
@@ -330,6 +349,7 @@
             <div id="selection-readout" class="readout">selection: none</div>
             <div id="search-readout" class="readout">search_results: 0</div>
             <div id="clicked-readout" class="readout">clicked_element: none</div>
+            <div id="aria-readout" class="readout">aria_label: —</div>
             <div id="copied-banner" class="readout"></div>
         </div>
     </div>
@@ -401,7 +421,7 @@
 <script src="./assets/install.js?v=1"></script>
 
 <!-- Explorer demo logic -->
-<script src="./demo.js?v=10"></script>
+<script src="./demo.js?v=11"></script>
 
 <script>
     if (window.SeqVizSite && window.SeqVizSite.wireCopy) {
