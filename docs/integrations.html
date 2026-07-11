@@ -124,17 +124,21 @@
 
         <h3 style="margin-top: 28px;">Log a run</h3>
         <div class="snippet">
-<pre><code>from dash_seqviz.integrations import mlflow as sv_mlflow
+<pre><code>import mlflow
+from dash_seqviz.integrations import mlflow as sv_mlflow
 
-sv_mlflow.log_seqviz_run({
-    "name": "pUC19",
-    "seq": seq,
-    "annotations": [
-        {"start": 0, "end": 50, "name": "ori", "direction": 1},
-        {"start": 80, "end": 400, "name": "AmpR", "direction": -1},
-    ],
-    "theme": "okabe-ito-light",
-})</code></pre>
+# Logs into the active run, like mlflow.log_figure / mlflow.log_text.
+with mlflow.start_run():
+    mlflow.log_params({"host": "E. coli"})
+    sv_mlflow.log_seqviz({
+        "name": "pUC19",
+        "seq": seq,
+        "annotations": [
+            {"start": 0, "end": 50, "name": "ori", "direction": 1},
+            {"start": 80, "end": 400, "name": "AmpR", "direction": -1},
+        ],
+        "theme": "okabe-ito-light",
+    })</code></pre>
         </div>
 
         <h3 style="margin-top: 28px;">Compare variants of one sequence</h3>
@@ -144,13 +148,15 @@ sv_mlflow.log_seqviz_run({
             them in the MLflow UI and click <strong>Compare</strong>.
         </p>
         <div class="snippet">
-<pre><code>sv_mlflow.log_variants(
-    "pUC19", seq,
+<pre><code>mlflow.set_experiment("plasmids")
+sv_mlflow.log_variants(
+    seq,
     variants=[
         {"run_name": "bare",        "annotations": []},
         {"run_name": "annotated",   "annotations": annotations},
         {"run_name": "dark-theme",  "annotations": annotations, "theme": "dark"},
     ],
+    name="pUC19",
 )</code></pre>
         </div>
 

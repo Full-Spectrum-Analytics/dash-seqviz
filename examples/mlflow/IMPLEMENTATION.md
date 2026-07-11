@@ -150,6 +150,7 @@ view can diff them:
 
 Reference implementation: the packaged module
 `dash_seqviz/integrations/mlflow.py` — `build_seqviz_html`,
-`_apply_palette`, `sequence_features`, `log_seqviz_run`, `log_variants`.
+`_apply_palette`, `sequence_features`, `log_seqviz` (logs the HTML artifact
+into the active run, like `mlflow.log_figure`), `log_variants`.
 [`seqviz_mlflow.py`](seqviz_mlflow.py) is a runnable demo built on it.
 ```

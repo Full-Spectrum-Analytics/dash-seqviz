@@ -50,16 +50,14 @@ def main() -> None:
     args = parser.parse_args()
 
     mlflow.set_tracking_uri(args.tracking_uri)
+    # Select the experiment the idiomatic way (log_variants logs into it).
+    if mlflow.get_experiment_by_name(args.experiment) is None:
+        mlflow.create_experiment(args.experiment, artifact_location=args.artifact_location)
+    mlflow.set_experiment(args.experiment)
+
     seq = "ATGCGTACGT" * 60  # 600 bp demo sequence
 
-    run_ids = log_variants(
-        name="pDemo-GFP",
-        seq=seq,
-        variants=_demo_variants(),
-        experiment_name=args.experiment,
-        base={"viewer": "both"},
-        artifact_location=args.artifact_location,
-    )
+    run_ids = log_variants(seq, _demo_variants(), name="pDemo-GFP", base={"viewer": "both"})
 
     print(f"Logged {len(run_ids)} runs to experiment '{args.experiment}'")
     print(f"Launch the UI with:\n  mlflow ui --backend-store-uri {args.tracking_uri}")
