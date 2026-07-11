@@ -3,29 +3,46 @@
  */
 
 :root {
-    --color-bg: #faf7f2;             /* warm off-white (was cool blue-gray) */
-    --color-surface: #ffffff;
-    /* Full Spectrum Analytics palette (fullspec.dev). Primary is FSA cyan;
-       supporting accents come from the same palette so the docs site, OG
-       card, and parent FSA brand all sit in one tonal family. */
-    --color-primary: #00B1CD;        /* FSA cyan */
-    --color-primary-dark: #0090a8;   /* darker cyan for hover/active */
-    --color-accent-promoter: #91d16e;     /* lime green */
-    --color-accent-terminator: #6c757d;
-    --color-accent-selection: #fe6f52;    /* coral */
-    --color-accent-blue: #2e93fe;         /* secondary blue */
-    --color-accent-purple: #775dba;
-    --color-accent-yellow: #fdd967;
-    --color-text: #2a2530;           /* warm near-black (was cool slate) */
-    --color-text-muted: #6f6675;     /* warm gray (was cool slate) */
-    --color-border: #ece5dd;         /* warm hairline (was cool blue-gray) */
-    --color-code-bg: #0d1117;
-    --color-code-text: #e2e8f0;
-    --color-code-inline: #f4efe9;    /* warm inline-code pill */
-    --radius: 10px;
-    --radius-lg: 18px;
-    --shadow-sm: 0 1px 2px rgba(40,28,20,0.04), 0 3px 10px rgba(40,28,20,0.05);
-    --shadow-md: 0 12px 34px rgba(40,28,20,0.10);
+    /* "Naturalist Press" palette — matches the Phyla / Naturalist Press work
+       page (parchment paper, warm ink, earthy tannin/moss/ochre accents), so
+       our hosted tools share one house style. oklch for tonal consistency. */
+    --parchment:        oklch(95.5% 0.012 80);
+    --parchment-pale:   oklch(97.2% 0.008 80);
+    --parchment-mid:    oklch(92% 0.014 78);
+    --parchment-deep:   oklch(88% 0.018 75);
+    --ink:              oklch(22% 0.02 70);
+    --ink-soft:         oklch(35% 0.025 70);
+    --ink-hairline:        oklch(35% 0.025 70 / 0.18);
+    --ink-hairline-strong: oklch(35% 0.025 70 / 0.32);
+    --tannin:           oklch(42% 0.10 55);   /* warm rust — primary accent */
+    --tannin-deep:      oklch(32% 0.09 55);
+    --moss:             oklch(50% 0.08 140);
+    --moss-deep:        oklch(38% 0.08 140);
+    --ochre:            oklch(62% 0.12 70);
+
+    /* component tokens mapped onto the palette */
+    --color-bg: var(--parchment);
+    --color-surface: var(--parchment-pale);
+    --color-primary: var(--tannin);
+    --color-primary-dark: var(--tannin-deep);
+    --color-accent-promoter: var(--moss);
+    --color-accent-terminator: var(--ink-soft);
+    --color-accent-selection: var(--tannin);
+    --color-accent-blue: var(--moss);
+    --color-accent-purple: var(--tannin-deep);
+    --color-accent-yellow: var(--ochre);
+    --color-text: var(--ink);
+    --color-text-muted: var(--ink-soft);
+    --color-border: var(--ink-hairline);
+    --color-code-bg: oklch(24% 0.02 70);       /* ink code block */
+    --color-code-text: oklch(93% 0.012 80);
+    --color-code-inline: var(--parchment-mid); /* inline-code pill */
+    --radius: 3px;
+    --radius-lg: 4px;
+    --shadow-sm: none;                          /* editorial: hairlines, not shadows */
+    --shadow-md: none;
+    --sans: 'Bricolage Grotesque', 'Source Sans 3', system-ui, -apple-system,
+            "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --max-width: 1200px;
 }
 
@@ -41,19 +58,24 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-                 "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--sans);
     background: var(--color-bg);
     color: var(--color-text);
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
 }
 
 a { color: var(--color-primary); }
 
+/* tint native form controls (checkboxes, range sliders) to the house accent */
+input[type="checkbox"], input[type="radio"], input[type="range"] {
+    accent-color: var(--tannin);
+}
+
 /* ---- Nav ---- */
 .site-nav {
-    background: #fff;
-    border-bottom: 1px solid var(--color-border);
+    background: var(--parchment-pale);
+    border-bottom: 1px solid var(--ink-hairline);
     position: sticky; top: 0; z-index: 50;
 }
 .site-nav-inner {
@@ -85,7 +107,7 @@ a { color: var(--color-primary); }
 }
 .site-nav-links a:hover { background: var(--color-bg); color: var(--color-text); }
 .site-nav-links a.active {
-    background: #e6f7fb;
+    background: var(--parchment-mid);
     color: var(--color-primary);
 }
 .site-nav-github {
@@ -105,51 +127,63 @@ a { color: var(--color-primary); }
 }
 
 /* ---- Hero ----
-   A teal→cyan base lit by warm amber (top-left) and coral (bottom-right)
-   glows: biological, premium, and inviting rather than cold/techy. White
-   text stays legible on the teal base; the glows sit at the edges. */
+   Editorial "press masthead": ink on parchment, framed by hairline rules,
+   with a thin tannin accent rule. No gradients — flat, printed, naturalist. */
 .hero {
     position: relative;
-    background:
-        radial-gradient(1100px 460px at 12% -20%, rgba(253,217,103,0.30), transparent 60%),
-        radial-gradient(900px 560px at 108% 125%, rgba(254,111,82,0.34), transparent 55%),
-        linear-gradient(140deg, #06424f 0%, #00778a 46%, #00a9c6 100%);
-    color: #fff;
-    padding: 78px 24px 62px;
+    background: var(--color-bg);
+    color: var(--ink);
+    padding: 72px 24px 56px;
     text-align: center;
-    overflow: hidden;
+    border-bottom: 1px solid var(--ink-hairline);
 }
-.hero h1 { font-size: 2.7rem; font-weight: 750; letter-spacing: -0.025em; }
-.hero p  { font-size: 1.15rem; opacity: 0.92; max-width: 720px; margin: 14px auto 0; }
+.hero::before {
+    content: "";
+    display: block;
+    width: 56px;
+    height: 3px;
+    background: var(--tannin);
+    margin: 0 auto 22px;
+}
+.hero h1 {
+    font-size: 2.9rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+}
+.hero p  { font-size: 1.15rem; color: var(--ink-soft); max-width: 720px; margin: 14px auto 0; }
 
 .badges { display: flex; gap: 8px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
 .badges img { height: 22px; }
 
 .hero-actions { margin-top: 28px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
-/* ---- Buttons ---- */
+/* ---- Buttons ---- (square, printed; tannin primary + hairline neutrals) */
 .btn {
     display: inline-block;
     padding: 10px 22px;
-    border-radius: var(--radius);
+    border-radius: 2px;
     font-size: 0.95rem;
     font-weight: 600;
     text-decoration: none;
-    transition: background 0.15s;
-    border: none;
+    transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+    border: 1px solid transparent;
     cursor: pointer;
 }
-.btn-light       { background: #fff; color: var(--color-primary-dark); box-shadow: var(--shadow-sm); }
-.btn-light:hover { background: #fff1ec; }
-.btn-outline       { border: 2px solid rgba(255,255,255,0.6); color: #fff; background: transparent; }
-.btn-outline:hover { background: rgba(255,255,255,0.12); }
-.btn-primary       { background: var(--color-primary); color: #fff; }
-.btn-primary:hover { background: var(--color-primary-dark); }
+/* filled tannin — primary call to action */
+.btn-primary       { background: var(--tannin); color: var(--parchment-pale); border-color: var(--tannin); }
+.btn-primary:hover { background: var(--tannin-deep); border-color: var(--tannin-deep); }
+/* ink hairline outline — secondary */
+.btn-outline       { background: transparent; color: var(--ink); border-color: var(--ink-hairline-strong); }
+.btn-outline:hover { background: var(--parchment-mid); border-color: var(--ink); }
+/* neutral paper — utility buttons (fetch, export, etc.) */
+.btn-light       { background: var(--parchment-pale); color: var(--ink); border-color: var(--ink-hairline-strong); }
+.btn-light:hover { background: var(--parchment-mid); }
 .btn-ghost {
     background: transparent; color: var(--color-text);
-    border: 1px solid var(--color-border);
+    border-color: var(--ink-hairline);
 }
-.btn-ghost:hover { background: var(--color-bg); }
+.btn-ghost:hover { background: var(--parchment-mid); }
 
 /* ---- Sections ---- */
 .container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
@@ -175,16 +209,16 @@ section h3 {
 .feature-card,
 .audience-card {
     background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--ink-hairline);
     border-radius: var(--radius-lg);
     padding: 26px 24px;
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.16s ease, box-shadow 0.16s ease;
+    transition: border-color 0.16s ease, background 0.16s ease;
 }
+/* editorial hover: the hairline firms up, no lift/shadow */
 .feature-card:hover,
 .audience-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
+    border-color: var(--ink-hairline-strong);
+    background: var(--parchment-pale);
 }
 .install-card h3,
 .feature-card h3,
@@ -232,16 +266,18 @@ section h3 {
 .install-panel.is-active { display: block; }
 .install-note { font-size: 0.82rem; color: var(--color-text-muted); margin-top: 12px; }
 .feature-icon {
-    font-size: 1.45rem;
+    font-size: 1.4rem;
     margin-bottom: 14px;
-    width: 46px;
-    height: 46px;
+    width: 44px;
+    height: 44px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 14px;
-    /* warm+cool tint badge so each card reads friendly, not flat */
-    background: linear-gradient(135deg, rgba(0,177,205,0.14), rgba(254,111,82,0.16));
+    border-radius: 3px;
+    /* pressed-paper chip: parchment with a hairline + tannin baseline rule */
+    background: var(--parchment-mid);
+    border: 1px solid var(--ink-hairline);
+    border-bottom: 2px solid var(--tannin);
 }
 
 /* ---- Code ---- */
@@ -425,7 +461,7 @@ footer a:hover { text-decoration: underline; }
     letter-spacing: 0.03em;
     text-transform: uppercase;
 }
-.badge-academic   { background: #e6f7fb; color: #0090a8; }
+.badge-academic   { background: var(--parchment-mid); color: var(--tannin); }
 .badge-industrial { background: #fef3c7; color: #92400e; }
 .badge-tag        { background: var(--color-bg); color: var(--color-text-muted); }
 .badge-complexity { background: #f0fdf4; color: #166534; font-variant-numeric: tabular-nums; }
@@ -963,13 +999,13 @@ details.ex-section > *:not(summary) { margin-top: 12px; }
     border-color: var(--color-primary);
 }
 .narrative a.example-link.cat-academic {
-    background: #e6f7fb;
-    color: #0090a8;
+    background: var(--parchment-mid);
+    color: var(--tannin);
     border-color: #a3dfeb;
 }
 .narrative a.example-link.cat-academic:hover {
     background: #dbeafe;
-    border-color: #0090a8;
+    border-color: var(--tannin);
 }
 .narrative a.example-link.cat-industrial {
     background: #fef3c7;
@@ -1141,7 +1177,7 @@ details.ex-section > *:not(summary) { margin-top: 12px; }
 }
 .enzyme-toggle:hover {
     border-color: var(--color-primary);
-    background: #e6f7fb;
+    background: var(--parchment-mid);
 }
 .enzyme-toggle[aria-pressed="true"] {
     background: var(--color-primary);
@@ -1177,8 +1213,8 @@ details.ex-section > *:not(summary) { margin-top: 12px; }
    through cleanly without a white rectangle around the molecule. */
 .next-examples a:hover { border-color: var(--color-primary); }
 .next-examples a.cat-academic:hover {
-    border-color: #0090a8;
-    background: #e6f7fb;
+    border-color: var(--tannin);
+    background: var(--parchment-mid);
 }
 .next-examples a.cat-industrial:hover {
     border-color: #92400e;
