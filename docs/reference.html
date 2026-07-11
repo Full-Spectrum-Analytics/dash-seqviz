@@ -31,7 +31,10 @@
     <meta name="twitter:image" content="https://dash-seqviz.com/assets/og-image.png">
     <meta name="twitter:image:alt" content="dash-seqviz — DNA, RNA & protein sequence visualization for Dash">
 
-    <link rel="stylesheet" href="./assets/site.css?v=24">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght..96,400..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/site.css?v=25">
     <style>
         /* Reference-page layout: sticky sidebar + prop blocks. */
         .reference-container {
@@ -79,7 +82,7 @@
             color: var(--color-text);
         }
         .reference-sidebar a.active {
-            background: #eff6ff;
+            background: var(--parchment-mid);
             color: var(--color-primary);
         }
 
@@ -94,7 +97,7 @@
         .ref-intro p { color: var(--color-text-muted); font-size: 0.95rem; }
         .ref-intro p + p { margin-top: 8px; }
         .ref-intro code {
-            background: #f1f5f9;
+            background: var(--parchment-mid);
             padding: 2px 6px;
             border-radius: 4px;
             font-size: 0.88em;
@@ -126,7 +129,7 @@
         }
         .prop:target {
             border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px #bfdbfe;
+            box-shadow: 0 0 0 3px oklch(42% 0.10 55 / 0.28);
         }
         .prop-head {
             display: flex;
@@ -164,11 +167,11 @@
             color: var(--color-text-muted);
             white-space: nowrap;
         }
-        .pill.type { background: #f8fafc; }
+        .pill.type { background: var(--parchment-mid); }
         .pill.default {
-            background: #eff6ff;
+            background: var(--parchment-mid);
             color: var(--color-primary);
-            border-color: #bfdbfe;
+            border-color: var(--ink-hairline-strong);
         }
         .pill.readonly {
             background: #fef3c7;
@@ -182,7 +185,7 @@
             margin-bottom: 10px;
         }
         .prop-body p code {
-            background: #f1f5f9;
+            background: var(--parchment-mid);
             color: var(--color-text);
             padding: 2px 6px;
             border-radius: 4px;
@@ -192,7 +195,7 @@
         .prop-body .snippet pre { font-size: 0.82rem; }
 
         .shape-def {
-            background: #f8fafc;
+            background: var(--parchment-mid);
             border: 1px solid var(--color-border);
             border-radius: 6px;
             padding: 10px 14px;
@@ -247,7 +250,7 @@
     <h1>Reference</h1>
     <p>Complete prop reference for the <code>SeqViz</code> Dash component &mdash; every attribute, its type and default, and a Python example you can paste into a Dash app.</p>
     <div class="hero-actions">
-        <a class="btn btn-light" href="./explorer.html">Try props interactively</a>
+        <a class="btn btn-primary" href="./explorer.html">Try props interactively</a>
         <a class="btn btn-outline" href="https://github.com/Full-Spectrum-Analytics/dash-seqviz" target="_blank" rel="noopener">GitHub</a>
     </div>
 </header>
