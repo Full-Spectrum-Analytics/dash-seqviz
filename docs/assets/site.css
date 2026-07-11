@@ -182,6 +182,36 @@ section h3 {
     font-size: 0.9rem;
     color: var(--color-text-muted);
 }
+
+/* ---- Install tabs (package managers) ---- */
+.install-tabs { max-width: 720px; }
+.install-tabs-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    border-bottom: 1px solid var(--color-border);
+}
+.install-tab {
+    appearance: none;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    padding: 8px 16px;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+}
+.install-tab:hover { color: var(--color-text); }
+.install-tab.is-active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+}
+.install-panel { display: none; margin-top: 16px; }
+.install-panel.is-active { display: block; }
+.install-note { font-size: 0.82rem; color: var(--color-text-muted); margin-top: 12px; }
 .feature-icon { font-size: 1.4rem; margin-bottom: 8px; }
 
 /* ---- Code ---- */
