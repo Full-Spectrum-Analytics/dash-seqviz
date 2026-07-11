@@ -39,18 +39,185 @@
          theme control below actually recolors the viewer. -->
     <link rel="stylesheet" href="./assets/seqviz-themes.css?v=1">
     <style>
-        /* Explorer-specific controls — not shared with other pages */
-        .demo-controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-bottom: 20px;
+        /* ============================================================
+           Component Explorer — workbench layout
+           Slim header, then a two-column bench: a tabbed canvas
+           (Preview / Code) on the left, a scrolling controls rail on
+           the right. The core play loop fits one viewport; the page
+           itself does not scroll to reach the viewer or its code.
+           ============================================================ */
+
+        /* --- Toolbar strip: no page title (the nav already names the page).
+               Holds the two controls that read best wide: theme + bp_colors,
+               freeing the right rail to fit everything else without scroll. --- */
+        .explorer-toolbar {
+            position: relative;
+            background: var(--parchment-pale);
+            border-bottom: 1px solid var(--ink-hairline);
+            padding: 11px 0;
         }
-        .ctrl { display: flex; flex-direction: column; gap: 4px; }
+        .explorer-toolbar::before {
+            content: ""; position: absolute; left: 0; top: 0;
+            width: 72px; height: 3px; background: var(--tannin);
+        }
+        .explorer-toolbar .container {
+            display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 16px;
+        }
+        .tb-field { display: flex; flex-direction: column; gap: 4px; }
+        .tb-field > label {
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.06em; color: var(--tannin);
+        }
+        .tb-field select {
+            font-size: 0.88rem; padding: 6px 10px; border: 1px solid var(--color-border);
+            border-radius: var(--radius); background: var(--color-bg);
+        }
+        .tb-field input[type="text"],
+        .tb-field input[type="number"] {
+            font-size: 0.88rem; padding: 6px 10px; border: 1px solid var(--color-border);
+            border-radius: var(--radius); background: var(--color-bg);
+        }
+        .tb-field #ctrl-zoom { width: 128px; }
+        .tb-field #ctrl-search { width: 128px; }
+        .tb-field #ctrl-mismatch { width: 68px; }
+        .tb-field #ctrl-maxlen { width: 104px; }
+        .tb-field #ctrl-legend-title { width: 128px; }
+        .tb-legend { display: flex; align-items: center; gap: 10px; }
+        .tb-legend .ctrl-inline { min-height: 0; }
+        .tb-legend select {
+            font-size: 0.84rem; padding: 6px 7px; width: 96px; border: 1px solid var(--color-border);
+            border-radius: var(--radius); background: var(--color-bg);
+        }
+        .explorer-toolbar .bp-colors { display: flex; gap: 10px; }
+        .explorer-toolbar .bp-colors > div { display: flex; flex-direction: row; align-items: center; gap: 5px; }
+        .explorer-toolbar .bp-colors label { font-size: 0.78rem; font-weight: 700; color: var(--color-text-muted); }
+        .explorer-toolbar .bp-colors input {
+            width: 54px; font-size: 0.8rem; padding: 6px 5px;
+            border: 1px solid var(--color-border); border-radius: var(--radius);
+            background: var(--color-bg); font-family: "SFMono-Regular", Consolas, monospace;
+        }
+
+        /* --- The bench: sized to the viewport so the whole demo sits in
+               one screen. Each column scrolls internally if it needs to;
+               the page itself does not scroll to reach the viewer. --- */
+        .bench { padding: 16px 0 20px; }
+        .bench-grid {
+            display: grid; grid-template-columns: minmax(0, 1fr) 358px;
+            gap: 26px; align-items: stretch;
+            height: calc(100vh - 170px); min-height: 452px;
+        }
+
+        /* --- Canvas (left): tabbed viewer / code --- */
+        .canvas {
+            border: 1px solid var(--ink-hairline); border-radius: var(--radius-lg);
+            background: var(--color-bg); overflow: hidden;
+            display: flex; flex-direction: column; min-height: 0;
+        }
+        .canvas-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 8px 12px; flex-wrap: wrap; padding-right: 12px;
+            background: var(--parchment-pale);
+            border-bottom: 1px solid var(--ink-hairline);
+        }
+        .tabs { display: flex; }
+        .tab {
+            appearance: none; background: none; border: none; cursor: pointer;
+            font: inherit; font-size: 0.88rem; font-weight: 600; letter-spacing: 0.01em;
+            color: var(--color-text-muted); padding: 12px 20px;
+            border-bottom: 2px solid transparent; margin-bottom: -1px;
+            transition: color 120ms ease;
+        }
+        .tab:hover { color: var(--color-text); }
+        .tab[aria-selected="true"] { color: var(--color-text); border-bottom-color: var(--tannin); }
+        .canvas-actions { display: flex; align-items: center; gap: 8px; }
+        .canvas-actions .lbl {
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.05em; color: var(--color-text-muted);
+        }
+        .btn-sm { padding: 6px 13px; font-size: 0.82rem; border: 1px solid var(--color-border); }
+
+        /* Right cluster of the canvas bar: the two "view" selectors sit right
+           by the preview, next to Export. */
+        .canvas-tools { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .bar-field {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.66rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.04em; color: var(--color-text-muted);
+        }
+        .bar-field select {
+            font-size: 0.8rem; padding: 5px 7px; max-width: 116px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius); background: var(--color-bg);
+            text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--color-text);
+        }
+        .bar-sep { width: 1px; align-self: stretch; margin: 6px 0; background: var(--ink-hairline); }
+        .canvas-actions .lbl { white-space: nowrap; }
+
+        /* Both panels overlay the same box; we toggle visibility (not
+           display) so the viewer keeps its measured width and seqviz is
+           never torn down when the Code tab is shown. */
+        .canvas-body { position: relative; flex: 1 1 auto; min-height: 0; }
+        .tabpanel { position: absolute; inset: 0; padding: 14px; overflow: auto; }
+        .tabpanel.is-hidden { visibility: hidden; pointer-events: none; }
+
+        #seqviz-root {
+            border: 1px solid var(--ink-hairline); border-radius: var(--radius);
+            background: #fff; overflow: hidden; min-height: 300px;
+        }
+
+        .readouts {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 6px; margin-top: 10px;
+            font-size: 0.74rem; color: var(--color-text-muted);
+            font-family: "SFMono-Regular", Consolas, monospace;
+        }
+        .readout {
+            background: var(--parchment-pale); border: 1px solid var(--ink-hairline);
+            border-radius: var(--radius); padding: 5px 9px;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
+        }
+        #copied-banner:empty { display: none; }
+
+        /* --- Code tab --- */
+        .install-admonition {
+            display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px;
+            margin: 0 0 12px; padding: 9px 13px;
+            background: var(--parchment-pale); border: 1px solid var(--ink-hairline);
+            border-radius: var(--radius);
+            font-size: 0.82rem; color: var(--color-text-muted);
+        }
+        .install-admonition strong {
+            color: var(--color-text); font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.72rem;
+        }
+        .install-admonition code { font-size: 0.8rem; }
+        .code-panel .snippet { margin: 0; }
+        .code-panel pre { max-height: 452px; overflow: auto; margin: 0; }
+
+        /* --- Controls rail (right) --- */
+        .controls-rail {
+            height: 100%; overflow-y: auto;
+            padding: 2px 10px 2px 0;
+            scrollbar-width: thin;
+        }
+        .ctrl-group { padding: 12px 0; border-bottom: 1px solid var(--ink-hairline); }
+        .ctrl-group:first-child { padding-top: 0; }
+        .ctrl-group:last-child { border-bottom: none; padding-bottom: 4px; }
+        .ctrl-group > h3 {
+            margin: 0 0 9px; font-size: 0.72rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.06em; color: var(--tannin);
+        }
+
+        .ctrl { display: flex; flex-direction: column; gap: 4px; margin-bottom: 9px; }
+        .ctrl:last-child { margin-bottom: 0; }
+        .ctrl-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .ctrl-duo .ctrl { margin-bottom: 9px; }
         .ctrl label {
-            font-size: 0.78rem; font-weight: 600; color: var(--color-text-muted);
+            font-size: 0.76rem; font-weight: 600; color: var(--color-text-muted);
             text-transform: uppercase; letter-spacing: 0.03em;
         }
+        .ctrl .lbl-note { text-transform: none; font-weight: 400; }
+        .ctrl .hint { font-size: 0.72rem; color: var(--color-text-muted); text-transform: none; letter-spacing: 0; font-weight: 400; }
         .ctrl select,
         .ctrl input[type="text"],
         .ctrl input[type="email"],
@@ -60,9 +227,32 @@
         }
         .ctrl input[type="range"] { width: 100%; }
         .ctrl-inline {
-            display: flex; align-items: center; gap: 8px; min-height: 34px;
-            font-size: 0.9rem;
+            display: flex; align-items: center; gap: 7px; min-height: 26px;
+            font-size: 0.85rem; text-transform: none; font-weight: 400; letter-spacing: 0;
+            color: var(--color-text);
         }
+        /* Toggles read fine two-up; halves their vertical footprint. */
+        .toggle-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; }
+        .toggle-stack .ctrl-inline:last-child { grid-column: 1 / -1; }
+
+        .ctrl-row { display: flex; gap: 8px; }
+        .ctrl-row .btn { flex: 1; justify-content: center; }
+        .ctrl-status {
+            display: flex; justify-content: space-between; gap: 10px;
+            margin-top: 8px; min-height: 1.1em;
+            font-size: 0.78rem; color: var(--color-text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+        .ctrl-status #fetch-status { flex: 1; }
+        .ncbi-details { margin-top: 10px; font-size: 0.78rem; color: var(--color-text-muted); }
+        .ncbi-details summary { cursor: pointer; }
+        .ncbi-details .ncbi-body {
+            margin-top: 8px; padding: 12px; background: var(--parchment-pale);
+            border: 1px solid var(--ink-hairline); border-radius: var(--radius);
+        }
+        .ncbi-details p { margin-bottom: 8px; }
+        .ncbi-details p:last-child { margin-bottom: 0; }
+
         .bp-colors { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
         .bp-colors input {
             font-size: 0.82rem; padding: 5px 6px; border: 1px solid var(--color-border);
@@ -81,7 +271,7 @@
             background: #fff;
         }
         .enzyme-list {
-            max-height: 140px; overflow-y: auto; border: 1px solid var(--color-border);
+            max-height: 104px; overflow-y: auto; border: 1px solid var(--color-border);
             border-radius: var(--radius); background: #fff; padding: 4px;
         }
         .enzyme-item {
@@ -90,8 +280,7 @@
         }
         .enzyme-item:hover { background: var(--parchment-mid); }
         .enzyme-selected {
-            display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px;
-            min-height: 20px;
+            display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; min-height: 20px;
         }
         .enzyme-chip {
             display: inline-flex; align-items: center; gap: 4px;
@@ -103,35 +292,13 @@
             font-size: 1rem; line-height: 1; padding: 0;
         }
 
-        #seqviz-root {
-            border: 1px solid var(--color-border); border-radius: var(--radius);
-            background: #fff; min-height: 500px; overflow: hidden;
-        }
-
-        .readouts {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 12px; margin-top: 14px;
-            font-size: 0.85rem; color: var(--color-text-muted);
-            font-family: "SFMono-Regular", Consolas, monospace;
-        }
-        .readout {
-            background: var(--color-bg); border: 1px solid var(--color-border);
-            border-radius: var(--radius); padding: 8px 12px;
-            overflow-wrap: anywhere;
-            word-break: break-all;
-            min-width: 0;
-        }
-
-        .demo-section { background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
-        .example-section { background: var(--color-surface); border-top: 1px solid var(--color-border); }
-
-        .export-actions { display: flex; align-items: center; gap: 8px; }
-
         .seqviz-legend {
             display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center;
             margin-top: 12px; font-size: 0.85rem;
         }
         .seqviz-legend:empty { display: none; }
+        .seqviz-legend.is-vertical { flex-direction: column; align-items: flex-start; gap: 4px; }
+        .seqviz-legend .legend-title { font-weight: 700; margin-right: 4px; }
         .seqviz-legend .legend-item { display: inline-flex; align-items: center; gap: 6px; }
         .seqviz-legend .legend-swatch {
             width: 14px; height: 14px; border-radius: 3px; flex: 0 0 auto;
@@ -142,263 +309,231 @@
             border-radius: var(--radius); color: var(--color-text-muted);
             font-size: 0.9rem; text-align: center;
         }
+
+        /* --- Desktop: lock the whole page to one viewport. The body is a
+               flex column (nav, toolbar, bench, footer); the bench flexes to
+               fill and each column scrolls internally if it must. The page
+               itself cannot scroll. --- */
+        @media (min-width: 961px) {
+            html { height: 100%; }
+            body[data-page="explorer"] {
+                height: 100vh; overflow: hidden;
+                display: flex; flex-direction: column;
+            }
+            body[data-page="explorer"] .bench {
+                flex: 1 1 auto; min-height: 0; padding: 14px 0 10px;
+                display: flex; flex-direction: column; align-items: center;
+            }
+            body[data-page="explorer"] .bench > .container {
+                flex: 1 1 auto; min-height: 0; width: 100%;
+                display: flex; flex-direction: column;
+            }
+            body[data-page="explorer"] .bench-grid {
+                flex: 1 1 auto; min-height: 0; height: auto;
+            }
+            body[data-page="explorer"] > footer {
+                flex: 0 0 auto; padding: 9px 0; font-size: 0.8rem;
+            }
+        }
+
+        /* --- Mobile / narrow: stack the bench and let the page scroll. --- */
+        @media (max-width: 960px) {
+            .bench-grid { grid-template-columns: 1fr; gap: 20px; height: auto; }
+            .controls-rail { height: auto; overflow: visible; padding-right: 0; }
+            .canvas-body { position: static; }
+            .tabpanel { position: static; inset: auto; overflow: visible; }
+            .tabpanel.is-hidden { display: none; }
+        }
     </style>
 </head>
 <body data-page="explorer">
 
 <div id="site-nav-mount"></div>
 
-<!-- Hero -->
-<header class="hero">
-    <h1>Component Explorer</h1>
-    <p>Configure every <code>SeqViz</code> prop live &mdash; load any NCBI accession, tweak the controls, and copy the matching Python snippet.</p>
-    <div class="badges">
-        <a href="https://pypi.org/project/dash-seqviz/" target="_blank" rel="noopener">
-            <img alt="PyPI version" src="https://img.shields.io/pypi/v/dash-seqviz?style=flat-square">
-        </a>
-        <a href="https://www.npmjs.com/package/dash_seqviz" target="_blank" rel="noopener">
-            <img alt="npm version" src="https://img.shields.io/npm/v/dash_seqviz?style=flat-square">
-        </a>
-        <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square">
-    </div>
-    <div class="hero-actions">
-        <a class="btn btn-primary" href="./reference.html">API Reference</a>
-        <a class="btn btn-outline" href="https://github.com/Full-Spectrum-Analytics/dash-seqviz" target="_blank" rel="noopener">GitHub</a>
-    </div>
-</header>
-
-<!-- Live Demo -->
-<section class="demo-section" id="demo">
+<!-- Config bar: the knobs. Topology + Theme live by the preview (canvas bar). -->
+<div class="explorer-toolbar">
     <div class="container">
-        <h2>Live demo</h2>
-        <p style="margin-bottom: 24px; color: var(--color-text-muted);">
-            This explorer mirrors the controls available in <code>usage.py</code>. All rendering happens client-side
-            using the <a href="https://github.com/Lattice-Automation/seqviz" target="_blank" rel="noopener">seqviz</a> library loaded from unpkg.
-        </p>
+        <div class="tb-field">
+            <label for="ctrl-zoom">Zoom (linear): <span id="zoom-val">60</span></label>
+            <input id="ctrl-zoom" type="range" min="1" max="100" value="60">
+        </div>
+        <div class="tb-field">
+            <label for="ctrl-search">Search motif</label>
+            <input id="ctrl-search" type="text" value="ttnnnaat" placeholder="e.g. GCTAGC">
+        </div>
+        <div class="tb-field">
+            <label for="ctrl-mismatch">Mismatch</label>
+            <input id="ctrl-mismatch" type="number" min="0" step="1" value="0">
+        </div>
+        <div class="tb-field">
+            <label for="ctrl-maxlen">max_seq_length</label>
+            <input id="ctrl-maxlen" type="number" min="0" step="100" placeholder="blank = off">
+        </div>
+        <div class="tb-field tb-bp">
+            <label>bp_colors (A/T/C/G)</label>
+            <div class="bp-colors">
+                <div><label for="ctrl-bp-a">A</label><input id="ctrl-bp-a" type="text" value="#1f78b4"></div>
+                <div><label for="ctrl-bp-t">T</label><input id="ctrl-bp-t" type="text" value="#33a02c"></div>
+                <div><label for="ctrl-bp-c">C</label><input id="ctrl-bp-c" type="text" value="#e31a1c"></div>
+                <div><label for="ctrl-bp-g">G</label><input id="ctrl-bp-g" type="text" value="#ff7f00"></div>
+            </div>
+        </div>
+        <div class="tb-field">
+            <label>Legend</label>
+            <div class="tb-legend">
+                <label class="ctrl-inline"><input id="ctrl-legend-show" type="checkbox" checked> Show</label>
+                <select id="ctrl-legend-dir" aria-label="Legend layout">
+                    <option value="horizontal" selected>Horizontal</option>
+                    <option value="vertical">Vertical</option>
+                </select>
+            </div>
+        </div>
+        <div class="tb-field">
+            <label for="ctrl-legend-title">Legend title</label>
+            <input id="ctrl-legend-title" type="text" placeholder="(optional)">
+        </div>
+    </div>
+</div>
 
-        <h3>Load sequence from NCBI</h3>
-        <div class="demo-controls" style="grid-template-columns: 1fr 1fr auto auto;">
-            <div class="ctrl">
-                <label for="ctrl-accession">NCBI accession</label>
-                <div style="display: flex; gap: 6px;">
-                    <button id="btn-accession-sample" type="button" class="btn btn-light"
-                            style="padding: 7px 12px; border: 1px solid var(--color-border); white-space: nowrap; font-size: 0.85rem;"
-                            title="Pick a random example accession">Try a sample</button>
-                    <input id="ctrl-accession" type="text" value="" placeholder="e.g. MN623123.1, NM_000686, NC_001416.1, J01749.1, NC_012920.1" style="flex: 1; min-width: 0;">
+<!-- Workbench -->
+<section class="bench">
+    <div class="container">
+        <div class="bench-grid">
+
+            <!-- LEFT: tabbed canvas (viewer / code) -->
+            <div class="canvas">
+                <div class="canvas-bar">
+                    <div class="tabs" role="tablist" aria-label="Viewer or code">
+                        <button class="tab" id="tab-preview" data-tab="preview" role="tab" aria-selected="true" aria-controls="panel-preview">Preview</button>
+                        <button class="tab" id="tab-code" data-tab="code" role="tab" aria-selected="false" aria-controls="panel-code">Code</button>
+                    </div>
+                    <div class="canvas-tools">
+                        <label class="bar-field">Topology
+                            <select id="ctrl-viewer">
+                                <option value="both" selected>Both</option>
+                                <option value="both_flip">Both (flipped)</option>
+                                <option value="circular">Circular</option>
+                                <option value="linear">Linear</option>
+                            </select>
+                        </label>
+                        <label class="bar-field">Theme
+                            <select id="ctrl-theme">
+                                <option value="light" selected>Light</option>
+                                <option value="dark">Dark</option>
+                                <option value="auto">Auto</option>
+                                <option value="okabe-ito-light">Okabe-Ito (light)</option>
+                                <option value="okabe-ito-dark">Okabe-Ito (dark)</option>
+                                <option value="colorbrewer-light">ColorBrewer (light)</option>
+                                <option value="colorbrewer-dark">ColorBrewer (dark)</option>
+                                <option value="tol-light">Paul Tol (light)</option>
+                                <option value="tol-dark">Paul Tol (dark)</option>
+                            </select>
+                        </label>
+                        <span class="bar-sep"></span>
+                        <div class="canvas-actions" id="export-actions">
+                            <span class="lbl">Export</span>
+                            <button id="btn-export-svg" type="button" class="btn btn-light btn-sm">SVG</button>
+                            <button id="btn-export-png" type="button" class="btn btn-light btn-sm">PNG</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="ctrl">
-                <label for="ctrl-email">Your email <span style="text-transform: none; font-weight: 400;">(required by NCBI)</span></label>
-                <input id="ctrl-email" type="email" placeholder="you@example.com" autocomplete="off" required>
-            </div>
-            <div class="ctrl" style="justify-content: end;">
-                <label>&nbsp;</label>
-                <button id="btn-fetch" class="btn btn-light" style="padding: 7px 18px; border: 1px solid var(--color-border);">
-                    Fetch from NCBI
-                </button>
-            </div>
-            <div class="ctrl" style="justify-content: end;">
-                <label>&nbsp;</label>
-                <button id="btn-reset" class="btn" style="padding: 7px 18px; border: 1px solid var(--color-border); background: var(--color-bg);">
-                    Reset demo
-                </button>
-            </div>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 8px; font-size: 0.85rem;">
-            <div id="fetch-status" style="color: var(--color-text-muted); flex: 1;"></div>
-            <div id="quota-display" style="color: var(--color-text-muted); white-space: nowrap; font-variant-numeric: tabular-nums;"></div>
-        </div>
-        <details style="margin-bottom: 16px; font-size: 0.8rem; color: var(--color-text-muted);">
-            <summary style="cursor: pointer;">About NCBI requests &amp; your responsibilities</summary>
-            <div style="margin-top: 8px; padding: 12px; background: var(--color-bg); border-radius: var(--radius); border: 1px solid var(--color-border);">
-                <p style="margin-bottom: 8px;">
-                    Requests go directly from your browser to NCBI's
-                    <a href="https://www.ncbi.nlm.nih.gov/books/NBK25497/" target="_blank" rel="noopener">E-utilities API</a>.
-                    <strong>dash-seqviz does not operate a proxy</strong> &mdash; your email is sent to NCBI along with each
-                    request, as recommended by their usage policy, so they can contact you if your usage causes issues.
-                </p>
-                <p style="margin-bottom: 8px;">
-                    Your email is stored locally in your browser only (localStorage). We cap you at 3 requests per second
-                    (NCBI's unauthenticated limit), cache responses so repeat accessions don't re-hit NCBI, and refuse
-                    obviously invalid accession strings.
-                </p>
-                <p>
-                    For heavy or automated use, please
-                    <a href="https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/" target="_blank" rel="noopener">get an NCBI API key</a>
-                    and run your own workload &mdash; not through this public demo.
-                </p>
-            </div>
-        </details>
 
-        <h3>Viewer &amp; display</h3>
-        <div class="demo-controls">
-            <div class="ctrl">
-                <label for="ctrl-viewer">Topology</label>
-                <select id="ctrl-viewer">
-                    <option value="both" selected>Both</option>
-                    <option value="both_flip">Both (flipped)</option>
-                    <option value="circular">Circular</option>
-                    <option value="linear">Linear</option>
-                </select>
-            </div>
-            <div class="ctrl">
-                <label for="ctrl-zoom">Zoom (linear): <span id="zoom-val">60</span></label>
-                <input id="ctrl-zoom" type="range" min="1" max="100" value="60">
-            </div>
-            <div class="ctrl">
-                <label for="ctrl-theme">Theme</label>
-                <select id="ctrl-theme">
-                    <option value="light" selected>Light</option>
-                    <option value="dark">Dark</option>
-                    <option value="auto">Auto (follow OS/page)</option>
-                    <option value="okabe-ito-light">Okabe-Ito (light)</option>
-                    <option value="okabe-ito-dark">Okabe-Ito (dark)</option>
-                    <option value="colorbrewer-light">ColorBrewer (light)</option>
-                    <option value="colorbrewer-dark">ColorBrewer (dark)</option>
-                    <option value="tol-light">Paul Tol (light)</option>
-                    <option value="tol-dark">Paul Tol (dark)</option>
-                </select>
-            </div>
-            <div class="ctrl">
-                <label>Toggles</label>
-                <label class="ctrl-inline">
-                    <input id="ctrl-complement" type="checkbox" checked> Show complement
-                </label>
-                <label class="ctrl-inline">
-                    <input id="ctrl-rotate" type="checkbox" checked> Rotate on scroll (circular)
-                </label>
-                <label class="ctrl-inline">
-                    <input id="ctrl-translations" type="checkbox" checked> Show translations (CDS)
-                </label>
-                <label class="ctrl-inline">
-                    <input id="ctrl-primers" type="checkbox" checked> Show primers
-                </label>
-                <label class="ctrl-inline">
-                    <input id="ctrl-highlights" type="checkbox" checked> Show highlights
-                </label>
-            </div>
-            <div class="ctrl">
-                <label for="ctrl-maxlen">max_seq_length guard</label>
-                <input id="ctrl-maxlen" type="number" min="0" step="100"
-                       placeholder="e.g. 500 (blank = off)">
-                <span style="font-size: 0.72rem; color: var(--color-text-muted);">
-                    Renders a placeholder when the sequence is longer than this.
-                </span>
-            </div>
-        </div>
+                <div class="canvas-body">
+                    <div class="tabpanel" id="panel-preview" role="tabpanel" aria-labelledby="tab-preview">
+                        <div id="seqviz-root"></div>
+                        <div id="legend" class="seqviz-legend" aria-label="Annotation legend"></div>
+                        <div class="readouts">
+                            <div id="selection-readout" class="readout">selection: none</div>
+                            <div id="search-readout" class="readout">search_results: 0</div>
+                            <div id="clicked-readout" class="readout">clicked_element: none</div>
+                            <div id="aria-readout" class="readout">aria_label: —</div>
+                            <div id="copied-banner" class="readout"></div>
+                        </div>
+                    </div>
 
-        <h3>Search</h3>
-        <div class="demo-controls">
-            <div class="ctrl">
-                <label for="ctrl-search">Query (motif)</label>
-                <input id="ctrl-search" type="text" value="ttnnnaat" placeholder="e.g. GCTAGC">
-            </div>
-            <div class="ctrl">
-                <label for="ctrl-mismatch">Search mismatch</label>
-                <input id="ctrl-mismatch" type="number" min="0" step="1" value="0">
-            </div>
-        </div>
-
-        <h3>Base-pair colors</h3>
-        <div class="demo-controls">
-            <div class="ctrl">
-                <label>bp_colors (A / T / C / G)</label>
-                <div class="bp-colors">
-                    <div>
-                        <label for="ctrl-bp-a">A</label>
-                        <input id="ctrl-bp-a" type="text" value="#1f78b4">
-                    </div>
-                    <div>
-                        <label for="ctrl-bp-t">T</label>
-                        <input id="ctrl-bp-t" type="text" value="#33a02c">
-                    </div>
-                    <div>
-                        <label for="ctrl-bp-c">C</label>
-                        <input id="ctrl-bp-c" type="text" value="#e31a1c">
-                    </div>
-                    <div>
-                        <label for="ctrl-bp-g">G</label>
-                        <input id="ctrl-bp-g" type="text" value="#ff7f00">
+                    <div class="tabpanel code-panel is-hidden" id="panel-code" role="tabpanel" aria-labelledby="tab-code">
+                        <p class="install-admonition">
+                            <strong>Install</strong>
+                            <span><code>conda install -c conda-forge dash-seqviz</code> or <code>pip install dash-seqviz</code>.</span>
+                        </p>
+                        <div class="snippet">
+                            <pre id="live-snippet"><code></code></pre>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <h3>Restriction enzymes (NEB)</h3>
-        <div class="enzyme-picker">
-            <div style="display: flex; gap: 8px; margin-bottom: 6px;">
-                <input id="enzyme-search" class="enzyme-search" type="text" placeholder="Filter enzymes... (type to search)" style="margin-bottom: 0; flex: 1;">
-                <button id="btn-enzyme-clear" type="button" class="btn" style="padding: 6px 14px; font-size: 0.82rem; border: 1px solid var(--color-border); background: #fff;">
-                    Clear all
-                </button>
-            </div>
-            <div id="enzyme-list" class="enzyme-list"></div>
-            <div id="enzyme-selected" class="enzyme-selected"></div>
-        </div>
+            <!-- RIGHT: controls rail -->
+            <aside class="controls-rail" aria-label="Component controls">
 
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 28px;">
-            <h3 style="margin: 0;">Viewer</h3>
-            <div class="export-actions">
-                <span style="font-size: 0.78rem; font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.03em;">Export figure</span>
-                <button id="btn-export-svg" type="button" class="btn btn-light" style="padding: 6px 14px; border: 1px solid var(--color-border); font-size: 0.85rem;">SVG</button>
-                <button id="btn-export-png" type="button" class="btn btn-light" style="padding: 6px 14px; border: 1px solid var(--color-border); font-size: 0.85rem;">PNG</button>
-            </div>
-        </div>
-        <div id="seqviz-root"></div>
+                <section class="ctrl-group">
+                    <h3>Sequence source</h3>
+                    <div class="ctrl">
+                        <label for="ctrl-accession">NCBI accession</label>
+                        <input id="ctrl-accession" type="text" value="" placeholder="e.g. NC_001416.1, J01749.1, NM_000686">
+                    </div>
+                    <div class="ctrl">
+                        <label for="ctrl-email">Email <span class="lbl-note">(required by NCBI)</span></label>
+                        <input id="ctrl-email" type="email" placeholder="you@example.com" autocomplete="off" required>
+                    </div>
+                    <div class="ctrl-row">
+                        <button id="btn-fetch" type="button" class="btn btn-primary btn-sm">Fetch</button>
+                        <button id="btn-accession-sample" type="button" class="btn btn-light btn-sm" title="Pick a random example accession">Sample</button>
+                        <button id="btn-reset" type="button" class="btn btn-light btn-sm">Reset</button>
+                    </div>
+                    <div class="ctrl-status">
+                        <span id="fetch-status"></span>
+                        <span id="quota-display"></span>
+                    </div>
+                    <details class="ncbi-details">
+                        <summary>About NCBI requests &amp; your responsibilities</summary>
+                        <div class="ncbi-body">
+                            <p>
+                                Requests go directly from your browser to NCBI's
+                                <a href="https://www.ncbi.nlm.nih.gov/books/NBK25497/" target="_blank" rel="noopener">E-utilities API</a>.
+                                <strong>dash-seqviz does not operate a proxy</strong>: your email is sent to NCBI with each
+                                request, as their usage policy recommends, so they can reach you if your usage causes issues.
+                            </p>
+                            <p>
+                                Your email is stored locally in your browser only (localStorage). We cap you at 3 requests
+                                per second (NCBI's unauthenticated limit), cache responses so repeat accessions don't re-hit
+                                NCBI, and refuse obviously invalid accession strings.
+                            </p>
+                            <p>
+                                For heavy or automated use, please
+                                <a href="https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/" target="_blank" rel="noopener">get an NCBI API key</a>
+                                and run your own workload, not through this public demo.
+                            </p>
+                        </div>
+                    </details>
+                </section>
 
-        <div id="legend" class="seqviz-legend" aria-label="Annotation legend"></div>
+                <section class="ctrl-group">
+                    <h3>Display toggles</h3>
+                    <div class="ctrl">
+                        <div class="toggle-stack">
+                            <label class="ctrl-inline"><input id="ctrl-complement" type="checkbox" checked> Complement</label>
+                            <label class="ctrl-inline"><input id="ctrl-rotate" type="checkbox" checked> Rotate on scroll</label>
+                            <label class="ctrl-inline"><input id="ctrl-translations" type="checkbox" checked> Translations (CDS)</label>
+                            <label class="ctrl-inline"><input id="ctrl-primers" type="checkbox" checked> Primers</label>
+                            <label class="ctrl-inline"><input id="ctrl-highlights" type="checkbox" checked> Highlights</label>
+                        </div>
+                    </div>
+                </section>
 
-        <div class="readouts">
-            <div id="selection-readout" class="readout">selection: none</div>
-            <div id="search-readout" class="readout">search_results: 0</div>
-            <div id="clicked-readout" class="readout">clicked_element: none</div>
-            <div id="aria-readout" class="readout">aria_label: —</div>
-            <div id="copied-banner" class="readout"></div>
-        </div>
-    </div>
-</section>
+                <section class="ctrl-group">
+                    <h3>Restriction enzymes (NEB)</h3>
+                    <div class="enzyme-picker">
+                        <div style="display: flex; gap: 8px; margin-bottom: 6px;">
+                            <input id="enzyme-search" class="enzyme-search" type="text" placeholder="Filter enzymes..." style="margin-bottom: 0; flex: 1;">
+                            <button id="btn-enzyme-clear" type="button" class="btn btn-light btn-sm">Clear</button>
+                        </div>
+                        <div id="enzyme-list" class="enzyme-list"></div>
+                        <div id="enzyme-selected" class="enzyme-selected"></div>
+                    </div>
+                </section>
 
-<!-- Install -->
-<section id="install">
-    <div class="container">
-        <h2>Installation</h2>
-        <div class="install-tabs" data-install>
-            <div class="install-tabs-bar" role="tablist" aria-label="Package manager">
-                <button class="install-tab is-active" data-target="pip" role="tab" aria-selected="true">pip</button>
-                <button class="install-tab" data-target="conda" role="tab" aria-selected="false">conda</button>
-                <button class="install-tab" data-target="mamba" role="tab" aria-selected="false">mamba</button>
-                <button class="install-tab" data-target="pixi" role="tab" aria-selected="false">pixi</button>
-            </div>
-            <div class="install-panel is-active" data-panel="pip">
-                <div class="snippet"><pre><code>pip install dash-seqviz</code></pre></div>
-            </div>
-            <div class="install-panel" data-panel="conda">
-                <div class="snippet"><pre><code>conda install -c conda-forge dash-seqviz</code></pre></div>
-            </div>
-            <div class="install-panel" data-panel="mamba">
-                <div class="snippet"><pre><code>mamba install -c conda-forge dash-seqviz</code></pre></div>
-            </div>
-            <div class="install-panel" data-panel="pixi">
-                <div class="snippet"><pre><code>pixi add --pypi dash-seqviz</code></pre></div>
-            </div>
-            <p class="install-note">
-                <code>pip</code> and <code>pixi add --pypi</code> work today. conda-forge
-                availability (<code>conda</code> / <code>mamba</code> / <code>pixi add</code>) is pending review in
-                <a href="https://github.com/conda-forge/staged-recipes/pull/34159" target="_blank" rel="noopener">conda-forge/staged-recipes#34159</a>.
-            </p>
-        </div>
-    </div>
-</section>
-
-<!-- Live Python snippet -->
-<section class="example-section">
-    <div class="container">
-        <h2>Python snippet</h2>
-        <p style="margin-bottom: 16px; color: var(--color-text-muted);">
-            Live preview of the Python code behind what you see above. Copy + paste into a file and run.
-        </p>
-        <div class="snippet">
-            <pre id="live-snippet"><code></code></pre>
+            </aside>
         </div>
     </div>
 </section>
@@ -421,15 +556,40 @@
 <!-- Shared site nav + adapter -->
 <script src="./assets/nav.js?v=2"></script>
 <script src="./assets/seqviz-adapter.js?v=2"></script>
-<script src="./assets/install.js?v=1"></script>
 
 <!-- Explorer demo logic -->
-<script src="./demo.js?v=11"></script>
+<script src="./demo.js?v=12"></script>
 
 <script>
     if (window.SeqVizSite && window.SeqVizSite.wireCopy) {
         window.SeqVizSite.wireCopy(document);
     }
+
+    // Canvas tabs: Preview <-> Code. Export actions belong to the viewer only.
+    (function wireCanvasTabs() {
+        var tabs = document.querySelectorAll('.canvas-bar .tab');
+        var panels = {
+            preview: document.getElementById('panel-preview'),
+            code: document.getElementById('panel-code')
+        };
+        var exportActions = document.getElementById('export-actions');
+
+        function activate(name) {
+            tabs.forEach(function (t) {
+                var on = t.dataset.tab === name;
+                t.setAttribute('aria-selected', on ? 'true' : 'false');
+            });
+            Object.keys(panels).forEach(function (k) {
+                panels[k].classList.toggle('is-hidden', k !== name);
+            });
+            // Export only makes sense against the live viewer.
+            if (exportActions) exportActions.style.visibility = (name === 'preview') ? 'visible' : 'hidden';
+        }
+
+        tabs.forEach(function (t) {
+            t.addEventListener('click', function () { activate(t.dataset.tab); });
+        });
+    })();
 </script>
 
 </body>

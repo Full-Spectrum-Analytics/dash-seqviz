@@ -35,102 +35,200 @@
     <link rel="stylesheet" href="./assets/site.css?v=25">
     <link rel="stylesheet" href="./assets/seqviz-themes.css?v=1">
     <style>
-        .surface-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.92rem; }
-        .surface-table th, .surface-table td {
-            text-align: left; padding: 10px 12px; border: 1px solid var(--color-border);
-            vertical-align: top;
-        }
-        .surface-table th { background: var(--color-bg); font-weight: 600; }
+        /* ============================================================
+           Integrations — a catalog of ways to wire dash-seqviz into a
+           wider stack. Each entry leads with its result (the artifact
+           you get), then the two calls that produce it.
+           ============================================================ */
 
-        .artifact-frame {
-            border: 1px solid var(--color-border); border-radius: var(--radius);
-            background: #fff; overflow: hidden;
+        /* --- Slim page header (matches the explorer) --- */
+        .page-head {
+            position: relative;
+            background: var(--parchment-pale);
+            border-bottom: 1px solid var(--ink-hairline);
+            padding: 22px 0 20px;
         }
-        .artifact-caption {
-            font-size: 0.82rem; color: var(--color-text-muted); margin-top: 8px;
-            display: flex; align-items: center; gap: 6px;
+        .page-head::before {
+            content: ""; position: absolute; left: 0; top: 0;
+            width: 72px; height: 3px; background: var(--tannin);
+        }
+        .page-head .container {
+            display: flex; flex-wrap: wrap; align-items: flex-end;
+            justify-content: space-between; gap: 12px 32px;
+        }
+        .page-head h1 { margin: 0; font-size: clamp(1.5rem, 2.8vw, 1.95rem); line-height: 1.1; }
+        .page-head .lede {
+            margin: 6px 0 0; max-width: 64ch;
+            color: var(--color-text-muted); font-size: 0.95rem;
+        }
+        .page-head .head-actions { display: flex; gap: 10px; flex-shrink: 0; }
+
+        /* --- Integration entry --- */
+        .integration { padding: 40px 0 8px; }
+        .integration + .integration { border-top: 1px solid var(--ink-hairline); }
+
+        .int-head { margin-bottom: 26px; }
+        .eyebrow {
+            display: inline-block; margin-bottom: 8px;
+            font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+            text-transform: uppercase; color: var(--tannin);
+        }
+        .int-head h2 { margin: 0; font-size: clamp(1.5rem, 3vw, 2rem); }
+        .int-lede { margin: 10px 0 0; max-width: 74ch; color: var(--color-text); font-size: 1rem; }
+        .int-lede .muted { color: var(--color-text-muted); }
+
+        /* Lead: explanation on the left, the artifact you get on the right. */
+        .int-lead-grid {
+            display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+            gap: 36px; align-items: start; margin-bottom: 40px;
+        }
+        .int-explain p { color: var(--color-text-muted); max-width: 60ch; }
+
+        .surface-list { margin: 18px 0 0; }
+        .surface-list > div { padding: 12px 0; border-bottom: 1px solid var(--ink-hairline); }
+        .surface-list > div:first-child { border-top: 1px solid var(--ink-hairline); }
+        .surface-list dt { font-weight: 700; font-size: 0.9rem; margin-bottom: 3px; }
+        .surface-list dd { margin: 0; font-size: 0.88rem; color: var(--color-text-muted); }
+        .surface-list .tick { color: var(--tannin); font-weight: 700; }
+
+        /* The money shot: a browser-framed live render of the logged artifact. */
+        .artifact { margin: 0; position: sticky; top: 78px; }
+        .artifact-frame {
+            border: 1px solid var(--ink-hairline-strong); border-radius: var(--radius-lg);
+            background: #fff; overflow: hidden;
+            box-shadow: 0 1px 0 var(--ink-hairline);
         }
         .artifact-chrome {
-            display: flex; align-items: center; gap: 6px; padding: 6px 10px;
-            background: var(--color-bg); border-bottom: 1px solid var(--color-border);
-            font-size: 0.78rem; color: var(--color-text-muted);
+            display: flex; align-items: center; gap: 6px; padding: 8px 12px;
+            background: var(--parchment-mid); border-bottom: 1px solid var(--ink-hairline);
+            font-size: 0.76rem; color: var(--color-text-muted);
             font-family: "SFMono-Regular", Consolas, monospace;
         }
-        .artifact-chrome .dot { width: 9px; height: 9px; border-radius: 50%; background: #cbd5e1; }
+        .artifact-chrome .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ink-hairline-strong); }
+        .artifact-chrome .path { margin-left: 8px; }
         #artifact-preview { min-height: 360px; }
+        .artifact figcaption {
+            margin-top: 10px; font-size: 0.82rem; color: var(--color-text-muted);
+            max-width: 52ch;
+        }
+
+        /* The two calls, side by side. */
+        .int-steps { margin-top: 8px; }
+        .int-steps > h3 { margin: 0 0 4px; font-size: 1.2rem; }
+        .int-steps > .steps-sub { margin: 0 0 20px; color: var(--color-text-muted); font-size: 0.92rem; max-width: 74ch; }
+        .steps-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+        .step-label {
+            display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px;
+        }
+        .step-n {
+            flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: var(--tannin); color: #fff;
+            font-size: 0.82rem; font-weight: 700; font-variant-numeric: tabular-nums;
+            transform: translateY(2px);
+        }
+        .step-label h4 { margin: 0; font-size: 1rem; }
+        .step-label .step-note { font-size: 0.82rem; color: var(--color-text-muted); font-weight: 400; }
+        .step .snippet { margin: 0; }
+        .step .snippet pre { min-height: 100%; }
+
+        /* Minor install note. */
+        .install-admonition {
+            margin: 32px 0 0; padding: 12px 16px;
+            background: var(--parchment-pale); border: 1px solid var(--ink-hairline);
+            border-radius: var(--radius);
+            font-size: 0.88rem; color: var(--color-text-muted);
+        }
+        .install-admonition strong { color: var(--color-text); }
+
+        @media (max-width: 900px) {
+            .int-lead-grid { grid-template-columns: 1fr; gap: 26px; }
+            .artifact { position: static; }
+            .steps-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body data-page="integrations">
 
 <div id="site-nav-mount"></div>
 
-<!-- Hero -->
-<header class="hero">
-    <h1>Integrations</h1>
-    <p>Wire <code>dash-seqviz</code> into the rest of your stack. First up: track and compare
-       sequence visualizations in <strong>MLflow</strong>.</p>
-    <div class="hero-actions">
-        <a class="btn btn-primary" href="./explorer.html">Component Explorer</a>
-        <a class="btn btn-outline" href="./reference.html">API Reference</a>
+<!-- Slim page header -->
+<header class="page-head">
+    <div class="container">
+        <div>
+            <h1>Integrations</h1>
+            <p class="lede">Wire <code>dash-seqviz</code> into the rest of your MLOps stack. First up: experiment tracking with MLflow.</p>
+        </div>
+        <div class="head-actions">
+            <a class="btn btn-primary" href="./explorer.html">Component Explorer</a>
+            <a class="btn btn-outline" href="./reference.html">API Reference</a>
+        </div>
     </div>
 </header>
 
 <!-- MLflow -->
-<section id="mlflow">
+<section class="integration" id="mlflow">
     <div class="container">
-        <h2>MLflow experiment tracking</h2>
-        <p style="max-width: 70ch; color: var(--color-text-muted);">
-            SeqViz is a browser component, so it can't be pickled into MLflow like a model. But the
-            <code>seqviz</code> library has a plain-JS viewer, so <code>dash-seqviz</code> can render a
-            <strong>self-contained HTML file</strong> for any sequence + annotation configuration and log
-            it as an artifact. MLflow renders <code>.html</code> artifacts inline (the same mechanism that
-            makes Plotly figures interactive), so a logged <code>seqviz.html</code> shows the
-            <strong>actual, interactive viewer</strong> right inside the run &mdash; themes and all.
-        </p>
 
-        <h3>Two surfaces, used together</h3>
-        <table class="surface-table">
-            <thead>
-                <tr><th>Surface</th><th>What it's for</th><th>Renders the viewer?</th></tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Run + HTML artifact</strong></td>
-                    <td>The visual, plus structured params / metrics / tags for comparison.</td>
-                    <td>&#x2705; inline in the Artifacts tab</td>
-                </tr>
-                <tr>
-                    <td><strong>Metrics &amp; tags</strong></td>
-                    <td>Sequence length, GC%, annotation coverage; a <code>seq_sha256</code> tag groups
-                        variants of the same sequence.</td>
-                    <td>&mdash; drives the Compare view</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h3 style="margin-top: 28px;">What gets logged</h3>
-        <p style="color: var(--color-text-muted); margin-bottom: 12px;">
-            The artifact is a standalone render of the viewer. Below is a live preview of exactly that
-            &mdash; this is what appears inline in an MLflow run's <em>Artifacts</em> tab:
-        </p>
-        <div class="artifact-frame">
-            <div class="artifact-chrome">
-                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-                <span style="margin-left: 8px;">seqviz.html &mdash; MLflow artifact</span>
-            </div>
-            <div id="artifact-preview" data-dash-seqviz-theme="okabe-ito-light"></div>
+        <div class="int-head">
+            <span class="eyebrow">01 &middot; Experiment tracking</span>
+            <h2>MLflow</h2>
+            <p class="int-lede">
+                Log any sequence + annotation configuration as a self-contained HTML artifact.
+                <span class="muted">MLflow renders it inline, so the <strong>actual interactive viewer</strong> shows up right inside the run, themes and all.</span>
+            </p>
         </div>
-        <p class="artifact-caption">
-            &#x2139;&#xFE0F; Interactive &mdash; drag to select, scroll to rotate. Rendered client-side by the same
-            <code>seqviz</code> build the logger embeds.
-        </p>
 
-        <h3 style="margin-top: 28px;">Log a run</h3>
-        <div class="snippet">
+        <div class="int-lead-grid">
+            <div class="int-explain">
+                <p>
+                    SeqViz is a browser component, so it can't be pickled into MLflow like a model.
+                    Instead <code>dash-seqviz</code> renders the <code>seqviz</code> viewer to a standalone
+                    <code>.html</code> file and logs that, the same mechanism that keeps Plotly figures
+                    interactive in a run.
+                </p>
+                <dl class="surface-list">
+                    <div>
+                        <dt><span class="tick">&#x2713;</span> Run + HTML artifact</dt>
+                        <dd>The interactive viewer, inline in the Artifacts tab, alongside structured params, metrics, and tags for comparison.</dd>
+                    </div>
+                    <div>
+                        <dt>Metrics &amp; tags</dt>
+                        <dd>Sequence length, GC%, annotation coverage. A <code>seq_sha256</code> tag groups variants of one sequence and drives the Compare view.</dd>
+                    </div>
+                </dl>
+            </div>
+
+            <figure class="artifact">
+                <div class="artifact-frame">
+                    <div class="artifact-chrome">
+                        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                        <span class="path">seqviz.html &middot; MLflow artifact</span>
+                    </div>
+                    <div id="artifact-preview" data-dash-seqviz-theme="okabe-ito-light"></div>
+                </div>
+                <figcaption>
+                    Live render of exactly what gets logged. Interactive: drag to select, scroll to rotate.
+                </figcaption>
+            </figure>
+        </div>
+
+        <div class="int-steps">
+            <h3>Two calls</h3>
+            <p class="steps-sub">
+                <code>log_seqviz</code> logs into the active run like <code>mlflow.log_figure</code>.
+                <code>log_variants</code> fans one sequence out into comparable runs.
+            </p>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-label">
+                        <span class="step-n">1</span>
+                        <h4>Log a run <span class="step-note">one viewer + its metrics</span></h4>
+                    </div>
+                    <div class="snippet">
 <pre><code>import mlflow
 from dash_seqviz.integrations import mlflow as mlflow_seqviz
 
-# Logs into the active run, like mlflow.log_figure / mlflow.log_text.
 with mlflow.start_run():
     mlflow.log_params({"host": "E. coli"})
     mlflow_seqviz.log_seqviz({
@@ -142,36 +240,38 @@ with mlflow.start_run():
         ],
         "theme": "okabe-ito-light",
     })</code></pre>
-        </div>
-
-        <h3 style="margin-top: 28px;">Compare variants of one sequence</h3>
-        <p style="color: var(--color-text-muted); margin-bottom: 12px;">
-            Log several annotation / theme variants of the <em>same</em> sequence. They share a
-            <code>seq_sha256</code> tag (so they group), and each records comparable metrics &mdash; select
-            them in the MLflow UI and click <strong>Compare</strong>.
-        </p>
-        <div class="snippet">
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-label">
+                        <span class="step-n">2</span>
+                        <h4>Compare variants <span class="step-note">one sequence, many runs</span></h4>
+                    </div>
+                    <div class="snippet">
 <pre><code>mlflow.set_experiment("plasmids")
+
 mlflow_seqviz.log_variants(
     seq,
     variants=[
-        {"run_name": "bare",        "annotations": []},
-        {"run_name": "annotated",   "annotations": annotations},
-        {"run_name": "dark-theme",  "annotations": annotations, "theme": "dark"},
+        {"run_name": "bare",       "annotations": []},
+        {"run_name": "annotated",  "annotations": annotations},
+        {"run_name": "dark-theme", "annotations": annotations,
+                                   "theme": "dark"},
     ],
     name="pUC19",
-)</code></pre>
+)
+# Variants share a seq_sha256 tag, so
+# select them and click Compare.</code></pre>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="mini-example" style="margin-top: 24px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 16px 20px;">
-            <p style="margin: 0; color: var(--color-text-muted); font-size: 0.9rem;">
-                <strong>Install:</strong> the integration ships in the package under an optional extra &mdash;
-                <code>pip install dash-seqviz[mlflow]</code>. Full API and a runnable demo:
-                <code>dash_seqviz/integrations/mlflow.py</code> and
-                <a href="https://github.com/Full-Spectrum-Analytics/dash-seqviz/tree/main/examples/mlflow" target="_blank" rel="noopener">examples/mlflow</a>
-                (see <code>IMPLEMENTATION.md</code> for wiring into a real experiment).
-            </p>
-        </div>
+        <p class="install-admonition">
+            <strong>Install:</strong> ships under an optional extra, <code>pip install dash-seqviz[mlflow]</code>.
+            Full API in <code>dash_seqviz/integrations/mlflow.py</code>; a runnable demo lives in
+            <a href="https://github.com/Full-Spectrum-Analytics/dash-seqviz/tree/main/examples/mlflow" target="_blank" rel="noopener">examples/mlflow</a>.
+        </p>
     </div>
 </section>
 

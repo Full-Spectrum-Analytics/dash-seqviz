@@ -123,6 +123,9 @@
         showHighlights: true,
         maxSeqLength: null,   // F1 guard; null = off
         bpColors: { A: "#1f78b4", T: "#33a02c", C: "#e31a1c", G: "#ff7f00" },
+        // Legend (E2) is a separate `legend()` helper, not a SeqViz prop.
+        // Its config: show it, its title, and vertical vs horizontal layout.
+        legend: { show: true, title: "", direction: "horizontal" },
         theme: "light",
         enzymes: ["PstI", "EcoRI", "XbaI", "SpeI"],
         enzymeFilter: "",
@@ -209,13 +212,20 @@
     function renderLegend() {
         var host = el("legend");
         if (!host) { return; }
+        var cfg = state.legend || {};
         var anns = resolvedAnnotations();
-        if (!anns || !anns.length) { host.innerHTML = ""; return; }
-        host.innerHTML = anns.map(function (a) {
+        var dirClass = cfg.direction === "vertical" ? " is-vertical" : " is-horizontal";
+        host.className = "seqviz-legend" + dirClass;
+        if (!cfg.show || !anns || !anns.length) { host.innerHTML = ""; return; }
+        var title = cfg.title
+            ? '<span class="legend-title">' + escapeHtml(cfg.title) + "</span>"
+            : "";
+        var items = anns.map(function (a) {
             var color = /^#[0-9a-zA-Z]+$|^[a-zA-Z]+$/.test(a.color || "") ? a.color : "#888";
             return '<span class="legend-item"><span class="legend-swatch" style="background:' +
                    color + '"></span>' + escapeHtml(a.name || "") + "</span>";
         }).join("");
+        host.innerHTML = title + items;
     }
 
     // aria_label (H1): the auto-generated accessible name the Dash wrapper
@@ -280,11 +290,28 @@
     function generatePythonSnippet(s) {
         var lines = [];
         var usesRequests = !!s.accession;
+        var lg = s.legend || {};
+        var emitAnns = !usesRequests && s.annotations && s.annotations.length;
+        var showLegend = !!lg.show && s.annotations && s.annotations.length;
 
         lines.push("from dash import Dash, html");
-        lines.push("from dash_seqviz import SeqViz");
+        lines.push("from dash_seqviz import SeqViz" + (showLegend ? ", legend" : ""));
         if (usesRequests) { lines.push("import requests"); }
         lines.push("");
+
+        // Legend needs an explicit annotations list; surface it as a variable
+        // so both SeqViz and legend() can share it.
+        if (emitAnns) {
+            lines.push("annotations = [");
+            s.annotations.forEach(function (a) {
+                lines.push('    {"start": ' + a.start + ', "end": ' + a.end +
+                    ', "name": ' + pyStr(a.name || "") +
+                    ', "direction": ' + (a.direction || 1) +
+                    ', "color": ' + pyStr(a.color || "") + "},");
+            });
+            lines.push("]");
+            lines.push("");
+        }
 
         if (usesRequests) {
             lines.push("# Fetch GenBank from NCBI; SeqViz parses it inline via file=");
@@ -311,6 +338,10 @@
                        ",  # ... (" + s.seq.length + " bp total, truncated)");
         } else {
             lines.push("        seq=" + pyStr(s.seq || "") + ",");
+        }
+
+        if (emitAnns) {
+            lines.push("        annotations=annotations,");
         }
 
         lines.push("        viewer=" + pyStr(s.viewer) + ",");
@@ -361,7 +392,22 @@
         }
 
         lines.push('        style={"height": "500px", "width": "100%"},');
-        lines.push("    )");
+
+        if (showLegend) {
+            lines.push("    ),");
+            if (emitAnns) {
+                var lgArgs = ["annotations"];
+                if (s.theme && s.theme !== "light") { lgArgs.push("theme=" + pyStr(s.theme)); }
+                if (lg.title) { lgArgs.push("title=" + pyStr(lg.title)); }
+                lgArgs.push("direction=" + pyStr(lg.direction || "horizontal"));
+                lines.push("    legend(" + lgArgs.join(", ") + "),");
+            } else {
+                lines.push("    # legend(annotations, ...) also available;");
+                lines.push("    # parse annotations from `gb` with dash_seqviz.parse first.");
+            }
+        } else {
+            lines.push("    )");
+        }
         lines.push("])");
         lines.push("");
         lines.push('if __name__ == "__main__":');
@@ -901,6 +947,31 @@
         state.showHighlights = ev.target.checked;
         render();
     });
+
+    // Legend (E2) config: show / layout / title. These don't touch the viewer,
+    // so re-render the legend + snippet only.
+    function refreshLegend() { renderLegend(); updateLiveSnippet(); }
+    var legendShow = el("ctrl-legend-show");
+    if (legendShow) {
+        legendShow.addEventListener("change", function (ev) {
+            state.legend.show = ev.target.checked;
+            refreshLegend();
+        });
+    }
+    var legendDir = el("ctrl-legend-dir");
+    if (legendDir) {
+        legendDir.addEventListener("change", function (ev) {
+            state.legend.direction = ev.target.value;
+            refreshLegend();
+        });
+    }
+    var legendTitle = el("ctrl-legend-title");
+    if (legendTitle) {
+        legendTitle.addEventListener("input", function (ev) {
+            state.legend.title = ev.target.value;
+            refreshLegend();
+        });
+    }
 
     el("ctrl-maxlen").addEventListener("input", function (ev) {
         var v = ev.target.value.trim();
