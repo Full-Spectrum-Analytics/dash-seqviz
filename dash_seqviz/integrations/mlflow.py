@@ -16,15 +16,15 @@ experiment management.
 Usage::
 
     import mlflow
-    from dash_seqviz.integrations import mlflow as sv_mlflow
+    from dash_seqviz.integrations import mlflow as mlflow_seqviz
 
     mlflow.set_experiment("plasmids")
     with mlflow.start_run():
         mlflow.log_params({"host": "E. coli"})
-        sv_mlflow.log_seqviz({"name": "pUC19", "seq": seq, "annotations": [...]})
+        mlflow_seqviz.log_seqviz({"name": "pUC19", "seq": seq, "annotations": [...]})
 
     # or log several variants of one sequence as comparable runs:
-    sv_mlflow.log_variants(seq, [
+    mlflow_seqviz.log_variants(seq, [
         {"run_name": "v1", "annotations": [...]},
         {"run_name": "v2", "annotations": [...], "theme": "dark"},
     ], name="pUC19")
@@ -236,9 +236,9 @@ def log_seqviz(
     Examples
     --------
     >>> import mlflow
-    >>> from dash_seqviz.integrations import mlflow as sv_mlflow
+    >>> from dash_seqviz.integrations import mlflow as mlflow_seqviz
     >>> with mlflow.start_run():
-    ...     sv_mlflow.log_seqviz({"name": "pUC19", "seq": seq, "annotations": anns})
+    ...     mlflow_seqviz.log_seqviz({"name": "pUC19", "seq": seq, "annotations": anns})
     """
     mlflow = _require_mlflow()
     mlflow.log_text(build_seqviz_html(config), artifact_file, run_id=run_id)

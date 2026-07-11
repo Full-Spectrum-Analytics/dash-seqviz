@@ -31,7 +31,7 @@
     <meta name="twitter:image" content="https://dash-seqviz.com/assets/og-image.png">
     <meta name="twitter:image:alt" content="dash-seqviz — DNA, RNA & protein sequence visualization for Dash">
 
-    <link rel="stylesheet" href="./assets/site.css?v=23">
+    <link rel="stylesheet" href="./assets/site.css?v=24">
     <style>
         /* Reference-page layout: sticky sidebar + prop blocks. */
         .reference-container {
@@ -663,6 +663,7 @@ SeqViz(seq="...", bp_colors={42: "#e76f51", 43: "#e76f51"})</code></pre></div>
                             <li><code>"colorbrewer-light"</code>, <code>"colorbrewer-dark"</code> &mdash; ColorBrewer Set2 / Dark2.</li>
                             <li><code>"tol-light"</code>, <code>"tol-dark"</code> &mdash; Paul Tol's Bright palette.</li>
                         </ul>
+                        <p style="font-size: 0.86rem; color: var(--color-text-muted);">Made it this far? There's also an undocumented <code>"xkcd"</code> (aka <code>"xkcd-light"</code> / <code>"xkcd-dark"</code>) theme that renders the viewer hand-drawn, xkcd-comic style &mdash; a little reward for reading the reference.</p>
                         <div class="snippet"><pre><code>from dash import Input, Output, callback
 
 # follow a dash-mantine-components theme switch with zero boilerplate
@@ -908,10 +909,10 @@ validate_props(annotations=anns)</code></pre></div>
                     <div class="prop-body">
                         <p><code>log_seqviz(config, artifact_file="seqviz.html")</code> logs a SeqViz view to the active MLflow run as an interactive <code>.html</code> artifact (rendered inline in the MLflow UI) &mdash; following the same convention as <code>mlflow.log_figure</code>. <code>log_variants()</code> logs several variants of one sequence as comparable runs (shared <code>seq_sha256</code> tag + feature metrics). Install with <code>pip install dash-seqviz[mlflow]</code>.</p>
                         <div class="snippet"><pre><code>import mlflow
-from dash_seqviz.integrations import mlflow as sv_mlflow
+from dash_seqviz.integrations import mlflow as mlflow_seqviz
 
 with mlflow.start_run():
-    sv_mlflow.log_seqviz({"name": "pUC19", "seq": seq, "annotations": [...]})</code></pre></div>
+    mlflow_seqviz.log_seqviz({"name": "pUC19", "seq": seq, "annotations": [...]})</code></pre></div>
                     </div>
                 </article>
             </div>
