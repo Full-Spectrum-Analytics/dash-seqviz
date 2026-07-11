@@ -29,7 +29,7 @@
     <meta name="twitter:description" content="Log SeqViz visualizations to MLflow as interactive HTML artifacts and compare variants across runs.">
     <meta name="twitter:image" content="https://dash-seqviz.com/assets/og-image.png">
 
-    <link rel="stylesheet" href="./assets/site.css?v=23">
+    <link rel="stylesheet" href="./assets/site.css?v=24">
     <link rel="stylesheet" href="./assets/seqviz-themes.css?v=1">
     <style>
         .surface-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.92rem; }
@@ -125,12 +125,12 @@
         <h3 style="margin-top: 28px;">Log a run</h3>
         <div class="snippet">
 <pre><code>import mlflow
-from dash_seqviz.integrations import mlflow as sv_mlflow
+from dash_seqviz.integrations import mlflow as mlflow_seqviz
 
 # Logs into the active run, like mlflow.log_figure / mlflow.log_text.
 with mlflow.start_run():
     mlflow.log_params({"host": "E. coli"})
-    sv_mlflow.log_seqviz({
+    mlflow_seqviz.log_seqviz({
         "name": "pUC19",
         "seq": seq,
         "annotations": [
@@ -149,7 +149,7 @@ with mlflow.start_run():
         </p>
         <div class="snippet">
 <pre><code>mlflow.set_experiment("plasmids")
-sv_mlflow.log_variants(
+mlflow_seqviz.log_variants(
     seq,
     variants=[
         {"run_name": "bare",        "annotations": []},

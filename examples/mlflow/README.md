@@ -8,10 +8,10 @@ The reusable logic ships in the package at `dash_seqviz.integrations.mlflow`
 
 ```python
 import mlflow
-from dash_seqviz.integrations import mlflow as sv_mlflow
+from dash_seqviz.integrations import mlflow as mlflow_seqviz
 
 with mlflow.start_run():
-    sv_mlflow.log_seqviz({"name": "pUC19", "seq": seq, "annotations": [...]})
+    mlflow_seqviz.log_seqviz({"name": "pUC19", "seq": seq, "annotations": [...]})
 ```
 
 `log_seqviz()` logs into the active run just like `mlflow.log_figure` /
@@ -78,7 +78,7 @@ the viewer render inline.
 
 ```python
 import mlflow
-from dash_seqviz.integrations import mlflow as sv_mlflow
+from dash_seqviz.integrations import mlflow as mlflow_seqviz
 
 mlflow.set_tracking_uri("sqlite:///mlflow.db")
 mlflow.set_experiment("my-plasmids")
@@ -86,14 +86,14 @@ mlflow.set_experiment("my-plasmids")
 # one viewer, logged into your own run (like mlflow.log_figure)
 with mlflow.start_run():
     mlflow.log_params({"host": "E. coli"})
-    sv_mlflow.log_seqviz(
+    mlflow_seqviz.log_seqviz(
         {"name": "pUC19", "seq": "ATGC...", "viewer": "both",
          "annotations": [{"start": 0, "end": 50, "name": "ori", "direction": 1}],
          "theme": "okabe-ito-light"},
     )
 
 # several variants of the same sequence, as a comparable set of runs
-sv_mlflow.log_variants(
+mlflow_seqviz.log_variants(
     "ATGC...",
     variants=[
         {"run_name": "minimal",   "annotations": [ori]},
