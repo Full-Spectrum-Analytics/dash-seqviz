@@ -1,0 +1,19 @@
+{
+  // Cloudflare Workers static-assets config for the docs site.
+  //
+  // This is an assets-only Worker (no `main` script): Cloudflare serves the
+  // files under `docs/` directly from its edge, and returns 404 for anything
+  // that doesn't match. Workers Builds (the GitHub connection) reads this file
+  // and deploys on every push; `preview_urls` gives each PR / non-production
+  // branch its own preview URL.
+  //
+  // Set the Workers Builds "Build command" to empty in the Cloudflare
+  // dashboard — the site is static, so no build step is needed (the repo's
+  // `npm run build` builds the Dash component, not the docs).
+  "name": "dash-seqviz",
+  "compatibility_date": "2026-07-10",
+  "assets": {
+    "directory": "./docs"
+  },
+  "preview_urls": true
+}
