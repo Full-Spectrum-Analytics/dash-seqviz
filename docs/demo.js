@@ -42,6 +42,10 @@
         { start: 36, end: 160, direction: 1, name: "ORF 1", color: "#fb7185" }
     ];
 
+    var DEFAULT_HIGHLIGHTS = [
+        { start: 200, end: 260, color: "#fde047" }
+    ];
+
     var SAMPLE_ACCESSIONS = [
         "MN623123.1",   // SARS-CoV-2 isolate, linear ~30 kbp
         "NM_000686",    // Human MAOA mRNA, linear ~3 kbp
@@ -108,12 +112,16 @@
         annotations: DEFAULT_ANNOTATIONS,
         primers: DEFAULT_PRIMERS,
         translations: DEFAULT_TRANSLATIONS,
+        highlights: DEFAULT_HIGHLIGHTS,
         viewer: "both",
         zoom: { linear: 60 },
         search: { query: "ttnnnaat", mismatch: 0 },
         showComplement: true,
         rotateOnScroll: true,
         showTranslations: true,
+        showPrimers: true,
+        showHighlights: true,
+        maxSeqLength: null,   // F1 guard; null = off
         bpColors: { A: "#1f78b4", T: "#33a02c", C: "#e31a1c", G: "#ff7f00" },
         theme: "light",
         enzymes: ["PstI", "EcoRI", "XbaI", "SpeI"],
@@ -174,8 +182,9 @@
             seq: state.seq,
             viewer: state.viewer,
             annotations: resolvedAnnotations(),
-            primers: applyPalette(state.primers, palette),
+            primers: state.showPrimers ? applyPalette(state.primers, palette) : [],
             translations: state.showTranslations ? applyPalette(state.translations, palette) : [],
+            highlights: state.showHighlights ? state.highlights : [],
             enzymes: state.enzymes,
             search: state.search,
             zoom: state.zoom,
@@ -209,14 +218,44 @@
         }).join("");
     }
 
+    // aria_label (H1): the auto-generated accessible name the Dash wrapper
+    // gives the viewer. Shown as a readout and set on the wrapper element.
+    function ariaLabelText() {
+        var n = (state.seq || "").length;
+        var ac = (state.annotations || []).length;
+        return "Sequence viewer" + (state.name ? ": " + state.name : "") +
+            (n ? ", " + n.toLocaleString() + " bp" : "") +
+            (ac ? ", " + ac + " annotation" + (ac === 1 ? "" : "s") : "");
+    }
+
+    function updateAriaLabel() {
+        var label = ariaLabelText();
+        var root = el("seqviz-root");
+        root.setAttribute("role", "group");
+        root.setAttribute("aria-label", label);
+        var ro = el("aria-readout");
+        if (ro) { ro.textContent = "aria_label: " + label; }
+    }
+
     function render() {
         applyThemeToDom();
-        if (!viewer) {
+        var root = el("seqviz-root");
+        var seqLen = (state.seq || "").length;
+        // max_seq_length guard (F1): render a placeholder instead of mounting
+        // the viewer when the sequence exceeds the configured cap.
+        if (state.maxSeqLength != null && seqLen > state.maxSeqLength) {
+            viewer = null;
+            root.innerHTML = '<div class="seqviz-guard">Sequence not rendered: ' +
+                seqLen.toLocaleString() + ' bp exceeds max_seq_length (' +
+                state.maxSeqLength.toLocaleString() + ' bp).<br>Raise the guard to render, ' +
+                'or use <code>viewer="circular"</code> for very long sequences.</div>';
+        } else if (!viewer) {
             viewer = seqviz.Viewer("seqviz-root", getProps());
             viewer.render();
         } else {
             viewer.setState(getProps());
         }
+        updateAriaLabel();
         renderLegend();
         updateLiveSnippet();
     }
@@ -280,6 +319,17 @@
         lines.push("        rotate_on_scroll=" + pyBool(s.rotateOnScroll) + ",");
         if (s.theme && s.theme !== "light") {
             lines.push("        theme=" + pyStr(s.theme) + ",");
+        }
+        if (s.maxSeqLength != null) {
+            lines.push("        max_seq_length=" + s.maxSeqLength + ",");
+        }
+
+        if (s.showHighlights && s.highlights && s.highlights.length) {
+            var hls = s.highlights.map(function (h) {
+                return '{"start": ' + h.start + ', "end": ' + h.end +
+                       ', "color": ' + pyStr(h.color) + "}";
+            }).join(", ");
+            lines.push("        highlights=[" + hls + "],");
         }
 
         if (s.showTranslations && s.translations && s.translations.length) {
@@ -450,6 +500,7 @@
         state.annotations = parsed.annotations;
         state.translations = parsed.translations;
         state.primers = [];
+        state.highlights = [];  // demo highlights are positioned for the default seq
 
         var sizeNote = state.seq.length > LARGE_SEQ_WARN
             ? ' <em style="color: #b45309;">(large record &mdash; rendering may be slow)</em>'
@@ -614,6 +665,7 @@
         state.annotations = DEFAULT_ANNOTATIONS;
         state.primers = DEFAULT_PRIMERS;
         state.translations = DEFAULT_TRANSLATIONS;
+        state.highlights = DEFAULT_HIGHLIGHTS;
         state.accession = null;
 
         el("ctrl-accession").value = "";
@@ -837,6 +889,22 @@
 
     el("ctrl-translations").addEventListener("change", function (ev) {
         state.showTranslations = ev.target.checked;
+        render();
+    });
+
+    el("ctrl-primers").addEventListener("change", function (ev) {
+        state.showPrimers = ev.target.checked;
+        render();
+    });
+
+    el("ctrl-highlights").addEventListener("change", function (ev) {
+        state.showHighlights = ev.target.checked;
+        render();
+    });
+
+    el("ctrl-maxlen").addEventListener("input", function (ev) {
+        var v = ev.target.value.trim();
+        state.maxSeqLength = v === "" ? null : Math.max(0, parseInt(v, 10) || 0);
         render();
     });
 
