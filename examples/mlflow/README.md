@@ -7,12 +7,17 @@ The reusable logic ships in the package at `dash_seqviz.integrations.mlflow`
 (install the optional dep with `pip install dash-seqviz[mlflow]`):
 
 ```python
+import mlflow
 from dash_seqviz.integrations import mlflow as sv_mlflow
 
-sv_mlflow.log_seqviz_run({"name": "pUC19", "seq": seq, "annotations": [...]})
+with mlflow.start_run():
+    sv_mlflow.log_seqviz({"name": "pUC19", "seq": seq, "annotations": [...]})
 ```
 
-`seqviz_mlflow.py` in this folder is a runnable demo built on that module.
+`log_seqviz()` logs into the active run just like `mlflow.log_figure` /
+`mlflow.log_text` (config first, then `artifact_file`), so it composes with
+your own run and experiment management. `seqviz_mlflow.py` in this folder is
+a runnable demo built on that module.
 
 ## Can you log a SeqViz component to MLflow?
 
@@ -31,8 +36,8 @@ Two MLflow surfaces are used together:
 
 | Surface | What it's for | Renders the viewer? |
 |---|---|---|
-| **Run + HTML artifact** (primary) | The visual + structured params/metrics/tags for comparison | ✅ inline in the Artifacts tab |
-| **Trace** (secondary) | Lineage: the render op with its config as inputs, artifact + features as outputs | ❌ shows JSON I/O, not the widget |
+| **HTML artifact** (`log_seqviz`) | The visual itself, logged to the active run | ✅ inline in the Artifacts tab |
+| **Metrics &amp; tags** (`log_variants`) | Sequence-feature metrics + a `seq_sha256` tag that groups variants | — drives the Compare view |
 
 ## Comparing variants of the same sequence
 
@@ -73,26 +78,28 @@ the viewer render inline.
 
 ```python
 import mlflow
-from seqviz_mlflow import log_seqviz_run, log_variants
+from dash_seqviz.integrations import mlflow as sv_mlflow
 
 mlflow.set_tracking_uri("sqlite:///mlflow.db")
+mlflow.set_experiment("my-plasmids")
 
-# one variant
-log_seqviz_run(
-    {"name": "pUC19", "seq": "ATGC...", "viewer": "both",
-     "annotations": [{"start": 0, "end": 50, "name": "ori", "direction": 1}],
-     "theme": "okabe-ito-light"},
-    experiment_name="my-plasmids",
-)
+# one viewer, logged into your own run (like mlflow.log_figure)
+with mlflow.start_run():
+    mlflow.log_params({"host": "E. coli"})
+    sv_mlflow.log_seqviz(
+        {"name": "pUC19", "seq": "ATGC...", "viewer": "both",
+         "annotations": [{"start": 0, "end": 50, "name": "ori", "direction": 1}],
+         "theme": "okabe-ito-light"},
+    )
 
-# several variants of the same sequence, as a comparable set
-log_variants(
-    "pUC19", "ATGC...",
+# several variants of the same sequence, as a comparable set of runs
+sv_mlflow.log_variants(
+    "ATGC...",
     variants=[
-        {"run_name": "minimal",  "annotations": [ori]},
+        {"run_name": "minimal",   "annotations": [ori]},
         {"run_name": "annotated", "annotations": [ori, ampR, lacZ], "theme": "dark"},
     ],
-    experiment_name="my-plasmids",
+    name="pUC19",
 )
 ```
 

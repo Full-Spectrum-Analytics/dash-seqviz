@@ -8,17 +8,26 @@ with no build step. MLflow renders ``.html`` artifacts inline (the mechanism
 that makes Plotly figures interactive), so a logged ``seqviz.html`` shows the
 actual interactive viewer in the run's Artifacts tab.
 
+The API follows MLflow's fluent conventions: :func:`log_seqviz` logs into the
+active run just like ``mlflow.log_figure`` / ``mlflow.log_text`` (payload
+first, then ``artifact_file``), so it composes with your own run and
+experiment management.
+
 Usage::
 
+    import mlflow
     from dash_seqviz.integrations import mlflow as sv_mlflow
 
-    sv_mlflow.log_seqviz_run({"name": "pUC19", "seq": seq, "annotations": [...]})
+    mlflow.set_experiment("plasmids")
+    with mlflow.start_run():
+        mlflow.log_params({"host": "E. coli"})
+        sv_mlflow.log_seqviz({"name": "pUC19", "seq": seq, "annotations": [...]})
 
-    # or several variants of one sequence, grouped + comparable:
-    sv_mlflow.log_variants("pUC19", seq, [
+    # or log several variants of one sequence as comparable runs:
+    sv_mlflow.log_variants(seq, [
         {"run_name": "v1", "annotations": [...]},
         {"run_name": "v2", "annotations": [...], "theme": "dark"},
-    ])
+    ], name="pUC19")
 
 ``mlflow`` is an *optional* dependency: install with
 ``pip install dash-seqviz[mlflow]`` (or add it to your conda env). The HTML
@@ -199,74 +208,87 @@ def _seq_sha(seq: str) -> str:
     return hashlib.sha256((seq or "").upper().encode()).hexdigest()
 
 
-def log_seqviz_run(
+def log_seqviz(
     config: Dict[str, Any],
+    artifact_file: str = "seqviz.html",
     *,
-    experiment_name: str = "seqviz",
-    run_name: Optional[str] = None,
-    artifact_location: Optional[str] = None,
-) -> str:
-    """Log one SeqViz variant as an MLflow run; return the run_id.
+    run_id: Optional[str] = None,
+) -> None:
+    """Log a SeqViz viewer as an HTML artifact to the active MLflow run.
 
-    Logs structured params/metrics/tags for comparison plus a ``seqviz.html``
-    artifact that renders the interactive viewer inline in the MLflow UI.
-    Requires mlflow.
+    Mirrors :func:`mlflow.log_figure` / :func:`mlflow.log_text`: the viewer
+    ``config`` comes first, then the ``artifact_file`` path. The artifact
+    renders the interactive viewer inline in the run's Artifacts tab. Logs
+    into the currently active run (or ``run_id``), creating a run if none is
+    active -- exactly like MLflow's other ``log_*`` functions. Requires
+    mlflow.
+
+    Parameters
+    ----------
+    config:
+        SeqViz config -- the same keys as the Dash component (``seq``
+        required, plus ``name``, ``viewer``, ``annotations``, ``theme``, ...).
+    artifact_file:
+        Run-relative path for the artifact (default ``"seqviz.html"``).
+    run_id:
+        Run to log to. Defaults to the active run.
+
+    Examples
+    --------
+    >>> import mlflow
+    >>> from dash_seqviz.integrations import mlflow as sv_mlflow
+    >>> with mlflow.start_run():
+    ...     sv_mlflow.log_seqviz({"name": "pUC19", "seq": seq, "annotations": anns})
     """
     mlflow = _require_mlflow()
-
-    seq = config["seq"]
-    theme = _normalize_theme(config.get("theme"))
-    annotations = config.get("annotations") or []
-    ann_names = [a.get("name", "") for a in annotations]
-
-    if mlflow.get_experiment_by_name(experiment_name) is None:
-        mlflow.create_experiment(experiment_name, artifact_location=artifact_location)
-    mlflow.set_experiment(experiment_name)
-
-    with mlflow.start_run(run_name=run_name) as run:
-        mlflow.log_params({
-            "name": config.get("name", ""),
-            "viewer": config.get("viewer", "both"),
-            "theme": theme,
-            "n_annotations": len(annotations),
-            "annotation_names": ", ".join(ann_names) if ann_names else "(none)",
-        })
-        mlflow.set_tags({
-            "kind": "seqviz",
-            "seq_name": config.get("name", ""),
-            "seq_sha256": _seq_sha(seq)[:12],  # groups same-sequence variants
-        })
-        mlflow.log_metrics(sequence_features(seq, annotations))
-        mlflow.log_text(build_seqviz_html(config), "seqviz.html")
-        mlflow.log_dict(dict(config), "config.json")
-        return run.info.run_id
+    mlflow.log_text(build_seqviz_html(config), artifact_file, run_id=run_id)
 
 
 def log_variants(
-    name: str,
     seq: str,
     variants: List[Dict[str, Any]],
     *,
-    experiment_name: str = "seqviz",
+    name: str = "",
     base: Optional[Dict[str, Any]] = None,
-    artifact_location: Optional[str] = None,
 ) -> List[str]:
-    """Log several variants of the *same* sequence as comparable runs.
+    """Log variants of one sequence as separate runs for side-by-side compare.
 
-    Each entry in ``variants`` is a partial config merged over ``base``. All
-    runs share a ``seq_sha256`` tag, so they group in the runs table and diff
-    cleanly in the Compare view. Requires mlflow.
+    Each entry in ``variants`` is a partial config merged over ``base`` (e.g.
+    a different ``annotations`` set, ``theme``, or ``viewer``). Every variant
+    becomes its own run in the *current* experiment -- set it first with
+    ``mlflow.set_experiment(...)`` -- carrying:
+
+    * a shared ``seq_sha256`` tag, so variants of one sequence group together;
+    * sequence-feature metrics (length, GC%, annotation coverage) for plotting;
+    * the ``seqviz.html`` artifact (via :func:`log_seqviz`).
+
+    Select the runs in the MLflow UI and click **Compare**. Returns the list
+    of created run ids. Requires mlflow.
+
+    A ``run_name`` key on a variant sets that run's name.
     """
+    mlflow = _require_mlflow()
     base = base or {}
-    run_ids = []
+    run_ids: List[str] = []
     for v in variants:
-        cfg = {"name": name, "seq": seq, **base, **v}
-        run_ids.append(
-            log_seqviz_run(
-                cfg,
-                experiment_name=experiment_name,
-                run_name=v.get("run_name"),
-                artifact_location=artifact_location,
-            )
-        )
+        config = {"name": name, "seq": seq, **base, **v}
+        annotations = config.get("annotations") or []
+        ann_names = [a.get("name", "") for a in annotations]
+        with mlflow.start_run(run_name=v.get("run_name")) as run:
+            mlflow.log_params({
+                "name": config.get("name", ""),
+                "viewer": config.get("viewer", "both"),
+                "theme": _normalize_theme(config.get("theme")),
+                "n_annotations": len(annotations),
+                "annotation_names": ", ".join(ann_names) if ann_names else "(none)",
+            })
+            mlflow.set_tags({
+                "kind": "seqviz",
+                "seq_name": config.get("name", ""),
+                "seq_sha256": _seq_sha(seq)[:12],  # groups same-sequence variants
+            })
+            mlflow.log_metrics(sequence_features(seq, annotations))
+            log_seqviz(config)
+            mlflow.log_dict(dict(config), "config.json")
+            run_ids.append(run.info.run_id)
     return run_ids

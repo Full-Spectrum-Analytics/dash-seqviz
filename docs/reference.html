@@ -906,10 +906,12 @@ validate_props(annotations=anns)</code></pre></div>
                         <span class="pill type">optional</span>
                     </div>
                     <div class="prop-body">
-                        <p>Log a SeqViz view to MLflow as an interactive <code>.html</code> artifact (rendered inline in the MLflow UI) plus comparable run params/metrics/tags. Install the optional dependency with <code>pip install dash-seqviz[mlflow]</code>.</p>
-                        <div class="snippet"><pre><code>from dash_seqviz.integrations import mlflow as sv_mlflow
+                        <p><code>log_seqviz(config, artifact_file="seqviz.html")</code> logs a SeqViz view to the active MLflow run as an interactive <code>.html</code> artifact (rendered inline in the MLflow UI) &mdash; following the same convention as <code>mlflow.log_figure</code>. <code>log_variants()</code> logs several variants of one sequence as comparable runs (shared <code>seq_sha256</code> tag + feature metrics). Install with <code>pip install dash-seqviz[mlflow]</code>.</p>
+                        <div class="snippet"><pre><code>import mlflow
+from dash_seqviz.integrations import mlflow as sv_mlflow
 
-sv_mlflow.log_seqviz_run({"name": "pUC19", "seq": seq, "annotations": [...]})</code></pre></div>
+with mlflow.start_run():
+    sv_mlflow.log_seqviz({"name": "pUC19", "seq": seq, "annotations": [...]})</code></pre></div>
                     </div>
                 </article>
             </div>

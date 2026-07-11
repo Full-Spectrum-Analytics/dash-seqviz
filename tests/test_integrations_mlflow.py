@@ -62,31 +62,40 @@ def test_sequence_features_coverage():
 
 # --- logging round-trip (needs mlflow) -------------------------------------
 
-def test_log_seqviz_run_creates_run_with_artifact(tmp_path, monkeypatch):
+def test_log_seqviz_logs_artifact_to_active_run(tmp_path, monkeypatch):
+    # Idiomatic: log_seqviz logs into the caller's active run (like log_figure).
     mlflow = pytest.importorskip("mlflow")
     from mlflow.tracking import MlflowClient
 
     monkeypatch.chdir(tmp_path)
     mlflow.set_tracking_uri(f"sqlite:///{tmp_path/'mlflow.db'}")
 
-    run_id = sv.log_seqviz_run(
-        {"name": "pTest", "seq": "ATGCGT" * 20, "annotations": [{"start": 0, "end": 10, "name": "x"}]},
-        experiment_name="test-seqviz",
-        run_name="unit",
-        artifact_location=f"file://{tmp_path/'artifacts'}",
-    )
-    assert run_id
+    with mlflow.start_run() as run:
+        sv.log_seqviz(
+            {"name": "pTest", "seq": "ATGCGT" * 20,
+             "annotations": [{"start": 0, "end": 10, "name": "x"}]},
+        )
+        run_id = run.info.run_id
 
-    client = MlflowClient()
-    run = client.get_run(run_id)
-    assert run.data.tags["kind"] == "seqviz"
-    assert "seq_sha256" in run.data.tags
-    assert run.data.params["theme"] == "light"
-    assert float(run.data.metrics["seq_len"]) == 120.0
-
-    artifacts = {a.path for a in client.list_artifacts(run_id)}
+    artifacts = {a.path for a in MlflowClient().list_artifacts(run_id)}
     assert "seqviz.html" in artifacts
-    assert "config.json" in artifacts
+
+
+def test_log_seqviz_custom_artifact_file_and_run_id(tmp_path, monkeypatch):
+    mlflow = pytest.importorskip("mlflow")
+    from mlflow.tracking import MlflowClient
+
+    monkeypatch.chdir(tmp_path)
+    mlflow.set_tracking_uri(f"sqlite:///{tmp_path/'mlflow.db'}")
+
+    run = mlflow.start_run()
+    run_id = run.info.run_id
+    mlflow.end_run()
+    # Log to a specific (not active) run by id, at a custom path.
+    sv.log_seqviz({"name": "p", "seq": "ATGC" * 10}, "figures/viewer.html", run_id=run_id)
+
+    artifacts = {a.path for a in MlflowClient().list_artifacts(run_id, "figures")}
+    assert "figures/viewer.html" in artifacts
 
 
 def test_log_variants_share_seq_tag(tmp_path, monkeypatch):
@@ -95,16 +104,22 @@ def test_log_variants_share_seq_tag(tmp_path, monkeypatch):
 
     monkeypatch.chdir(tmp_path)
     mlflow.set_tracking_uri(f"sqlite:///{tmp_path/'mlflow.db'}")
+    mlflow.set_experiment("test-variants")
 
     seq = "ATGC" * 30
     run_ids = sv.log_variants(
-        "pV", seq,
+        seq,
         [{"run_name": "a", "annotations": []},
          {"run_name": "b", "annotations": [{"start": 0, "end": 4, "name": "z"}], "theme": "dark"}],
-        experiment_name="test-variants",
-        artifact_location=f"file://{tmp_path/'artifacts'}",
+        name="pV",
     )
     assert len(run_ids) == 2
     client = MlflowClient()
-    shas = {client.get_run(r).data.tags["seq_sha256"] for r in run_ids}
-    assert len(shas) == 1  # same sequence -> same tag
+    runs = [client.get_run(r) for r in run_ids]
+    # same sequence -> same grouping tag
+    assert len({r.data.tags["seq_sha256"] for r in runs}) == 1
+    # each run carries comparison metadata + the artifact
+    for r in runs:
+        assert r.data.tags["kind"] == "seqviz"
+        assert float(r.data.metrics["seq_len"]) == float(len(seq))
+        assert "seqviz.html" in {a.path for a in client.list_artifacts(r.info.run_id)}
