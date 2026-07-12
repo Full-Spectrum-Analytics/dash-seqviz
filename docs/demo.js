@@ -125,7 +125,7 @@
         bpColors: { A: "#1f78b4", T: "#33a02c", C: "#e31a1c", G: "#ff7f00" },
         // Legend (E2) is a separate `legend()` helper, not a SeqViz prop.
         // Its config: show it, its title, and vertical vs horizontal layout.
-        legend: { show: true, title: "", direction: "horizontal" },
+        legend: { show: true, title: "Annotations", direction: "vertical" },
         theme: "light",
         enzymes: ["PstI", "EcoRI", "XbaI", "SpeI"],
         enzymeFilter: "",
@@ -900,8 +900,17 @@
 
     // ---- Control wiring ------------------------------------------------------
 
+    // The linear-zoom slider only affects the linear track, so hide it when
+    // the viewer is purely circular.
+    function updateZoomVisibility() {
+        var field = el("zoom-field");
+        if (!field) { return; }
+        field.hidden = (state.viewer === "circular");
+    }
+
     el("ctrl-viewer").addEventListener("change", function (ev) {
         state.viewer = ev.target.value;
+        updateZoomVisibility();
         render();
     });
 
@@ -1058,5 +1067,6 @@
     renderEnzymeList();
     renderEnzymeChips();
     updateQuotaDisplay();
+    updateZoomVisibility();
     render();
 })();

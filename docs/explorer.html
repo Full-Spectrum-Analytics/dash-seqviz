@@ -40,78 +40,81 @@
     <link rel="stylesheet" href="./assets/seqviz-themes.css?v=1">
     <style>
         /* ============================================================
-           Component Explorer — workbench layout
-           Slim header, then a two-column bench: a tabbed canvas
-           (Preview / Code) on the left, a scrolling controls rail on
-           the right. The core play loop fits one viewport; the page
-           itself does not scroll to reach the viewer or its code.
+           Component Explorer — workbench
+           A full-width tabbed canvas (Preview / Code) is the star; a
+           deck of grouped control cards sits beneath it. On desktop the
+           page is locked to one viewport and never scrolls.
            ============================================================ */
 
-        /* --- Toolbar strip: no page title (the nav already names the page).
-               Holds the two controls that read best wide: theme + bp_colors,
-               freeing the right rail to fit everything else without scroll. --- */
-        .explorer-toolbar {
-            position: relative;
-            background: var(--parchment-pale);
-            border-bottom: 1px solid var(--ink-hairline);
-            padding: 11px 0;
+        .bench { padding: 14px 0 12px; }
+        .bench > .container { display: flex; flex-direction: column; gap: 14px; }
+
+        /* --- Deck: grouped control cards under the canvas --- */
+        .deck { flex: 0 0 auto; display: flex; gap: 12px; align-items: stretch; }
+        .deck-col { display: flex; flex-direction: column; gap: 12px; flex: 1 1 0; min-width: 0; }
+        .deck-col.col-wide { flex-grow: 1.28; }
+
+        .control-card {
+            border: 1px solid var(--ink-hairline); border-radius: var(--radius-lg);
+            background: var(--parchment-pale); padding: 10px 12px;
+            display: flex; flex-direction: column; gap: 7px; min-height: 0;
         }
-        .explorer-toolbar::before {
-            content: ""; position: absolute; left: 0; top: 0;
-            width: 72px; height: 3px; background: var(--tannin);
-        }
-        .explorer-toolbar .container {
-            display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 16px;
-        }
-        .tb-field { display: flex; flex-direction: column; gap: 4px; }
-        .tb-field > label {
-            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+        .control-card.fill { flex: 1 1 auto; min-height: 0; }
+        .card-title {
+            margin: 0; font-size: 0.66rem; font-weight: 700; text-transform: uppercase;
             letter-spacing: 0.06em; color: var(--tannin);
         }
-        .tb-field select {
-            font-size: 0.88rem; padding: 6px 10px; border: 1px solid var(--color-border);
-            border-radius: var(--radius); background: var(--color-bg);
-        }
-        .tb-field input[type="text"],
-        .tb-field input[type="number"] {
-            font-size: 0.88rem; padding: 6px 10px; border: 1px solid var(--color-border);
-            border-radius: var(--radius); background: var(--color-bg);
-        }
-        .tb-field #ctrl-zoom { width: 128px; }
-        .tb-field #ctrl-search { width: 128px; }
-        .tb-field #ctrl-mismatch { width: 68px; }
-        .tb-field #ctrl-maxlen { width: 104px; }
-        .tb-field #ctrl-legend-title { width: 128px; }
-        .tb-legend { display: flex; align-items: center; gap: 10px; }
-        .tb-legend .ctrl-inline { min-height: 0; }
-        .tb-legend select {
-            font-size: 0.84rem; padding: 6px 7px; width: 96px; border: 1px solid var(--color-border);
-            border-radius: var(--radius); background: var(--color-bg);
-        }
-        .explorer-toolbar .bp-colors { display: flex; gap: 10px; }
-        .explorer-toolbar .bp-colors > div { display: flex; flex-direction: row; align-items: center; gap: 5px; }
-        .explorer-toolbar .bp-colors label { font-size: 0.78rem; font-weight: 700; color: var(--color-text-muted); }
-        .explorer-toolbar .bp-colors input {
-            width: 54px; font-size: 0.8rem; padding: 6px 5px;
-            border: 1px solid var(--color-border); border-radius: var(--radius);
-            background: var(--color-bg); font-family: "SFMono-Regular", Consolas, monospace;
-        }
+        .control-card .ctrl { margin-bottom: 0; }
+        .control-card .ctrl + .ctrl { margin-top: 7px; }
 
-        /* --- The bench: sized to the viewport so the whole demo sits in
-               one screen. Each column scrolls internally if it needs to;
-               the page itself does not scroll to reach the viewer. --- */
-        .bench { padding: 16px 0 20px; }
-        .bench-grid {
-            display: grid; grid-template-columns: minmax(0, 1fr) 358px;
-            gap: 26px; align-items: stretch;
-            height: calc(100vh - 170px); min-height: 452px;
+        /* Legend card: a bounded box holding the live legend, plus its config. */
+        .legend-box {
+            border: 1px solid var(--ink-hairline); border-radius: var(--radius);
+            background: var(--color-bg); padding: 8px 10px; min-height: 44px;
+            flex: 1 1 auto; overflow: auto;
         }
+        .legend-config { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+        .legend-config select, .legend-config input[type="text"] {
+            font-size: 0.8rem; padding: 4px 6px; border: 1px solid var(--color-border);
+            border-radius: var(--radius); background: var(--color-bg);
+        }
+        .legend-config select { width: 84px; }
+        .legend-config input[type="text"] { flex: 1 1 100px; min-width: 90px; }
+        .legend-box { padding: 7px 9px; }
 
-        /* --- Canvas (left): tabbed viewer / code --- */
+        /* Motif group: query + mismatch read as one unit. */
+        .motif-row { display: grid; grid-template-columns: 1fr 72px; gap: 8px; align-items: end; }
+        .motif-row .ctrl + .ctrl { margin-top: 0; }
+        /* Sequence source: accession + email side by side to stay short. */
+        .seq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .seq-grid .ctrl + .ctrl { margin-top: 0; }
+
+        /* The enzyme picker is itself the card body, so drop its own frame. */
+        .control-card .enzyme-picker { border: none; background: none; padding: 0; }
+        .legend-box .seqviz-legend { margin: 0; }
+        .bar-field .zoom-val { font-weight: 400; font-variant-numeric: tabular-nums; }
+
+        /* Keep the deck compact so the viewer stays the largest thing. */
+        .control-card { padding: 9px 11px; gap: 6px; }
+        .control-card .ctrl + .ctrl { margin-top: 6px; }
+        .control-card .ctrl label { font-size: 0.7rem; }
+        .control-card .ctrl select,
+        .control-card .ctrl input[type="text"],
+        .control-card .ctrl input[type="email"],
+        .control-card .ctrl input[type="number"] { font-size: 0.85rem; padding: 5px 8px; }
+        .control-card .ctrl-inline { min-height: 22px; font-size: 0.82rem; }
+        .control-card .ctrl-row { margin-top: 2px; }
+        .control-card .ctrl-status { margin-top: 5px; }
+        .control-card .ncbi-details { margin-top: 6px; }
+        .control-card .enzyme-list { max-height: 76px; }
+        .control-card .enzyme-search { margin-bottom: 0; }
+
+        /* --- Canvas (top): the star, fills the space above the deck --- */
         .canvas {
+            flex: 1 1 auto; min-height: 0;
             border: 1px solid var(--ink-hairline); border-radius: var(--radius-lg);
             background: var(--color-bg); overflow: hidden;
-            display: flex; flex-direction: column; min-height: 0;
+            display: flex; flex-direction: column;
         }
         .canvas-bar {
             display: flex; align-items: center; justify-content: space-between;
@@ -157,17 +160,20 @@
            display) so the viewer keeps its measured width and seqviz is
            never torn down when the Code tab is shown. */
         .canvas-body { position: relative; flex: 1 1 auto; min-height: 0; }
-        .tabpanel { position: absolute; inset: 0; padding: 14px; overflow: auto; }
+        .tabpanel { position: absolute; inset: 0; padding: 12px; overflow: auto; }
         .tabpanel.is-hidden { visibility: hidden; pointer-events: none; }
+        /* Preview panel is a column: viewer grows, readouts stay pinned below. */
+        #panel-preview { display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
 
         #seqviz-root {
+            flex: 1 1 auto; min-height: 240px;
             border: 1px solid var(--ink-hairline); border-radius: var(--radius);
-            background: #fff; overflow: hidden; min-height: 300px;
+            background: #fff; overflow: hidden;
         }
 
         .readouts {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 6px; margin-top: 10px;
+            flex: 0 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 6px;
             font-size: 0.74rem; color: var(--color-text-muted);
             font-family: "SFMono-Regular", Consolas, monospace;
         }
@@ -194,26 +200,10 @@
         .code-panel .snippet { margin: 0; }
         .code-panel pre { max-height: 452px; overflow: auto; margin: 0; }
 
-        /* --- Controls rail (right) --- */
-        .controls-rail {
-            height: 100%; overflow-y: auto;
-            padding: 2px 10px 2px 0;
-            scrollbar-width: thin;
-        }
-        .ctrl-group { padding: 12px 0; border-bottom: 1px solid var(--ink-hairline); }
-        .ctrl-group:first-child { padding-top: 0; }
-        .ctrl-group:last-child { border-bottom: none; padding-bottom: 4px; }
-        .ctrl-group > h3 {
-            margin: 0 0 9px; font-size: 0.72rem; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.06em; color: var(--tannin);
-        }
-
-        .ctrl { display: flex; flex-direction: column; gap: 4px; margin-bottom: 9px; }
-        .ctrl:last-child { margin-bottom: 0; }
-        .ctrl-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .ctrl-duo .ctrl { margin-bottom: 9px; }
+        /* --- Control primitives (shared by the deck cards) --- */
+        .ctrl { display: flex; flex-direction: column; gap: 4px; }
         .ctrl label {
-            font-size: 0.76rem; font-weight: 600; color: var(--color-text-muted);
+            font-size: 0.72rem; font-weight: 600; color: var(--color-text-muted);
             text-transform: uppercase; letter-spacing: 0.03em;
         }
         .ctrl .lbl-note { text-transform: none; font-weight: 400; }
@@ -232,8 +222,9 @@
             color: var(--color-text);
         }
         /* Toggles read fine two-up; halves their vertical footprint. */
-        .toggle-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; }
+        .toggle-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 10px; }
         .toggle-stack .ctrl-inline:last-child { grid-column: 1 / -1; }
+        .toggle-stack .ctrl-inline { font-size: 0.78rem; white-space: nowrap; }
 
         .ctrl-row { display: flex; gap: 8px; }
         .ctrl-row .btn { flex: 1; justify-content: center; }
@@ -311,9 +302,8 @@
         }
 
         /* --- Desktop: lock the whole page to one viewport. The body is a
-               flex column (nav, toolbar, bench, footer); the bench flexes to
-               fill and each column scrolls internally if it must. The page
-               itself cannot scroll. --- */
+               flex column (nav, bench, footer); the canvas flexes to fill,
+               the deck is fixed, and the page itself cannot scroll. --- */
         @media (min-width: 961px) {
             html { height: 100%; }
             body[data-page="explorer"] {
@@ -328,21 +318,19 @@
                 flex: 1 1 auto; min-height: 0; width: 100%;
                 display: flex; flex-direction: column;
             }
-            body[data-page="explorer"] .bench-grid {
-                flex: 1 1 auto; min-height: 0; height: auto;
-            }
             body[data-page="explorer"] > footer {
                 flex: 0 0 auto; padding: 9px 0; font-size: 0.8rem;
             }
         }
 
-        /* --- Mobile / narrow: stack the bench and let the page scroll. --- */
+        /* --- Mobile / narrow: stack the deck and let the page scroll. --- */
         @media (max-width: 960px) {
-            .bench-grid { grid-template-columns: 1fr; gap: 20px; height: auto; }
-            .controls-rail { height: auto; overflow: visible; padding-right: 0; }
-            .canvas-body { position: static; }
+            .deck { flex-direction: column; }
+            .canvas { min-height: 440px; }
+            .canvas-body { position: static; min-height: 380px; }
             .tabpanel { position: static; inset: auto; overflow: visible; }
             .tabpanel.is-hidden { display: none; }
+            #panel-preview { overflow: visible; }
         }
     </style>
 </head>
@@ -350,58 +338,12 @@
 
 <div id="site-nav-mount"></div>
 
-<!-- Config bar: the knobs. Topology + Theme live by the preview (canvas bar). -->
-<div class="explorer-toolbar">
-    <div class="container">
-        <div class="tb-field">
-            <label for="ctrl-zoom">Zoom (linear): <span id="zoom-val">60</span></label>
-            <input id="ctrl-zoom" type="range" min="1" max="100" value="60">
-        </div>
-        <div class="tb-field">
-            <label for="ctrl-search">Search motif</label>
-            <input id="ctrl-search" type="text" value="ttnnnaat" placeholder="e.g. GCTAGC">
-        </div>
-        <div class="tb-field">
-            <label for="ctrl-mismatch">Mismatch</label>
-            <input id="ctrl-mismatch" type="number" min="0" step="1" value="0">
-        </div>
-        <div class="tb-field">
-            <label for="ctrl-maxlen">max_seq_length</label>
-            <input id="ctrl-maxlen" type="number" min="0" step="100" placeholder="blank = off">
-        </div>
-        <div class="tb-field tb-bp">
-            <label>bp_colors (A/T/C/G)</label>
-            <div class="bp-colors">
-                <div><label for="ctrl-bp-a">A</label><input id="ctrl-bp-a" type="text" value="#1f78b4"></div>
-                <div><label for="ctrl-bp-t">T</label><input id="ctrl-bp-t" type="text" value="#33a02c"></div>
-                <div><label for="ctrl-bp-c">C</label><input id="ctrl-bp-c" type="text" value="#e31a1c"></div>
-                <div><label for="ctrl-bp-g">G</label><input id="ctrl-bp-g" type="text" value="#ff7f00"></div>
-            </div>
-        </div>
-        <div class="tb-field">
-            <label>Legend</label>
-            <div class="tb-legend">
-                <label class="ctrl-inline"><input id="ctrl-legend-show" type="checkbox" checked> Show</label>
-                <select id="ctrl-legend-dir" aria-label="Legend layout">
-                    <option value="horizontal" selected>Horizontal</option>
-                    <option value="vertical">Vertical</option>
-                </select>
-            </div>
-        </div>
-        <div class="tb-field">
-            <label for="ctrl-legend-title">Legend title</label>
-            <input id="ctrl-legend-title" type="text" placeholder="(optional)">
-        </div>
-    </div>
-</div>
-
-<!-- Workbench -->
+<!-- Workbench: full-width tabbed canvas on top, control deck beneath -->
 <section class="bench">
     <div class="container">
-        <div class="bench-grid">
 
-            <!-- LEFT: tabbed canvas (viewer / code) -->
-            <div class="canvas">
+        <!-- Tabbed canvas (viewer / code) -->
+        <div class="canvas">
                 <div class="canvas-bar">
                     <div class="tabs" role="tablist" aria-label="Viewer or code">
                         <button class="tab" id="tab-preview" data-tab="preview" role="tab" aria-selected="true" aria-controls="panel-preview">Preview</button>
@@ -415,6 +357,10 @@
                                 <option value="circular">Circular</option>
                                 <option value="linear">Linear</option>
                             </select>
+                        </label>
+                        <label class="bar-field" id="zoom-field">Zoom
+                            <input id="ctrl-zoom" type="range" min="1" max="100" value="60">
+                            <span id="zoom-val" class="zoom-val">60</span>
                         </label>
                         <label class="bar-field">Theme
                             <select id="ctrl-theme">
@@ -441,7 +387,6 @@
                 <div class="canvas-body">
                     <div class="tabpanel" id="panel-preview" role="tabpanel" aria-labelledby="tab-preview">
                         <div id="seqviz-root"></div>
-                        <div id="legend" class="seqviz-legend" aria-label="Annotation legend"></div>
                         <div class="readouts">
                             <div id="selection-readout" class="readout">selection: none</div>
                             <div id="search-readout" class="readout">search_results: 0</div>
@@ -463,18 +408,40 @@
                 </div>
             </div>
 
-            <!-- RIGHT: controls rail -->
-            <aside class="controls-rail" aria-label="Component controls">
+        <!-- Control deck: grouped cards beneath the viewer -->
+        <div class="deck" aria-label="Component controls">
 
-                <section class="ctrl-group">
-                    <h3>Sequence source</h3>
-                    <div class="ctrl">
-                        <label for="ctrl-accession">NCBI accession</label>
-                        <input id="ctrl-accession" type="text" value="" placeholder="e.g. NC_001416.1, J01749.1, NM_000686">
+            <!-- Legend (bounded card + its config) -->
+            <div class="deck-col">
+                <div class="control-card fill legend-card">
+                    <h4 class="card-title">Legend</h4>
+                    <div class="legend-box">
+                        <div id="legend" class="seqviz-legend is-vertical" aria-label="Annotation legend"></div>
                     </div>
-                    <div class="ctrl">
-                        <label for="ctrl-email">Email <span class="lbl-note">(required by NCBI)</span></label>
-                        <input id="ctrl-email" type="email" placeholder="you@example.com" autocomplete="off" required>
+                    <div class="legend-config">
+                        <label class="ctrl-inline"><input id="ctrl-legend-show" type="checkbox" checked> Show</label>
+                        <select id="ctrl-legend-dir" aria-label="Legend layout">
+                            <option value="vertical" selected>Vertical</option>
+                            <option value="horizontal">Horizontal</option>
+                        </select>
+                        <input id="ctrl-legend-title" type="text" value="Annotations" placeholder="Title">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sequence source -->
+            <div class="deck-col col-wide">
+                <div class="control-card fill">
+                    <h4 class="card-title">Sequence source</h4>
+                    <div class="seq-grid">
+                        <div class="ctrl">
+                            <label for="ctrl-accession">NCBI accession</label>
+                            <input id="ctrl-accession" type="text" value="" placeholder="e.g. NC_001416.1">
+                        </div>
+                        <div class="ctrl">
+                            <label for="ctrl-email">Email <span class="lbl-note">(NCBI)</span></label>
+                            <input id="ctrl-email" type="email" placeholder="you@example.com" autocomplete="off" required>
+                        </div>
                     </div>
                     <div class="ctrl-row">
                         <button id="btn-fetch" type="button" class="btn btn-primary btn-sm">Fetch</button>
@@ -506,23 +473,59 @@
                             </p>
                         </div>
                     </details>
-                </section>
+                </div>
+            </div>
 
-                <section class="ctrl-group">
-                    <h3>Display toggles</h3>
+            <!-- Display toggles + max_seq_length (wider so toggles fit two-up) -->
+            <div class="deck-col col-wide">
+                <div class="control-card">
+                    <h4 class="card-title">Display toggles</h4>
+                    <div class="toggle-stack">
+                        <label class="ctrl-inline"><input id="ctrl-complement" type="checkbox" checked> Complement</label>
+                        <label class="ctrl-inline"><input id="ctrl-rotate" type="checkbox" checked> Rotate on scroll</label>
+                        <label class="ctrl-inline"><input id="ctrl-translations" type="checkbox" checked> Translations (CDS)</label>
+                        <label class="ctrl-inline"><input id="ctrl-primers" type="checkbox" checked> Primers</label>
+                        <label class="ctrl-inline"><input id="ctrl-highlights" type="checkbox" checked> Highlights</label>
+                    </div>
+                </div>
+                <div class="control-card fill">
+                    <h4 class="card-title">max_seq_length</h4>
                     <div class="ctrl">
-                        <div class="toggle-stack">
-                            <label class="ctrl-inline"><input id="ctrl-complement" type="checkbox" checked> Complement</label>
-                            <label class="ctrl-inline"><input id="ctrl-rotate" type="checkbox" checked> Rotate on scroll</label>
-                            <label class="ctrl-inline"><input id="ctrl-translations" type="checkbox" checked> Translations (CDS)</label>
-                            <label class="ctrl-inline"><input id="ctrl-primers" type="checkbox" checked> Primers</label>
-                            <label class="ctrl-inline"><input id="ctrl-highlights" type="checkbox" checked> Highlights</label>
+                        <input id="ctrl-maxlen" type="number" min="0" step="100" placeholder="blank = off (long-sequence guard)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Motif search + base-pair colors -->
+            <div class="deck-col">
+                <div class="control-card">
+                    <h4 class="card-title">Motif search</h4>
+                    <div class="motif-row">
+                        <div class="ctrl">
+                            <label for="ctrl-search">Query</label>
+                            <input id="ctrl-search" type="text" value="ttnnnaat" placeholder="e.g. GCTAGC">
+                        </div>
+                        <div class="ctrl">
+                            <label for="ctrl-mismatch">Mismatch</label>
+                            <input id="ctrl-mismatch" type="number" min="0" step="1" value="0">
                         </div>
                     </div>
-                </section>
+                </div>
+                <div class="control-card fill">
+                    <h4 class="card-title">Base-pair colors</h4>
+                    <div class="bp-colors">
+                        <div><label for="ctrl-bp-a">A</label><input id="ctrl-bp-a" type="text" value="#1f78b4"></div>
+                        <div><label for="ctrl-bp-t">T</label><input id="ctrl-bp-t" type="text" value="#33a02c"></div>
+                        <div><label for="ctrl-bp-c">C</label><input id="ctrl-bp-c" type="text" value="#e31a1c"></div>
+                        <div><label for="ctrl-bp-g">G</label><input id="ctrl-bp-g" type="text" value="#ff7f00"></div>
+                    </div>
+                </div>
+            </div>
 
-                <section class="ctrl-group">
-                    <h3>Restriction enzymes (NEB)</h3>
+            <!-- Restriction enzymes -->
+            <div class="deck-col col-wide">
+                <div class="control-card fill">
+                    <h4 class="card-title">Restriction enzymes (NEB)</h4>
                     <div class="enzyme-picker">
                         <div style="display: flex; gap: 8px; margin-bottom: 6px;">
                             <input id="enzyme-search" class="enzyme-search" type="text" placeholder="Filter enzymes..." style="margin-bottom: 0; flex: 1;">
@@ -531,9 +534,9 @@
                         <div id="enzyme-list" class="enzyme-list"></div>
                         <div id="enzyme-selected" class="enzyme-selected"></div>
                     </div>
-                </section>
+                </div>
+            </div>
 
-            </aside>
         </div>
     </div>
 </section>
@@ -558,7 +561,7 @@
 <script src="./assets/seqviz-adapter.js?v=2"></script>
 
 <!-- Explorer demo logic -->
-<script src="./demo.js?v=12"></script>
+<script src="./demo.js?v=13"></script>
 
 <script>
     if (window.SeqVizSite && window.SeqVizSite.wireCopy) {
