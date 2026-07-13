@@ -87,3 +87,58 @@ def test_legend_empty_annotations():
 def test_legend_id_passthrough():
     lg = legend(ANNS, id="my-legend")
     assert lg.id == "my-legend"
+
+
+# --- legend() faceted (grouped input) --------------------------------------
+
+PRIMERS = [{"start": 0, "end": 24, "name": "Fwd primer", "color": "#ef4444"}]
+FACETS = {"Annotations": ANNS, "Primers": PRIMERS}
+
+
+def _facets(div):
+    return [c for c in div.children if getattr(c, "className", "") == "dash-seqviz-legend-facet"]
+
+
+def _facet_item_count(facet):
+    items_container = facet.children[1]  # [title, items]
+    return len(
+        [c for c in items_container.children
+         if getattr(c, "className", "") == "dash-seqviz-legend-item"]
+    )
+
+
+def test_legend_faceted_one_section_per_key():
+    facets = _facets(legend(FACETS))
+    assert len(facets) == 2
+
+
+def test_legend_faceted_titles_in_order():
+    facets = _facets(legend(FACETS))
+    titles = [f.children[0] for f in facets]
+    assert [t.className for t in titles] == ["dash-seqviz-legend-facet-title"] * 2
+    assert [t.children for t in titles] == ["Annotations", "Primers"]
+
+
+def test_legend_faceted_items_per_section():
+    facets = _facets(legend(FACETS))
+    assert _facet_item_count(facets[0]) == 3
+    assert _facet_item_count(facets[1]) == 1
+
+
+def test_legend_faceted_umbrella_title():
+    lg = legend(FACETS, title="Legend")
+    assert lg.children[0].className == "dash-seqviz-legend-title"
+    assert lg.children[0].children == "Legend"
+
+
+def test_legend_faceted_swatch_colors_match_resolution():
+    facets = _facets(legend(FACETS, theme="okabe-ito-light"))
+    items = [c for c in facets[0].children[1].children
+             if getattr(c, "className", "") == "dash-seqviz-legend-item"]
+    swatches = [it.children[0].style["backgroundColor"] for it in items]
+    assert swatches == resolve_colors(ANNS, theme="okabe-ito-light")
+
+
+def test_legend_faceted_horizontal():
+    lg = legend(FACETS, direction="horizontal")
+    assert lg.style["flexDirection"] == "row"
