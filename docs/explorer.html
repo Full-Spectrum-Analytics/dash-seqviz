@@ -54,13 +54,14 @@
                without scrolling and the viewer sits centered between the
                rails. --- */
         .workbench {
-            flex: 1 1 auto; min-height: 0;
             display: grid; grid-template-columns: 246px minmax(0, 1fr) 246px;
             gap: 14px; align-items: stretch;
         }
         .rail {
             min-height: 0; overflow-y: auto; scrollbar-width: thin;
             display: flex; flex-direction: column; gap: 12px; padding-right: 2px;
+            /* Distribute so the last card bottom-aligns with the readouts. */
+            justify-content: space-between;
         }
 
         .control-card {
@@ -129,7 +130,7 @@
                the box (on the page background), not as a gap inside it. Caps
                at the column height so the Code tab can't overflow the page. --- */
         .canvas {
-            align-self: start; max-height: 100%; min-height: 0;
+            align-self: stretch; min-height: 0;
             border: 1px solid var(--ink-hairline); border-radius: var(--radius-lg);
             background: var(--color-bg); overflow: hidden;
             display: flex; flex-direction: column;
@@ -182,11 +183,12 @@
         /* Panels sit in flow (not overlaid), so the canvas is exactly as tall
            as the active panel. Toggling display keeps seqviz mounted. If a
            panel is taller than the column, canvas-body scrolls (not the page). */
-        .canvas-body { flex: 1 1 auto; min-height: 0; overflow: auto; }
+        .canvas-body { flex: 1 1 auto; min-height: 0; overflow: auto; display: flex; flex-direction: column; }
         .tabpanel { padding: 14px; }
         /* ID-level so it beats #panel-preview's own display rule. */
         #panel-preview.is-hidden, #panel-code.is-hidden { display: none; }
-        #panel-preview { display: flex; flex-direction: column; gap: 10px; }
+        /* Preview fills the canvas so readouts reach the bottom edge. */
+        #panel-preview { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
 
         #seqviz-root {
             flex: 0 0 auto; min-height: 240px;
@@ -194,16 +196,21 @@
             background: #fff; overflow: hidden;
         }
 
+        /* Readouts: a 2x2 grid of roomy boxes that fill the space under the
+           viewer, so their bottom lines up with the last card in each rail. */
         .readouts {
-            flex: 0 0 auto;
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 6px;
-            font-size: 0.74rem; color: var(--color-text-muted);
+            flex: 1 1 auto; min-height: 96px;
+            display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px;
+            font-size: 0.76rem; color: var(--color-text-muted);
             font-family: "SFMono-Regular", Consolas, monospace;
         }
         .readout {
             background: var(--parchment-pale); border: 1px solid var(--ink-hairline);
-            border-radius: var(--radius); padding: 5px 9px;
-            overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
+            border-radius: var(--radius); padding: 8px 10px; min-width: 0; min-height: 0;
+            line-height: 1.4; overflow: auto; overflow-wrap: anywhere;
+        }
+        #copied-banner {
+            flex: 0 0 auto; margin-top: 8px; font-size: 0.76rem; color: var(--tannin);
         }
         #copied-banner:empty { display: none; }
 
@@ -351,10 +358,10 @@
             }
             body[data-page="explorer"] .bench {
                 flex: 1 1 auto; min-height: 0; padding: 14px 0 10px;
-                display: flex; flex-direction: column; align-items: center;
+                display: flex; flex-direction: column; align-items: center; justify-content: center;
             }
             body[data-page="explorer"] .bench > .container {
-                flex: 1 1 auto; min-height: 0; width: 100%;
+                flex: 0 1 auto; min-height: 0; width: 100%;
                 display: flex; flex-direction: column;
             }
             body[data-page="explorer"] > footer {
@@ -486,8 +493,8 @@
                             <div id="search-readout" class="readout">search_results: 0</div>
                             <div id="clicked-readout" class="readout">clicked_element: none</div>
                             <div id="aria-readout" class="readout">aria_label: —</div>
-                            <div id="copied-banner" class="readout"></div>
                         </div>
+                        <div id="copied-banner"></div>
                     </div>
 
                     <div class="tabpanel code-panel is-hidden" id="panel-code" role="tabpanel" aria-labelledby="tab-code">
@@ -560,9 +567,8 @@
 <!-- Footer -->
 <footer>
     <p>
-        Built by <a href="https://github.com/Full-Spectrum-Analytics" target="_blank" rel="noopener">Full Spectrum Analytics</a>
+        Made with ❤️ by <a href="https://github.com/Full-Spectrum-Analytics" target="_blank" rel="noopener">FSA</a>
         &middot; Powered by <a href="https://github.com/Lattice-Automation/seqviz" target="_blank" rel="noopener">seqviz</a>
-        &middot; <a href="https://github.com/Full-Spectrum-Analytics/dash-seqviz" target="_blank" rel="noopener">Source on GitHub</a>
     </p>
 </footer>
 
