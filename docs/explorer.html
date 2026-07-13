@@ -124,27 +124,32 @@
         .control-card .enzyme-list { max-height: 76px; }
         .control-card .enzyme-search { margin-bottom: 0; }
 
-        /* --- Canvas (top): the star, fills the space above the deck --- */
+        /* --- Canvas: the star. Hugs its content and top-anchors with the bar
+               and the rails' tops; any leftover column height falls outside
+               the box (on the page background), not as a gap inside it. Caps
+               at the column height so the Code tab can't overflow the page. --- */
         .canvas {
-            flex: 1 1 auto; min-height: 0;
+            align-self: start; max-height: 100%; min-height: 0;
             border: 1px solid var(--ink-hairline); border-radius: var(--radius-lg);
             background: var(--color-bg); overflow: hidden;
             display: flex; flex-direction: column;
         }
         .canvas-bar {
             display: flex; align-items: center; justify-content: space-between;
-            gap: 8px 12px; flex-wrap: wrap; padding-right: 12px;
+            gap: 8px 12px; flex-wrap: wrap; padding-right: 14px;
             background: var(--parchment-pale);
             border-bottom: 1px solid var(--ink-hairline);
         }
         .tabs { display: flex; }
         .tab {
             appearance: none; background: none; border: none; cursor: pointer;
-            font: inherit; font-size: 0.88rem; font-weight: 600; letter-spacing: 0.01em;
-            color: var(--color-text-muted); padding: 12px 20px;
+            font: inherit; font-size: 0.86rem; font-weight: 600; letter-spacing: 0.01em;
+            color: var(--color-text-muted); padding: 11px 14px;
             border-bottom: 2px solid transparent; margin-bottom: -1px;
             transition: color 120ms ease;
         }
+        /* Rail zoom control hides when the topology is circular. */
+        #zoom-field[hidden] { display: none; }
         .tab:hover { color: var(--color-text); }
         .tab[aria-selected="true"] { color: var(--color-text); border-bottom-color: var(--tannin); }
         .canvas-actions { display: flex; align-items: center; gap: 8px; }
@@ -174,13 +179,14 @@
         /* Both panels overlay the same box; we toggle visibility (not
            display) so the viewer keeps its measured width and seqviz is
            never torn down when the Code tab is shown. */
-        .canvas-body { position: relative; flex: 1 1 auto; min-height: 0; }
-        .tabpanel { position: absolute; inset: 0; padding: 12px; overflow: auto; }
-        .tabpanel.is-hidden { visibility: hidden; pointer-events: none; }
-        /* Preview panel centers the viewer vertically; seqviz renders "both"
-           at a fixed height it will not stretch, so we size the box to that
-           content and center it rather than leaving a white band below. */
-        #panel-preview { display: flex; flex-direction: column; justify-content: center; gap: 10px; overflow: auto; }
+        /* Panels sit in flow (not overlaid), so the canvas is exactly as tall
+           as the active panel. Toggling display keeps seqviz mounted. If a
+           panel is taller than the column, canvas-body scrolls (not the page). */
+        .canvas-body { flex: 1 1 auto; min-height: 0; overflow: auto; }
+        .tabpanel { padding: 14px; }
+        /* ID-level so it beats #panel-preview's own display rule. */
+        #panel-preview.is-hidden, #panel-code.is-hidden { display: none; }
+        #panel-preview { display: flex; flex-direction: column; gap: 10px; }
 
         #seqviz-root {
             flex: 0 0 auto; min-height: 240px;
@@ -410,7 +416,34 @@
                 </div>
 
                 <div class="control-card">
-                    <h4 class="card-title">Display toggles</h4>
+                    <h4 class="card-title">Display</h4>
+                    <div class="ctrl">
+                        <label for="ctrl-viewer">Topology</label>
+                        <select id="ctrl-viewer">
+                            <option value="both" selected>Both</option>
+                            <option value="both_flip">Both (flipped)</option>
+                            <option value="circular">Circular</option>
+                            <option value="linear">Linear</option>
+                        </select>
+                    </div>
+                    <div class="ctrl">
+                        <label for="ctrl-theme">Theme</label>
+                        <select id="ctrl-theme">
+                            <option value="light" selected>Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="auto">Auto (follow OS/page)</option>
+                            <option value="okabe-ito-light">Okabe-Ito (light)</option>
+                            <option value="okabe-ito-dark">Okabe-Ito (dark)</option>
+                            <option value="colorbrewer-light">ColorBrewer (light)</option>
+                            <option value="colorbrewer-dark">ColorBrewer (dark)</option>
+                            <option value="tol-light">Paul Tol (light)</option>
+                            <option value="tol-dark">Paul Tol (dark)</option>
+                        </select>
+                    </div>
+                    <div class="ctrl" id="zoom-field">
+                        <label for="ctrl-zoom">Zoom (linear): <span id="zoom-val">60</span></label>
+                        <input id="ctrl-zoom" type="range" min="1" max="100" value="60">
+                    </div>
                     <div class="toggle-stack">
                         <label class="ctrl-inline"><input id="ctrl-complement" type="checkbox" checked> Complement</label>
                         <label class="ctrl-inline"><input id="ctrl-rotate" type="checkbox" checked> Rotate on scroll</label>
@@ -438,38 +471,10 @@
                         <button class="tab" id="tab-preview" data-tab="preview" role="tab" aria-selected="true" aria-controls="panel-preview">Preview</button>
                         <button class="tab" id="tab-code" data-tab="code" role="tab" aria-selected="false" aria-controls="panel-code">Code</button>
                     </div>
-                    <div class="canvas-tools">
-                        <label class="bar-field">Topology
-                            <select id="ctrl-viewer">
-                                <option value="both" selected>Both</option>
-                                <option value="both_flip">Both (flipped)</option>
-                                <option value="circular">Circular</option>
-                                <option value="linear">Linear</option>
-                            </select>
-                        </label>
-                        <label class="bar-field" id="zoom-field">Zoom
-                            <input id="ctrl-zoom" type="range" min="1" max="100" value="60">
-                            <span id="zoom-val" class="zoom-val">60</span>
-                        </label>
-                        <label class="bar-field">Theme
-                            <select id="ctrl-theme">
-                                <option value="light" selected>Light</option>
-                                <option value="dark">Dark</option>
-                                <option value="auto">Auto</option>
-                                <option value="okabe-ito-light">Okabe-Ito (light)</option>
-                                <option value="okabe-ito-dark">Okabe-Ito (dark)</option>
-                                <option value="colorbrewer-light">ColorBrewer (light)</option>
-                                <option value="colorbrewer-dark">ColorBrewer (dark)</option>
-                                <option value="tol-light">Paul Tol (light)</option>
-                                <option value="tol-dark">Paul Tol (dark)</option>
-                            </select>
-                        </label>
-                        <span class="bar-sep"></span>
-                        <div class="canvas-actions" id="export-actions">
-                            <span class="lbl">Export</span>
-                            <button id="btn-export-svg" type="button" class="btn btn-light btn-sm">SVG</button>
-                            <button id="btn-export-png" type="button" class="btn btn-light btn-sm">PNG</button>
-                        </div>
+                    <div class="canvas-actions" id="export-actions">
+                        <span class="lbl">Export</span>
+                        <button id="btn-export-svg" type="button" class="btn btn-light btn-sm">SVG</button>
+                        <button id="btn-export-png" type="button" class="btn btn-light btn-sm">PNG</button>
                     </div>
                 </div>
 
