@@ -49,10 +49,19 @@
         .bench { padding: 14px 0 12px; }
         .bench > .container { display: flex; flex-direction: column; gap: 14px; }
 
-        /* --- Deck: grouped control cards under the canvas --- */
-        .deck { flex: 0 0 auto; display: flex; gap: 12px; align-items: stretch; }
-        .deck-col { display: flex; flex-direction: column; gap: 12px; flex: 1 1 0; min-width: 0; }
-        .deck-col.col-wide { flex-grow: 1.28; }
+        /* --- Workbench: two control rails flank a centered canvas.
+               The canvas runs full height, so the Code tab has room to show
+               without scrolling and the viewer sits centered between the
+               rails. --- */
+        .workbench {
+            flex: 1 1 auto; min-height: 0;
+            display: grid; grid-template-columns: 246px minmax(0, 1fr) 246px;
+            gap: 14px; align-items: stretch;
+        }
+        .rail {
+            min-height: 0; overflow-y: auto; scrollbar-width: thin;
+            display: flex; flex-direction: column; gap: 12px; padding-right: 2px;
+        }
 
         .control-card {
             border: 1px solid var(--ink-hairline); border-radius: var(--radius-lg);
@@ -67,11 +76,17 @@
         .control-card .ctrl { margin-bottom: 0; }
         .control-card .ctrl + .ctrl { margin-top: 7px; }
 
-        /* Legend card: a bounded box holding the live legend, plus its config. */
+        /* Legend card: a bounded box holding the live legend, plus its config.
+           Faceted by element type, so it can grow; cap it and let it scroll. */
         .legend-box {
             border: 1px solid var(--ink-hairline); border-radius: var(--radius);
             background: var(--color-bg); padding: 8px 10px; min-height: 44px;
-            flex: 1 1 auto; overflow: auto;
+            max-height: 210px; overflow: auto;
+        }
+        .is-vertical .legend-facet + .legend-facet { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--ink-hairline); }
+        .legend-facet-title {
+            font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 4px;
         }
         .legend-config { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
         .legend-config select, .legend-config input[type="text"] {
@@ -162,11 +177,13 @@
         .canvas-body { position: relative; flex: 1 1 auto; min-height: 0; }
         .tabpanel { position: absolute; inset: 0; padding: 12px; overflow: auto; }
         .tabpanel.is-hidden { visibility: hidden; pointer-events: none; }
-        /* Preview panel is a column: viewer grows, readouts stay pinned below. */
-        #panel-preview { display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+        /* Preview panel centers the viewer vertically; seqviz renders "both"
+           at a fixed height it will not stretch, so we size the box to that
+           content and center it rather than leaving a white band below. */
+        #panel-preview { display: flex; flex-direction: column; justify-content: center; gap: 10px; overflow: auto; }
 
         #seqviz-root {
-            flex: 1 1 auto; min-height: 240px;
+            flex: 0 0 auto; min-height: 240px;
             border: 1px solid var(--ink-hairline); border-radius: var(--radius);
             background: #fff; overflow: hidden;
         }
@@ -187,7 +204,7 @@
         /* --- Code tab --- */
         .install-admonition {
             display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px;
-            margin: 0 0 12px; padding: 9px 13px;
+            margin: 0 0 8px; padding: 7px 11px;
             background: var(--parchment-pale); border: 1px solid var(--ink-hairline);
             border-radius: var(--radius);
             font-size: 0.82rem; color: var(--color-text-muted);
@@ -198,7 +215,16 @@
         }
         .install-admonition code { font-size: 0.8rem; }
         .code-panel .snippet { margin: 0; }
-        .code-panel pre { max-height: 452px; overflow: auto; margin: 0; }
+        /* Compact type so the full ~40-line snippet fits the center column
+           without scrolling on a laptop viewport. */
+        .code-panel pre { margin: 0; padding: 10px 68px 10px 14px; }
+        .code-panel pre,
+        .code-panel pre code { font-size: 0.7rem; line-height: 1.38; }
+
+        /* Narrow rails: stack the two-up groups so nothing wraps awkwardly. */
+        .rail .seq-grid { grid-template-columns: 1fr; }
+        .rail .toggle-stack { grid-template-columns: 1fr; }
+        .rail .motif-row { grid-template-columns: 1fr 68px; }
 
         /* --- Control primitives (shared by the deck cards) --- */
         .ctrl { display: flex; flex-direction: column; gap: 4px; }
@@ -284,12 +310,18 @@
         }
 
         .seqviz-legend {
-            display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center;
-            margin-top: 12px; font-size: 0.85rem;
+            display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: flex-start;
+            margin: 0; font-size: 0.82rem;
         }
         .seqviz-legend:empty { display: none; }
-        .seqviz-legend.is-vertical { flex-direction: column; align-items: flex-start; gap: 4px; }
-        .seqviz-legend .legend-title { font-weight: 700; margin-right: 4px; }
+        .seqviz-legend.is-vertical { flex-direction: column; align-items: stretch; gap: 6px; }
+        .legend-title {
+            width: 100%; font-weight: 700; font-size: 0.72rem;
+            text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text);
+        }
+        .legend-facet { min-width: 0; }
+        .legend-items { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+        .seqviz-legend.is-vertical .legend-items { flex-direction: column; gap: 3px; }
         .seqviz-legend .legend-item { display: inline-flex; align-items: center; gap: 6px; }
         .seqviz-legend .legend-swatch {
             width: 14px; height: 14px; border-radius: 3px; flex: 0 0 auto;
@@ -302,8 +334,9 @@
         }
 
         /* --- Desktop: lock the whole page to one viewport. The body is a
-               flex column (nav, bench, footer); the canvas flexes to fill,
-               the deck is fixed, and the page itself cannot scroll. --- */
+               flex column (nav, bench, footer); the workbench fills, its
+               columns scroll internally if needed, and the page cannot
+               scroll. --- */
         @media (min-width: 961px) {
             html { height: 100%; }
             body[data-page="explorer"] {
@@ -323,9 +356,10 @@
             }
         }
 
-        /* --- Mobile / narrow: stack the deck and let the page scroll. --- */
+        /* --- Mobile / narrow: stack rails + canvas, let the page scroll. --- */
         @media (max-width: 960px) {
-            .deck { flex-direction: column; }
+            .workbench { grid-template-columns: 1fr; }
+            .rail { overflow: visible; }
             .canvas { min-height: 440px; }
             .canvas-body { position: static; min-height: 380px; }
             .tabpanel { position: static; inset: auto; overflow: visible; }
@@ -342,8 +376,63 @@
 <section class="bench">
     <div class="container">
 
-        <!-- Tabbed canvas (viewer / code) -->
-        <div class="canvas">
+        <div class="workbench" aria-label="Component workbench">
+
+            <!-- LEFT rail: sequence input + display -->
+            <aside class="rail rail-left" aria-label="Sequence and display controls">
+                <div class="control-card">
+                    <h4 class="card-title">Sequence source</h4>
+                    <div class="ctrl">
+                        <label for="ctrl-accession">NCBI accession</label>
+                        <input id="ctrl-accession" type="text" value="" placeholder="e.g. NC_001416.1">
+                    </div>
+                    <div class="ctrl">
+                        <label for="ctrl-email">Email <span class="lbl-note">(required by NCBI)</span></label>
+                        <input id="ctrl-email" type="email" placeholder="you@example.com" autocomplete="off" required>
+                    </div>
+                    <div class="ctrl-row">
+                        <button id="btn-fetch" type="button" class="btn btn-primary btn-sm">Fetch</button>
+                        <button id="btn-accession-sample" type="button" class="btn btn-light btn-sm" title="Pick a random example accession">Sample</button>
+                        <button id="btn-reset" type="button" class="btn btn-light btn-sm">Reset</button>
+                    </div>
+                    <div class="ctrl-status">
+                        <span id="fetch-status"></span>
+                        <span id="quota-display"></span>
+                    </div>
+                    <details class="ncbi-details">
+                        <summary>About NCBI requests &amp; your responsibilities</summary>
+                        <div class="ncbi-body">
+                            <p>Requests go directly from your browser to NCBI's <a href="https://www.ncbi.nlm.nih.gov/books/NBK25497/" target="_blank" rel="noopener">E-utilities API</a>. <strong>dash-seqviz does not operate a proxy</strong>: your email is sent to NCBI with each request, as their usage policy recommends, so they can reach you if your usage causes issues.</p>
+                            <p>Your email is stored locally in your browser only (localStorage). We cap you at 3 requests per second (NCBI's unauthenticated limit), cache responses so repeat accessions don't re-hit NCBI, and refuse obviously invalid accession strings.</p>
+                            <p>For heavy or automated use, please <a href="https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/" target="_blank" rel="noopener">get an NCBI API key</a> and run your own workload, not through this public demo.</p>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="control-card">
+                    <h4 class="card-title">Display toggles</h4>
+                    <div class="toggle-stack">
+                        <label class="ctrl-inline"><input id="ctrl-complement" type="checkbox" checked> Complement</label>
+                        <label class="ctrl-inline"><input id="ctrl-rotate" type="checkbox" checked> Rotate on scroll</label>
+                        <label class="ctrl-inline"><input id="ctrl-translations" type="checkbox" checked> Translations (CDS)</label>
+                        <label class="ctrl-inline"><input id="ctrl-primers" type="checkbox" checked> Primers</label>
+                        <label class="ctrl-inline"><input id="ctrl-highlights" type="checkbox" checked> Highlights</label>
+                    </div>
+                </div>
+
+                <div class="control-card">
+                    <h4 class="card-title">Base-pair colors</h4>
+                    <div class="bp-colors">
+                        <div><label for="ctrl-bp-a">A</label><input id="ctrl-bp-a" type="text" value="#1f78b4"></div>
+                        <div><label for="ctrl-bp-t">T</label><input id="ctrl-bp-t" type="text" value="#33a02c"></div>
+                        <div><label for="ctrl-bp-c">C</label><input id="ctrl-bp-c" type="text" value="#e31a1c"></div>
+                        <div><label for="ctrl-bp-g">G</label><input id="ctrl-bp-g" type="text" value="#ff7f00"></div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- CENTER: tabbed canvas (viewer / code) -->
+            <div class="canvas">
                 <div class="canvas-bar">
                     <div class="tabs" role="tablist" aria-label="Viewer or code">
                         <button class="tab" id="tab-preview" data-tab="preview" role="tab" aria-selected="true" aria-controls="panel-preview">Preview</button>
@@ -408,15 +497,12 @@
                 </div>
             </div>
 
-        <!-- Control deck: grouped cards beneath the viewer -->
-        <div class="deck" aria-label="Component controls">
-
-            <!-- Legend (bounded card + its config) -->
-            <div class="deck-col">
-                <div class="control-card fill legend-card">
+            <!-- RIGHT rail: legend + tuning + enzymes -->
+            <aside class="rail rail-right" aria-label="Legend, search and enzymes">
+                <div class="control-card legend-card">
                     <h4 class="card-title">Legend</h4>
                     <div class="legend-box">
-                        <div id="legend" class="seqviz-legend is-vertical" aria-label="Annotation legend"></div>
+                        <div id="legend" class="seqviz-legend is-vertical" aria-label="Element legend"></div>
                     </div>
                     <div class="legend-config">
                         <label class="ctrl-inline"><input id="ctrl-legend-show" type="checkbox" checked> Show</label>
@@ -424,80 +510,10 @@
                             <option value="vertical" selected>Vertical</option>
                             <option value="horizontal">Horizontal</option>
                         </select>
-                        <input id="ctrl-legend-title" type="text" value="Annotations" placeholder="Title">
+                        <input id="ctrl-legend-title" type="text" value="" placeholder="Title (optional)">
                     </div>
                 </div>
-            </div>
 
-            <!-- Sequence source -->
-            <div class="deck-col col-wide">
-                <div class="control-card fill">
-                    <h4 class="card-title">Sequence source</h4>
-                    <div class="seq-grid">
-                        <div class="ctrl">
-                            <label for="ctrl-accession">NCBI accession</label>
-                            <input id="ctrl-accession" type="text" value="" placeholder="e.g. NC_001416.1">
-                        </div>
-                        <div class="ctrl">
-                            <label for="ctrl-email">Email <span class="lbl-note">(NCBI)</span></label>
-                            <input id="ctrl-email" type="email" placeholder="you@example.com" autocomplete="off" required>
-                        </div>
-                    </div>
-                    <div class="ctrl-row">
-                        <button id="btn-fetch" type="button" class="btn btn-primary btn-sm">Fetch</button>
-                        <button id="btn-accession-sample" type="button" class="btn btn-light btn-sm" title="Pick a random example accession">Sample</button>
-                        <button id="btn-reset" type="button" class="btn btn-light btn-sm">Reset</button>
-                    </div>
-                    <div class="ctrl-status">
-                        <span id="fetch-status"></span>
-                        <span id="quota-display"></span>
-                    </div>
-                    <details class="ncbi-details">
-                        <summary>About NCBI requests &amp; your responsibilities</summary>
-                        <div class="ncbi-body">
-                            <p>
-                                Requests go directly from your browser to NCBI's
-                                <a href="https://www.ncbi.nlm.nih.gov/books/NBK25497/" target="_blank" rel="noopener">E-utilities API</a>.
-                                <strong>dash-seqviz does not operate a proxy</strong>: your email is sent to NCBI with each
-                                request, as their usage policy recommends, so they can reach you if your usage causes issues.
-                            </p>
-                            <p>
-                                Your email is stored locally in your browser only (localStorage). We cap you at 3 requests
-                                per second (NCBI's unauthenticated limit), cache responses so repeat accessions don't re-hit
-                                NCBI, and refuse obviously invalid accession strings.
-                            </p>
-                            <p>
-                                For heavy or automated use, please
-                                <a href="https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/" target="_blank" rel="noopener">get an NCBI API key</a>
-                                and run your own workload, not through this public demo.
-                            </p>
-                        </div>
-                    </details>
-                </div>
-            </div>
-
-            <!-- Display toggles + max_seq_length (wider so toggles fit two-up) -->
-            <div class="deck-col col-wide">
-                <div class="control-card">
-                    <h4 class="card-title">Display toggles</h4>
-                    <div class="toggle-stack">
-                        <label class="ctrl-inline"><input id="ctrl-complement" type="checkbox" checked> Complement</label>
-                        <label class="ctrl-inline"><input id="ctrl-rotate" type="checkbox" checked> Rotate on scroll</label>
-                        <label class="ctrl-inline"><input id="ctrl-translations" type="checkbox" checked> Translations (CDS)</label>
-                        <label class="ctrl-inline"><input id="ctrl-primers" type="checkbox" checked> Primers</label>
-                        <label class="ctrl-inline"><input id="ctrl-highlights" type="checkbox" checked> Highlights</label>
-                    </div>
-                </div>
-                <div class="control-card fill">
-                    <h4 class="card-title">max_seq_length</h4>
-                    <div class="ctrl">
-                        <input id="ctrl-maxlen" type="number" min="0" step="100" placeholder="blank = off (long-sequence guard)">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Motif search + base-pair colors -->
-            <div class="deck-col">
                 <div class="control-card">
                     <h4 class="card-title">Motif search</h4>
                     <div class="motif-row">
@@ -511,20 +527,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="control-card fill">
-                    <h4 class="card-title">Base-pair colors</h4>
-                    <div class="bp-colors">
-                        <div><label for="ctrl-bp-a">A</label><input id="ctrl-bp-a" type="text" value="#1f78b4"></div>
-                        <div><label for="ctrl-bp-t">T</label><input id="ctrl-bp-t" type="text" value="#33a02c"></div>
-                        <div><label for="ctrl-bp-c">C</label><input id="ctrl-bp-c" type="text" value="#e31a1c"></div>
-                        <div><label for="ctrl-bp-g">G</label><input id="ctrl-bp-g" type="text" value="#ff7f00"></div>
+
+                <div class="control-card">
+                    <h4 class="card-title">max_seq_length</h4>
+                    <div class="ctrl">
+                        <input id="ctrl-maxlen" type="number" min="0" step="100" placeholder="blank = off (long-sequence guard)">
                     </div>
                 </div>
-            </div>
 
-            <!-- Restriction enzymes -->
-            <div class="deck-col col-wide">
-                <div class="control-card fill">
+                <div class="control-card">
                     <h4 class="card-title">Restriction enzymes (NEB)</h4>
                     <div class="enzyme-picker">
                         <div style="display: flex; gap: 8px; margin-bottom: 6px;">
@@ -535,7 +546,7 @@
                         <div id="enzyme-selected" class="enzyme-selected"></div>
                     </div>
                 </div>
-            </div>
+            </aside>
 
         </div>
     </div>
@@ -561,7 +572,7 @@
 <script src="./assets/seqviz-adapter.js?v=2"></script>
 
 <!-- Explorer demo logic -->
-<script src="./demo.js?v=13"></script>
+<script src="./demo.js?v=15"></script>
 
 <script>
     if (window.SeqVizSite && window.SeqVizSite.wireCopy) {

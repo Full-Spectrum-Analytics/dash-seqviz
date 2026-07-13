@@ -880,12 +880,16 @@ SeqViz(id="viewer", **props)</code></pre></div>
                     </div>
                     <div class="prop-body">
                         <p>Return a Dash layout (<code>html.Div</code> of swatch + name rows) whose colors match what the viewer renders for the same annotations and theme. <code>legend(annotations, *, theme=None, colors=None, title=None, direction="vertical")</code>. Pair with <a href="#clicked_element"><code>clicked_element</code></a> to highlight the clicked feature.</p>
+                        <p>Pass a flat list for a single legend, or a mapping of section label to items to <strong>facet</strong> the legend by element type (annotations, primers, translations, highlights) &mdash; one titled section per key.</p>
                         <div class="snippet"><pre><code>from dash import html
 from dash_seqviz import SeqViz, legend
 
 html.Div([
-    SeqViz(id="v", seq=seq, annotations=anns, theme="okabe-ito-light"),
+    SeqViz(id="v", seq=seq, annotations=anns, primers=primers, theme="okabe-ito-light"),
+    # flat legend:
     legend(anns, theme="okabe-ito-light", title="Features"),
+    # or faceted by element type:
+    legend({"Annotations": anns, "Primers": primers}, theme="okabe-ito-light"),
 ])</code></pre></div>
                     </div>
                 </article>

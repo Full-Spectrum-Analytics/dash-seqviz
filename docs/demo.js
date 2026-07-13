@@ -125,7 +125,7 @@
         bpColors: { A: "#1f78b4", T: "#33a02c", C: "#e31a1c", G: "#ff7f00" },
         // Legend (E2) is a separate `legend()` helper, not a SeqViz prop.
         // Its config: show it, its title, and vertical vs horizontal layout.
-        legend: { show: true, title: "Annotations", direction: "vertical" },
+        legend: { show: true, title: "", direction: "vertical" },
         theme: "light",
         enzymes: ["PstI", "EcoRI", "XbaI", "SpeI"],
         enzymeFilter: "",
@@ -209,23 +209,59 @@
         root.style.background = isDarkTheme(t) ? "#1a1b1e" : "#fff";
     }
 
+    // The legend is faceted by element type: the viewer color-codes
+    // annotations, translations, primers and highlights, so the legend gets a
+    // titled section for each *shown* type instead of one flat list. Mirrors
+    // what the grouped `legend({...})` Python helper produces.
+    function legendFacets() {
+        var facets = [];
+        var anns = resolvedAnnotations();
+        if (anns && anns.length) {
+            facets.push({ label: "Annotations", items: anns });
+        }
+        if (state.showTranslations && state.translations && state.translations.length) {
+            facets.push({ label: "Translations", items: state.translations });
+        }
+        if (state.showPrimers && state.primers && state.primers.length) {
+            facets.push({ label: "Primers", items: state.primers });
+        }
+        if (state.showHighlights && state.highlights && state.highlights.length) {
+            facets.push({
+                label: "Highlights",
+                items: state.highlights.map(function (h, i) {
+                    return { color: h.color, name: h.name || ("Highlight " + (i + 1)) };
+                })
+            });
+        }
+        return facets;
+    }
+
+    function legendItemHtml(a) {
+        var color = /^#[0-9a-zA-Z]+$|^[a-zA-Z]+$/.test(a.color || "") ? a.color : "#888";
+        return '<span class="legend-item"><span class="legend-swatch" style="background:' +
+               color + '"></span>' + escapeHtml(a.name || "(unnamed)") + "</span>";
+    }
+
     function renderLegend() {
         var host = el("legend");
         if (!host) { return; }
         var cfg = state.legend || {};
-        var anns = resolvedAnnotations();
         var dirClass = cfg.direction === "vertical" ? " is-vertical" : " is-horizontal";
         host.className = "seqviz-legend" + dirClass;
-        if (!cfg.show || !anns || !anns.length) { host.innerHTML = ""; return; }
+
+        var facets = legendFacets();
+        if (!cfg.show || !facets.length) { host.innerHTML = ""; return; }
+
         var title = cfg.title
-            ? '<span class="legend-title">' + escapeHtml(cfg.title) + "</span>"
+            ? '<div class="legend-title">' + escapeHtml(cfg.title) + "</div>"
             : "";
-        var items = anns.map(function (a) {
-            var color = /^#[0-9a-zA-Z]+$|^[a-zA-Z]+$/.test(a.color || "") ? a.color : "#888";
-            return '<span class="legend-item"><span class="legend-swatch" style="background:' +
-                   color + '"></span>' + escapeHtml(a.name || "") + "</span>";
+        var body = facets.map(function (f) {
+            var items = f.items.map(legendItemHtml).join("");
+            return '<div class="legend-facet">' +
+                   '<div class="legend-facet-title">' + escapeHtml(f.label) + "</div>" +
+                   '<div class="legend-items">' + items + "</div></div>";
         }).join("");
-        host.innerHTML = title + items;
+        host.innerHTML = title + body;
     }
 
     // aria_label (H1): the auto-generated accessible name the Dash wrapper
@@ -299,17 +335,49 @@
         if (usesRequests) { lines.push("import requests"); }
         lines.push("");
 
-        // Legend needs an explicit annotations list; surface it as a variable
-        // so both SeqViz and legend() can share it.
+        // Each shown element type becomes a variable so SeqViz and the
+        // faceted legend() can share the same lists. Only for the inline-seq
+        // case; a fetched GenBank carries its own features via file=.
+        function inlineList(items, mapper) {
+            return "[" + items.map(mapper).join(", ") + "]";
+        }
+        var facetDefs = [];  // { label, varName, def: [lines] }
         if (emitAnns) {
-            lines.push("annotations = [");
+            var annDef = ["annotations = ["];
             s.annotations.forEach(function (a) {
-                lines.push('    {"start": ' + a.start + ', "end": ' + a.end +
+                annDef.push('    {"start": ' + a.start + ', "end": ' + a.end +
                     ', "name": ' + pyStr(a.name || "") +
                     ', "direction": ' + (a.direction || 1) +
                     ', "color": ' + pyStr(a.color || "") + "},");
             });
-            lines.push("]");
+            annDef.push("]");
+            facetDefs.push({ label: "Annotations", varName: "annotations", def: annDef });
+
+            if (s.showTranslations && s.translations && s.translations.length) {
+                facetDefs.push({ label: "Translations", varName: "translations", def: [
+                    "translations = " + inlineList(s.translations, function (t) {
+                        return '{"start": ' + t.start + ', "end": ' + t.end +
+                            ', "direction": ' + t.direction + ', "name": ' + pyStr(t.name) +
+                            ', "color": ' + pyStr(t.color) + "}";
+                    })] });
+            }
+            if (s.showPrimers && s.primers && s.primers.length) {
+                facetDefs.push({ label: "Primers", varName: "primers", def: [
+                    "primers = " + inlineList(s.primers, function (p) {
+                        return '{"start": ' + p.start + ', "end": ' + p.end +
+                            ', "direction": ' + (p.direction || 1) + ', "name": ' + pyStr(p.name) +
+                            ', "color": ' + pyStr(p.color) + "}";
+                    })] });
+            }
+            if (s.showHighlights && s.highlights && s.highlights.length) {
+                facetDefs.push({ label: "Highlights", varName: "highlights", def: [
+                    "highlights = " + inlineList(s.highlights, function (h) {
+                        return '{"start": ' + h.start + ', "end": ' + h.end +
+                            ', "color": ' + pyStr(h.color) + "}";
+                    })] });
+            }
+
+            facetDefs.forEach(function (f) { f.def.forEach(function (l) { lines.push(l); }); });
             lines.push("");
         }
 
@@ -340,9 +408,9 @@
             lines.push("        seq=" + pyStr(s.seq || "") + ",");
         }
 
-        if (emitAnns) {
-            lines.push("        annotations=annotations,");
-        }
+        facetDefs.forEach(function (f) {
+            lines.push("        " + f.varName + "=" + f.varName + ",");
+        });
 
         lines.push("        viewer=" + pyStr(s.viewer) + ",");
         lines.push("        zoom={\"linear\": " + (s.zoom && s.zoom.linear != null ? s.zoom.linear : 50) + "},");
@@ -353,25 +421,6 @@
         }
         if (s.maxSeqLength != null) {
             lines.push("        max_seq_length=" + s.maxSeqLength + ",");
-        }
-
-        if (s.showHighlights && s.highlights && s.highlights.length) {
-            var hls = s.highlights.map(function (h) {
-                return '{"start": ' + h.start + ', "end": ' + h.end +
-                       ', "color": ' + pyStr(h.color) + "}";
-            }).join(", ");
-            lines.push("        highlights=[" + hls + "],");
-        }
-
-        if (s.showTranslations && s.translations && s.translations.length) {
-            var trans = s.translations.map(function (t) {
-                return '{"start": ' + t.start +
-                       ', "end": ' + t.end +
-                       ', "direction": ' + t.direction +
-                       ', "name": ' + pyStr(t.name) +
-                       ', "color": ' + pyStr(t.color) + "}";
-            }).join(", ");
-            lines.push("        translations=[" + trans + "],");
         }
 
         var bp = s.bpColors || {};
@@ -393,18 +442,24 @@
 
         lines.push('        style={"height": "500px", "width": "100%"},');
 
-        if (showLegend) {
+        if (showLegend && emitAnns) {
             lines.push("    ),");
-            if (emitAnns) {
-                var lgArgs = ["annotations"];
-                if (s.theme && s.theme !== "light") { lgArgs.push("theme=" + pyStr(s.theme)); }
-                if (lg.title) { lgArgs.push("title=" + pyStr(lg.title)); }
-                lgArgs.push("direction=" + pyStr(lg.direction || "horizontal"));
-                lines.push("    legend(" + lgArgs.join(", ") + "),");
+            var lgOpts = [];
+            if (s.theme && s.theme !== "light") { lgOpts.push("theme=" + pyStr(s.theme)); }
+            if (lg.title) { lgOpts.push("title=" + pyStr(lg.title)); }
+            lgOpts.push("direction=" + pyStr(lg.direction || "vertical"));
+            if (facetDefs.length <= 1) {
+                lines.push("    legend(annotations, " + lgOpts.join(", ") + "),");
             } else {
-                lines.push("    # legend(annotations, ...) also available;");
-                lines.push("    # parse annotations from `gb` with dash_seqviz.parse first.");
+                // Faceted: one section per shown element type.
+                var pairs = facetDefs.map(function (f) {
+                    return pyStr(f.label) + ": " + f.varName;
+                }).join(", ");
+                lines.push("    legend({" + pairs + "}, " + lgOpts.join(", ") + "),");
             }
+        } else if (showLegend) {
+            lines.push("    ),");
+            lines.push("    # legend({...}) also available; parse features from `gb` first.");
         } else {
             lines.push("    )");
         }
