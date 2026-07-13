@@ -1109,9 +1109,15 @@
         input.focus();
     });
 
-    // ---- Prevent page scroll while rotating circular viewer ------------------
+    // ---- Wheel handling over the viewer --------------------------------------
+    // The linear view has its own scroll container (.la-vz-linear-scroller); let
+    // wheel events there scroll it natively. Only suppress the default over the
+    // circular view, where scrolling rotates instead of scrolling the page.
 
     el("seqviz-root").addEventListener("wheel", function (ev) {
+        if (ev.target.closest && ev.target.closest(".la-vz-linear-scroller")) {
+            return;  // let the linear sequence scroll
+        }
         if (state.rotateOnScroll) {
             ev.preventDefault();
         }
