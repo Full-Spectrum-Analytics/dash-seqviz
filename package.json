@@ -37,6 +37,7 @@
     "validate-init": "python _validate_init.py",
     "prepublishOnly": "npm run validate-init",
     "build:js": "webpack --mode production",
+    "build:demo": "webpack --config webpack.demo.config.js",
     "build:backends": "dash-generate-components ./src/lib/components dash_seqviz -p package-info.json --ignore \\.test\\.",
     "build": "npm run build:js && npm run build:backends"
   },

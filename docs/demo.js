@@ -125,7 +125,7 @@
         bpColors: { A: "#1f78b4", T: "#33a02c", C: "#e31a1c", G: "#ff7f00" },
         // Legend (E2) is a separate `legend()` helper, not a SeqViz prop.
         // Its config: show it, its title, and vertical vs horizontal layout.
-        legend: { show: true, title: "", direction: "vertical" },
+        legend: { show: true, title: "", direction: "horizontal", position: "bottom" },
         theme: "light",
         enzymes: ["PstI", "EcoRI", "XbaI", "SpeI"],
         enzymeFilter: "",
@@ -178,25 +178,49 @@
         return applyPalette(state.annotations, paletteFor(resolvedTheme()));
     }
 
+    // Map the demo state to the real component's props (snake_case). The
+    // component applies theme palettes and the max_seq_length guard itself, so
+    // we pass raw arrays + theme and let it do the work.
     function getProps() {
-        var palette = paletteFor(resolvedTheme());
         return {
             name: state.name,
             seq: state.seq,
             viewer: state.viewer,
-            annotations: resolvedAnnotations(),
-            primers: state.showPrimers ? applyPalette(state.primers, palette) : [],
-            translations: state.showTranslations ? applyPalette(state.translations, palette) : [],
+            annotations: state.annotations,
+            primers: state.showPrimers ? state.primers : [],
+            translations: state.showTranslations ? state.translations : [],
             highlights: state.showHighlights ? state.highlights : [],
             enzymes: state.enzymes,
             search: state.search,
             zoom: state.zoom,
-            showComplement: state.showComplement,
-            rotateOnScroll: state.rotateOnScroll,
-            bpColors: state.bpColors,
-            onSelection: handleSelection,
-            onSearch: handleSearch,
-            style: { height: "500px", width: "100%" }
+            show_complement: state.showComplement,
+            rotate_on_scroll: state.rotateOnScroll,
+            bp_colors: state.bpColors,
+            theme: state.theme,
+            max_seq_length: state.maxSeqLength == null ? undefined : state.maxSeqLength,
+            legend: legendProp(),
+            on_selection: handleSelection,
+            on_search: handleSearch,
+            // seqviz needs a definite height (percentage heights collapse with
+            // no fixed-height ancestor). A viewport-relative height keeps the
+            // viewer prominent while the page stays within one screen.
+            style: { height: "52vh", width: "100%", minHeight: "320px" }
+        };
+    }
+
+    // The rail's legend controls -> the component's `legend` config prop. Null
+    // hides the legend entirely.
+    function legendProp() {
+        var lg = state.legend || {};
+        if (!lg.show) { return null; }
+        return {
+            show: true,
+            title: lg.title || "",
+            direction: lg.direction || "horizontal",
+            position: lg.position || "bottom",
+            withBorder: true,
+            radius: "sm",
+            p: "sm"
         };
     }
 
@@ -283,26 +307,17 @@
         if (ro) { ro.textContent = "aria_label: " + label; }
     }
 
+    // Render by mounting the REAL dash_seqviz component (bundled standalone for
+    // the static site). The component owns the viewer, the interactive legend,
+    // theme palettes and the max_seq_length guard, so the demo just maps state
+    // to its props and re-renders; React reconciles.
     function render() {
         applyThemeToDom();
         var root = el("seqviz-root");
-        var seqLen = (state.seq || "").length;
-        // max_seq_length guard (F1): render a placeholder instead of mounting
-        // the viewer when the sequence exceeds the configured cap.
-        if (state.maxSeqLength != null && seqLen > state.maxSeqLength) {
-            viewer = null;
-            root.innerHTML = '<div class="seqviz-guard">Sequence not rendered: ' +
-                seqLen.toLocaleString() + ' bp exceeds max_seq_length (' +
-                state.maxSeqLength.toLocaleString() + ' bp).<br>Raise the guard to render, ' +
-                'or use <code>viewer="circular"</code> for very long sequences.</div>';
-        } else if (!viewer) {
-            viewer = seqviz.Viewer("seqviz-root", getProps());
-            viewer.render();
-        } else {
-            viewer.setState(getProps());
+        if (window.DashSeqVizStandalone) {
+            window.DashSeqVizStandalone.render(root, getProps());
         }
         updateAriaLabel();
-        renderLegend();
         updateLiveSnippet();
     }
 
@@ -331,7 +346,7 @@
         var showLegend = !!lg.show && s.annotations && s.annotations.length;
 
         lines.push("from dash import Dash, html");
-        lines.push("from dash_seqviz import SeqViz" + (showLegend ? ", legend" : ""));
+        lines.push("from dash_seqviz import SeqViz");
         if (usesRequests) { lines.push("import requests"); }
         lines.push("");
 
@@ -440,29 +455,18 @@
                        ", \"mismatch\": " + (s.search.mismatch || 0) + "},");
         }
 
-        lines.push('        style={"height": "500px", "width": "100%"},');
-
-        if (showLegend && emitAnns) {
-            lines.push("    ),");
-            var lgOpts = [];
-            if (s.theme && s.theme !== "light") { lgOpts.push("theme=" + pyStr(s.theme)); }
-            if (lg.title) { lgOpts.push("title=" + pyStr(lg.title)); }
-            lgOpts.push("direction=" + pyStr(lg.direction || "vertical"));
-            if (facetDefs.length <= 1) {
-                lines.push("    legend(annotations, " + lgOpts.join(", ") + "),");
-            } else {
-                // Faceted: one section per shown element type.
-                var pairs = facetDefs.map(function (f) {
-                    return pyStr(f.label) + ": " + f.varName;
-                }).join(", ");
-                lines.push("    legend({" + pairs + "}, " + lgOpts.join(", ") + "),");
-            }
-        } else if (showLegend) {
-            lines.push("    ),");
-            lines.push("    # legend({...}) also available; parse features from `gb` first.");
-        } else {
-            lines.push("    )");
+        // Built-in interactive legend (a component prop, not a separate call).
+        if (showLegend) {
+            var lgOpts = [
+                '"show": True',
+                '"position": ' + pyStr(lg.position || "bottom"),
+                '"direction": ' + pyStr(lg.direction || "horizontal"),
+            ];
+            if (lg.title) { lgOpts.push('"title": ' + pyStr(lg.title)); }
+            lines.push("        legend={" + lgOpts.join(", ") + "},");
         }
+        lines.push('        style={"height": "520px", "width": "100%"},');
+        lines.push("    )");
         lines.push("])");
         lines.push("");
         lines.push('if __name__ == "__main__":');
@@ -614,8 +618,6 @@
                              "." + sizeNote;
         statusEl.style.color = "#16a34a";
 
-        viewer = null;
-        el("seqviz-root").innerHTML = "";
         render();
     }
 
@@ -772,8 +774,6 @@
         el("ctrl-accession").value = "";
         el("fetch-status").textContent = "";
 
-        viewer = null;
-        el("seqviz-root").innerHTML = "";
         render();
     }
 
@@ -1014,11 +1014,18 @@
 
     // Legend (E2) config: show / layout / title. These don't touch the viewer,
     // so re-render the legend + snippet only.
-    function refreshLegend() { renderLegend(); updateLiveSnippet(); }
+    function refreshLegend() { render(); }
     var legendShow = el("ctrl-legend-show");
     if (legendShow) {
         legendShow.addEventListener("change", function (ev) {
             state.legend.show = ev.target.checked;
+            refreshLegend();
+        });
+    }
+    var legendPos = el("ctrl-legend-pos");
+    if (legendPos) {
+        legendPos.addEventListener("change", function (ev) {
+            state.legend.position = ev.target.value;
             refreshLegend();
         });
     }
