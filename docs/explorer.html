@@ -132,7 +132,7 @@
         .control-card .ctrl-row { margin-top: 2px; }
         .control-card .ctrl-status { margin-top: 5px; }
         .control-card .ncbi-details { margin-top: 6px; }
-        .control-card .enzyme-list { max-height: 76px; }
+        .control-card .enzyme-list { max-height: 52px; }
         .control-card .enzyme-search { margin-bottom: 0; }
 
         /* --- Canvas: the star. Hugs its content and top-anchors with the bar
@@ -311,7 +311,7 @@
             background: #fff;
         }
         .enzyme-list {
-            max-height: 76px; overflow-y: auto; border: 1px solid var(--color-border);
+            max-height: 104px; overflow-y: auto; border: 1px solid var(--color-border);
             border-radius: var(--radius); background: #fff; padding: 4px;
         }
         .enzyme-item {
@@ -544,7 +544,7 @@
                         <label class="ctrl-inline"><input type="checkbox" class="ctrl-legend-cat" value="primers" checked> Primers</label>
                         <label class="ctrl-inline"><input type="checkbox" class="ctrl-legend-cat" value="highlights" checked> Highlights</label>
                     </div>
-                    <p class="hint" style="margin: 9px 0 0;">The viewer draws the legend. Click an item to hide it; double-click to isolate.</p>
+                    <p class="hint" style="margin: 9px 0 0;">Click a legend item to hide it; double-click to isolate.</p>
                 </div>
 
                 <div class="control-card">
@@ -554,7 +554,7 @@
                         <label for="ctrl-tooltip-tmpl">Template</label>
                         <input id="ctrl-tooltip-tmpl" type="text" spellcheck="false" value="%{name}<br>%{start}..%{end} (%{length} bp)">
                     </div>
-                    <p class="hint" style="margin: 6px 0 0;">%{name} %{start} %{end} %{length} %{direction} %{color}; &lt;br&gt; = line break.</p>
+                    <p class="hint" style="margin: 6px 0 0;">%{name} %{length} %{direction} %{color} · %{customdata.KEY} · &lt;br&gt;</p>
                 </div>
 
                 <div class="control-card">
@@ -616,7 +616,7 @@
 <script src="./assets/nav.js?v=2"></script>
 
 <!-- Explorer demo logic -->
-<script src="./demo.js?v=19"></script>
+<script src="./demo.js?v=20"></script>
 
 <script>
     if (window.SeqVizSite && window.SeqVizSite.wireCopy) {

@@ -31,9 +31,14 @@
     var DEFAULT_NAME = "Demo plasmid";
 
     var DEFAULT_ANNOTATIONS = [
-        { start: 0, end: 35, name: "J23100 Promoter", direction: 1, color: "#3b82f6" },
-        { start: 36, end: 160, name: "RBS + ORF", direction: 1, color: "#10b981" },
-        { start: 440, end: 540, name: "Terminator", direction: -1, color: "#f59e0b" }
+        // `customdata` carries arbitrary per-annotation fields the hover
+        // template can reference as %{customdata.key} (Plotly-style).
+        { start: 0, end: 35, name: "J23100 Promoter", direction: 1, color: "#3b82f6",
+          customdata: { part: "BBa_J23100", role: "constitutive promoter" } },
+        { start: 36, end: 160, name: "RBS + ORF", direction: 1, color: "#10b981",
+          customdata: { part: "BBa_B0034", role: "expression cassette" } },
+        { start: 440, end: 540, name: "Terminator", direction: -1, color: "#f59e0b",
+          customdata: { part: "BBa_B0015", role: "double terminator" } }
     ];
 
     var DEFAULT_PRIMERS = [

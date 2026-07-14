@@ -303,8 +303,14 @@ SeqViz.propTypes = {
      *   %{color}, %{type}. Default template:
      *   "%{name}<br>%{start}..%{end} (%{length} bp)".
      *
+     *   Custom data: give an annotation a `customdata` value (a list or dict of
+     *   your own fields) and reference it in the template the way Plotly does:
+     *   %{customdata[0]} for a list, or %{customdata.key} for a dict. Example:
+     *   annotations=[{..., "customdata": {"locus": "b0344"}}] with template
+     *   "%{name} (%{customdata.locus})".
+     *
      * Substituted values are rendered as plain text (never HTML), so element
-     * names cannot inject markup.
+     * names and custom data cannot inject markup.
      */
     tooltip: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
 

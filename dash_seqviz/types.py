@@ -27,6 +27,9 @@ class Annotation(TypedDict, total=False):
     name: Required[str]
     direction: NotRequired[int]
     color: NotRequired[str]
+    # Arbitrary per-annotation data for the hover tooltip, referenced in a
+    # tooltip template as %{customdata[i]} (list) or %{customdata.key} (dict).
+    customdata: NotRequired[Union[List[Any], Dict[str, Any]]]
 
 
 class Primer(TypedDict, total=False):

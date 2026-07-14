@@ -825,12 +825,16 @@ def show_hidden(hidden):
                     </div>
                     <div class="prop-body">
                         <p>Show a Plotly-style hover tooltip on annotations. Set <code>True</code> for the default (name plus coordinates) or a dict to supply a <code>template</code>. The template fills <code>%{field}</code> placeholders per annotation and accepts <code>&lt;br&gt;</code> (or a newline) for line breaks; the first line is emphasized. Available fields: <code>%{name}</code>, <code>%{start}</code>, <code>%{end}</code>, <code>%{length}</code> (bp), <code>%{direction}</code> (<code>forward</code> / <code>reverse</code> / <code>none</code>), <code>%{color}</code>, <code>%{type}</code>. Substituted values render as plain text, so element names cannot inject markup.</p>
+                        <p><strong>Custom data.</strong> Attach your own fields to an annotation via a <code>customdata</code> value (a list or dict) and reference them just like Plotly: <code>%{customdata[0]}</code> for a list, or <code>%{customdata.key}</code> for a dict.</p>
                         <div class="shape-def">{"show": bool, "template": str}</div>
-                        <div class="snippet"><pre><code>SeqViz(
+                        <div class="snippet"><pre><code>anns = [{"start": 0, "end": 100, "name": "lacZ", "direction": 1,
+         "customdata": {"locus": "b0344", "product": "beta-galactosidase"}}]
+
+SeqViz(
     id="seqviz",
     seq=seq,
     annotations=anns,
-    tooltip={"template": "%{name}&lt;br&gt;%{start}..%{end} &middot; %{direction}"},
+    tooltip={"template": "%{name} (%{customdata.locus})&lt;br&gt;%{customdata.product}"},
 )</code></pre></div>
                     </div>
                 </article>

@@ -187,17 +187,51 @@ const tooltipFields = (rec, kind) => {
     };
 };
 
-// Substitute %{field} placeholders; unknown fields are left verbatim.
-const applyTooltipTemplate = (tmpl, fields) => String(tmpl).replace(
-    /%\{(\w+)\}/g,
-    (m, k) => (Object.prototype.hasOwnProperty.call(fields, k) ? String(fields[k]) : m)
+// Walk ".key" / "[0]" / "['k']" accessors off a base value.
+const readPath = (value, accessors) => {
+    for (let i = 0; i < accessors.length && value != null; i += 1) {
+        value = value[accessors[i]];
+    }
+    return value;
+};
+
+// Substitute %{field} placeholders. Built-in fields resolve from `fields`;
+// `%{customdata[i]}` / `%{customdata.key}` read the annotation's own
+// `customdata` (a list or dict of caller-supplied values), mirroring Plotly's
+// customdata. Unknown fields are left verbatim; a resolved-but-missing value
+// renders empty; objects are JSON-stringified.
+const applyTooltipTemplate = (tmpl, fields, rec) => String(tmpl).replace(
+    /%\{([^}]+)\}/g,
+    (full, raw) => {
+        const expr = raw.trim();
+        const baseMatch = expr.match(/^[A-Za-z_$][\w$]*/);
+        if (!baseMatch) return full;
+        const base = baseMatch[0];
+        const accessors = [];
+        const accRe = /\.([A-Za-z_$][\w$]*)|\[\s*(?:'([^']*)'|"([^"]*)"|(\d+))\s*\]/g;
+        let m;
+        while ((m = accRe.exec(expr.slice(base.length))) !== null) {
+            accessors.push(m[1] != null ? m[1] : (m[2] != null ? m[2] : (m[3] != null ? m[3] : m[4])));
+        }
+        let value;
+        if (base === 'customdata') {
+            value = rec ? rec.customdata : undefined;
+        } else if (Object.prototype.hasOwnProperty.call(fields, base)) {
+            value = fields[base];
+        } else {
+            return full; // unknown base: leave "%{...}" verbatim, like Plotly
+        }
+        value = readPath(value, accessors);
+        if (value == null) return '';
+        return typeof value === 'object' ? JSON.stringify(value) : String(value);
+    }
 );
 
 // Render templated text into the tooltip node as escaped, line-broken text
 // (split on <br> or newlines). Using textContent per line prevents any HTML
 // injection from element names; the first line is emphasized, like Plotly.
 const renderTooltipInto = (node, tmpl, rec, kind) => {
-    const text = applyTooltipTemplate(tmpl, tooltipFields(rec, kind));
+    const text = applyTooltipTemplate(tmpl, tooltipFields(rec, kind), rec);
     const lines = text.split(/<br\s*\/?>|\n/i);
     while (node.firstChild) node.removeChild(node.firstChild);
     lines.forEach((line, i) => {

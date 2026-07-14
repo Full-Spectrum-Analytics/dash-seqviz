@@ -109,12 +109,14 @@ def test_legend_positions_render(dash_duo, position):
 
 # --- annotation hover tooltip ---------------------------------------------
 
-def _tooltip_app(tooltip=True, **kwargs):
+def _tooltip_app(tooltip=True, annotations=None, **kwargs):
     app = Dash(__name__)
     app.layout = html.Div(
         [
-            SeqViz(id="v", seq=SEQ, name="pDemo", annotations=ANNS, viewer="linear",
-                   tooltip=tooltip, style={"height": "420px", "width": "900px"}, **kwargs),
+            SeqViz(id="v", seq=SEQ, name="pDemo",
+                   annotations=ANNS if annotations is None else annotations,
+                   viewer="linear", tooltip=tooltip,
+                   style={"height": "420px", "width": "900px"}, **kwargs),
         ]
     )
     return app
@@ -159,3 +161,25 @@ def test_tooltip_absent_when_disabled(dash_duo):
     # The tooltip node still exists but must stay hidden.
     tips = dash_duo.find_elements(".dash-seqviz-tooltip")
     assert tips and all(not t.is_displayed() for t in tips)
+
+
+def test_tooltip_customdata_dict(dash_duo):
+    anns = [{"start": 5, "end": 90, "name": "promoter", "direction": 1,
+             "customdata": {"locus": "b0344"}}]
+    dash_duo.start_server(
+        _tooltip_app(tooltip={"template": "%{name} @ %{customdata.locus}"}, annotations=anns)
+    )
+    _hover(dash_duo, ".la-vz-annotation")
+    tip = _wait_tooltip(dash_duo)
+    assert "promoter @ b0344" in tip.text
+
+
+def test_tooltip_customdata_list(dash_duo):
+    anns = [{"start": 5, "end": 90, "name": "promoter", "direction": 1,
+             "customdata": ["alpha", "beta"]}]
+    dash_duo.start_server(
+        _tooltip_app(tooltip={"template": "%{customdata[1]}"}, annotations=anns)
+    )
+    _hover(dash_duo, ".la-vz-annotation")
+    tip = _wait_tooltip(dash_duo)
+    assert "beta" in tip.text
