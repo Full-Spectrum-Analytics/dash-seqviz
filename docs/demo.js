@@ -150,7 +150,7 @@
         // off; blank customdata lines are dropped, so it degrades cleanly.
         tooltip: {
             show: true,
-            hovertemplate: "%{name}<br>%{customdata[0]} %{customdata[1]}<br>%{start}..%{end} (%{length} bp)"
+            hovertemplate: "%{name}<br>%{customdata[0]}"
         },
         theme: "light",
         enzymes: ["PstI", "EcoRI", "XbaI", "SpeI"],
