@@ -125,7 +125,13 @@
         bpColors: { A: "#1f78b4", T: "#33a02c", C: "#e31a1c", G: "#ff7f00" },
         // Legend (E2) is a separate `legend()` helper, not a SeqViz prop.
         // Its config: show it, its title, and vertical vs horizontal layout.
-        legend: { show: true, title: "", direction: "horizontal", position: "bottom" },
+        legend: {
+            show: true, title: "", direction: "horizontal", position: "bottom",
+            // Which element types the legend lists. All four by default (= no
+            // constraint); narrowing this maps to the component's
+            // legend={"categories": [...]} filter.
+            categories: ["annotations", "translations", "primers", "highlights"]
+        },
         theme: "light",
         enzymes: ["PstI", "EcoRI", "XbaI", "SpeI"],
         enzymeFilter: "",
@@ -213,7 +219,7 @@
     function legendProp() {
         var lg = state.legend || {};
         if (!lg.show) { return null; }
-        return {
+        var prop = {
             show: true,
             title: lg.title || "",
             direction: lg.direction || "horizontal",
@@ -222,6 +228,13 @@
             radius: "sm",
             p: "sm"
         };
+        // Only constrain categories when the user has narrowed the set; passing
+        // all four is equivalent to the default (list every populated facet).
+        var cats = lg.categories;
+        if (Array.isArray(cats) && cats.length < 4) {
+            prop.categories = cats.slice();
+        }
+        return prop;
     }
 
     // Apply the theme to the wrapper: the CSS in seqviz-themes.css is scoped
@@ -463,6 +476,10 @@
                 '"direction": ' + pyStr(lg.direction || "horizontal"),
             ];
             if (lg.title) { lgOpts.push('"title": ' + pyStr(lg.title)); }
+            var lgCats = lg.categories;
+            if (Array.isArray(lgCats) && lgCats.length < 4) {
+                lgOpts.push('"categories": [' + lgCats.map(pyStr).join(", ") + "]");
+            }
             lines.push("        legend={" + lgOpts.join(", ") + "},");
         }
         lines.push('        style={"height": "520px", "width": "100%"},');
@@ -1041,6 +1058,22 @@
         legendTitle.addEventListener("input", function (ev) {
             state.legend.title = ev.target.value;
             refreshLegend();
+        });
+    }
+    // Category checkboxes: rebuild the canonical-ordered list from whatever is
+    // ticked so the viewer's legend and the live snippet stay in lockstep.
+    var legendCats = document.querySelectorAll(".ctrl-legend-cat");
+    if (legendCats.length) {
+        var syncLegendCats = function () {
+            var picked = [];
+            legendCats.forEach(function (cb) {
+                if (cb.checked) { picked.push(cb.value); }
+            });
+            state.legend.categories = picked;
+            refreshLegend();
+        };
+        legendCats.forEach(function (cb) {
+            cb.addEventListener("change", syncLegendCats);
         });
     }
 

@@ -96,6 +96,11 @@
         }
         .legend-config select { width: 84px; }
         .legend-config input[type="text"] { flex: 1 1 100px; min-width: 90px; }
+        .legend-cats { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-top: 9px; }
+        .legend-cats-label {
+            width: 100%; font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 1px;
+        }
         .legend-box { padding: 7px 9px; }
 
         /* Motif group: query + mismatch read as one unit. */
@@ -527,7 +532,14 @@
                         </select>
                         <input id="ctrl-legend-title" type="text" value="" placeholder="Title (optional)">
                     </div>
-                    <p class="hint" style="margin: 0;">The viewer draws the legend. Click an item to hide it; double-click to isolate.</p>
+                    <div class="legend-cats" role="group" aria-label="Legend categories">
+                        <span class="legend-cats-label">Categories</span>
+                        <label class="ctrl-inline"><input type="checkbox" class="ctrl-legend-cat" value="annotations" checked> Annotations</label>
+                        <label class="ctrl-inline"><input type="checkbox" class="ctrl-legend-cat" value="translations" checked> Translations</label>
+                        <label class="ctrl-inline"><input type="checkbox" class="ctrl-legend-cat" value="primers" checked> Primers</label>
+                        <label class="ctrl-inline"><input type="checkbox" class="ctrl-legend-cat" value="highlights" checked> Highlights</label>
+                    </div>
+                    <p class="hint" style="margin: 9px 0 0;">The viewer draws the legend. Click an item to hide it; double-click to isolate.</p>
                 </div>
 
                 <div class="control-card">
@@ -589,7 +601,7 @@
 <script src="./assets/nav.js?v=2"></script>
 
 <!-- Explorer demo logic -->
-<script src="./demo.js?v=17"></script>
+<script src="./demo.js?v=18"></script>
 
 <script>
     if (window.SeqVizSite && window.SeqVizSite.wireCopy) {
