@@ -8,6 +8,7 @@ browser. Run locally with:
     pytest tests/test_integration.py --headless
 """
 
+import pytest
 from dash import Dash, Input, Output, html
 
 from dash_seqviz import SeqViz
@@ -57,12 +58,12 @@ def test_annotations_render(dash_duo):
 
 # --- built-in interactive legend ------------------------------------------
 
-def _legend_app(**kwargs):
+def _legend_app(legend=True, **kwargs):
     app = Dash(__name__)
     app.layout = html.Div(
         [
             SeqViz(id="v", seq=SEQ, name="pDemo", annotations=ANNS, viewer="linear",
-                   legend=True, style={"height": "420px", "width": "900px"}, **kwargs),
+                   legend=legend, style={"height": "420px", "width": "900px"}, **kwargs),
             html.Div(id="hidden", children="none"),
         ]
     )
@@ -90,3 +91,13 @@ def test_legend_click_toggles_hidden_elements(dash_duo):
     items = dash_duo.find_elements(".dash-seqviz-legend-item")
     items[0].click()  # click again shows it
     dash_duo.wait_for_text_to_equal("#hidden", "none", timeout=10)
+
+
+@pytest.mark.parametrize("position", ["top", "right", "bottom", "left"])
+def test_legend_positions_render(dash_duo, position):
+    dash_duo.start_server(
+        _legend_app(legend={"position": position, "withBorder": True, "size": "md"})
+    )
+    dash_duo.wait_for_element(".dash-seqviz-legend", timeout=15)
+    dash_duo.wait_for_element(".la-vz-seqviz", timeout=15)
+    assert len(dash_duo.find_elements(".dash-seqviz-legend-item")) == 2

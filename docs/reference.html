@@ -789,14 +789,15 @@ def show_clicked(el):
                         <span class="pill type">bool | dict</span>
                     </div>
                     <div class="prop-body">
-                        <p>Render a built-in, interactive legend next to the viewer. Set <code>True</code> for defaults or a dict for finer control. Interaction mirrors Plotly legends: <strong>click</strong> an item to hide/show that element, <strong>double-click</strong> to isolate it (hide the rest), and double-click the isolated item again to restore all. Swatch colors match what the viewer draws (theme palettes included); toggled-off items are reflected in <a href="#hidden_elements"><code>hidden_elements</code></a>.</p>
-                        <div class="shape-def">{"show": bool, "title": str, "direction": "vertical" | "horizontal", "position": "bottom" | "right", "categories": list of "annotations" | "translations" | "primers" | "highlights"}</div>
+                        <p>Render a built-in, interactive legend on any side of the viewer. Set <code>True</code> for defaults or a dict for finer control; options follow Dash Mantine conventions (<code>position</code> on any of the four sides, and <code>size</code> / <code>spacing</code> / <code>radius</code> / <code>p</code> as <code>xs</code>&hellip;<code>xl</code> tokens or raw pixels). Interaction mirrors Plotly legends: <strong>click</strong> an item to hide/show that element, <strong>double-click</strong> to isolate it (hide the rest), and double-click the isolated item again to restore all. Swatch colors match what the viewer draws (theme palettes included); toggled-off items are reflected in <a href="#hidden_elements"><code>hidden_elements</code></a>.</p>
+                        <div class="shape-def">{"show": bool, "title": str, "position": "top" | "right" | "bottom" | "left", "direction": "vertical" | "horizontal", "align": "start" | "center" | "end", "size": "xs".."xl", "spacing": "xs".."xl" | int, "radius": "xs".."xl" | int, "withBorder": bool, "p": "xs".."xl" | int, "categories": list of "annotations" | "translations" | "primers" | "highlights"}</div>
                         <div class="snippet"><pre><code>SeqViz(
     id="seqviz",
     seq=seq,
     annotations=anns,
     primers=primers,
-    legend={"title": "Features", "position": "right"},
+    legend={"position": "right", "title": "Features",
+            "size": "md", "radius": "sm", "withBorder": True},
 )</code></pre></div>
                     </div>
                 </article>

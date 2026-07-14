@@ -140,19 +140,27 @@ Keyword arguments:
 
 - legend (boolean | dict; optional):
     Built-in interactive legend. Set to a dict (or True for defaults)
-    to render a Plotly-style legend next to the viewer; omit for none.
-    Keys: - show (bool): render the legend (default True when `legend`
-    is given). - title (str): optional heading above the sections. -
-    direction (\"vertical\" | \"horizontal\"): item layout. Default
-    \"vertical\". - position (\"bottom\" | \"right\"): placement
-    relative to the viewer.   Default \"bottom\". - categories (list
-    of str): which element types to include, any of   \"annotations\",
-    \"translations\", \"primers\", \"highlights\". Default: every
-    type that has items.  Interaction mirrors Plotly legends:
-    single-click an item to hide/show it in the viewer, double-click
-    to isolate it (hide the others), and double-click the isolated
-    item again to restore all. Swatch colors match what the viewer
-    renders (including theme palettes).
+    to render a Plotly-style legend around the viewer; omit for none.
+    Options follow Dash Mantine conventions. Keys: - show (bool):
+    render the legend (default True when `legend` is given). - title
+    (str): optional heading above the sections. - position (\"top\" |
+    \"right\" | \"bottom\" | \"left\"): which side of the   viewer to
+    place the legend on. Default \"bottom\". - direction (\"vertical\"
+    | \"horizontal\"): item flow. Defaults to   horizontal for
+    top/bottom and vertical for left/right. - align (\"start\" |
+    \"center\" | \"end\"): cross-axis alignment of items. - size
+    (\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"): text + swatch scale.
+    Default \"sm\". - spacing, radius (\"xs\"..\"xl\" or a number of
+    px): gap between items, and   the swatch + container corner
+    radius. - withBorder (bool): wrap the legend in a bordered
+    surface. - p (\"xs\"..\"xl\" or number): inner padding, applied
+    when withBorder. - categories (list of str): which element types
+    to include, any of   \"annotations\", \"translations\",
+    \"primers\", \"highlights\". Default: every   type that has items.
+    Interaction mirrors Plotly legends: single-click an item to
+    hide/show it, double-click to isolate it (hide the others), and
+    double-click the isolated item again to restore all. Swatch colors
+    match what the viewer renders (theme palettes included).
 
 - max_seq_length (number; optional):
     Guard for very long sequences. seqviz's linear viewer renders

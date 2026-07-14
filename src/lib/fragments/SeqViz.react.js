@@ -142,6 +142,22 @@ const PALETTES = {
     'tol-dark':  ['#4477AA', '#EE6677', '#228833', '#CCBB44', '#66CCEE', '#AA3377', '#BBBBBB'],
 };
 
+// dmc-style size tokens for the legend config, so it reads like the rest of a
+// Dash Mantine app (size/spacing/radius take "xs".."xl"). Raw numbers pass
+// through as pixels.
+const LEGEND_TOKENS = {
+    font:    { xs: 11, sm: 12.5, md: 14, lg: 16, xl: 18 },
+    swatch:  { xs: 10, sm: 12, md: 14, lg: 17, xl: 20 },
+    spacing: { xs: 6, sm: 10, md: 14, lg: 20, xl: 28 },
+    radius:  { xs: 2, sm: 4, md: 8, lg: 16, xl: 32 },
+    padding: { xs: 6, sm: 10, md: 14, lg: 20, xl: 28 },
+};
+const resolveLegendToken = (kind, value, fallback) => {
+    if (typeof value === 'number') return value;
+    const map = LEGEND_TOKENS[kind];
+    return map[typeof value === 'string' && map[value] != null ? value : fallback];
+};
+
 /**
  * SeqViz is a Dash wrapper for the seqviz JavaScript library.
  * It provides DNA, RNA, and protein sequence visualization with
@@ -320,14 +336,28 @@ const SeqViz = (props) => {
     const highlightsColored = applyPalette(highlights) || [];
 
     // Legend config. `legend` is a dict (or True for defaults); omit for none.
+    // Options follow dmc conventions: position on any of the four sides, and
+    // size/spacing/radius/padding as "xs".."xl" tokens (or raw px).
     const legendCfg = legend === true
         ? {}
         : (legend && typeof legend === 'object' ? legend : null);
     const legendShow = !!legendCfg && legendCfg.show !== false;
-    const legendDirection = (legendCfg && legendCfg.direction) === 'horizontal'
-        ? 'horizontal' : 'vertical';
-    const legendPosition = (legendCfg && legendCfg.position) === 'right'
-        ? 'right' : 'bottom';
+    const lc = legendCfg || {};
+    const legendPosition = ['top', 'right', 'bottom', 'left'].indexOf(lc.position) !== -1
+        ? lc.position : 'bottom';
+    const legendIsRow = legendPosition === 'left' || legendPosition === 'right';
+    // Items flow across a top/bottom legend and stack in a left/right rail,
+    // unless the caller overrides `direction`.
+    const legendDirection = (lc.direction === 'horizontal' || lc.direction === 'vertical')
+        ? lc.direction : (legendIsRow ? 'vertical' : 'horizontal');
+    const legendFontPx = resolveLegendToken('font', lc.size, 'sm');
+    const legendSwatchPx = resolveLegendToken('swatch', lc.size, 'sm');
+    const legendGapPx = resolveLegendToken('spacing', lc.spacing, 'sm');
+    const legendRowGapPx = Math.max(2, Math.round(legendGapPx * 0.5));
+    const legendRadiusPx = resolveLegendToken('radius', lc.radius, 'sm');
+    const legendPadPx = lc.withBorder ? resolveLegendToken('padding', lc.p, 'sm') : 0;
+    const legendAlign = ({start: 'flex-start', center: 'center', end: 'flex-end'})[lc.align]
+        || 'flex-start';
 
     const legendKey = (cat, el, i) => `${cat}:${el && el.name ? el.name : i}`;
 
@@ -472,26 +502,36 @@ const SeqViz = (props) => {
                 // give the legend its own positioned layer on top.
                 position: 'relative',
                 zIndex: 1,
-                font: '13px sans-serif',
+                fontFamily: 'sans-serif',
+                fontSize: legendFontPx,
                 display: 'flex',
                 flexWrap: 'wrap',
                 flexDirection: legendDirection === 'vertical' ? 'column' : 'row',
-                gap: legendDirection === 'vertical' ? '8px 0' : '8px 20px',
-                alignItems: legendDirection === 'vertical' ? 'stretch' : 'flex-start',
-                ...(legendPosition === 'right'
-                    ? { flex: '0 0 auto', maxWidth: 220, overflow: 'auto' }
-                    : { marginTop: 10 }),
+                gap: legendDirection === 'vertical'
+                    ? `${legendRowGapPx}px`
+                    : `${legendRowGapPx}px ${legendGapPx}px`,
+                alignItems: legendDirection === 'vertical' ? 'stretch' : legendAlign,
+                ...(lc.withBorder ? {
+                    border: '1px solid rgba(128,128,128,0.35)',
+                    borderRadius: legendRadiusPx,
+                    padding: legendPadPx,
+                } : {}),
+                ...(legendIsRow
+                    ? { flex: '0 0 auto', alignSelf: 'flex-start', maxWidth: 260, overflow: 'auto' }
+                    : {}),
+                ...(legendPosition === 'bottom' ? { marginTop: 10 } : {}),
+                ...(legendPosition === 'top' ? { marginBottom: 10 } : {}),
             }}
         >
-            {legendCfg && legendCfg.title ? (
+            {lc.title ? (
                 <div
                     className="dash-seqviz-legend-title"
                     style={{
-                        fontWeight: 700, fontSize: '0.8em', textTransform: 'uppercase',
+                        fontWeight: 700, fontSize: '0.82em', textTransform: 'uppercase',
                         letterSpacing: '0.04em', width: '100%', marginBottom: 2,
                     }}
                 >
-                    {legendCfg.title}
+                    {lc.title}
                 </div>
             ) : null}
             {legendFacets.map((f) => (
@@ -512,7 +552,9 @@ const SeqViz = (props) => {
                         style={{
                             display: 'flex', flexWrap: 'wrap',
                             flexDirection: legendDirection === 'vertical' ? 'column' : 'row',
-                            gap: legendDirection === 'vertical' ? '3px 0' : '4px 14px',
+                            gap: legendDirection === 'vertical'
+                                ? `${legendRowGapPx}px`
+                                : `${legendRowGapPx}px ${legendGapPx}px`,
                         }}
                     >
                         {f.items.map((el, i) => {
@@ -537,7 +579,8 @@ const SeqViz = (props) => {
                                         }
                                     }}
                                     style={{
-                                        display: 'inline-flex', alignItems: 'center', gap: 6,
+                                        display: 'inline-flex', alignItems: 'center',
+                                        gap: Math.max(4, Math.round(legendSwatchPx / 2.5)),
                                         cursor: 'pointer', userSelect: 'none',
                                         opacity: isHidden ? 0.4 : 1,
                                         textDecoration: isHidden ? 'line-through' : 'none',
@@ -546,8 +589,10 @@ const SeqViz = (props) => {
                                     <span
                                         aria-hidden="true"
                                         style={{
-                                            width: 13, height: 13, borderRadius: 3, background: color,
-                                            flex: '0 0 auto', border: '1px solid rgba(0,0,0,0.2)',
+                                            width: legendSwatchPx, height: legendSwatchPx,
+                                            borderRadius: Math.min(legendRadiusPx, Math.round(legendSwatchPx / 2)),
+                                            background: color, flex: '0 0 auto',
+                                            border: '1px solid rgba(0,0,0,0.2)',
                                         }}
                                     />
                                     {nm}
@@ -599,17 +644,19 @@ const SeqViz = (props) => {
                         `max_seq_length (${max_seq_length.toLocaleString()} bp). ` +
                         `Raise max_seq_length to render, or use viewer="circular" for very long sequences.`}
                 </div>
-            ) : (legendPosition === 'right' && legendNode ? (
-                // Side-by-side: the viewer flexes, the legend is a fixed rail.
+            ) : (!legendNode ? viewerBlock : legendIsRow ? (
+                // Left / right: the viewer flexes, the legend is a fixed rail.
                 <div style={{ display: 'flex', flexDirection: 'row', gap: 16, alignItems: 'flex-start' }}>
+                    {legendPosition === 'left' ? legendNode : null}
                     <div style={{ flex: '1 1 auto', minWidth: 0 }}>{viewerBlock}</div>
-                    {legendNode}
+                    {legendPosition === 'right' ? legendNode : null}
                 </div>
             ) : (
-                // Default: viewer in normal flow (seqviz sizes itself), legend below.
+                // Top / bottom: normal flow (seqviz sizes itself), legend above or below.
                 <React.Fragment>
+                    {legendPosition === 'top' ? legendNode : null}
                     {viewerBlock}
-                    {legendNode}
+                    {legendPosition === 'bottom' ? legendNode : null}
                 </React.Fragment>
             ))}
         </div>
