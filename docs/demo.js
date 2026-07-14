@@ -31,14 +31,18 @@
     var DEFAULT_NAME = "Demo plasmid";
 
     var DEFAULT_ANNOTATIONS = [
-        // `customdata` carries arbitrary per-annotation fields the hover
-        // template can reference as %{customdata.key} (Plotly-style).
-        { start: 0, end: 35, name: "J23100 Promoter", direction: 1, color: "#3b82f6",
-          customdata: { part: "BBa_J23100", role: "constitutive promoter" } },
-        { start: 36, end: 160, name: "RBS + ORF", direction: 1, color: "#10b981",
-          customdata: { part: "BBa_B0034", role: "expression cassette" } },
-        { start: 440, end: 540, name: "Terminator", direction: -1, color: "#f59e0b",
-          customdata: { part: "BBa_B0015", role: "double terminator" } }
+        { start: 0, end: 35, name: "J23100 Promoter", direction: 1, color: "#3b82f6" },
+        { start: 36, end: 160, name: "RBS + ORF", direction: 1, color: "#10b981" },
+        { start: 440, end: 540, name: "Terminator", direction: -1, color: "#f59e0b" }
+    ];
+
+    // Parallel to DEFAULT_ANNOTATIONS (Plotly-style customdata): row i is
+    // [part, role] for annotation i, referenced positionally in a hovertemplate
+    // as %{customdata[0]} / %{customdata[1]}.
+    var DEFAULT_CUSTOMDATA = [
+        ["BBa_J23100", "constitutive promoter"],
+        ["BBa_B0034", "expression cassette"],
+        ["BBa_B0015", "double terminator"]
     ];
 
     var DEFAULT_PRIMERS = [
@@ -118,6 +122,7 @@
         name: DEFAULT_NAME,
         seq: DEFAULT_SEQ,
         annotations: DEFAULT_ANNOTATIONS,
+        customdata: DEFAULT_CUSTOMDATA,
         primers: DEFAULT_PRIMERS,
         translations: DEFAULT_TRANSLATIONS,
         highlights: DEFAULT_HIGHLIGHTS,
@@ -203,6 +208,7 @@
             seq: state.seq,
             viewer: state.viewer,
             annotations: state.annotations,
+            customdata: state.customdata || undefined,
             primers: state.showPrimers ? state.primers : [],
             translations: state.showTranslations ? state.translations : [],
             highlights: state.showHighlights ? state.highlights : [],
@@ -502,9 +508,18 @@
             lines.push("        legend={" + lgOpts.join(", ") + "},");
         }
 
+        // Parallel customdata, emitted only when the hovertemplate references it.
+        var tt = s.tooltip || {};
+        if (tt.show && tt.hovertemplate && /customdata/.test(tt.hovertemplate) &&
+            Array.isArray(s.customdata) && s.customdata.length) {
+            var cd = s.customdata.map(function (row) {
+                return Array.isArray(row) ? "[" + row.map(pyStr).join(", ") + "]" : pyStr(row);
+            }).join(", ");
+            lines.push("        customdata=[" + cd + "],");
+        }
+
         // Annotation hover tooltip: True for the default template, else a dict
         // carrying the custom %{field} template.
-        var tt = s.tooltip || {};
         if (tt.show) {
             if (tt.hovertemplate && tt.hovertemplate !== DEFAULT_TOOLTIP_TMPL) {
                 lines.push("        tooltip={\"hovertemplate\": " + pyStr(tt.hovertemplate) + "},");
@@ -650,6 +665,7 @@
         state.name = parsed.name || accession;
         state.seq = parsed.seq;
         state.annotations = parsed.annotations;
+        state.customdata = null;  // parsed annotations carry no parallel customdata
         state.translations = parsed.translations;
         state.primers = [];
         state.highlights = [];  // demo highlights are positioned for the default seq
@@ -813,6 +829,7 @@
         state.name = DEFAULT_NAME;
         state.seq = DEFAULT_SEQ;
         state.annotations = DEFAULT_ANNOTATIONS;
+        state.customdata = DEFAULT_CUSTOMDATA;
         state.primers = DEFAULT_PRIMERS;
         state.translations = DEFAULT_TRANSLATIONS;
         state.highlights = DEFAULT_HIGHLIGHTS;

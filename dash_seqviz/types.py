@@ -16,7 +16,7 @@ browser), call :func:`validate_props`.
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from typing_extensions import NotRequired, Required, TypedDict
 
@@ -27,9 +27,6 @@ class Annotation(TypedDict, total=False):
     name: Required[str]
     direction: NotRequired[int]
     color: NotRequired[str]
-    # Arbitrary per-annotation data for the hover tooltip, referenced in a
-    # tooltip template as %{customdata[i]} (list) or %{customdata.key} (dict).
-    customdata: NotRequired[Union[List[Any], Dict[str, Any]]]
 
 
 class Primer(TypedDict, total=False):

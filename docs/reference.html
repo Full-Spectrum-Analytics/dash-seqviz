@@ -825,16 +825,31 @@ def show_hidden(hidden):
                     </div>
                     <div class="prop-body">
                         <p>Show a Plotly-style hover tooltip on annotations. Set <code>True</code> for the default (name plus coordinates) or a dict to supply a <code>hovertemplate</code>. The hovertemplate fills <code>%{field}</code> placeholders per annotation and accepts <code>&lt;br&gt;</code> (or a newline) for line breaks; the first line is emphasized. Available fields: <code>%{name}</code>, <code>%{start}</code>, <code>%{end}</code>, <code>%{length}</code> (bp), <code>%{direction}</code> (<code>forward</code> / <code>reverse</code> / <code>none</code>), <code>%{color}</code>, <code>%{type}</code>. Substituted values render as plain text, so element names cannot inject markup.</p>
-                        <p><strong>Custom data.</strong> Attach your own fields to an annotation via a <code>customdata</code> value (a list or dict) and reference them just like Plotly: <code>%{customdata[0]}</code> for a list, or <code>%{customdata.key}</code> for a dict.</p>
+                        <p><strong>Custom data.</strong> Pass a <a href="#customdata"><code>customdata</code></a> list parallel to <code>annotations</code> (row <code>i</code> belongs to annotation <code>i</code>) and reference it positionally, exactly like Plotly: <code>%{customdata[0]}</code>, <code>%{customdata[1]}</code>.</p>
                         <div class="shape-def">{"show": bool, "hovertemplate": str}</div>
-                        <div class="snippet"><pre><code>anns = [{"start": 0, "end": 100, "name": "lacZ", "direction": 1,
-         "customdata": {"locus": "b0344", "product": "beta-galactosidase"}}]
+                        <div class="snippet"><pre><code>anns = [{"start": 0, "end": 100, "name": "lacZ", "direction": 1}]
 
 SeqViz(
     id="seqviz",
     seq=seq,
     annotations=anns,
-    tooltip={"hovertemplate": "%{name} (%{customdata.locus})&lt;br&gt;%{customdata.product}"},
+    customdata=[["b0344", "beta-galactosidase"]],
+    tooltip={"hovertemplate": "%{name} (%{customdata[0]})&lt;br&gt;%{customdata[1]}"},
+)</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="customdata">
+                    <div class="prop-head">
+                        <h3>customdata<a class="anchor" href="#customdata" aria-label="Permalink to customdata">#</a></h3>
+                        <span class="pill type">list</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Extra per-annotation data for the hover tooltip, mirroring Plotly's <code>customdata</code>. A list parallel to <a href="#annotations"><code>annotations</code></a>: <code>customdata[i]</code> holds the data for <code>annotations[i]</code> (usually itself a list), referenced in the <a href="#tooltip"><code>tooltip</code></a> hovertemplate by position, e.g. <code>%{customdata[0]}</code>, <code>%{customdata[1]}</code>.</p>
+                        <div class="snippet"><pre><code>SeqViz(
+    annotations=[a0, a1],
+    customdata=[["b0344", "lacZ"], ["b0345", "lacY"]],
+    tooltip={"hovertemplate": "%{name}: %{customdata[0]}"},
 )</code></pre></div>
                     </div>
                 </article>

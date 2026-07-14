@@ -71,6 +71,15 @@ Keyword arguments:
 - colors (list of strings; optional):
     Array of colors for annotations, translations, and highlights.
 
+- customdata (list; optional):
+    Extra per-annotation data for the hover tooltip, mirroring
+    Plotly's customdata. A list parallel to `annotations`:
+    customdata[i] holds the data for annotations[i] (usually itself a
+    list), referenced in the tooltip hovertemplate by position, e.g.
+    %{customdata[0]}, %{customdata[1]}. Example: annotations=[{...},
+    {...}], customdata=[[\"b0344\", \"lacZ\"], [\"b0345\", \"lacY\"]]
+    with hovertemplate \"%{name} (%{customdata[0]})\".
+
 - disable_external_fonts (boolean; default False):
     Whether to disable downloading external fonts.
 
@@ -257,13 +266,11 @@ Keyword arguments:
     %{length} (bp), %{direction} (\"forward\" | \"reverse\" |
     \"none\"), %{color}, %{type}. Default hovertemplate:
     \"%{name}<br>%{start}..%{end} (%{length} bp)\".    Custom data:
-    give an annotation a `customdata` value (a list or dict of   your
-    own fields) and reference it the way Plotly does: %{customdata[0]}
-    for a list, or %{customdata.key} for a dict. Example:
-    annotations=[{..., \"customdata\": {\"locus\": \"b0344\"}}] with
-    hovertemplate   \"%{name} (%{customdata.locus})\".  Substituted
-    values are rendered as plain text (never HTML), so element names
-    and custom data cannot inject markup.
+    reference the `customdata` prop (a list parallel to
+    `annotations`) the way Plotly does, indexed positionally, e.g.
+    %{customdata[0]}. See the `customdata` prop.  Substituted values
+    are rendered as plain text (never HTML), so element names and
+    custom data cannot inject markup.
 
 - translations (list of dicts; optional):
     Array of translation objects. Each translation: { start: number,
@@ -416,12 +423,13 @@ Keyword arguments:
         legend: typing.Optional[typing.Union[bool, dict]] = None,
         hidden_elements: typing.Optional[typing.Sequence[str]] = None,
         tooltip: typing.Optional[typing.Union[bool, dict]] = None,
+        customdata: typing.Optional[typing.Sequence] = None,
         theme: typing.Optional[Literal["light", "dark", "auto", "xkcd", "xkcd-light", "xkcd-dark", "okabe-ito-light", "okabe-ito-dark", "colorbrewer-light", "colorbrewer-dark", "tol-light", "tol-dark"]] = None,
         **kwargs
     ):
-        self._prop_names = ['id', 'annotations', 'aria_label', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'hidden_elements', 'highlights', 'legend', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'tooltip', 'translations', 'viewer', 'zoom']
+        self._prop_names = ['id', 'annotations', 'aria_label', 'bp_colors', 'clicked_element', 'colors', 'customdata', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'hidden_elements', 'highlights', 'legend', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'tooltip', 'translations', 'viewer', 'zoom']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'annotations', 'aria_label', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'hidden_elements', 'highlights', 'legend', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'tooltip', 'translations', 'viewer', 'zoom']
+        self.available_properties = ['id', 'annotations', 'aria_label', 'bp_colors', 'clicked_element', 'colors', 'customdata', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'hidden_elements', 'highlights', 'legend', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'tooltip', 'translations', 'viewer', 'zoom']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

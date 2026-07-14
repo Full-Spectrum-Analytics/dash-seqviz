@@ -287,6 +287,7 @@ const SeqViz = (props) => {
         legend,
         hidden_elements,
         tooltip,
+        customdata,
     } = props;
 
     const containerRef = useRef(null);
@@ -425,8 +426,17 @@ const SeqViz = (props) => {
     const annsColored = (applyPalette(annotations) || []).map((a, i) => (
         a && a.id != null ? a : { ...a, id: `dsv-ann-${i}` }
     ));
+    // Index annotations by id for the tooltip, folding in the parallel
+    // `customdata` array (Plotly-style: customdata[i] belongs to annotations[i],
+    // referenced positionally as %{customdata[0]}). customdata is kept off the
+    // objects handed to seqviz, which has no use for it.
     const annById = {};
-    annsColored.forEach((a) => { if (a && a.id != null) annById[a.id] = a; });
+    annsColored.forEach((a, i) => {
+        if (!a || a.id == null) return;
+        annById[a.id] = (Array.isArray(customdata) && customdata[i] != null)
+            ? { ...a, customdata: customdata[i] }
+            : a;
+    });
     const primersColored = applyPalette(primers) || [];
     const translationsColored = applyPalette(translations) || [];
     const highlightsColored = applyPalette(highlights) || [];
@@ -945,6 +955,7 @@ SeqViz.propTypes = {
     legend: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
     hidden_elements: PropTypes.arrayOf(PropTypes.string),
     tooltip: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+    customdata: PropTypes.array,
     theme: PropTypes.oneOf([
         'light', 'dark', 'auto', 'xkcd', 'xkcd-light', 'xkcd-dark',
         'okabe-ito-light', 'okabe-ito-dark',

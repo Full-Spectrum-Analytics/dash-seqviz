@@ -303,16 +303,24 @@ SeqViz.propTypes = {
      *   "none"), %{color}, %{type}. Default hovertemplate:
      *   "%{name}<br>%{start}..%{end} (%{length} bp)".
      *
-     *   Custom data: give an annotation a `customdata` value (a list or dict of
-     *   your own fields) and reference it the way Plotly does: %{customdata[0]}
-     *   for a list, or %{customdata.key} for a dict. Example:
-     *   annotations=[{..., "customdata": {"locus": "b0344"}}] with hovertemplate
-     *   "%{name} (%{customdata.locus})".
+     *   Custom data: reference the `customdata` prop (a list parallel to
+     *   `annotations`) the way Plotly does, indexed positionally, e.g.
+     *   %{customdata[0]}. See the `customdata` prop.
      *
      * Substituted values are rendered as plain text (never HTML), so element
      * names and custom data cannot inject markup.
      */
     tooltip: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+
+    /**
+     * Extra per-annotation data for the hover tooltip, mirroring Plotly's
+     * customdata. A list parallel to `annotations`: customdata[i] holds the
+     * data for annotations[i] (usually itself a list), referenced in the
+     * tooltip hovertemplate by position, e.g. %{customdata[0]}, %{customdata[1]}.
+     * Example: annotations=[{...}, {...}], customdata=[["b0344", "lacZ"],
+     * ["b0345", "lacY"]] with hovertemplate "%{name} (%{customdata[0]})".
+     */
+    customdata: PropTypes.array,
 
     /**
      * Visual theme. The underlying seqviz library hardcodes dark-gray text,

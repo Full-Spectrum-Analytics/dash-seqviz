@@ -129,6 +129,15 @@ def _hover(dash_duo, selector):
     return el
 
 
+def _hover_named(dash_duo, name):
+    """Hover the annotation label whose text is `name`."""
+    dash_duo.wait_for_element(".la-vz-annotation-label", timeout=15)
+    labels = dash_duo.find_elements(".la-vz-annotation-label")
+    target = next(el for el in labels if el.text == name)
+    ActionChains(dash_duo.driver).move_to_element(target).perform()
+    return target
+
+
 def _wait_tooltip(dash_duo):
     return WebDriverWait(dash_duo.driver, 10).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, ".dash-seqviz-tooltip"))
@@ -163,23 +172,35 @@ def test_tooltip_absent_when_disabled(dash_duo):
     assert tips and all(not t.is_displayed() for t in tips)
 
 
-def test_tooltip_customdata_dict(dash_duo):
-    anns = [{"start": 5, "end": 90, "name": "promoter", "direction": 1,
-             "customdata": {"locus": "b0344"}}]
+def test_tooltip_customdata(dash_duo):
+    # customdata is a top-level list parallel to annotations, referenced
+    # positionally (Plotly-style) in the hovertemplate.
+    anns = [{"start": 5, "end": 90, "name": "promoter", "direction": 1}]
     dash_duo.start_server(
-        _tooltip_app(tooltip={"hovertemplate": "%{name} @ %{customdata.locus}"}, annotations=anns)
+        _tooltip_app(
+            tooltip={"hovertemplate": "%{name} @ %{customdata[0]} / %{customdata[1]}"},
+            annotations=anns,
+            customdata=[["b0344", "lacZ"]],
+        )
     )
     _hover(dash_duo, ".la-vz-annotation")
     tip = _wait_tooltip(dash_duo)
-    assert "promoter @ b0344" in tip.text
+    assert "promoter @ b0344 / lacZ" in tip.text
 
 
-def test_tooltip_customdata_list(dash_duo):
-    anns = [{"start": 5, "end": 90, "name": "promoter", "direction": 1,
-             "customdata": ["alpha", "beta"]}]
+def test_tooltip_customdata_index_aligns(dash_duo):
+    # customdata[i] must resolve for annotations[i]: hovering "second" reads row 1.
+    anns = [
+        {"start": 5, "end": 90, "name": "first", "direction": 1},
+        {"start": 110, "end": 160, "name": "second", "direction": 1},
+    ]
     dash_duo.start_server(
-        _tooltip_app(tooltip={"hovertemplate": "%{customdata[1]}"}, annotations=anns)
+        _tooltip_app(
+            tooltip={"hovertemplate": "%{name}=%{customdata[0]}"},
+            annotations=anns,
+            customdata=[["A"], ["B"]],
+        )
     )
-    _hover(dash_duo, ".la-vz-annotation")
+    _hover_named(dash_duo, "second")
     tip = _wait_tooltip(dash_duo)
-    assert "beta" in tip.text
+    assert "second=B" in tip.text
