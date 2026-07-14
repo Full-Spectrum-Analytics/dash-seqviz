@@ -783,6 +783,41 @@ def show_clicked(el):
                     </div>
                 </article>
 
+                <article class="prop" id="legend">
+                    <div class="prop-head">
+                        <h3>legend<a class="anchor" href="#legend" aria-label="Permalink to legend">#</a></h3>
+                        <span class="pill type">bool | dict</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Render a built-in, interactive legend on any side of the viewer. Set <code>True</code> for defaults or a dict for finer control; options follow Dash Mantine conventions (<code>position</code> on any of the four sides, and <code>size</code> / <code>spacing</code> / <code>radius</code> / <code>p</code> as <code>xs</code>&hellip;<code>xl</code> tokens or raw pixels). Interaction mirrors Plotly legends: <strong>click</strong> an item to hide/show that element, <strong>double-click</strong> to isolate it (hide the rest), and double-click the isolated item again to restore all. Swatch colors match what the viewer draws (theme palettes included); toggled-off items are reflected in <a href="#hidden_elements"><code>hidden_elements</code></a>.</p>
+                        <div class="shape-def">{"show": bool, "title": str, "position": "top" | "right" | "bottom" | "left", "direction": "vertical" | "horizontal", "align": "start" | "center" | "end", "size": "xs".."xl", "spacing": "xs".."xl" | int, "radius": "xs".."xl" | int, "withBorder": bool, "p": "xs".."xl" | int, "categories": list of "annotations" | "translations" | "primers" | "highlights"}</div>
+                        <div class="snippet"><pre><code>SeqViz(
+    id="seqviz",
+    seq=seq,
+    annotations=anns,
+    primers=primers,
+    legend={"position": "right", "title": "Features",
+            "size": "md", "radius": "sm", "withBorder": True},
+)</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="hidden_elements">
+                    <div class="prop-head">
+                        <h3>hidden_elements<a class="anchor" href="#hidden_elements" aria-label="Permalink to hidden_elements">#</a></h3>
+                        <span class="pill type">list of str</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Keys of the legend items currently toggled off, each <code>"&lt;category&gt;:&lt;name&gt;"</code> (or <code>"&lt;category&gt;:&lt;index&gt;"</code> for unnamed items such as highlights). The component updates it as the user clicks the legend, so a callback can observe which elements are hidden. Set it from a callback to control visibility programmatically.</p>
+                        <div class="snippet"><pre><code>@callback(
+    Output("hidden-info", "children"),
+    Input("seqviz", "hidden_elements"),
+)
+def show_hidden(hidden):
+    return f"{len(hidden or [])} element(s) hidden"</code></pre></div>
+                    </div>
+                </article>
+
                 <article class="prop" id="export_request">
                     <div class="prop-head">
                         <h3>export_request<a class="anchor" href="#export_request" aria-label="Permalink to export_request">#</a></h3>

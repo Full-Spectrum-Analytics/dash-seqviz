@@ -118,6 +118,14 @@ Keyword arguments:
     a download, e.g. set it as the href of an html.A(download=...) via
     a callback.
 
+- hidden_elements (list of strings; optional):
+    Read/write. Keys of the legend items currently toggled off (hidden
+    from the viewer), each formatted \"<category>:<name>\" (or
+    \"<category>:<index>\" for unnamed items such as highlights). The
+    component updates this as the user clicks the legend, so a
+    callback can observe which elements are hidden; set it from a
+    callback to control visibility programmatically.
+
 - highlights (list of dicts; optional):
     Array of highlight objects. Each highlight: { start: number, end:
     number, color?: string }.
@@ -129,6 +137,30 @@ Keyword arguments:
     - end (number; required)
 
     - color (string; optional)
+
+- legend (boolean | dict; optional):
+    Built-in interactive legend. Set to a dict (or True for defaults)
+    to render a Plotly-style legend around the viewer; omit for none.
+    Options follow Dash Mantine conventions. Keys: - show (bool):
+    render the legend (default True when `legend` is given). - title
+    (str): optional heading above the sections. - position (\"top\" |
+    \"right\" | \"bottom\" | \"left\"): which side of the   viewer to
+    place the legend on. Default \"bottom\". - direction (\"vertical\"
+    | \"horizontal\"): item flow. Defaults to   horizontal for
+    top/bottom and vertical for left/right. - align (\"start\" |
+    \"center\" | \"end\"): cross-axis alignment of items. - size
+    (\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"): text + swatch scale.
+    Default \"sm\". - spacing, radius (\"xs\"..\"xl\" or a number of
+    px): gap between items, and   the swatch + container corner
+    radius. - withBorder (bool): wrap the legend in a bordered
+    surface. - p (\"xs\"..\"xl\" or number): inner padding, applied
+    when withBorder. - categories (list of str): which element types
+    to include, any of   \"annotations\", \"translations\",
+    \"primers\", \"highlights\". Default: every   type that has items.
+    Interaction mirrors Plotly legends: single-click an item to
+    hide/show it, double-click to isolate it (hide the others), and
+    double-click the isolated item again to restore all. Swatch colors
+    match what the viewer renders (theme palettes included).
 
 - max_seq_length (number; optional):
     Guard for very long sequences. seqviz's linear viewer renders
@@ -362,12 +394,14 @@ Keyword arguments:
         max_seq_length: typing.Optional[NumberType] = None,
         aria_label: typing.Optional[str] = None,
         clicked_element: typing.Optional[dict] = None,
+        legend: typing.Optional[typing.Union[bool, dict]] = None,
+        hidden_elements: typing.Optional[typing.Sequence[str]] = None,
         theme: typing.Optional[Literal["light", "dark", "auto", "xkcd", "xkcd-light", "xkcd-dark", "okabe-ito-light", "okabe-ito-dark", "colorbrewer-light", "colorbrewer-dark", "tol-light", "tol-dark"]] = None,
         **kwargs
     ):
-        self._prop_names = ['id', 'annotations', 'aria_label', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'highlights', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
+        self._prop_names = ['id', 'annotations', 'aria_label', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'hidden_elements', 'highlights', 'legend', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'annotations', 'aria_label', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'highlights', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
+        self.available_properties = ['id', 'annotations', 'aria_label', 'bp_colors', 'clicked_element', 'colors', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'hidden_elements', 'highlights', 'legend', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'translations', 'viewer', 'zoom']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

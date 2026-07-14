@@ -8,6 +8,7 @@ browser. Run locally with:
     pytest tests/test_integration.py --headless
 """
 
+import pytest
 from dash import Dash, Input, Output, html
 
 from dash_seqviz import SeqViz
@@ -53,3 +54,50 @@ def test_annotations_render(dash_duo):
     dash_duo.wait_for_element(".la-vz-annotation", timeout=15)
     anns = dash_duo.find_elements(".la-vz-annotation")
     assert len(anns) == 2
+
+
+# --- built-in interactive legend ------------------------------------------
+
+def _legend_app(legend=True, **kwargs):
+    app = Dash(__name__)
+    app.layout = html.Div(
+        [
+            SeqViz(id="v", seq=SEQ, name="pDemo", annotations=ANNS, viewer="linear",
+                   legend=legend, style={"height": "420px", "width": "900px"}, **kwargs),
+            html.Div(id="hidden", children="none"),
+        ]
+    )
+
+    @app.callback(Output("hidden", "children"), Input("v", "hidden_elements"))
+    def _show_hidden(hidden):
+        return ",".join(hidden or []) or "none"
+
+    return app
+
+
+def test_legend_renders_one_item_per_element(dash_duo):
+    dash_duo.start_server(_legend_app())
+    dash_duo.wait_for_element(".dash-seqviz-legend", timeout=15)
+    items = dash_duo.find_elements(".dash-seqviz-legend-item")
+    assert len(items) == 2  # promoter, RBS
+
+
+def test_legend_click_toggles_hidden_elements(dash_duo):
+    dash_duo.start_server(_legend_app())
+    dash_duo.wait_for_element(".dash-seqviz-legend-item", timeout=15)
+    items = dash_duo.find_elements(".dash-seqviz-legend-item")
+    items[0].click()  # single click hides the first item (promoter)
+    dash_duo.wait_for_text_to_equal("#hidden", "annotations:promoter", timeout=10)
+    items = dash_duo.find_elements(".dash-seqviz-legend-item")
+    items[0].click()  # click again shows it
+    dash_duo.wait_for_text_to_equal("#hidden", "none", timeout=10)
+
+
+@pytest.mark.parametrize("position", ["top", "right", "bottom", "left"])
+def test_legend_positions_render(dash_duo, position):
+    dash_duo.start_server(
+        _legend_app(legend={"position": position, "withBorder": True, "size": "md"})
+    )
+    dash_duo.wait_for_element(".dash-seqviz-legend", timeout=15)
+    dash_duo.wait_for_element(".la-vz-seqviz", timeout=15)
+    assert len(dash_duo.find_elements(".dash-seqviz-legend-item")) == 2
