@@ -158,6 +158,56 @@ const resolveLegendToken = (kind, value, fallback) => {
     return map[typeof value === 'string' && map[value] != null ? value : fallback];
 };
 
+// ---- Feature tooltips (Plotly-style hover) -------------------------------
+// Shown on annotation hover when `tooltip` is enabled without a custom
+// template. Placeholders use Plotly's %{field} syntax; the range uses GenBank
+// `start..end` location notation.
+const DEFAULT_TOOLTIP_TEMPLATE = '%{name}<br>%{start}..%{end} (%{length} bp)';
+
+// Normalize seqviz / GenBank direction inputs to -1 | 0 | 1.
+const normalizeDirection = (d) => {
+    if (d === 1 || d === '1' || d === '+' || d === 'FORWARD' || d === 'forward' || d === 'FWD') return 1;
+    if (d === -1 || d === '-1' || d === '-' || d === 'REVERSE' || d === 'reverse' || d === 'REV') return -1;
+    return 0;
+};
+
+// The %{field} values a tooltip template can reference for one element.
+const tooltipFields = (rec, kind) => {
+    const s = typeof rec.start === 'number' ? rec.start : null;
+    const e = typeof rec.end === 'number' ? rec.end : null;
+    const dir = normalizeDirection(rec.direction);
+    return {
+        name: rec.name != null ? String(rec.name) : '',
+        start: s != null ? s : '',
+        end: e != null ? e : '',
+        length: s != null && e != null ? Math.abs(e - s) : '',
+        direction: dir === 1 ? 'forward' : (dir === -1 ? 'reverse' : 'none'),
+        color: rec.color || '',
+        type: kind,
+    };
+};
+
+// Substitute %{field} placeholders; unknown fields are left verbatim.
+const applyTooltipTemplate = (tmpl, fields) => String(tmpl).replace(
+    /%\{(\w+)\}/g,
+    (m, k) => (Object.prototype.hasOwnProperty.call(fields, k) ? String(fields[k]) : m)
+);
+
+// Render templated text into the tooltip node as escaped, line-broken text
+// (split on <br> or newlines). Using textContent per line prevents any HTML
+// injection from element names; the first line is emphasized, like Plotly.
+const renderTooltipInto = (node, tmpl, rec, kind) => {
+    const text = applyTooltipTemplate(tmpl, tooltipFields(rec, kind));
+    const lines = text.split(/<br\s*\/?>|\n/i);
+    while (node.firstChild) node.removeChild(node.firstChild);
+    lines.forEach((line, i) => {
+        const row = document.createElement('div');
+        row.textContent = line;
+        if (i === 0) row.style.fontWeight = '600';
+        node.appendChild(row);
+    });
+};
+
 /**
  * SeqViz is a Dash wrapper for the seqviz JavaScript library.
  * It provides DNA, RNA, and protein sequence visualization with
@@ -202,9 +252,14 @@ const SeqViz = (props) => {
         aria_label,
         legend,
         hidden_elements,
+        tooltip,
     } = props;
 
     const containerRef = useRef(null);
+    const tooltipRef = useRef(null);
+    // Latest tooltip config + id→record lookup, read by the (stable) hover
+    // listeners so they never need re-binding on each render.
+    const tooltipDataRef = useRef({ show: false, template: DEFAULT_TOOLTIP_TEMPLATE, byId: {} });
 
     // theme="auto" tracks the page's color scheme and updates live when a
     // dashboard theme switch flips it.
@@ -330,10 +385,29 @@ const SeqViz = (props) => {
     // Palette-applied element arrays. Colors are seeded by index over the FULL
     // array so hiding one item never reshuffles the others' colors; the legend
     // swatches reuse these exact colors.
-    const annsColored = applyPalette(annotations) || [];
+    // Annotations get a stable `id` (seqviz preserves a provided id, stamping
+    // it onto the rendered element) so hover can map a DOM node back to its
+    // record for the tooltip. User-supplied ids are respected.
+    const annsColored = (applyPalette(annotations) || []).map((a, i) => (
+        a && a.id != null ? a : { ...a, id: `dsv-ann-${i}` }
+    ));
+    const annById = {};
+    annsColored.forEach((a) => { if (a && a.id != null) annById[a.id] = a; });
     const primersColored = applyPalette(primers) || [];
     const translationsColored = applyPalette(translations) || [];
     const highlightsColored = applyPalette(highlights) || [];
+
+    // Feature tooltip config. `tooltip` is a dict (or True for defaults);
+    // omit / false disables it. When on, hovering an annotation shows text
+    // built from a Plotly-style %{field} template.
+    const tooltipCfg = tooltip === true
+        ? {}
+        : (tooltip && typeof tooltip === 'object' ? tooltip : null);
+    const tooltipShow = !!tooltipCfg && tooltipCfg.show !== false;
+    const tooltipTemplate = (tooltipCfg && typeof tooltipCfg.template === 'string' &&
+        tooltipCfg.template) || DEFAULT_TOOLTIP_TEMPLATE;
+    // Keep the hover listeners' data current without re-binding them.
+    tooltipDataRef.current = { show: tooltipShow, template: tooltipTemplate, byId: annById };
 
     // Legend config. `legend` is a dict (or True for defaults); omit for none.
     // Options follow dmc conventions: position on any of the four sides, and
@@ -459,6 +533,61 @@ const SeqViz = (props) => {
         observer.observe(root, { childList: true, subtree: true });
         return () => observer.disconnect();
     }, [effectiveLabel, viewer, seq]);
+
+    // Feature tooltips: delegate hover on the container so it survives seqviz's
+    // re-renders of the SVG. Bound once; the live config + id→record lookup are
+    // read from a ref. seqviz stamps our annotation id onto both the shape and
+    // its label, so `el.id` maps a hovered node straight back to its record.
+    useEffect(() => {
+        const root = containerRef.current;
+        const tip = tooltipRef.current;
+        if (!root || !tip) return undefined;
+        const SEL = '.la-vz-annotation, .la-vz-annotation-label';
+        const hide = () => { tip.style.display = 'none'; };
+        const place = (ev) => {
+            const rect = root.getBoundingClientRect();
+            const pad = 4;
+            let x = ev.clientX - rect.left + 12;
+            let y = ev.clientY - rect.top + 14;
+            if (x + tip.offsetWidth > rect.width - pad) {
+                x = Math.max(pad, ev.clientX - rect.left - tip.offsetWidth - 12);
+            }
+            if (y + tip.offsetHeight > rect.height - pad) {
+                y = Math.max(pad, ev.clientY - rect.top - tip.offsetHeight - 14);
+            }
+            tip.style.left = `${x}px`;
+            tip.style.top = `${y}px`;
+        };
+        const onOver = (ev) => {
+            const cfg = tooltipDataRef.current;
+            if (!cfg.show) return;
+            const hit = ev.target && ev.target.closest ? ev.target.closest(SEL) : null;
+            const rec = hit && cfg.byId[hit.id];
+            if (!rec) return;
+            renderTooltipInto(tip, cfg.template, rec, 'annotation');
+            tip.style.display = 'block';
+            place(ev);
+        };
+        const onMove = (ev) => {
+            if (tip.style.display === 'none') return;
+            const hit = ev.target && ev.target.closest ? ev.target.closest(SEL) : null;
+            if (hit) place(ev);
+            else hide();
+        };
+        const onOut = (ev) => {
+            const to = ev.relatedTarget;
+            if (to && to.closest && to.closest(SEL)) return;
+            hide();
+        };
+        root.addEventListener('mouseover', onOver);
+        root.addEventListener('mousemove', onMove);
+        root.addEventListener('mouseout', onOut);
+        return () => {
+            root.removeEventListener('mouseover', onOver);
+            root.removeEventListener('mousemove', onMove);
+            root.removeEventListener('mouseout', onOut);
+        };
+    }, []);
 
     // Legend interactions (Plotly semantics): a single click toggles one item's
     // visibility; a double click isolates it (hide the rest), and double
@@ -628,7 +757,31 @@ const SeqViz = (props) => {
             data-dash-seqviz-theme={resolvedTheme}
             role="group"
             aria-label={effectiveLabel}
+            style={{ position: 'relative' }}
         >
+            {/* Hover tooltip layer: positioned within this container, updated
+                imperatively by the hover listeners (no re-render per mousemove). */}
+            <div
+                ref={tooltipRef}
+                className="dash-seqviz-tooltip"
+                aria-hidden="true"
+                style={{
+                    position: 'absolute',
+                    display: 'none',
+                    left: 0,
+                    top: 0,
+                    zIndex: 5,
+                    pointerEvents: 'none',
+                    maxWidth: 280,
+                    padding: '6px 9px',
+                    borderRadius: 6,
+                    background: 'rgba(17, 19, 23, 0.92)',
+                    color: '#fff',
+                    font: '12px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                    boxShadow: '0 4px 14px rgba(0, 0, 0, 0.28)',
+                    whiteSpace: 'normal',
+                }}
+            />
             {tooLong ? (
                 <div
                     className="dash-seqviz-too-long"
@@ -757,6 +910,7 @@ SeqViz.propTypes = {
     aria_label: PropTypes.string,
     legend: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
     hidden_elements: PropTypes.arrayOf(PropTypes.string),
+    tooltip: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
     theme: PropTypes.oneOf([
         'light', 'dark', 'auto', 'xkcd', 'xkcd-light', 'xkcd-dark',
         'okabe-ito-light', 'okabe-ito-dark',

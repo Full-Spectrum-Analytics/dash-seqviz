@@ -818,6 +818,23 @@ def show_hidden(hidden):
                     </div>
                 </article>
 
+                <article class="prop" id="tooltip">
+                    <div class="prop-head">
+                        <h3>tooltip<a class="anchor" href="#tooltip" aria-label="Permalink to tooltip">#</a></h3>
+                        <span class="pill type">bool | dict</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Show a Plotly-style hover tooltip on annotations. Set <code>True</code> for the default (name plus coordinates) or a dict to supply a <code>template</code>. The template fills <code>%{field}</code> placeholders per annotation and accepts <code>&lt;br&gt;</code> (or a newline) for line breaks; the first line is emphasized. Available fields: <code>%{name}</code>, <code>%{start}</code>, <code>%{end}</code>, <code>%{length}</code> (bp), <code>%{direction}</code> (<code>forward</code> / <code>reverse</code> / <code>none</code>), <code>%{color}</code>, <code>%{type}</code>. Substituted values render as plain text, so element names cannot inject markup.</p>
+                        <div class="shape-def">{"show": bool, "template": str}</div>
+                        <div class="snippet"><pre><code>SeqViz(
+    id="seqviz",
+    seq=seq,
+    annotations=anns,
+    tooltip={"template": "%{name}&lt;br&gt;%{start}..%{end} &middot; %{direction}"},
+)</code></pre></div>
+                    </div>
+                </article>
+
                 <article class="prop" id="export_request">
                     <div class="prop-head">
                         <h3>export_request<a class="anchor" href="#export_request" aria-label="Permalink to export_request">#</a></h3>

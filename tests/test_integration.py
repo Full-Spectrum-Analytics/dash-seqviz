@@ -10,6 +10,10 @@ browser. Run locally with:
 
 import pytest
 from dash import Dash, Input, Output, html
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from dash_seqviz import SeqViz
 
@@ -101,3 +105,57 @@ def test_legend_positions_render(dash_duo, position):
     dash_duo.wait_for_element(".dash-seqviz-legend", timeout=15)
     dash_duo.wait_for_element(".la-vz-seqviz", timeout=15)
     assert len(dash_duo.find_elements(".dash-seqviz-legend-item")) == 2
+
+
+# --- annotation hover tooltip ---------------------------------------------
+
+def _tooltip_app(tooltip=True, **kwargs):
+    app = Dash(__name__)
+    app.layout = html.Div(
+        [
+            SeqViz(id="v", seq=SEQ, name="pDemo", annotations=ANNS, viewer="linear",
+                   tooltip=tooltip, style={"height": "420px", "width": "900px"}, **kwargs),
+        ]
+    )
+    return app
+
+
+def _hover(dash_duo, selector):
+    """Move the pointer over the first element matching `selector`."""
+    el = dash_duo.wait_for_element(selector, timeout=15)
+    ActionChains(dash_duo.driver).move_to_element(el).perform()
+    return el
+
+
+def _wait_tooltip(dash_duo):
+    return WebDriverWait(dash_duo.driver, 10).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, ".dash-seqviz-tooltip"))
+    )
+
+
+def test_tooltip_shows_on_hover(dash_duo):
+    dash_duo.start_server(_tooltip_app())
+    _hover(dash_duo, ".la-vz-annotation")
+    tip = _wait_tooltip(dash_duo)
+    # Default template: name on the first line, then start..end (length bp).
+    assert "promoter" in tip.text
+    assert "5..90" in tip.text
+
+
+def test_tooltip_custom_template(dash_duo):
+    dash_duo.start_server(
+        _tooltip_app(tooltip={"template": "%{name} | %{length} bp | %{direction}"})
+    )
+    _hover(dash_duo, ".la-vz-annotation")
+    tip = _wait_tooltip(dash_duo)
+    # promoter spans 5..90 (85 bp), forward strand.
+    assert "85 bp" in tip.text
+    assert "forward" in tip.text
+
+
+def test_tooltip_absent_when_disabled(dash_duo):
+    dash_duo.start_server(_tooltip_app(tooltip=False))
+    _hover(dash_duo, ".la-vz-annotation")
+    # The tooltip node still exists but must stay hidden.
+    tips = dash_duo.find_elements(".dash-seqviz-tooltip")
+    assert tips and all(not t.is_displayed() for t in tips)

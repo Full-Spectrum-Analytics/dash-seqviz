@@ -56,6 +56,11 @@
         .workbench {
             display: grid; grid-template-columns: 246px minmax(0, 1fr) 246px;
             gap: 14px; align-items: stretch;
+            /* Grid items default to min-height:auto and refuse to shrink below
+               their content; without this the tallest rail forces the grid past
+               the viewport and the page clips. Zero lets the rails' own
+               overflow-y:auto engage so columns scroll internally instead. */
+            min-height: 0;
         }
         .rail {
             min-height: 0; overflow-y: auto; scrollbar-width: thin;
@@ -306,7 +311,7 @@
             background: #fff;
         }
         .enzyme-list {
-            max-height: 104px; overflow-y: auto; border: 1px solid var(--color-border);
+            max-height: 76px; overflow-y: auto; border: 1px solid var(--color-border);
             border-radius: var(--radius); background: #fff; padding: 4px;
         }
         .enzyme-item {
@@ -543,6 +548,16 @@
                 </div>
 
                 <div class="control-card">
+                    <h4 class="card-title">Hover tooltip</h4>
+                    <label class="ctrl-inline"><input id="ctrl-tooltip-show" type="checkbox" checked> On annotation hover</label>
+                    <div class="ctrl" style="margin-top: 6px;">
+                        <label for="ctrl-tooltip-tmpl">Template</label>
+                        <input id="ctrl-tooltip-tmpl" type="text" spellcheck="false" value="%{name}<br>%{start}..%{end} (%{length} bp)">
+                    </div>
+                    <p class="hint" style="margin: 6px 0 0;">%{name} %{start} %{end} %{length} %{direction} %{color}; &lt;br&gt; = line break.</p>
+                </div>
+
+                <div class="control-card">
                     <h4 class="card-title">Motif search</h4>
                     <div class="motif-row">
                         <div class="ctrl">
@@ -601,7 +616,7 @@
 <script src="./assets/nav.js?v=2"></script>
 
 <!-- Explorer demo logic -->
-<script src="./demo.js?v=18"></script>
+<script src="./demo.js?v=19"></script>
 
 <script>
     if (window.SeqVizSite && window.SeqVizSite.wireCopy) {

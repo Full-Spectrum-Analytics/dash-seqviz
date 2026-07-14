@@ -292,6 +292,23 @@ SeqViz.propTypes = {
     hidden_elements: PropTypes.arrayOf(PropTypes.string),
 
     /**
+     * Annotation hover tooltip (Plotly-style). Set to a dict (or True for
+     * defaults) to show text when the user hovers an annotation; omit / False
+     * for none. Keys:
+     * - show (bool): enable the tooltip (default True when `tooltip` is given).
+     * - template (str): the hover text, with Plotly-style %{field} placeholders
+     *   filled per annotation. Use <br> (or a newline) for line breaks; the
+     *   first line is emphasized. Available fields: %{name}, %{start}, %{end},
+     *   %{length} (bp), %{direction} ("forward" | "reverse" | "none"),
+     *   %{color}, %{type}. Default template:
+     *   "%{name}<br>%{start}..%{end} (%{length} bp)".
+     *
+     * Substituted values are rendered as plain text (never HTML), so element
+     * names cannot inject markup.
+     */
+    tooltip: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+
+    /**
      * Visual theme. The underlying seqviz library hardcodes dark-gray text,
      * so this prop applies CSS overrides (shipped with dash_seqviz) scoped
      * to a data-dash-seqviz-theme attribute on the wrapper, and — for the

@@ -10,6 +10,9 @@
 (function () {
     "use strict";
 
+    // Default annotation-hover template (mirrors the component default).
+    var DEFAULT_TOOLTIP_TMPL = "%{name}<br>%{start}..%{end} (%{length} bp)";
+
     // ---- Default demo data ---------------------------------------------------
 
     var DEFAULT_SEQ =
@@ -132,6 +135,8 @@
             // legend={"categories": [...]} filter.
             categories: ["annotations", "translations", "primers", "highlights"]
         },
+        // Annotation hover tooltip (Plotly-style %{field} template).
+        tooltip: { show: true, template: "%{name}<br>%{start}..%{end} (%{length} bp)" },
         theme: "light",
         enzymes: ["PstI", "EcoRI", "XbaI", "SpeI"],
         enzymeFilter: "",
@@ -205,6 +210,7 @@
             theme: state.theme,
             max_seq_length: state.maxSeqLength == null ? undefined : state.maxSeqLength,
             legend: legendProp(),
+            tooltip: tooltipProp(),
             on_selection: handleSelection,
             on_search: handleSearch,
             // seqviz needs a definite height (percentage heights collapse with
@@ -235,6 +241,14 @@
             prop.categories = cats.slice();
         }
         return prop;
+    }
+
+    // The rail's tooltip controls -> the component's `tooltip` prop. False
+    // disables hover text; otherwise pass the template through.
+    function tooltipProp() {
+        var tp = state.tooltip || {};
+        if (!tp.show) { return false; }
+        return { show: true, template: tp.template || DEFAULT_TOOLTIP_TMPL };
     }
 
     // Apply the theme to the wrapper: the CSS in seqviz-themes.css is scoped
@@ -481,6 +495,17 @@
                 lgOpts.push('"categories": [' + lgCats.map(pyStr).join(", ") + "]");
             }
             lines.push("        legend={" + lgOpts.join(", ") + "},");
+        }
+
+        // Annotation hover tooltip: True for the default template, else a dict
+        // carrying the custom %{field} template.
+        var tt = s.tooltip || {};
+        if (tt.show) {
+            if (tt.template && tt.template !== DEFAULT_TOOLTIP_TMPL) {
+                lines.push("        tooltip={\"template\": " + pyStr(tt.template) + "},");
+            } else {
+                lines.push("        tooltip=True,");
+            }
         }
         lines.push('        style={"height": "520px", "width": "100%"},');
         lines.push("    )");
@@ -1074,6 +1099,27 @@
         };
         legendCats.forEach(function (cb) {
             cb.addEventListener("change", syncLegendCats);
+        });
+    }
+
+    // Annotation tooltip: on/off + editable template. The template edit is
+    // debounced so a heavy viewer re-render doesn't fire on every keystroke.
+    var tooltipShow = el("ctrl-tooltip-show");
+    if (tooltipShow) {
+        tooltipShow.addEventListener("change", function (ev) {
+            state.tooltip.show = ev.target.checked;
+            var tmpl = el("ctrl-tooltip-tmpl");
+            if (tmpl) { tmpl.disabled = !ev.target.checked; }
+            render();
+        });
+    }
+    var tooltipTmpl = el("ctrl-tooltip-tmpl");
+    if (tooltipTmpl) {
+        var tmplTimer = null;
+        tooltipTmpl.addEventListener("input", function (ev) {
+            state.tooltip.template = ev.target.value;
+            if (tmplTimer) { clearTimeout(tmplTimer); }
+            tmplTimer = setTimeout(render, 300);
         });
     }
 
