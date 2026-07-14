@@ -204,3 +204,20 @@ def test_tooltip_customdata_index_aligns(dash_duo):
     _hover_named(dash_duo, "second")
     tip = _wait_tooltip(dash_duo)
     assert "second=B" in tip.text
+
+
+def test_tooltip_skips_blank_customdata_line(dash_duo):
+    # A hovertemplate line that resolves to nothing (customdata not supplied)
+    # is dropped rather than rendered as an empty row.
+    anns = [{"start": 5, "end": 90, "name": "promoter", "direction": 1}]
+    dash_duo.start_server(
+        _tooltip_app(
+            tooltip={"hovertemplate": "%{name}<br>%{customdata[0]}<br>%{start}..%{end}"},
+            annotations=anns,  # no customdata prop
+        )
+    )
+    _hover(dash_duo, ".la-vz-annotation")
+    tip = _wait_tooltip(dash_duo)
+    rows = tip.find_elements(By.CSS_SELECTOR, "div")
+    assert len(rows) == 2  # name + coords; the empty customdata line is skipped
+    assert "promoter" in tip.text and "5..90" in tip.text

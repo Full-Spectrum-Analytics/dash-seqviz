@@ -552,7 +552,7 @@
                     <label class="ctrl-inline"><input id="ctrl-tooltip-show" type="checkbox" checked> On annotation hover</label>
                     <div class="ctrl" style="margin-top: 6px;">
                         <label for="ctrl-tooltip-tmpl">Template</label>
-                        <input id="ctrl-tooltip-tmpl" type="text" spellcheck="false" value="%{name}<br>%{start}..%{end} (%{length} bp)">
+                        <input id="ctrl-tooltip-tmpl" type="text" spellcheck="false" value="%{name}<br>%{customdata[0]} %{customdata[1]}<br>%{start}..%{end} (%{length} bp)">
                     </div>
                     <p class="hint" style="margin: 6px 0 0;">%{name} %{length} %{direction} %{color} · %{customdata[0]} · &lt;br&gt;</p>
                 </div>
@@ -616,7 +616,7 @@
 <script src="./assets/nav.js?v=2"></script>
 
 <!-- Explorer demo logic -->
-<script src="./demo.js?v=21"></script>
+<script src="./demo.js?v=22"></script>
 
 <script>
     if (window.SeqVizSite && window.SeqVizSite.wireCopy) {

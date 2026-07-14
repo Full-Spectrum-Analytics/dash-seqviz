@@ -234,10 +234,15 @@ const renderTooltipInto = (node, tmpl, rec, kind) => {
     const text = applyTooltipTemplate(tmpl, tooltipFields(rec, kind), rec);
     const lines = text.split(/<br\s*\/?>|\n/i);
     while (node.firstChild) node.removeChild(node.firstChild);
-    lines.forEach((line, i) => {
+    let rendered = 0;
+    lines.forEach((line) => {
+        // Skip lines that came out blank (e.g. a %{customdata[i]} the caller
+        // didn't supply) so absent data never leaves an empty row.
+        if (line.trim() === '') return;
         const row = document.createElement('div');
         row.textContent = line;
-        if (i === 0) row.style.fontWeight = '600';
+        if (rendered === 0) row.style.fontWeight = '600';
+        rendered += 1;
         node.appendChild(row);
     });
 };
@@ -609,6 +614,7 @@ const SeqViz = (props) => {
             const rec = hit && cfg.byId[hit.id];
             if (!rec) return;
             renderTooltipInto(tip, cfg.hovertemplate, rec, 'annotation');
+            if (!tip.firstChild) return; // template produced no visible text
             tip.style.display = 'block';
             place(ev);
         };
