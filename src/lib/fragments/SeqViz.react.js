@@ -184,6 +184,8 @@ const SeqViz = (props) => {
         export_request,
         max_seq_length,
         aria_label,
+        legend,
+        hidden_elements,
     } = props;
 
     const containerRef = useRef(null);
@@ -213,6 +215,23 @@ const SeqViz = (props) => {
             }
         };
     }, [theme]);
+
+    // ---- Built-in interactive legend (Plotly-style) --------------------------
+    // `hidden_elements` holds the keys ("<category>:<name|index>") of legend
+    // items toggled off. It is a read/write prop: clicks push the new list via
+    // setProps so Dash callbacks can observe or control it, with a local mirror
+    // so the component still works outside Dash. A click timer distinguishes a
+    // single click (toggle one) from a double click (isolate / restore).
+    const [hiddenSet, setHiddenSet] = useState(() => new Set(hidden_elements || []));
+    useEffect(() => {
+        setHiddenSet(new Set(hidden_elements || []));
+    }, [hidden_elements]);
+    const clickTimer = useRef(null);
+    const commitHidden = useCallback((next) => {
+        const arr = Array.from(next);
+        setHiddenSet(new Set(arr));
+        if (setProps) setProps({ hidden_elements: arr });
+    }, [setProps]);
 
     const handleSelection = useCallback((sel) => {
         if (on_selection) {
@@ -292,6 +311,42 @@ const SeqViz = (props) => {
         ));
     };
 
+    // Palette-applied element arrays. Colors are seeded by index over the FULL
+    // array so hiding one item never reshuffles the others' colors; the legend
+    // swatches reuse these exact colors.
+    const annsColored = applyPalette(annotations) || [];
+    const primersColored = applyPalette(primers) || [];
+    const translationsColored = applyPalette(translations) || [];
+    const highlightsColored = applyPalette(highlights) || [];
+
+    // Legend config. `legend` is a dict (or True for defaults); omit for none.
+    const legendCfg = legend === true
+        ? {}
+        : (legend && typeof legend === 'object' ? legend : null);
+    const legendShow = !!legendCfg && legendCfg.show !== false;
+    const legendDirection = (legendCfg && legendCfg.direction) === 'horizontal'
+        ? 'horizontal' : 'vertical';
+    const legendPosition = (legendCfg && legendCfg.position) === 'right'
+        ? 'right' : 'bottom';
+
+    const legendKey = (cat, el, i) => `${cat}:${el && el.name ? el.name : i}`;
+
+    const allFacets = [
+        {key: 'annotations', label: 'Annotations', singular: 'Annotation', items: annsColored},
+        {key: 'translations', label: 'Translations', singular: 'Translation', items: translationsColored},
+        {key: 'primers', label: 'Primers', singular: 'Primer', items: primersColored},
+        {key: 'highlights', label: 'Highlights', singular: 'Highlight', items: highlightsColored},
+    ];
+    const wantCategories = legendCfg && Array.isArray(legendCfg.categories)
+        ? legendCfg.categories : null;
+    const legendFacets = allFacets.filter(
+        (f) => f.items.length && (!wantCategories || wantCategories.indexOf(f.key) !== -1)
+    );
+
+    // Elements the user has toggled off are removed before rendering.
+    const visibleItems = (cat, arr) =>
+        arr.filter((el, i) => !hiddenSet.has(legendKey(cat, el, i)));
+
     // Export: when export_request changes (a new token), serialize the live
     // viewer SVG(s) to a standalone SVG or a rasterized PNG data URI and hand
     // it back via export_result for the app to download.
@@ -321,10 +376,10 @@ const SeqViz = (props) => {
         seq,
         name,
         viewer,
-        annotations: applyPalette(annotations),
-        primers: applyPalette(primers),
-        highlights: applyPalette(highlights),
-        translations: applyPalette(translations),
+        annotations: visibleItems('annotations', annsColored),
+        primers: visibleItems('primers', primersColored),
+        highlights: visibleItems('highlights', highlightsColored),
+        translations: visibleItems('translations', translationsColored),
         enzymes,
         search,
         selection,
@@ -375,6 +430,152 @@ const SeqViz = (props) => {
         return () => observer.disconnect();
     }, [effectiveLabel, viewer, seq]);
 
+    // Legend interactions (Plotly semantics): a single click toggles one item's
+    // visibility; a double click isolates it (hide the rest), and double
+    // clicking the already-isolated item restores all.
+    const toggleItem = (k) => {
+        const next = new Set(hiddenSet);
+        if (next.has(k)) next.delete(k);
+        else next.add(k);
+        commitHidden(next);
+    };
+    const isolateItem = (k) => {
+        const allKeys = [];
+        legendFacets.forEach((f) =>
+            f.items.forEach((el, i) => allKeys.push(legendKey(f.key, el, i))));
+        const others = allKeys.filter((x) => x !== k);
+        const isIsolated = !hiddenSet.has(k) && others.every((x) => hiddenSet.has(x));
+        commitHidden(isIsolated ? new Set() : new Set(others));
+    };
+    const onItemClick = (k) => {
+        if (clickTimer.current) return; // the second click of a double click
+        clickTimer.current = setTimeout(() => {
+            clickTimer.current = null;
+            toggleItem(k);
+        }, 220);
+    };
+    const onItemDblClick = (k) => {
+        if (clickTimer.current) {
+            clearTimeout(clickTimer.current);
+            clickTimer.current = null;
+        }
+        isolateItem(k);
+    };
+
+    const legendNode = legendShow && legendFacets.length > 0 ? (
+        <div
+            className="dash-seqviz-legend"
+            data-direction={legendDirection}
+            style={{
+                // seqviz's linear scroller is position:relative and would
+                // otherwise paint over (and swallow clicks to) the legend, so
+                // give the legend its own positioned layer on top.
+                position: 'relative',
+                zIndex: 1,
+                font: '13px sans-serif',
+                display: 'flex',
+                flexWrap: 'wrap',
+                flexDirection: legendDirection === 'vertical' ? 'column' : 'row',
+                gap: legendDirection === 'vertical' ? '8px 0' : '8px 20px',
+                alignItems: legendDirection === 'vertical' ? 'stretch' : 'flex-start',
+                ...(legendPosition === 'right'
+                    ? { flex: '0 0 auto', maxWidth: 220, overflow: 'auto' }
+                    : { marginTop: 10 }),
+            }}
+        >
+            {legendCfg && legendCfg.title ? (
+                <div
+                    className="dash-seqviz-legend-title"
+                    style={{
+                        fontWeight: 700, fontSize: '0.8em', textTransform: 'uppercase',
+                        letterSpacing: '0.04em', width: '100%', marginBottom: 2,
+                    }}
+                >
+                    {legendCfg.title}
+                </div>
+            ) : null}
+            {legendFacets.map((f) => (
+                <div key={f.key} className="dash-seqviz-legend-facet">
+                    {legendFacets.length > 1 ? (
+                        <div
+                            className="dash-seqviz-legend-facet-title"
+                            style={{
+                                fontWeight: 700, fontSize: '0.72em', textTransform: 'uppercase',
+                                letterSpacing: '0.05em', opacity: 0.7, marginBottom: 3,
+                            }}
+                        >
+                            {f.label}
+                        </div>
+                    ) : null}
+                    <div
+                        className="dash-seqviz-legend-items"
+                        style={{
+                            display: 'flex', flexWrap: 'wrap',
+                            flexDirection: legendDirection === 'vertical' ? 'column' : 'row',
+                            gap: legendDirection === 'vertical' ? '3px 0' : '4px 14px',
+                        }}
+                    >
+                        {f.items.map((el, i) => {
+                            const k = legendKey(f.key, el, i);
+                            const isHidden = hiddenSet.has(k);
+                            const nm = (el && el.name) || `${f.singular} ${i + 1}`;
+                            const color = (el && el.color) || '#888';
+                            return (
+                                <span
+                                    key={k}
+                                    role="button"
+                                    tabIndex={0}
+                                    className={`dash-seqviz-legend-item${isHidden ? ' is-hidden' : ''}`}
+                                    aria-pressed={!isHidden}
+                                    title={`${nm} — click to toggle, double-click to isolate`}
+                                    onClick={() => onItemClick(k)}
+                                    onDoubleClick={() => onItemDblClick(k)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            toggleItem(k);
+                                        }
+                                    }}
+                                    style={{
+                                        display: 'inline-flex', alignItems: 'center', gap: 6,
+                                        cursor: 'pointer', userSelect: 'none',
+                                        opacity: isHidden ? 0.4 : 1,
+                                        textDecoration: isHidden ? 'line-through' : 'none',
+                                    }}
+                                >
+                                    <span
+                                        aria-hidden="true"
+                                        style={{
+                                            width: 13, height: 13, borderRadius: 3, background: color,
+                                            flex: '0 0 auto', border: '1px solid rgba(0,0,0,0.2)',
+                                        }}
+                                    />
+                                    {nm}
+                                </span>
+                            );
+                        })}
+                    </div>
+                </div>
+            ))}
+        </div>
+    ) : null;
+
+    const viewerBlock = (
+        <React.Fragment>
+            {resolvedTheme.startsWith('xkcd') && (
+                <svg aria-hidden="true" width="0" height="0" style={{ position: 'absolute' }}>
+                    <defs>
+                        <filter id="dash-seqviz-xkcd-wobble">
+                            <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" seed="1" />
+                            <feDisplacementMap in="SourceGraphic" scale="2" />
+                        </filter>
+                    </defs>
+                </svg>
+            )}
+            <SeqVizLib {...seqvizProps} />
+        </React.Fragment>
+    );
+
     return (
         <div
             id={id}
@@ -398,31 +599,19 @@ const SeqViz = (props) => {
                         `max_seq_length (${max_seq_length.toLocaleString()} bp). ` +
                         `Raise max_seq_length to render, or use viewer="circular" for very long sequences.`}
                 </div>
+            ) : (legendPosition === 'right' && legendNode ? (
+                // Side-by-side: the viewer flexes, the legend is a fixed rail.
+                <div style={{ display: 'flex', flexDirection: 'row', gap: 16, alignItems: 'flex-start' }}>
+                    <div style={{ flex: '1 1 auto', minWidth: 0 }}>{viewerBlock}</div>
+                    {legendNode}
+                </div>
             ) : (
-            <React.Fragment>
-            {resolvedTheme.startsWith('xkcd') && (
-                <svg
-                    aria-hidden="true"
-                    width="0"
-                    height="0"
-                    style={{ position: 'absolute' }}
-                >
-                    <defs>
-                        <filter id="dash-seqviz-xkcd-wobble">
-                            <feTurbulence
-                                type="fractalNoise"
-                                baseFrequency="0.02"
-                                numOctaves="3"
-                                seed="1"
-                            />
-                            <feDisplacementMap in="SourceGraphic" scale="2" />
-                        </filter>
-                    </defs>
-                </svg>
-            )}
-            <SeqVizLib {...seqvizProps} />
-            </React.Fragment>
-            )}
+                // Default: viewer in normal flow (seqviz sizes itself), legend below.
+                <React.Fragment>
+                    {viewerBlock}
+                    {legendNode}
+                </React.Fragment>
+            ))}
         </div>
     );
 };
@@ -440,6 +629,7 @@ SeqViz.defaultProps = {
     rotate_on_scroll: true,
     disable_external_fonts: false,
     zoom: { linear: 50 },
+    hidden_elements: [],
     theme: 'light'
 };
 
@@ -518,6 +708,8 @@ SeqViz.propTypes = {
     export_result: PropTypes.string,
     max_seq_length: PropTypes.number,
     aria_label: PropTypes.string,
+    legend: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+    hidden_elements: PropTypes.arrayOf(PropTypes.string),
     theme: PropTypes.oneOf([
         'light', 'dark', 'auto', 'xkcd', 'xkcd-light', 'xkcd-dark',
         'okabe-ito-light', 'okabe-ito-dark',

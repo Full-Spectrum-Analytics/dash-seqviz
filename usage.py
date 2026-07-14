@@ -664,8 +664,10 @@ app.layout = html.Div(
             search={"query": "ttnnnaat"},
             zoom={"linear": 60},
             show_complement=True,
+            legend={"show": True, "title": "Legend", "position": "right"},
             style={"height": "62vh", "width": "100%"},
         ),
+        html.Div(id="hidden-readout", style={"fontFamily": "monospace", "marginTop": 6}),
         html.Div(id="selection-readout"),
         html.Div(id="search-readout"),
         html.Div(id="copied-banner", style={"marginTop": 6, "color": "gray"}),
@@ -903,6 +905,14 @@ def update_bp_colors(
 )
 def update_legend(annotations, theme):
     return legend(annotations or [], theme=theme)
+
+
+@app.callback(
+    Output("hidden-readout", "children"),
+    Input("seqviz-demo", "hidden_elements"),
+)
+def show_hidden(hidden):
+    return "hidden_elements: " + repr(hidden or [])
 
 
 @app.callback(

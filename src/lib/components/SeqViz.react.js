@@ -30,6 +30,7 @@ SeqViz.defaultProps = {
     zoom: { linear: 50 },
     enable_copy_event: true,
     enable_select_all_event: true,
+    hidden_elements: [],
     theme: 'light'
 };
 
@@ -252,6 +253,34 @@ SeqViz.propTypes = {
      * those are not available as props.
      */
     clicked_element: PropTypes.object,
+
+    /**
+     * Built-in interactive legend. Set to a dict (or True for defaults) to
+     * render a Plotly-style legend next to the viewer; omit for none. Keys:
+     * - show (bool): render the legend (default True when `legend` is given).
+     * - title (str): optional heading above the sections.
+     * - direction ("vertical" | "horizontal"): item layout. Default "vertical".
+     * - position ("bottom" | "right"): placement relative to the viewer.
+     *   Default "bottom".
+     * - categories (list of str): which element types to include, any of
+     *   "annotations", "translations", "primers", "highlights". Default: every
+     *   type that has items.
+     *
+     * Interaction mirrors Plotly legends: single-click an item to hide/show it
+     * in the viewer, double-click to isolate it (hide the others), and
+     * double-click the isolated item again to restore all. Swatch colors match
+     * what the viewer renders (including theme palettes).
+     */
+    legend: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+
+    /**
+     * Read/write. Keys of the legend items currently toggled off (hidden from
+     * the viewer), each formatted "<category>:<name>" (or "<category>:<index>"
+     * for unnamed items such as highlights). The component updates this as the
+     * user clicks the legend, so a callback can observe which elements are
+     * hidden; set it from a callback to control visibility programmatically.
+     */
+    hidden_elements: PropTypes.arrayOf(PropTypes.string),
 
     /**
      * Visual theme. The underlying seqviz library hardcodes dark-gray text,
