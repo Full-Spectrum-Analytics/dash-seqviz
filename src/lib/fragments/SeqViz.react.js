@@ -438,10 +438,10 @@ const SeqViz = (props) => {
         ? {}
         : (tooltip && typeof tooltip === 'object' ? tooltip : null);
     const tooltipShow = !!tooltipCfg && tooltipCfg.show !== false;
-    const tooltipTemplate = (tooltipCfg && typeof tooltipCfg.template === 'string' &&
-        tooltipCfg.template) || DEFAULT_TOOLTIP_TEMPLATE;
+    const tooltipTemplate = (tooltipCfg && typeof tooltipCfg.hovertemplate === 'string' &&
+        tooltipCfg.hovertemplate) || DEFAULT_TOOLTIP_TEMPLATE;
     // Keep the hover listeners' data current without re-binding them.
-    tooltipDataRef.current = { show: tooltipShow, template: tooltipTemplate, byId: annById };
+    tooltipDataRef.current = { show: tooltipShow, hovertemplate: tooltipTemplate, byId: annById };
 
     // Legend config. `legend` is a dict (or True for defaults); omit for none.
     // Options follow dmc conventions: position on any of the four sides, and
@@ -598,7 +598,7 @@ const SeqViz = (props) => {
             const hit = ev.target && ev.target.closest ? ev.target.closest(SEL) : null;
             const rec = hit && cfg.byId[hit.id];
             if (!rec) return;
-            renderTooltipInto(tip, cfg.template, rec, 'annotation');
+            renderTooltipInto(tip, cfg.hovertemplate, rec, 'annotation');
             tip.style.display = 'block';
             place(ev);
         };

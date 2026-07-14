@@ -139,14 +139,14 @@ def test_tooltip_shows_on_hover(dash_duo):
     dash_duo.start_server(_tooltip_app())
     _hover(dash_duo, ".la-vz-annotation")
     tip = _wait_tooltip(dash_duo)
-    # Default template: name on the first line, then start..end (length bp).
+    # Default hovertemplate: name on the first line, then start..end (length bp).
     assert "promoter" in tip.text
     assert "5..90" in tip.text
 
 
 def test_tooltip_custom_template(dash_duo):
     dash_duo.start_server(
-        _tooltip_app(tooltip={"template": "%{name} | %{length} bp | %{direction}"})
+        _tooltip_app(tooltip={"hovertemplate": "%{name} | %{length} bp | %{direction}"})
     )
     _hover(dash_duo, ".la-vz-annotation")
     tip = _wait_tooltip(dash_duo)
@@ -167,7 +167,7 @@ def test_tooltip_customdata_dict(dash_duo):
     anns = [{"start": 5, "end": 90, "name": "promoter", "direction": 1,
              "customdata": {"locus": "b0344"}}]
     dash_duo.start_server(
-        _tooltip_app(tooltip={"template": "%{name} @ %{customdata.locus}"}, annotations=anns)
+        _tooltip_app(tooltip={"hovertemplate": "%{name} @ %{customdata.locus}"}, annotations=anns)
     )
     _hover(dash_duo, ".la-vz-annotation")
     tip = _wait_tooltip(dash_duo)
@@ -178,7 +178,7 @@ def test_tooltip_customdata_list(dash_duo):
     anns = [{"start": 5, "end": 90, "name": "promoter", "direction": 1,
              "customdata": ["alpha", "beta"]}]
     dash_duo.start_server(
-        _tooltip_app(tooltip={"template": "%{customdata[1]}"}, annotations=anns)
+        _tooltip_app(tooltip={"hovertemplate": "%{customdata[1]}"}, annotations=anns)
     )
     _hover(dash_duo, ".la-vz-annotation")
     tip = _wait_tooltip(dash_duo)

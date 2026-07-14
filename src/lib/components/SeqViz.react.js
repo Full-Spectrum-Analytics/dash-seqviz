@@ -296,17 +296,17 @@ SeqViz.propTypes = {
      * defaults) to show text when the user hovers an annotation; omit / False
      * for none. Keys:
      * - show (bool): enable the tooltip (default True when `tooltip` is given).
-     * - template (str): the hover text, with Plotly-style %{field} placeholders
-     *   filled per annotation. Use <br> (or a newline) for line breaks; the
-     *   first line is emphasized. Available fields: %{name}, %{start}, %{end},
-     *   %{length} (bp), %{direction} ("forward" | "reverse" | "none"),
-     *   %{color}, %{type}. Default template:
+     * - hovertemplate (str): the hover text, with Plotly-style %{field}
+     *   placeholders filled per annotation. Use <br> (or a newline) for line
+     *   breaks; the first line is emphasized. Available fields: %{name},
+     *   %{start}, %{end}, %{length} (bp), %{direction} ("forward" | "reverse" |
+     *   "none"), %{color}, %{type}. Default hovertemplate:
      *   "%{name}<br>%{start}..%{end} (%{length} bp)".
      *
      *   Custom data: give an annotation a `customdata` value (a list or dict of
-     *   your own fields) and reference it in the template the way Plotly does:
-     *   %{customdata[0]} for a list, or %{customdata.key} for a dict. Example:
-     *   annotations=[{..., "customdata": {"locus": "b0344"}}] with template
+     *   your own fields) and reference it the way Plotly does: %{customdata[0]}
+     *   for a list, or %{customdata.key} for a dict. Example:
+     *   annotations=[{..., "customdata": {"locus": "b0344"}}] with hovertemplate
      *   "%{name} (%{customdata.locus})".
      *
      * Substituted values are rendered as plain text (never HTML), so element

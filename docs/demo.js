@@ -141,7 +141,7 @@
             categories: ["annotations", "translations", "primers", "highlights"]
         },
         // Annotation hover tooltip (Plotly-style %{field} template).
-        tooltip: { show: true, template: "%{name}<br>%{start}..%{end} (%{length} bp)" },
+        tooltip: { show: true, hovertemplate: "%{name}<br>%{start}..%{end} (%{length} bp)" },
         theme: "light",
         enzymes: ["PstI", "EcoRI", "XbaI", "SpeI"],
         enzymeFilter: "",
@@ -253,7 +253,7 @@
     function tooltipProp() {
         var tp = state.tooltip || {};
         if (!tp.show) { return false; }
-        return { show: true, template: tp.template || DEFAULT_TOOLTIP_TMPL };
+        return { show: true, hovertemplate: tp.hovertemplate || DEFAULT_TOOLTIP_TMPL };
     }
 
     // Apply the theme to the wrapper: the CSS in seqviz-themes.css is scoped
@@ -506,8 +506,8 @@
         // carrying the custom %{field} template.
         var tt = s.tooltip || {};
         if (tt.show) {
-            if (tt.template && tt.template !== DEFAULT_TOOLTIP_TMPL) {
-                lines.push("        tooltip={\"template\": " + pyStr(tt.template) + "},");
+            if (tt.hovertemplate && tt.hovertemplate !== DEFAULT_TOOLTIP_TMPL) {
+                lines.push("        tooltip={\"hovertemplate\": " + pyStr(tt.hovertemplate) + "},");
             } else {
                 lines.push("        tooltip=True,");
             }
@@ -1122,7 +1122,7 @@
     if (tooltipTmpl) {
         var tmplTimer = null;
         tooltipTmpl.addEventListener("input", function (ev) {
-            state.tooltip.template = ev.target.value;
+            state.tooltip.hovertemplate = ev.target.value;
             if (tmplTimer) { clearTimeout(tmplTimer); }
             tmplTimer = setTimeout(render, 300);
         });
