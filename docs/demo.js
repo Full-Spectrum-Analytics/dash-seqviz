@@ -30,10 +30,13 @@
 
     var DEFAULT_NAME = "Demo plasmid";
 
+    // No explicit colors: the component seeds them from the active theme's
+    // palette, so switching themes (light/dark + the colorblind-safe sets)
+    // visibly recolors the elements.
     var DEFAULT_ANNOTATIONS = [
-        { start: 0, end: 35, name: "J23100 Promoter", direction: 1, color: "#3b82f6" },
-        { start: 36, end: 160, name: "RBS + ORF", direction: 1, color: "#10b981" },
-        { start: 440, end: 540, name: "Terminator", direction: -1, color: "#f59e0b" }
+        { start: 0, end: 35, name: "J23100 Promoter", direction: 1 },
+        { start: 36, end: 160, name: "RBS + ORF", direction: 1 },
+        { start: 440, end: 540, name: "Terminator", direction: -1 }
     ];
 
     // Parallel to DEFAULT_ANNOTATIONS (Plotly-style customdata): row i is
@@ -46,16 +49,16 @@
     ];
 
     var DEFAULT_PRIMERS = [
-        { start: 0, end: 24, name: "Fwd primer", direction: 1, color: "#ef4444" },
-        { start: 500, end: 530, name: "Rev primer", direction: -1, color: "#8b5cf6" }
+        { start: 0, end: 24, name: "Fwd primer", direction: 1 },
+        { start: 500, end: 530, name: "Rev primer", direction: -1 }
     ];
 
     var DEFAULT_TRANSLATIONS = [
-        { start: 36, end: 160, direction: 1, name: "ORF 1", color: "#fb7185" }
+        { start: 36, end: 160, direction: 1, name: "ORF 1" }
     ];
 
     var DEFAULT_HIGHLIGHTS = [
-        { start: 200, end: 260, color: "#fde047" }
+        { start: 200, end: 260 }
     ];
 
     var SAMPLE_ACCESSIONS = [

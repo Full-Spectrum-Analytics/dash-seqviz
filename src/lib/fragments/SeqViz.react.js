@@ -142,6 +142,15 @@ const PALETTES = {
     'tol-dark':  ['#4477AA', '#EE6677', '#228833', '#CCBB44', '#66CCEE', '#AA3377', '#BBBBBB'],
 };
 
+// Palette for the standard (non-CVD) themes — light, dark, xkcd. Mid-tone
+// hues that read on both light and dark backgrounds. Used to color elements
+// that don't carry an explicit color, so the viewer and the legend agree
+// under every theme (not just the colorblind-safe ones).
+const DEFAULT_PALETTE = [
+    '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
+    '#8b5cf6', '#ec4899', '#14b8a6', '#a855f7',
+];
+
 // dmc-style size tokens for the legend config, so it reads like the rest of a
 // Dash Mantine app (size/spacing/radius take "xs".."xl"). Raw numbers pass
 // through as pixels.
@@ -409,7 +418,7 @@ const SeqViz = (props) => {
     // prop is dead), and resolves per-element color via `a.color || ...`,
     // so seeding `a.color` here is the only way to actually swap palettes.
     // Per-element user colors are preserved.
-    const themePalette = PALETTES[resolvedTheme];
+    const themePalette = PALETTES[resolvedTheme] || DEFAULT_PALETTE;
     const userSuppliedPalette = colors && colors.length > 0 ? colors : null;
     const effectivePalette = userSuppliedPalette || themePalette;
 

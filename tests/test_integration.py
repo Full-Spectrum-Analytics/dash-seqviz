@@ -99,6 +99,25 @@ def test_legend_click_toggles_hidden_elements(dash_duo):
     dash_duo.wait_for_text_to_equal("#hidden", "none", timeout=10)
 
 
+def test_uncolored_annotation_gets_palette_swatch(dash_duo):
+    # Elements without an explicit color are seeded from the theme palette, so
+    # the legend swatch is a real color (matching the viewer), not the gray
+    # #888 fallback.
+    app = Dash(__name__)
+    app.layout = html.Div(
+        [
+            SeqViz(id="v", seq=SEQ, name="pDemo",
+                   annotations=[{"start": 5, "end": 90, "name": "a"}],
+                   viewer="linear", legend=True,
+                   style={"height": "420px", "width": "900px"}),
+        ]
+    )
+    dash_duo.start_server(app)
+    sw = dash_duo.wait_for_element('.dash-seqviz-legend-item span[aria-hidden="true"]', timeout=15)
+    nums = [int(n) for n in re.findall(r"\d+", sw.value_of_css_property("background-color"))[:3]]
+    assert nums != [136, 136, 136], f"uncolored annotation got the gray fallback swatch: {nums}"
+
+
 def test_legend_text_light_on_dark_theme(dash_duo):
     # On dark themes the legend must use light text; otherwise it inherits the
     # ambient dark color and blends into the dark viewer background.
