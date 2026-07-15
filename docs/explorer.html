@@ -203,7 +203,7 @@
         .canvas-body { flex: 1 1 auto; min-height: 0; overflow: auto; display: flex; flex-direction: column; }
         .tabpanel { padding: 14px; }
         /* ID-level so it beats #panel-preview's own display rule. */
-        #panel-preview.is-hidden, #panel-code.is-hidden { display: none; }
+        #panel-preview.is-hidden, #panel-code.is-hidden, #panel-install.is-hidden { display: none; }
         /* Preview fills the canvas so readouts reach the bottom edge. */
         #panel-preview { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
 
@@ -520,6 +520,7 @@
                     <div class="tabs" role="tablist" aria-label="Viewer or code">
                         <button class="tab" id="tab-preview" data-tab="preview" role="tab" aria-selected="true" aria-controls="panel-preview">Preview</button>
                         <button class="tab" id="tab-code" data-tab="code" role="tab" aria-selected="false" aria-controls="panel-code">Code</button>
+                        <button class="tab" id="tab-install" data-tab="install" role="tab" aria-selected="false" aria-controls="panel-install">Install</button>
                     </div>
                     <div class="canvas-actions" id="export-actions">
                         <span class="lbl">Export</span>
@@ -541,6 +542,11 @@
                     </div>
 
                     <div class="tabpanel code-panel is-hidden" id="panel-code" role="tabpanel" aria-labelledby="tab-code">
+                        <div class="snippet">
+                            <pre id="live-snippet"><code></code></pre>
+                        </div>
+                    </div>
+                    <div class="tabpanel code-panel is-hidden" id="panel-install" role="tabpanel" aria-labelledby="tab-install">
                         <div class="install-tabs" data-install>
                             <div class="install-tabs-bar" role="tablist" aria-label="Package manager">
                                 <button class="install-tab is-active" data-target="conda" role="tab" aria-selected="true">conda</button>
@@ -560,9 +566,6 @@
                             <div class="install-panel" data-panel="pip">
                                 <div class="snippet"><pre><code>pip install dash-seqviz</code></pre></div>
                             </div>
-                        </div>
-                        <div class="snippet">
-                            <pre id="live-snippet"><code></code></pre>
                         </div>
                     </div>
                 </div>
@@ -660,7 +663,8 @@
         var tabs = document.querySelectorAll('.canvas-bar .tab');
         var panels = {
             preview: document.getElementById('panel-preview'),
-            code: document.getElementById('panel-code')
+            code: document.getElementById('panel-code'),
+            install: document.getElementById('panel-install')
         };
         var exportActions = document.getElementById('export-actions');
 
