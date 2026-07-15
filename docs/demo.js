@@ -958,14 +958,76 @@
             height += h;
         });
 
+        // Fold the on-screen legend (if enabled) in below the viewer, as native
+        // SVG so it survives PNG rasterization. Mirrors the component's export.
+        var legend = buildLegendSvg(root);
+        var legendMarkup = "";
+        if (legend && legend.markup) {
+            var ly = height + 12;
+            legendMarkup = '<g data-dsv-legend="1" transform="translate(0 ' + ly + ')">' + legend.markup + "</g>";
+            height = ly + legend.height;
+            width = Math.max(width, legend.width);
+        }
+
         var css = collectViewerCss().replace(/]]>/g, "]]&gt;");
         var svg =
             '<svg xmlns="' + SVG_NS + '" width="' + width + '" height="' + height + '" ' +
             'viewBox="0 0 ' + width + " " + height + '" data-dash-seqviz-theme="' + theme + '">' +
             "<style><![CDATA[\n" + css + "]]></style>" +
             '<rect x="0" y="0" width="' + width + '" height="' + height + '" fill="' + background + '"/>' +
-            body + "</svg>";
+            body + legendMarkup + "</svg>";
         return { svg: svg, width: width, height: height };
+    }
+
+    // Serialize the rendered legend to native SVG (rects + text) so exports
+    // include it; coordinates are measured relative to the legend's top-left.
+    function buildLegendSvg(root) {
+        var legend = root.querySelector(".dash-seqviz-legend");
+        if (!legend) { return null; }
+        var lr = legend.getBoundingClientRect();
+        if (lr.width < 1 || lr.height < 1) { return null; }
+        function esc(s) {
+            return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+        function textAt(r, cs, str, extra) {
+            var fs = parseFloat(cs.fontSize) || 12;
+            return '<text x="' + (r.left - lr.left).toFixed(1) + '" y="' +
+                (r.top - lr.top + fs * 0.8).toFixed(1) + '" font-family="' + esc(cs.fontFamily) +
+                '" font-size="' + fs + '" font-weight="' + cs.fontWeight + '" fill="' + cs.color + '"' +
+                (extra || "") + ">" + esc(str) + "</text>";
+        }
+        var out = [];
+        Array.prototype.slice.call(legend.querySelectorAll(
+            ".dash-seqviz-legend-title, .dash-seqviz-legend-facet-title")).forEach(function (t) {
+            var r = t.getBoundingClientRect();
+            if (r.width >= 1) { out.push(textAt(r, getComputedStyle(t), t.textContent)); }
+        });
+        Array.prototype.slice.call(legend.querySelectorAll(".dash-seqviz-legend-item")).forEach(function (item) {
+            var ics = getComputedStyle(item);
+            var g = [];
+            var sw = item.querySelector('span[aria-hidden="true"]');
+            if (sw) {
+                var sr = sw.getBoundingClientRect();
+                if (sr.width >= 1) {
+                    var cs = getComputedStyle(sw);
+                    var rx = (parseFloat(cs.borderTopLeftRadius) || 0).toFixed(1);
+                    g.push('<rect x="' + (sr.left - lr.left).toFixed(1) + '" y="' + (sr.top - lr.top).toFixed(1) +
+                        '" width="' + sr.width.toFixed(1) + '" height="' + sr.height.toFixed(1) +
+                        '" rx="' + rx + '" fill="' + cs.backgroundColor + '" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>');
+                }
+            }
+            Array.prototype.slice.call(item.childNodes).forEach(function (n) {
+                if (n.nodeType !== 3 || !n.textContent.trim()) { return; }
+                var range = document.createRange();
+                range.selectNodeContents(n);
+                var r = range.getBoundingClientRect();
+                if (r.width < 1) { return; }
+                var struck = (ics.textDecorationLine || "").indexOf("line-through") !== -1;
+                g.push(textAt(r, ics, n.textContent, struck ? ' text-decoration="line-through"' : ""));
+            });
+            if (g.length) { out.push('<g opacity="' + ics.opacity + '">' + g.join("") + "</g>"); }
+        });
+        return { markup: out.join(""), width: Math.ceil(lr.width), height: Math.ceil(lr.height) };
     }
 
     function svgToDataUri(svg) {

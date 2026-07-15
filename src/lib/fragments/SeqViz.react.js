@@ -71,15 +71,84 @@ function buildStandaloneSvg(root, theme, background) {
         height += h;
     }
 
+    // Fold the on-screen legend (if enabled) in below the viewer, as native SVG
+    // (rects + text) so it survives PNG rasterization -- a foreignObject clone
+    // would export to SVG but not reliably to PNG.
+    const legend = buildLegendSvg(root);
+    let legendMarkup = '';
+    if (legend && legend.markup) {
+        const ly = height + 12;
+        legendMarkup = `<g data-dsv-legend="1" transform="translate(0 ${ly})">${legend.markup}</g>`;
+        height = ly + legend.height;
+        width = Math.max(width, legend.width);
+    }
+
     const css = collectViewerCss().replace(/]]>/g, ']]&gt;');
     const svg =
         `<svg xmlns="${SVG_NS}" width="${width}" height="${height}" ` +
         `viewBox="0 0 ${width} ${height}" data-dash-seqviz-theme="${theme}">` +
         `<style><![CDATA[\n${css}]]></style>` +
         `<rect x="0" y="0" width="${width}" height="${height}" fill="${background}"/>` +
-        body +
+        body + legendMarkup +
         `</svg>`;
     return { svg, width, height };
+}
+
+// Serialize the rendered legend to native SVG primitives (rects for swatches,
+// <text> for titles and labels) so PNG/SVG exports include it. Coordinates are
+// measured relative to the legend's top-left; hidden items keep their dimmed
+// opacity and strike-through.
+function buildLegendSvg(root) {
+    const legend = root.querySelector('.dash-seqviz-legend');
+    if (!legend) return null;
+    const lr = legend.getBoundingClientRect();
+    if (lr.width < 1 || lr.height < 1) return null;
+    const esc = (s) => String(s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const relX = (r) => (r.left - lr.left).toFixed(1);
+    const relY = (r) => (r.top - lr.top).toFixed(1);
+    const textAt = (r, cs, str, extra) => {
+        const fs = parseFloat(cs.fontSize) || 12;
+        return `<text x="${relX(r)}" y="${(r.top - lr.top + fs * 0.8).toFixed(1)}" ` +
+            `font-family="${esc(cs.fontFamily)}" font-size="${fs}" ` +
+            `font-weight="${cs.fontWeight}" fill="${cs.color}"${extra || ''}>${esc(str)}</text>`;
+    };
+    const out = [];
+
+    legend.querySelectorAll('.dash-seqviz-legend-title, .dash-seqviz-legend-facet-title')
+        .forEach((t) => {
+            const r = t.getBoundingClientRect();
+            if (r.width < 1) return;
+            out.push(textAt(r, getComputedStyle(t), t.textContent));
+        });
+
+    legend.querySelectorAll('.dash-seqviz-legend-item').forEach((item) => {
+        const ics = getComputedStyle(item);
+        const g = [];
+        const sw = item.querySelector('span[aria-hidden="true"]');
+        if (sw) {
+            const r = sw.getBoundingClientRect();
+            if (r.width >= 1) {
+                const cs = getComputedStyle(sw);
+                const rx = (parseFloat(cs.borderTopLeftRadius) || 0).toFixed(1);
+                g.push(`<rect x="${relX(r)}" y="${relY(r)}" width="${r.width.toFixed(1)}" ` +
+                    `height="${r.height.toFixed(1)}" rx="${rx}" fill="${cs.backgroundColor}" ` +
+                    `stroke="rgba(0,0,0,0.2)" stroke-width="1"/>`);
+            }
+        }
+        Array.prototype.forEach.call(item.childNodes, (n) => {
+            if (n.nodeType !== 3 || !n.textContent.trim()) return;
+            const range = document.createRange();
+            range.selectNodeContents(n);
+            const r = range.getBoundingClientRect();
+            if (r.width < 1) return;
+            const struck = (ics.textDecorationLine || '').indexOf('line-through') !== -1;
+            g.push(textAt(r, ics, n.textContent, struck ? ' text-decoration="line-through"' : ''));
+        });
+        if (g.length) out.push(`<g opacity="${ics.opacity}">${g.join('')}</g>`);
+    });
+
+    return { markup: out.join(''), width: Math.ceil(lr.width), height: Math.ceil(lr.height) };
 }
 
 function svgToDataUri(svg) {
@@ -522,6 +591,14 @@ const SeqViz = (props) => {
     // would inherit the ambient dark color and vanish.
     const legendTextColor = resolvedTheme.endsWith('dark') ? '#e8e8e8' : '#1a1b1e';
 
+    // The hover tooltip follows the theme like the legend does: a light surface
+    // with dark text on light themes, and an elevated (lighter-than-background)
+    // dark surface with light text on dark themes. A hairline border keeps it
+    // reading as a popover instead of melting into the viewer background.
+    const tooltipTheme = resolvedTheme.endsWith('dark')
+        ? {bg: 'rgba(43, 45, 49, 0.97)', color: '#e8e8e8', border: 'rgba(255, 255, 255, 0.16)'}
+        : {bg: 'rgba(255, 255, 255, 0.98)', color: '#1a1b1e', border: 'rgba(0, 0, 0, 0.12)'};
+
     const legendKey = (cat, el, i) => `${cat}:${el && el.name ? el.name : i}`;
 
     const allFacets = [
@@ -871,8 +948,9 @@ const SeqViz = (props) => {
                     maxWidth: 280,
                     padding: '6px 9px',
                     borderRadius: 6,
-                    background: 'rgba(17, 19, 23, 0.92)',
-                    color: '#fff',
+                    background: tooltipTheme.bg,
+                    color: tooltipTheme.color,
+                    border: `1px solid ${tooltipTheme.border}`,
                     font: '12px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                     boxShadow: '0 4px 14px rgba(0, 0, 0, 0.28)',
                     whiteSpace: 'normal',

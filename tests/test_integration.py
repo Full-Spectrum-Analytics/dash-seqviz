@@ -172,6 +172,60 @@ def test_legend_positions_render(dash_duo, position):
     assert len(dash_duo.find_elements(".dash-seqviz-legend-item")) == 2
 
 
+# --- figure export (legend inclusion) -------------------------------------
+
+def _export_app(legend=True, **kwargs):
+    app = Dash(__name__)
+    # Button + readout come first so the (tall, overflowing) viewer can't cover
+    # the button and intercept the click.
+    app.layout = html.Div(
+        [
+            html.Button("Export SVG", id="export-svg"),
+            html.Div(id="result", children="pending"),
+            SeqViz(id="v", seq=SEQ, name="pDemo", annotations=ANNS, viewer="linear",
+                   legend=legend, style={"height": "420px", "width": "900px"}, **kwargs),
+        ]
+    )
+
+    @app.callback(Output("v", "export_request"), Input("export-svg", "n_clicks"),
+                  prevent_initial_call=True)
+    def _req(n):
+        return {"format": "svg", "token": n}
+
+    # Inspect the exported SVG in the browser and surface a compact marker, so
+    # the test never has to shuttle the full data URI back through Selenium.
+    app.clientside_callback(
+        """
+        function(uri) {
+            if (!uri) { return window.dash_clientside.no_update; }
+            if (uri.indexOf('data:image/svg') !== 0) { return 'not-svg'; }
+            var svg = decodeURIComponent(uri.slice(uri.indexOf(',') + 1));
+            return svg.indexOf('data-dsv-legend') !== -1 ? 'legend' : 'no-legend';
+        }
+        """,
+        Output("result", "children"),
+        Input("v", "export_result"),
+        prevent_initial_call=True,
+    )
+    return app
+
+
+def test_export_svg_includes_legend_when_enabled(dash_duo):
+    # The legend is HTML, not part of the seqviz <svg>, so the export path must
+    # reconstruct it as native SVG primitives (tagged with data-dsv-legend).
+    dash_duo.start_server(_export_app(legend=True))
+    dash_duo.wait_for_element(".dash-seqviz-legend", timeout=15)
+    dash_duo.find_element("#export-svg").click()
+    dash_duo.wait_for_text_to_equal("#result", "legend", timeout=15)
+
+
+def test_export_svg_omits_legend_when_disabled(dash_duo):
+    dash_duo.start_server(_export_app(legend=False))
+    dash_duo.wait_for_element(".la-vz-seqviz", timeout=15)
+    dash_duo.find_element("#export-svg").click()
+    dash_duo.wait_for_text_to_equal("#result", "no-legend", timeout=15)
+
+
 # --- annotation hover tooltip ---------------------------------------------
 
 def _tooltip_app(tooltip=True, annotations=None, **kwargs):
@@ -286,3 +340,30 @@ def test_tooltip_skips_blank_customdata_line(dash_duo):
     rows = tip.find_elements(By.CSS_SELECTOR, "div")
     assert len(rows) == 2  # name + coords; the empty customdata line is skipped
     assert "promoter" in tip.text and "5..90" in tip.text
+
+
+def _rgb(el, prop):
+    return [int(n) for n in re.findall(r"\d+", el.value_of_css_property(prop))[:3]]
+
+
+def test_tooltip_follows_dark_theme(dash_duo):
+    # On dark themes the tooltip must use light text on an elevated surface, not
+    # a fixed near-black box that melts into the dark viewer background.
+    dash_duo.start_server(_tooltip_app(theme="dark"))
+    _hover(dash_duo, ".la-vz-annotation")
+    tip = _wait_tooltip(dash_duo)
+    txt = _rgb(tip, "color")
+    assert sum(txt) / 3 > 160, f"tooltip text not light on dark theme: {txt}"
+    bg = _rgb(tip, "background-color")
+    # elevated above the #1a1b1e (26,27,30) dark viewer background
+    assert sum(bg) / 3 > 34, f"tooltip surface not elevated on dark theme: {bg}"
+
+
+def test_tooltip_follows_light_theme(dash_duo):
+    dash_duo.start_server(_tooltip_app(theme="light"))
+    _hover(dash_duo, ".la-vz-annotation")
+    tip = _wait_tooltip(dash_duo)
+    txt = _rgb(tip, "color")
+    assert sum(txt) / 3 < 96, f"tooltip text not dark on light theme: {txt}"
+    bg = _rgb(tip, "background-color")
+    assert sum(bg) / 3 > 200, f"tooltip surface not light on light theme: {bg}"
