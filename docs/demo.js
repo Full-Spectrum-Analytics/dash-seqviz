@@ -362,6 +362,37 @@
         }
         updateAriaLabel();
         updateLiveSnippet();
+        renderTemplateVars();
+    }
+
+    // Live customdata preview under the Template box: shows what each
+    // %{customdata[i]} resolves to for the first annotation (e.g.
+    // "BBa_J23100"), so the placeholder is concrete. The self-explanatory
+    // built-in fields (%{name}, %{start}, ...) are listed in the static hint.
+    function renderTemplateVars() {
+        var host = el("tmpl-vars");
+        if (!host) { return; }
+        host.innerHTML = "";
+        var anns = state.annotations || [];
+        var a = anns[0];
+        var cd = a && state.customdata && state.customdata[0];
+        if (!Array.isArray(cd) || !cd.length) { return; }
+
+        var frag = document.createDocumentFragment();
+        var head = document.createElement("div");
+        head.className = "tv-head";
+        head.textContent = "customdata · " + (a.name || "first annotation");
+        frag.appendChild(head);
+        cd.forEach(function (v, i) {
+            var code = document.createElement("code");
+            code.textContent = "%{customdata[" + i + "]}";
+            var val = document.createElement("span");
+            val.className = "tv-val";
+            val.textContent = v == null ? "" : String(v);
+            frag.appendChild(code);
+            frag.appendChild(val);
+        });
+        host.appendChild(frag);
     }
 
     // ---- Live Python snippet -------------------------------------------------

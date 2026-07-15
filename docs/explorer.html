@@ -130,6 +130,12 @@
         .control-card .ctrl input[type="number"],
         .control-card .ctrl textarea { font-size: 0.85rem; padding: 5px 8px; }
         .control-card .ctrl-inline { min-height: 22px; font-size: 0.82rem; }
+        /* Live reference: each %{variable} and its value for the first annotation. */
+        .tmpl-vars { margin-top: 7px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0 8px; align-items: baseline; }
+        .tmpl-vars .tv-head { grid-column: 1 / -1; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 1px; }
+        .tmpl-vars code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.66rem; color: var(--tannin); white-space: nowrap; }
+        .tmpl-vars .tv-val { font-size: 0.66rem; color: var(--color-text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tmpl-vars .tv-swatch { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 4px; vertical-align: baseline; border: 1px solid rgba(0,0,0,0.15); }
         .control-card .ctrl-row { margin-top: 2px; }
         .control-card .ctrl-status { margin-top: 5px; }
         .control-card .ncbi-details { margin-top: 6px; }
@@ -560,7 +566,8 @@
                         <label for="ctrl-tooltip-tmpl">Template</label>
                         <textarea id="ctrl-tooltip-tmpl" rows="2" spellcheck="false" wrap="soft">%{name}&lt;br&gt;%{customdata[0]}</textarea>
                     </div>
-                    <p class="hint" style="margin: 6px 0 0;">%{field} or %{customdata[i]}; &lt;br&gt; = newline.</p>
+                    <div id="tmpl-vars" class="tmpl-vars" aria-label="customdata values for the first annotation"></div>
+                    <p class="hint" style="margin: 5px 0 0;">Also %{start} %{end} %{length} %{direction} %{color}; &lt;br&gt; = newline.</p>
                 </div>
 
                 <div class="control-card">
@@ -622,7 +629,7 @@
 <script src="./assets/nav.js?v=2"></script>
 
 <!-- Explorer demo logic -->
-<script src="./demo.js?v=23"></script>
+<script src="./demo.js?v=30"></script>
 
 <script>
     if (window.SeqVizSite && window.SeqVizSite.wireCopy) {
