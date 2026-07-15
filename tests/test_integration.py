@@ -118,6 +118,24 @@ def test_uncolored_annotation_gets_palette_swatch(dash_duo):
     assert nums != [136, 136, 136], f"uncolored annotation got the gray fallback swatch: {nums}"
 
 
+def test_user_color_overrides_theme_palette(dash_duo):
+    # An explicit element color must win over the theme palette, even under a
+    # colorblind-safe theme that would otherwise recolor it.
+    app = Dash(__name__)
+    app.layout = html.Div(
+        [
+            SeqViz(id="v", seq=SEQ, name="pDemo",
+                   annotations=[{"start": 5, "end": 90, "name": "a", "color": "#123456"}],
+                   viewer="linear", legend=True, theme="okabe-ito-dark",
+                   style={"height": "420px", "width": "900px"}),
+        ]
+    )
+    dash_duo.start_server(app)
+    sw = dash_duo.wait_for_element('.dash-seqviz-legend-item span[aria-hidden="true"]', timeout=15)
+    nums = [int(n) for n in re.findall(r"\d+", sw.value_of_css_property("background-color"))[:3]]
+    assert nums == [18, 52, 86], f"user color #123456 not preserved under a palette theme: {nums}"
+
+
 def test_legend_text_light_on_dark_theme(dash_duo):
     # On dark themes the legend must use light text; otherwise it inherits the
     # ambient dark color and blends into the dark viewer background.
