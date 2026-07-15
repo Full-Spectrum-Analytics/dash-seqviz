@@ -673,6 +673,7 @@ app.layout = html.Div(
                 "withBorder": True,
                 "p": "sm",
             },
+            tooltip={"hovertemplate": "%{name}<br>%{start}..%{end} (%{length} bp) · %{direction}"},
             style={"height": "62vh", "width": "100%"},
         ),
         html.Div(id="hidden-readout", style={"fontFamily": "monospace", "marginTop": 6}),

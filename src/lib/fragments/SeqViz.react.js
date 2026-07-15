@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useId, useMemo, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import { SeqViz as SeqVizLib } from 'seqviz';
 
@@ -142,6 +142,20 @@ const PALETTES = {
     'tol-dark':  ['#4477AA', '#EE6677', '#228833', '#CCBB44', '#66CCEE', '#AA3377', '#BBBBBB'],
 };
 
+// Palettes for the standard (non-CVD) themes, used to color elements that
+// don't carry an explicit color so the viewer and legend agree under every
+// theme. Split by background: deeper hues read on white, brighter ones on
+// dark, so a plain light theme and a plain dark theme differ in palette, not
+// just background.
+const DEFAULT_PALETTE_LIGHT = [
+    '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
+    '#8b5cf6', '#ec4899', '#14b8a6', '#a855f7',
+];
+const DEFAULT_PALETTE_DARK = [
+    '#60a5fa', '#34d399', '#fbbf24', '#f87171',
+    '#a78bfa', '#f472b6', '#2dd4bf', '#c084fc',
+];
+
 // dmc-style size tokens for the legend config, so it reads like the rest of a
 // Dash Mantine app (size/spacing/radius take "xs".."xl"). Raw numbers pass
 // through as pixels.
@@ -156,6 +170,95 @@ const resolveLegendToken = (kind, value, fallback) => {
     if (typeof value === 'number') return value;
     const map = LEGEND_TOKENS[kind];
     return map[typeof value === 'string' && map[value] != null ? value : fallback];
+};
+
+// ---- Feature tooltips (Plotly-style hover) -------------------------------
+// Shown on annotation hover when `tooltip` is enabled without a custom
+// template. Placeholders use Plotly's %{field} syntax; the range uses GenBank
+// `start..end` location notation.
+const DEFAULT_TOOLTIP_TEMPLATE = '%{name}<br>%{start}..%{end} (%{length} bp)';
+
+// Normalize seqviz / GenBank direction inputs to -1 | 0 | 1.
+const normalizeDirection = (d) => {
+    if (d === 1 || d === '1' || d === '+' || d === 'FORWARD' || d === 'forward' || d === 'FWD') return 1;
+    if (d === -1 || d === '-1' || d === '-' || d === 'REVERSE' || d === 'reverse' || d === 'REV') return -1;
+    return 0;
+};
+
+// The %{field} values a tooltip template can reference for one element.
+const tooltipFields = (rec, kind) => {
+    const s = typeof rec.start === 'number' ? rec.start : null;
+    const e = typeof rec.end === 'number' ? rec.end : null;
+    const dir = normalizeDirection(rec.direction);
+    return {
+        name: rec.name != null ? String(rec.name) : '',
+        start: s != null ? s : '',
+        end: e != null ? e : '',
+        length: s != null && e != null ? Math.abs(e - s) : '',
+        direction: dir === 1 ? 'forward' : (dir === -1 ? 'reverse' : 'none'),
+        color: rec.color || '',
+        type: kind,
+    };
+};
+
+// Walk ".key" / "[0]" / "['k']" accessors off a base value.
+const readPath = (value, accessors) => {
+    for (let i = 0; i < accessors.length && value != null; i += 1) {
+        value = value[accessors[i]];
+    }
+    return value;
+};
+
+// Substitute %{field} placeholders. Built-in fields resolve from `fields`;
+// `%{customdata[i]}` / `%{customdata.key}` read the annotation's own
+// `customdata` (a list or dict of caller-supplied values), mirroring Plotly's
+// customdata. Unknown fields are left verbatim; a resolved-but-missing value
+// renders empty; objects are JSON-stringified.
+const applyTooltipTemplate = (tmpl, fields, rec) => String(tmpl).replace(
+    /%\{([^}]+)\}/g,
+    (full, raw) => {
+        const expr = raw.trim();
+        const baseMatch = expr.match(/^[A-Za-z_$][\w$]*/);
+        if (!baseMatch) return full;
+        const base = baseMatch[0];
+        const accessors = [];
+        const accRe = /\.([A-Za-z_$][\w$]*)|\[\s*(?:'([^']*)'|"([^"]*)"|(\d+))\s*\]/g;
+        let m;
+        while ((m = accRe.exec(expr.slice(base.length))) !== null) {
+            accessors.push(m[1] != null ? m[1] : (m[2] != null ? m[2] : (m[3] != null ? m[3] : m[4])));
+        }
+        let value;
+        if (base === 'customdata') {
+            value = rec ? rec.customdata : undefined;
+        } else if (Object.prototype.hasOwnProperty.call(fields, base)) {
+            value = fields[base];
+        } else {
+            return full; // unknown base: leave "%{...}" verbatim, like Plotly
+        }
+        value = readPath(value, accessors);
+        if (value == null) return '';
+        return typeof value === 'object' ? JSON.stringify(value) : String(value);
+    }
+);
+
+// Render templated text into the tooltip node as escaped, line-broken text
+// (split on <br> or newlines). Using textContent per line prevents any HTML
+// injection from element names; the first line is emphasized, like Plotly.
+const renderTooltipInto = (node, tmpl, rec, kind) => {
+    const text = applyTooltipTemplate(tmpl, tooltipFields(rec, kind), rec);
+    const lines = text.split(/<br\s*\/?>|\n/i);
+    while (node.firstChild) node.removeChild(node.firstChild);
+    let rendered = 0;
+    lines.forEach((line) => {
+        // Skip lines that came out blank (e.g. a %{customdata[i]} the caller
+        // didn't supply) so absent data never leaves an empty row.
+        if (line.trim() === '') return;
+        const row = document.createElement('div');
+        row.textContent = line;
+        if (rendered === 0) row.style.fontWeight = '600';
+        rendered += 1;
+        node.appendChild(row);
+    });
 };
 
 /**
@@ -186,6 +289,7 @@ const SeqViz = (props) => {
         selection,
         colors,
         style,
+        font,
         zoom,
         setProps,
         bp_colors,
@@ -202,9 +306,35 @@ const SeqViz = (props) => {
         aria_label,
         legend,
         hidden_elements,
+        tooltip,
+        customdata,
     } = props;
 
     const containerRef = useRef(null);
+    const tooltipRef = useRef(null);
+    // Latest tooltip config + id→record lookup, read by the (stable) hover
+    // listeners so they never need re-binding on each render.
+    const tooltipDataRef = useRef({ show: false, template: DEFAULT_TOOLTIP_TEMPLATE, byId: {} });
+
+    // Optional viewer typography (dmc-style keys): font={"ff": <family>, "fw":
+    // <weight>}. seqviz sets the font inline on its SVG text, so an !important
+    // rule (the same mechanism the xkcd theme uses) is needed to override it; a
+    // useId-scoped selector keeps it to this instance. Size is deliberately not
+    // exposed here -- seqviz derives it to keep bases aligned; use `zoom`.
+    const seqvizUid = useId().replace(/:/g, '');
+    const fontCfg = (font && typeof font === 'object') ? font : null;
+    const fontFamily = (fontCfg && (fontCfg.ff || fontCfg.family)) || null;
+    const fontWeight = fontCfg
+        ? (fontCfg.fw != null ? fontCfg.fw : (fontCfg.weight != null ? fontCfg.weight : null))
+        : null;
+    const fontDecls = []
+        .concat(fontFamily ? [`font-family:${fontFamily} !important`] : [])
+        .concat(fontWeight != null && fontWeight !== '' ? [`font-weight:${fontWeight} !important`] : []);
+    const fontCss = fontDecls.length
+        ? `[data-dsv-uid="${seqvizUid}"] .la-vz-seqviz text,` +
+          `[data-dsv-uid="${seqvizUid}"] .dash-seqviz-legend,` +
+          `[data-dsv-uid="${seqvizUid}"] .dash-seqviz-tooltip{${fontDecls.join(';')}}`
+        : null;
 
     // theme="auto" tracks the page's color scheme and updates live when a
     // dashboard theme switch flips it.
@@ -314,7 +444,8 @@ const SeqViz = (props) => {
     // prop is dead), and resolves per-element color via `a.color || ...`,
     // so seeding `a.color` here is the only way to actually swap palettes.
     // Per-element user colors are preserved.
-    const themePalette = PALETTES[resolvedTheme];
+    const themePalette = PALETTES[resolvedTheme]
+        || (resolvedTheme.endsWith('dark') ? DEFAULT_PALETTE_DARK : DEFAULT_PALETTE_LIGHT);
     const userSuppliedPalette = colors && colors.length > 0 ? colors : null;
     const effectivePalette = userSuppliedPalette || themePalette;
 
@@ -330,10 +461,38 @@ const SeqViz = (props) => {
     // Palette-applied element arrays. Colors are seeded by index over the FULL
     // array so hiding one item never reshuffles the others' colors; the legend
     // swatches reuse these exact colors.
-    const annsColored = applyPalette(annotations) || [];
+    // Annotations get a stable `id` (seqviz preserves a provided id, stamping
+    // it onto the rendered element) so hover can map a DOM node back to its
+    // record for the tooltip. User-supplied ids are respected.
+    const annsColored = (applyPalette(annotations) || []).map((a, i) => (
+        a && a.id != null ? a : { ...a, id: `dsv-ann-${i}` }
+    ));
+    // Index annotations by id for the tooltip, folding in the parallel
+    // `customdata` array (Plotly-style: customdata[i] belongs to annotations[i],
+    // referenced positionally as %{customdata[0]}). customdata is kept off the
+    // objects handed to seqviz, which has no use for it.
+    const annById = {};
+    annsColored.forEach((a, i) => {
+        if (!a || a.id == null) return;
+        annById[a.id] = (Array.isArray(customdata) && customdata[i] != null)
+            ? { ...a, customdata: customdata[i] }
+            : a;
+    });
     const primersColored = applyPalette(primers) || [];
     const translationsColored = applyPalette(translations) || [];
     const highlightsColored = applyPalette(highlights) || [];
+
+    // Feature tooltip config. `tooltip` is a dict (or True for defaults);
+    // omit / false disables it. When on, hovering an annotation shows text
+    // built from a Plotly-style %{field} template.
+    const tooltipCfg = tooltip === true
+        ? {}
+        : (tooltip && typeof tooltip === 'object' ? tooltip : null);
+    const tooltipShow = !!tooltipCfg && tooltipCfg.show !== false;
+    const tooltipTemplate = (tooltipCfg && typeof tooltipCfg.hovertemplate === 'string' &&
+        tooltipCfg.hovertemplate) || DEFAULT_TOOLTIP_TEMPLATE;
+    // Keep the hover listeners' data current without re-binding them.
+    tooltipDataRef.current = { show: tooltipShow, hovertemplate: tooltipTemplate, byId: annById };
 
     // Legend config. `legend` is a dict (or True for defaults); omit for none.
     // Options follow dmc conventions: position on any of the four sides, and
@@ -358,6 +517,10 @@ const SeqViz = (props) => {
     const legendPadPx = lc.withBorder ? resolveLegendToken('padding', lc.p, 'sm') : 0;
     const legendAlign = ({start: 'flex-start', center: 'center', end: 'flex-end'})[lc.align]
         || 'flex-start';
+    // Dark themes render the viewer (and, in the docs, the container) on a dark
+    // background, so the legend needs light text to stay readable; otherwise it
+    // would inherit the ambient dark color and vanish.
+    const legendTextColor = resolvedTheme.endsWith('dark') ? '#e8e8e8' : '#1a1b1e';
 
     const legendKey = (cat, el, i) => `${cat}:${el && el.name ? el.name : i}`;
 
@@ -460,6 +623,62 @@ const SeqViz = (props) => {
         return () => observer.disconnect();
     }, [effectiveLabel, viewer, seq]);
 
+    // Feature tooltips: delegate hover on the container so it survives seqviz's
+    // re-renders of the SVG. Bound once; the live config + id→record lookup are
+    // read from a ref. seqviz stamps our annotation id onto both the shape and
+    // its label, so `el.id` maps a hovered node straight back to its record.
+    useEffect(() => {
+        const root = containerRef.current;
+        const tip = tooltipRef.current;
+        if (!root || !tip) return undefined;
+        const SEL = '.la-vz-annotation, .la-vz-annotation-label';
+        const hide = () => { tip.style.display = 'none'; };
+        const place = (ev) => {
+            const rect = root.getBoundingClientRect();
+            const pad = 4;
+            let x = ev.clientX - rect.left + 12;
+            let y = ev.clientY - rect.top + 14;
+            if (x + tip.offsetWidth > rect.width - pad) {
+                x = Math.max(pad, ev.clientX - rect.left - tip.offsetWidth - 12);
+            }
+            if (y + tip.offsetHeight > rect.height - pad) {
+                y = Math.max(pad, ev.clientY - rect.top - tip.offsetHeight - 14);
+            }
+            tip.style.left = `${x}px`;
+            tip.style.top = `${y}px`;
+        };
+        const onOver = (ev) => {
+            const cfg = tooltipDataRef.current;
+            if (!cfg.show) return;
+            const hit = ev.target && ev.target.closest ? ev.target.closest(SEL) : null;
+            const rec = hit && cfg.byId[hit.id];
+            if (!rec) return;
+            renderTooltipInto(tip, cfg.hovertemplate, rec, 'annotation');
+            if (!tip.firstChild) return; // template produced no visible text
+            tip.style.display = 'block';
+            place(ev);
+        };
+        const onMove = (ev) => {
+            if (tip.style.display === 'none') return;
+            const hit = ev.target && ev.target.closest ? ev.target.closest(SEL) : null;
+            if (hit) place(ev);
+            else hide();
+        };
+        const onOut = (ev) => {
+            const to = ev.relatedTarget;
+            if (to && to.closest && to.closest(SEL)) return;
+            hide();
+        };
+        root.addEventListener('mouseover', onOver);
+        root.addEventListener('mousemove', onMove);
+        root.addEventListener('mouseout', onOut);
+        return () => {
+            root.removeEventListener('mouseover', onOver);
+            root.removeEventListener('mousemove', onMove);
+            root.removeEventListener('mouseout', onOut);
+        };
+    }, []);
+
     // Legend interactions (Plotly semantics): a single click toggles one item's
     // visibility; a double click isolates it (hide the rest), and double
     // clicking the already-isolated item restores all.
@@ -504,6 +723,7 @@ const SeqViz = (props) => {
                 zIndex: 1,
                 fontFamily: 'sans-serif',
                 fontSize: legendFontPx,
+                color: legendTextColor,
                 display: 'flex',
                 flexWrap: 'wrap',
                 flexDirection: legendDirection === 'vertical' ? 'column' : 'row',
@@ -626,9 +846,38 @@ const SeqViz = (props) => {
             id={id}
             ref={containerRef}
             data-dash-seqviz-theme={resolvedTheme}
+            data-dsv-uid={seqvizUid}
             role="group"
             aria-label={effectiveLabel}
+            style={{ position: 'relative' }}
         >
+            {/* Scoped font override: seqviz sets its font inline on SVG text, so
+                this !important rule (scoped to this instance) is how `font` takes
+                effect. */}
+            {fontCss ? <style dangerouslySetInnerHTML={{ __html: fontCss }} /> : null}
+            {/* Hover tooltip layer: positioned within this container, updated
+                imperatively by the hover listeners (no re-render per mousemove). */}
+            <div
+                ref={tooltipRef}
+                className="dash-seqviz-tooltip"
+                aria-hidden="true"
+                style={{
+                    position: 'absolute',
+                    display: 'none',
+                    left: 0,
+                    top: 0,
+                    zIndex: 5,
+                    pointerEvents: 'none',
+                    maxWidth: 280,
+                    padding: '6px 9px',
+                    borderRadius: 6,
+                    background: 'rgba(17, 19, 23, 0.92)',
+                    color: '#fff',
+                    font: '12px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                    boxShadow: '0 4px 14px rgba(0, 0, 0, 0.28)',
+                    whiteSpace: 'normal',
+                }}
+            />
             {tooLong ? (
                 <div
                     className="dash-seqviz-too-long"
@@ -757,6 +1006,9 @@ SeqViz.propTypes = {
     aria_label: PropTypes.string,
     legend: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
     hidden_elements: PropTypes.arrayOf(PropTypes.string),
+    tooltip: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+    customdata: PropTypes.array,
+    font: PropTypes.object,
     theme: PropTypes.oneOf([
         'light', 'dark', 'auto', 'xkcd', 'xkcd-light', 'xkcd-dark',
         'okabe-ito-light', 'okabe-ito-dark',

@@ -56,6 +56,11 @@
         .workbench {
             display: grid; grid-template-columns: 246px minmax(0, 1fr) 246px;
             gap: 14px; align-items: stretch;
+            /* Grid items default to min-height:auto and refuse to shrink below
+               their content; without this the tallest rail forces the grid past
+               the viewport and the page clips. Zero lets the rails' own
+               overflow-y:auto engage so columns scroll internally instead. */
+            min-height: 0;
         }
         .rail {
             min-height: 0; overflow-y: auto; scrollbar-width: thin;
@@ -105,6 +110,7 @@
 
         /* Motif group: query + mismatch read as one unit. */
         .motif-row { display: grid; grid-template-columns: 1fr 72px; gap: 8px; align-items: end; }
+        .font-row { display: grid; grid-template-columns: 1fr 64px; gap: 8px; align-items: end; }
         .motif-row .ctrl + .ctrl { margin-top: 0; }
         /* Sequence source: accession + email side by side to stay short. */
         .seq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -122,12 +128,19 @@
         .control-card .ctrl select,
         .control-card .ctrl input[type="text"],
         .control-card .ctrl input[type="email"],
-        .control-card .ctrl input[type="number"] { font-size: 0.85rem; padding: 5px 8px; }
+        .control-card .ctrl input[type="number"],
+        .control-card .ctrl textarea { font-size: 0.85rem; padding: 5px 8px; }
         .control-card .ctrl-inline { min-height: 22px; font-size: 0.82rem; }
+        /* Live reference: each %{variable} and its value for the first annotation. */
+        .tmpl-vars { margin-top: 7px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0 8px; align-items: baseline; }
+        .tmpl-vars .tv-head { grid-column: 1 / -1; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 1px; }
+        .tmpl-vars code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.66rem; color: var(--tannin); white-space: nowrap; }
+        .tmpl-vars .tv-val { font-size: 0.66rem; color: var(--color-text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tmpl-vars .tv-swatch { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 4px; vertical-align: baseline; border: 1px solid rgba(0,0,0,0.15); }
         .control-card .ctrl-row { margin-top: 2px; }
         .control-card .ctrl-status { margin-top: 5px; }
         .control-card .ncbi-details { margin-top: 6px; }
-        .control-card .enzyme-list { max-height: 76px; }
+        .control-card .enzyme-list { max-height: 40px; }
         .control-card .enzyme-search { margin-bottom: 0; }
 
         /* --- Canvas: the star. Hugs its content and top-anchors with the bar
@@ -191,7 +204,7 @@
         .canvas-body { flex: 1 1 auto; min-height: 0; overflow: auto; display: flex; flex-direction: column; }
         .tabpanel { padding: 14px; }
         /* ID-level so it beats #panel-preview's own display rule. */
-        #panel-preview.is-hidden, #panel-code.is-hidden { display: none; }
+        #panel-preview.is-hidden, #panel-code.is-hidden, #panel-install.is-hidden { display: none; }
         /* Preview fills the canvas so readouts reach the bottom edge. */
         #panel-preview { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
 
@@ -255,9 +268,14 @@
         .ctrl select,
         .ctrl input[type="text"],
         .ctrl input[type="email"],
-        .ctrl input[type="number"] {
+        .ctrl input[type="number"],
+        .ctrl textarea {
             font-size: 0.9rem; padding: 7px 10px; border: 1px solid var(--color-border);
             border-radius: var(--radius); background: var(--color-bg); width: 100%;
+            box-sizing: border-box;
+        }
+        .ctrl textarea {
+            font-family: inherit; line-height: 1.4; resize: vertical; display: block;
         }
         .ctrl input[type="range"] { width: 100%; }
         .ctrl-inline {
@@ -474,6 +492,27 @@
                         <div><label for="ctrl-bp-g">G</label><input id="ctrl-bp-g" type="text" value="#ff7f00"></div>
                     </div>
                 </div>
+
+                <div class="control-card">
+                    <h4 class="card-title">Motif search</h4>
+                    <div class="motif-row">
+                        <div class="ctrl">
+                            <label for="ctrl-search">Query</label>
+                            <input id="ctrl-search" type="text" value="ttnnnaat" placeholder="e.g. GCTAGC">
+                        </div>
+                        <div class="ctrl">
+                            <label for="ctrl-mismatch">Mismatch</label>
+                            <input id="ctrl-mismatch" type="number" min="0" step="1" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-card">
+                    <h4 class="card-title">max_seq_length</h4>
+                    <div class="ctrl">
+                        <input id="ctrl-maxlen" type="number" min="0" step="100" placeholder="blank = off (long-sequence guard)">
+                    </div>
+                </div>
             </aside>
 
             <!-- CENTER: tabbed canvas (viewer / code) -->
@@ -482,6 +521,7 @@
                     <div class="tabs" role="tablist" aria-label="Viewer or code">
                         <button class="tab" id="tab-preview" data-tab="preview" role="tab" aria-selected="true" aria-controls="panel-preview">Preview</button>
                         <button class="tab" id="tab-code" data-tab="code" role="tab" aria-selected="false" aria-controls="panel-code">Code</button>
+                        <button class="tab" id="tab-install" data-tab="install" role="tab" aria-selected="false" aria-controls="panel-install">Install</button>
                     </div>
                     <div class="canvas-actions" id="export-actions">
                         <span class="lbl">Export</span>
@@ -503,12 +543,30 @@
                     </div>
 
                     <div class="tabpanel code-panel is-hidden" id="panel-code" role="tabpanel" aria-labelledby="tab-code">
-                        <p class="install-admonition">
-                            <strong>Install</strong>
-                            <span><code>conda install -c conda-forge dash-seqviz</code> or <code>pip install dash-seqviz</code>.</span>
-                        </p>
                         <div class="snippet">
                             <pre id="live-snippet"><code></code></pre>
+                        </div>
+                    </div>
+                    <div class="tabpanel code-panel is-hidden" id="panel-install" role="tabpanel" aria-labelledby="tab-install">
+                        <div class="install-tabs" data-install>
+                            <div class="install-tabs-bar" role="tablist" aria-label="Package manager">
+                                <button class="install-tab is-active" data-target="conda" role="tab" aria-selected="true">conda</button>
+                                <button class="install-tab" data-target="mamba" role="tab" aria-selected="false">mamba</button>
+                                <button class="install-tab" data-target="pixi" role="tab" aria-selected="false">pixi</button>
+                                <button class="install-tab" data-target="pip" role="tab" aria-selected="false">pip</button>
+                            </div>
+                            <div class="install-panel is-active" data-panel="conda">
+                                <div class="snippet"><pre><code>conda install -c conda-forge dash-seqviz</code></pre></div>
+                            </div>
+                            <div class="install-panel" data-panel="mamba">
+                                <div class="snippet"><pre><code>mamba install -c conda-forge dash-seqviz</code></pre></div>
+                            </div>
+                            <div class="install-panel" data-panel="pixi">
+                                <div class="snippet"><pre><code>pixi add dash-seqviz</code></pre></div>
+                            </div>
+                            <div class="install-panel" data-panel="pip">
+                                <div class="snippet"><pre><code>pip install dash-seqviz</code></pre></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -539,27 +597,43 @@
                         <label class="ctrl-inline"><input type="checkbox" class="ctrl-legend-cat" value="primers" checked> Primers</label>
                         <label class="ctrl-inline"><input type="checkbox" class="ctrl-legend-cat" value="highlights" checked> Highlights</label>
                     </div>
-                    <p class="hint" style="margin: 9px 0 0;">The viewer draws the legend. Click an item to hide it; double-click to isolate.</p>
+                    <p class="hint" style="margin: 9px 0 0;">Click to hide; double-click to isolate.</p>
                 </div>
 
                 <div class="control-card">
-                    <h4 class="card-title">Motif search</h4>
-                    <div class="motif-row">
-                        <div class="ctrl">
-                            <label for="ctrl-search">Query</label>
-                            <input id="ctrl-search" type="text" value="ttnnnaat" placeholder="e.g. GCTAGC">
-                        </div>
-                        <div class="ctrl">
-                            <label for="ctrl-mismatch">Mismatch</label>
-                            <input id="ctrl-mismatch" type="number" min="0" step="1" value="0">
-                        </div>
+                    <h4 class="card-title">Hover tooltip</h4>
+                    <label class="ctrl-inline"><input id="ctrl-tooltip-show" type="checkbox" checked> On annotation hover</label>
+                    <div class="ctrl" style="margin-top: 6px;">
+                        <label for="ctrl-tooltip-tmpl">Template</label>
+                        <textarea id="ctrl-tooltip-tmpl" rows="2" spellcheck="false" wrap="soft">%{name}&lt;br&gt;%{customdata[0]}</textarea>
                     </div>
+                    <div id="tmpl-vars" class="tmpl-vars" aria-label="customdata values for the first annotation"></div>
+                    <p class="hint" style="margin: 5px 0 0;">Also %{start} %{end} %{length} %{direction} %{color}; &lt;br&gt; = newline.</p>
                 </div>
 
                 <div class="control-card">
-                    <h4 class="card-title">max_seq_length</h4>
-                    <div class="ctrl">
-                        <input id="ctrl-maxlen" type="number" min="0" step="100" placeholder="blank = off (long-sequence guard)">
+                    <h4 class="card-title">Font</h4>
+                    <div class="font-row">
+                        <div class="ctrl">
+                            <label for="ctrl-font-ff">Family (ff)</label>
+                            <select id="ctrl-font-ff">
+                                <option value="" selected>Default (mono)</option>
+                                <option value="'IBM Plex Mono', monospace">IBM Plex Mono</option>
+                                <option value="'Courier New', monospace">Courier</option>
+                                <option value="Georgia, serif">Georgia (serif)</option>
+                                <option value="system-ui, sans-serif">System sans</option>
+                            </select>
+                        </div>
+                        <div class="ctrl">
+                            <label for="ctrl-font-fw">Weight</label>
+                            <select id="ctrl-font-fw">
+                                <option value="" selected>--</option>
+                                <option value="300">300</option>
+                                <option value="400">400</option>
+                                <option value="500">500</option>
+                                <option value="700">700</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -592,7 +666,7 @@
      site (React + seqviz + the component implementation). The explorer renders
      the exact same component that ships to Dash users, interactive legend and
      all, rather than a separate re-implementation. -->
-<script src="./assets/seqviz-standalone.js?v=1"></script>
+<script src="./assets/seqviz-standalone.js?v=5"></script>
 
 <!-- NEB enzyme list (separate file for maintainability) -->
 <script src="./enzymes.js"></script>
@@ -600,8 +674,11 @@
 <!-- Shared site nav -->
 <script src="./assets/nav.js?v=2"></script>
 
+<!-- Package-manager switcher for the Code tab's install snippet -->
+<script src="./assets/install.js?v=1"></script>
+
 <!-- Explorer demo logic -->
-<script src="./demo.js?v=18"></script>
+<script src="./demo.js?v=33"></script>
 
 <script>
     if (window.SeqVizSite && window.SeqVizSite.wireCopy) {
@@ -613,7 +690,8 @@
         var tabs = document.querySelectorAll('.canvas-bar .tab');
         var panels = {
             preview: document.getElementById('panel-preview'),
-            code: document.getElementById('panel-code')
+            code: document.getElementById('panel-code'),
+            install: document.getElementById('panel-install')
         };
         var exportActions = document.getElementById('export-actions');
 

@@ -292,6 +292,52 @@ SeqViz.propTypes = {
     hidden_elements: PropTypes.arrayOf(PropTypes.string),
 
     /**
+     * Annotation hover tooltip (Plotly-style). Set to a dict (or True for
+     * defaults) to show text when the user hovers an annotation; omit / False
+     * for none. Keys:
+     * - show (bool): enable the tooltip (default True when `tooltip` is given).
+     * - hovertemplate (str): the hover text, with Plotly-style %{field}
+     *   placeholders filled per annotation. Use <br> (or a newline) for line
+     *   breaks; the first line is emphasized. Available fields: %{name},
+     *   %{start}, %{end}, %{length} (bp), %{direction} ("forward" | "reverse" |
+     *   "none"), %{color}, %{type}. Default hovertemplate:
+     *   "%{name}<br>%{start}..%{end} (%{length} bp)".
+     *
+     *   Custom data: reference the `customdata` prop (a list parallel to
+     *   `annotations`) the way Plotly does, indexed positionally, e.g.
+     *   %{customdata[0]}. See the `customdata` prop.
+     *
+     * Substituted values are rendered as plain text (never HTML), so element
+     * names and custom data cannot inject markup.
+     */
+    tooltip: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+
+    /**
+     * Extra per-annotation data for the hover tooltip, mirroring Plotly's
+     * customdata. A list parallel to `annotations`: customdata[i] holds the
+     * data for annotations[i] (usually itself a list), referenced in the
+     * tooltip hovertemplate by position, e.g. %{customdata[0]}, %{customdata[1]}.
+     * Example: annotations=[{...}, {...}], customdata=[["b0344", "lacZ"],
+     * ["b0345", "lacY"]] with hovertemplate "%{name} (%{customdata[0]})".
+     */
+    customdata: PropTypes.array,
+
+    /**
+     * Viewer typography, using Dash Mantine's font style-prop keys:
+     * - ff (str): font-family for the viewer text (sequence, labels, legend,
+     *   tooltip). A CSS font stack. Use a monospace family for the linear
+     *   sequence to stay aligned; a proportional family affects letter spacing.
+     * - fw (number | str): font-weight.
+     * Example: font={"ff": "IBM Plex Mono, monospace", "fw": 500}.
+     *
+     * Applied via a scoped style override (seqviz sets its font inline). Font
+     * *size* is not exposed here -- seqviz derives it so bases align with the
+     * ruler and feature blocks; use `zoom` to scale the linear view instead.
+     * `style` remains for the container box (height, width, background).
+     */
+    font: PropTypes.object,
+
+    /**
      * Visual theme. The underlying seqviz library hardcodes dark-gray text,
      * so this prop applies CSS overrides (shipped with dash_seqviz) scoped
      * to a data-dash-seqviz-theme attribute on the wrapper, and — for the

@@ -10,6 +10,9 @@
 (function () {
     "use strict";
 
+    // Default annotation-hover template (mirrors the component default).
+    var DEFAULT_TOOLTIP_TMPL = "%{name}<br>%{start}..%{end} (%{length} bp)";
+
     // ---- Default demo data ---------------------------------------------------
 
     var DEFAULT_SEQ =
@@ -27,23 +30,35 @@
 
     var DEFAULT_NAME = "Demo plasmid";
 
+    // No explicit colors: the component seeds them from the active theme's
+    // palette, so switching themes (light/dark + the colorblind-safe sets)
+    // visibly recolors the elements.
     var DEFAULT_ANNOTATIONS = [
-        { start: 0, end: 35, name: "J23100 Promoter", direction: 1, color: "#3b82f6" },
-        { start: 36, end: 160, name: "RBS + ORF", direction: 1, color: "#10b981" },
-        { start: 440, end: 540, name: "Terminator", direction: -1, color: "#f59e0b" }
+        { start: 0, end: 35, name: "J23100 Promoter", direction: 1 },
+        { start: 36, end: 160, name: "RBS + ORF", direction: 1 },
+        { start: 440, end: 540, name: "Terminator", direction: -1 }
+    ];
+
+    // Parallel to DEFAULT_ANNOTATIONS (Plotly-style customdata): row i is
+    // [part, role] for annotation i, referenced positionally in a hovertemplate
+    // as %{customdata[0]} / %{customdata[1]}.
+    var DEFAULT_CUSTOMDATA = [
+        ["BBa_J23100", "constitutive promoter"],
+        ["BBa_B0034", "expression cassette"],
+        ["BBa_B0015", "double terminator"]
     ];
 
     var DEFAULT_PRIMERS = [
-        { start: 0, end: 24, name: "Fwd primer", direction: 1, color: "#ef4444" },
-        { start: 500, end: 530, name: "Rev primer", direction: -1, color: "#8b5cf6" }
+        { start: 0, end: 24, name: "Fwd primer", direction: 1 },
+        { start: 500, end: 530, name: "Rev primer", direction: -1 }
     ];
 
     var DEFAULT_TRANSLATIONS = [
-        { start: 36, end: 160, direction: 1, name: "ORF 1", color: "#fb7185" }
+        { start: 36, end: 160, direction: 1, name: "ORF 1" }
     ];
 
     var DEFAULT_HIGHLIGHTS = [
-        { start: 200, end: 260, color: "#fde047" }
+        { start: 200, end: 260 }
     ];
 
     var SAMPLE_ACCESSIONS = [
@@ -110,6 +125,7 @@
         name: DEFAULT_NAME,
         seq: DEFAULT_SEQ,
         annotations: DEFAULT_ANNOTATIONS,
+        customdata: DEFAULT_CUSTOMDATA,
         primers: DEFAULT_PRIMERS,
         translations: DEFAULT_TRANSLATIONS,
         highlights: DEFAULT_HIGHLIGHTS,
@@ -132,6 +148,15 @@
             // legend={"categories": [...]} filter.
             categories: ["annotations", "translations", "primers", "highlights"]
         },
+        // Annotation hover tooltip (Plotly-style %{field} template). The demo
+        // default references the parallel customdata (part + role) to show it
+        // off; blank customdata lines are dropped, so it degrades cleanly.
+        tooltip: {
+            show: true,
+            hovertemplate: "%{name}<br>%{customdata[0]}"
+        },
+        // Viewer typography override (dmc-style ff/fw). Empty = seqviz default.
+        font: { ff: "", fw: "" },
         theme: "light",
         enzymes: ["PstI", "EcoRI", "XbaI", "SpeI"],
         enzymeFilter: "",
@@ -193,6 +218,7 @@
             seq: state.seq,
             viewer: state.viewer,
             annotations: state.annotations,
+            customdata: state.customdata || undefined,
             primers: state.showPrimers ? state.primers : [],
             translations: state.showTranslations ? state.translations : [],
             highlights: state.showHighlights ? state.highlights : [],
@@ -205,6 +231,8 @@
             theme: state.theme,
             max_seq_length: state.maxSeqLength == null ? undefined : state.maxSeqLength,
             legend: legendProp(),
+            tooltip: tooltipProp(),
+            font: fontProp(),
             on_selection: handleSelection,
             on_search: handleSearch,
             // seqviz needs a definite height (percentage heights collapse with
@@ -235,6 +263,24 @@
             prop.categories = cats.slice();
         }
         return prop;
+    }
+
+    // The rail's tooltip controls -> the component's `tooltip` prop. False
+    // disables hover text; otherwise pass the template through.
+    function tooltipProp() {
+        var tp = state.tooltip || {};
+        if (!tp.show) { return false; }
+        return { show: true, hovertemplate: tp.hovertemplate || DEFAULT_TOOLTIP_TMPL };
+    }
+
+    // The rail's font controls -> the component's `font` prop (dmc ff/fw).
+    // Undefined when nothing is set, so the viewer keeps its default.
+    function fontProp() {
+        var f = state.font || {};
+        var out = {};
+        if (f.ff) { out.ff = f.ff; }
+        if (f.fw) { out.fw = f.fw; }
+        return Object.keys(out).length ? out : undefined;
     }
 
     // Apply the theme to the wrapper: the CSS in seqviz-themes.css is scoped
@@ -332,6 +378,37 @@
         }
         updateAriaLabel();
         updateLiveSnippet();
+        renderTemplateVars();
+    }
+
+    // Live customdata preview under the Template box: shows what each
+    // %{customdata[i]} resolves to for the first annotation (e.g.
+    // "BBa_J23100"), so the placeholder is concrete. The self-explanatory
+    // built-in fields (%{name}, %{start}, ...) are listed in the static hint.
+    function renderTemplateVars() {
+        var host = el("tmpl-vars");
+        if (!host) { return; }
+        host.innerHTML = "";
+        var anns = state.annotations || [];
+        var a = anns[0];
+        var cd = a && state.customdata && state.customdata[0];
+        if (!Array.isArray(cd) || !cd.length) { return; }
+
+        var frag = document.createDocumentFragment();
+        var head = document.createElement("div");
+        head.className = "tv-head";
+        head.textContent = "customdata · " + (a.name || "first annotation");
+        frag.appendChild(head);
+        cd.forEach(function (v, i) {
+            var code = document.createElement("code");
+            code.textContent = "%{customdata[" + i + "]}";
+            var val = document.createElement("span");
+            val.className = "tv-val";
+            val.textContent = v == null ? "" : String(v);
+            frag.appendChild(code);
+            frag.appendChild(val);
+        });
+        host.appendChild(frag);
     }
 
     // ---- Live Python snippet -------------------------------------------------
@@ -353,6 +430,9 @@
 
     function generatePythonSnippet(s) {
         var lines = [];
+        // Only emit "color" when the element has one; uncolored elements are
+        // colored by the theme palette, so a stray "color": "" would mislead.
+        function colorPart(c) { return c ? ', "color": ' + pyStr(c) : ""; }
         var usesRequests = !!s.accession;
         var lg = s.legend || {};
         var emitAnns = !usesRequests && s.annotations && s.annotations.length;
@@ -376,7 +456,7 @@
                 annDef.push('    {"start": ' + a.start + ', "end": ' + a.end +
                     ', "name": ' + pyStr(a.name || "") +
                     ', "direction": ' + (a.direction || 1) +
-                    ', "color": ' + pyStr(a.color || "") + "},");
+                    colorPart(a.color) + "},");
             });
             annDef.push("]");
             facetDefs.push({ label: "Annotations", varName: "annotations", def: annDef });
@@ -386,7 +466,7 @@
                     "translations = " + inlineList(s.translations, function (t) {
                         return '{"start": ' + t.start + ', "end": ' + t.end +
                             ', "direction": ' + t.direction + ', "name": ' + pyStr(t.name) +
-                            ', "color": ' + pyStr(t.color) + "}";
+                            colorPart(t.color) + "}";
                     })] });
             }
             if (s.showPrimers && s.primers && s.primers.length) {
@@ -394,14 +474,14 @@
                     "primers = " + inlineList(s.primers, function (p) {
                         return '{"start": ' + p.start + ', "end": ' + p.end +
                             ', "direction": ' + (p.direction || 1) + ', "name": ' + pyStr(p.name) +
-                            ', "color": ' + pyStr(p.color) + "}";
+                            colorPart(p.color) + "}";
                     })] });
             }
             if (s.showHighlights && s.highlights && s.highlights.length) {
                 facetDefs.push({ label: "Highlights", varName: "highlights", def: [
                     "highlights = " + inlineList(s.highlights, function (h) {
                         return '{"start": ' + h.start + ', "end": ' + h.end +
-                            ', "color": ' + pyStr(h.color) + "}";
+                            colorPart(h.color) + "}";
                     })] });
             }
 
@@ -481,6 +561,35 @@
                 lgOpts.push('"categories": [' + lgCats.map(pyStr).join(", ") + "]");
             }
             lines.push("        legend={" + lgOpts.join(", ") + "},");
+        }
+
+        // Parallel customdata, emitted only when the hovertemplate references it.
+        var tt = s.tooltip || {};
+        if (tt.show && tt.hovertemplate && /customdata/.test(tt.hovertemplate) &&
+            Array.isArray(s.customdata) && s.customdata.length) {
+            var cd = s.customdata.map(function (row) {
+                return Array.isArray(row) ? "[" + row.map(pyStr).join(", ") + "]" : pyStr(row);
+            }).join(", ");
+            lines.push("        customdata=[" + cd + "],");
+        }
+
+        // Annotation hover tooltip: True for the default template, else a dict
+        // carrying the custom %{field} template.
+        if (tt.show) {
+            if (tt.hovertemplate && tt.hovertemplate !== DEFAULT_TOOLTIP_TMPL) {
+                lines.push("        tooltip={\"hovertemplate\": " + pyStr(tt.hovertemplate) + "},");
+            } else {
+                lines.push("        tooltip=True,");
+            }
+        }
+
+        // Viewer font override (dmc ff/fw), emitted only when set.
+        var ft = s.font || {};
+        if (ft.ff || ft.fw) {
+            var fparts = [];
+            if (ft.ff) { fparts.push('"ff": ' + pyStr(ft.ff)); }
+            if (ft.fw) { fparts.push('"fw": ' + (/^\d+$/.test(String(ft.fw)) ? ft.fw : pyStr(ft.fw))); }
+            lines.push("        font={" + fparts.join(", ") + "},");
         }
         lines.push('        style={"height": "520px", "width": "100%"},');
         lines.push("    )");
@@ -620,6 +729,7 @@
         state.name = parsed.name || accession;
         state.seq = parsed.seq;
         state.annotations = parsed.annotations;
+        state.customdata = null;  // parsed annotations carry no parallel customdata
         state.translations = parsed.translations;
         state.primers = [];
         state.highlights = [];  // demo highlights are positioned for the default seq
@@ -783,6 +893,7 @@
         state.name = DEFAULT_NAME;
         state.seq = DEFAULT_SEQ;
         state.annotations = DEFAULT_ANNOTATIONS;
+        state.customdata = DEFAULT_CUSTOMDATA;
         state.primers = DEFAULT_PRIMERS;
         state.translations = DEFAULT_TRANSLATIONS;
         state.highlights = DEFAULT_HIGHLIGHTS;
@@ -1074,6 +1185,42 @@
         };
         legendCats.forEach(function (cb) {
             cb.addEventListener("change", syncLegendCats);
+        });
+    }
+
+    // Annotation tooltip: on/off + editable template. The template edit is
+    // debounced so a heavy viewer re-render doesn't fire on every keystroke.
+    var tooltipShow = el("ctrl-tooltip-show");
+    if (tooltipShow) {
+        tooltipShow.addEventListener("change", function (ev) {
+            state.tooltip.show = ev.target.checked;
+            var tmpl = el("ctrl-tooltip-tmpl");
+            if (tmpl) { tmpl.disabled = !ev.target.checked; }
+            render();
+        });
+    }
+    var tooltipTmpl = el("ctrl-tooltip-tmpl");
+    if (tooltipTmpl) {
+        var tmplTimer = null;
+        tooltipTmpl.addEventListener("input", function (ev) {
+            state.tooltip.hovertemplate = ev.target.value;
+            if (tmplTimer) { clearTimeout(tmplTimer); }
+            tmplTimer = setTimeout(render, 300);
+        });
+    }
+
+    var fontFf = el("ctrl-font-ff");
+    if (fontFf) {
+        fontFf.addEventListener("change", function (ev) {
+            state.font.ff = ev.target.value;
+            render();
+        });
+    }
+    var fontFw = el("ctrl-font-fw");
+    if (fontFw) {
+        fontFw.addEventListener("change", function (ev) {
+            state.font.fw = ev.target.value;
+            render();
         });
     }
 
