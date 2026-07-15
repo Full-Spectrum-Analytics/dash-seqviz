@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.5.0](https://github.com/Full-Spectrum-Analytics/dash-seqviz/compare/v0.4.0...v0.5.0) (2026-07-15)
+
+
+### Features
+
+* built-in interactive (Plotly-style) legend for SeqViz ([#33](https://github.com/Full-Spectrum-Analytics/dash-seqviz/issues/33)) ([ee13a27](https://github.com/Full-Spectrum-Analytics/dash-seqviz/commit/ee13a277270e416575c5df9b8ecd2a95f02ca967))
+* **seqviz:** legend in figure exports + theme-aware hover tooltip ([#36](https://github.com/Full-Spectrum-Analytics/dash-seqviz/issues/36)) ([9921d10](https://github.com/Full-Spectrum-Analytics/dash-seqviz/commit/9921d102880b0849d5253c0155f729dde8a59dee))
+* **tooltip:** Plotly-style hover tooltips for annotations ([#34](https://github.com/Full-Spectrum-Analytics/dash-seqviz/issues/34)) ([ce4318b](https://github.com/Full-Spectrum-Analytics/dash-seqviz/commit/ce4318b3f7ec5b6759b9b15d84404dd94c529290))
+
+
+### Bug Fixes
+
+* **explorer:** restore NCBI GenBank annotation parsing; drop homepage install note ([401b6ec](https://github.com/Full-Spectrum-Analytics/dash-seqviz/commit/401b6ecf8afdfb29be035be8bbafb86fdd49b481))
+
+
+### Documentation
+
+* **index:** curate version badges (add conda-forge, drop npm) ([#31](https://github.com/Full-Spectrum-Analytics/dash-seqviz/issues/31)) ([bd26117](https://github.com/Full-Spectrum-Analytics/dash-seqviz/commit/bd2611707e367ff313a0d3fe99661e1d70e67669))
+
 ## [0.4.0](https://github.com/Full-Spectrum-Analytics/dash-seqviz/compare/v0.3.0...v0.4.0) (2026-07-13)
 
 
