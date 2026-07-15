@@ -8,6 +8,8 @@ browser. Run locally with:
     pytest tests/test_integration.py --headless
 """
 
+import re
+
 import pytest
 from dash import Dash, Input, Output, html
 from selenium.webdriver.common.action_chains import ActionChains
@@ -95,6 +97,15 @@ def test_legend_click_toggles_hidden_elements(dash_duo):
     items = dash_duo.find_elements(".dash-seqviz-legend-item")
     items[0].click()  # click again shows it
     dash_duo.wait_for_text_to_equal("#hidden", "none", timeout=10)
+
+
+def test_legend_text_light_on_dark_theme(dash_duo):
+    # On dark themes the legend must use light text; otherwise it inherits the
+    # ambient dark color and blends into the dark viewer background.
+    dash_duo.start_server(_legend_app(theme="dark"))
+    legend = dash_duo.wait_for_element(".dash-seqviz-legend", timeout=15)
+    nums = [int(n) for n in re.findall(r"\d+", legend.value_of_css_property("color"))[:3]]
+    assert sum(nums) / 3 > 160, f"legend text not light on dark theme: {nums}"
 
 
 @pytest.mark.parametrize("position", ["top", "right", "bottom", "left"])

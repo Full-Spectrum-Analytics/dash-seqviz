@@ -491,6 +491,27 @@
                         <div><label for="ctrl-bp-g">G</label><input id="ctrl-bp-g" type="text" value="#ff7f00"></div>
                     </div>
                 </div>
+
+                <div class="control-card">
+                    <h4 class="card-title">Motif search</h4>
+                    <div class="motif-row">
+                        <div class="ctrl">
+                            <label for="ctrl-search">Query</label>
+                            <input id="ctrl-search" type="text" value="ttnnnaat" placeholder="e.g. GCTAGC">
+                        </div>
+                        <div class="ctrl">
+                            <label for="ctrl-mismatch">Mismatch</label>
+                            <input id="ctrl-mismatch" type="number" min="0" step="1" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-card">
+                    <h4 class="card-title">max_seq_length</h4>
+                    <div class="ctrl">
+                        <input id="ctrl-maxlen" type="number" min="0" step="100" placeholder="blank = off (long-sequence guard)">
+                    </div>
+                </div>
             </aside>
 
             <!-- CENTER: tabbed canvas (viewer / code) -->
@@ -571,27 +592,6 @@
                 </div>
 
                 <div class="control-card">
-                    <h4 class="card-title">Motif search</h4>
-                    <div class="motif-row">
-                        <div class="ctrl">
-                            <label for="ctrl-search">Query</label>
-                            <input id="ctrl-search" type="text" value="ttnnnaat" placeholder="e.g. GCTAGC">
-                        </div>
-                        <div class="ctrl">
-                            <label for="ctrl-mismatch">Mismatch</label>
-                            <input id="ctrl-mismatch" type="number" min="0" step="1" value="0">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="control-card">
-                    <h4 class="card-title">max_seq_length</h4>
-                    <div class="ctrl">
-                        <input id="ctrl-maxlen" type="number" min="0" step="100" placeholder="blank = off (long-sequence guard)">
-                    </div>
-                </div>
-
-                <div class="control-card">
                     <h4 class="card-title">Restriction enzymes (NEB)</h4>
                     <div class="enzyme-picker">
                         <div style="display: flex; gap: 8px; margin-bottom: 6px;">
@@ -620,7 +620,7 @@
      site (React + seqviz + the component implementation). The explorer renders
      the exact same component that ships to Dash users, interactive legend and
      all, rather than a separate re-implementation. -->
-<script src="./assets/seqviz-standalone.js?v=1"></script>
+<script src="./assets/seqviz-standalone.js?v=2"></script>
 
 <!-- NEB enzyme list (separate file for maintainability) -->
 <script src="./enzymes.js"></script>

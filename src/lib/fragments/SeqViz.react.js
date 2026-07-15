@@ -481,6 +481,10 @@ const SeqViz = (props) => {
     const legendPadPx = lc.withBorder ? resolveLegendToken('padding', lc.p, 'sm') : 0;
     const legendAlign = ({start: 'flex-start', center: 'center', end: 'flex-end'})[lc.align]
         || 'flex-start';
+    // Dark themes render the viewer (and, in the docs, the container) on a dark
+    // background, so the legend needs light text to stay readable; otherwise it
+    // would inherit the ambient dark color and vanish.
+    const legendTextColor = resolvedTheme.endsWith('dark') ? '#e8e8e8' : '#1a1b1e';
 
     const legendKey = (cat, el, i) => `${cat}:${el && el.name ? el.name : i}`;
 
@@ -683,6 +687,7 @@ const SeqViz = (props) => {
                 zIndex: 1,
                 fontFamily: 'sans-serif',
                 fontSize: legendFontPx,
+                color: legendTextColor,
                 display: 'flex',
                 flexWrap: 'wrap',
                 flexDirection: legendDirection === 'vertical' ? 'column' : 'row',
