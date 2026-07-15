@@ -127,6 +127,18 @@ Keyword arguments:
     a download, e.g. set it as the href of an html.A(download=...) via
     a callback.
 
+- font (dict; optional):
+    Viewer typography, using Dash Mantine's font style-prop keys: - ff
+    (str): font-family for the viewer text (sequence, labels, legend,
+    tooltip). A CSS font stack. Use a monospace family for the linear
+    sequence to stay aligned; a proportional family affects letter
+    spacing. - fw (number | str): font-weight. Example: font={\"ff\":
+    \"IBM Plex Mono, monospace\", \"fw\": 500}.  Applied via a scoped
+    style override (seqviz sets its font inline). Font *size* is not
+    exposed here -- seqviz derives it so bases align with the ruler
+    and feature blocks; use `zoom` to scale the linear view instead.
+    `style` remains for the container box (height, width, background).
+
 - hidden_elements (list of strings; optional):
     Read/write. Keys of the legend items currently toggled off (hidden
     from the viewer), each formatted \"<category>:<name>\" (or
@@ -424,12 +436,13 @@ Keyword arguments:
         hidden_elements: typing.Optional[typing.Sequence[str]] = None,
         tooltip: typing.Optional[typing.Union[bool, dict]] = None,
         customdata: typing.Optional[typing.Sequence] = None,
+        font: typing.Optional[dict] = None,
         theme: typing.Optional[Literal["light", "dark", "auto", "xkcd", "xkcd-light", "xkcd-dark", "okabe-ito-light", "okabe-ito-dark", "colorbrewer-light", "colorbrewer-dark", "tol-light", "tol-dark"]] = None,
         **kwargs
     ):
-        self._prop_names = ['id', 'annotations', 'aria_label', 'bp_colors', 'clicked_element', 'colors', 'customdata', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'hidden_elements', 'highlights', 'legend', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'tooltip', 'translations', 'viewer', 'zoom']
+        self._prop_names = ['id', 'annotations', 'aria_label', 'bp_colors', 'clicked_element', 'colors', 'customdata', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'font', 'hidden_elements', 'highlights', 'legend', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'tooltip', 'translations', 'viewer', 'zoom']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'annotations', 'aria_label', 'bp_colors', 'clicked_element', 'colors', 'customdata', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'hidden_elements', 'highlights', 'legend', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'tooltip', 'translations', 'viewer', 'zoom']
+        self.available_properties = ['id', 'annotations', 'aria_label', 'bp_colors', 'clicked_element', 'colors', 'customdata', 'disable_external_fonts', 'enable_copy_event', 'enable_select_all_event', 'enzymes', 'export_request', 'export_result', 'font', 'hidden_elements', 'highlights', 'legend', 'max_seq_length', 'name', 'primers', 'rotate_on_scroll', 'search', 'search_results', 'selection', 'seq', 'show_complement', 'style', 'theme', 'tooltip', 'translations', 'viewer', 'zoom']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useId, useMemo, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import { SeqViz as SeqVizLib } from 'seqviz';
 
@@ -289,6 +289,7 @@ const SeqViz = (props) => {
         selection,
         colors,
         style,
+        font,
         zoom,
         setProps,
         bp_colors,
@@ -314,6 +315,26 @@ const SeqViz = (props) => {
     // Latest tooltip config + id→record lookup, read by the (stable) hover
     // listeners so they never need re-binding on each render.
     const tooltipDataRef = useRef({ show: false, template: DEFAULT_TOOLTIP_TEMPLATE, byId: {} });
+
+    // Optional viewer typography (dmc-style keys): font={"ff": <family>, "fw":
+    // <weight>}. seqviz sets the font inline on its SVG text, so an !important
+    // rule (the same mechanism the xkcd theme uses) is needed to override it; a
+    // useId-scoped selector keeps it to this instance. Size is deliberately not
+    // exposed here -- seqviz derives it to keep bases aligned; use `zoom`.
+    const seqvizUid = useId().replace(/:/g, '');
+    const fontCfg = (font && typeof font === 'object') ? font : null;
+    const fontFamily = (fontCfg && (fontCfg.ff || fontCfg.family)) || null;
+    const fontWeight = fontCfg
+        ? (fontCfg.fw != null ? fontCfg.fw : (fontCfg.weight != null ? fontCfg.weight : null))
+        : null;
+    const fontDecls = []
+        .concat(fontFamily ? [`font-family:${fontFamily} !important`] : [])
+        .concat(fontWeight != null && fontWeight !== '' ? [`font-weight:${fontWeight} !important`] : []);
+    const fontCss = fontDecls.length
+        ? `[data-dsv-uid="${seqvizUid}"] .la-vz-seqviz text,` +
+          `[data-dsv-uid="${seqvizUid}"] .dash-seqviz-legend,` +
+          `[data-dsv-uid="${seqvizUid}"] .dash-seqviz-tooltip{${fontDecls.join(';')}}`
+        : null;
 
     // theme="auto" tracks the page's color scheme and updates live when a
     // dashboard theme switch flips it.
@@ -825,10 +846,15 @@ const SeqViz = (props) => {
             id={id}
             ref={containerRef}
             data-dash-seqviz-theme={resolvedTheme}
+            data-dsv-uid={seqvizUid}
             role="group"
             aria-label={effectiveLabel}
             style={{ position: 'relative' }}
         >
+            {/* Scoped font override: seqviz sets its font inline on SVG text, so
+                this !important rule (scoped to this instance) is how `font` takes
+                effect. */}
+            {fontCss ? <style dangerouslySetInnerHTML={{ __html: fontCss }} /> : null}
             {/* Hover tooltip layer: positioned within this container, updated
                 imperatively by the hover listeners (no re-render per mousemove). */}
             <div
@@ -982,6 +1008,7 @@ SeqViz.propTypes = {
     hidden_elements: PropTypes.arrayOf(PropTypes.string),
     tooltip: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
     customdata: PropTypes.array,
+    font: PropTypes.object,
     theme: PropTypes.oneOf([
         'light', 'dark', 'auto', 'xkcd', 'xkcd-light', 'xkcd-dark',
         'okabe-ito-light', 'okabe-ito-dark',

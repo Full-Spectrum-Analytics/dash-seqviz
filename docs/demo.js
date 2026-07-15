@@ -155,6 +155,8 @@
             show: true,
             hovertemplate: "%{name}<br>%{customdata[0]}"
         },
+        // Viewer typography override (dmc-style ff/fw). Empty = seqviz default.
+        font: { ff: "", fw: "" },
         theme: "light",
         enzymes: ["PstI", "EcoRI", "XbaI", "SpeI"],
         enzymeFilter: "",
@@ -230,6 +232,7 @@
             max_seq_length: state.maxSeqLength == null ? undefined : state.maxSeqLength,
             legend: legendProp(),
             tooltip: tooltipProp(),
+            font: fontProp(),
             on_selection: handleSelection,
             on_search: handleSearch,
             // seqviz needs a definite height (percentage heights collapse with
@@ -268,6 +271,16 @@
         var tp = state.tooltip || {};
         if (!tp.show) { return false; }
         return { show: true, hovertemplate: tp.hovertemplate || DEFAULT_TOOLTIP_TMPL };
+    }
+
+    // The rail's font controls -> the component's `font` prop (dmc ff/fw).
+    // Undefined when nothing is set, so the viewer keeps its default.
+    function fontProp() {
+        var f = state.font || {};
+        var out = {};
+        if (f.ff) { out.ff = f.ff; }
+        if (f.fw) { out.fw = f.fw; }
+        return Object.keys(out).length ? out : undefined;
     }
 
     // Apply the theme to the wrapper: the CSS in seqviz-themes.css is scoped
@@ -568,6 +581,15 @@
             } else {
                 lines.push("        tooltip=True,");
             }
+        }
+
+        // Viewer font override (dmc ff/fw), emitted only when set.
+        var ft = s.font || {};
+        if (ft.ff || ft.fw) {
+            var fparts = [];
+            if (ft.ff) { fparts.push('"ff": ' + pyStr(ft.ff)); }
+            if (ft.fw) { fparts.push('"fw": ' + (/^\d+$/.test(String(ft.fw)) ? ft.fw : pyStr(ft.fw))); }
+            lines.push("        font={" + fparts.join(", ") + "},");
         }
         lines.push('        style={"height": "520px", "width": "100%"},');
         lines.push("    )");
@@ -1184,6 +1206,21 @@
             state.tooltip.hovertemplate = ev.target.value;
             if (tmplTimer) { clearTimeout(tmplTimer); }
             tmplTimer = setTimeout(render, 300);
+        });
+    }
+
+    var fontFf = el("ctrl-font-ff");
+    if (fontFf) {
+        fontFf.addEventListener("change", function (ev) {
+            state.font.ff = ev.target.value;
+            render();
+        });
+    }
+    var fontFw = el("ctrl-font-fw");
+    if (fontFw) {
+        fontFw.addEventListener("change", function (ev) {
+            state.font.fw = ev.target.value;
+            render();
         });
     }
 

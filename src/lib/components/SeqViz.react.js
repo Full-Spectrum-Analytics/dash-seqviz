@@ -323,6 +323,21 @@ SeqViz.propTypes = {
     customdata: PropTypes.array,
 
     /**
+     * Viewer typography, using Dash Mantine's font style-prop keys:
+     * - ff (str): font-family for the viewer text (sequence, labels, legend,
+     *   tooltip). A CSS font stack. Use a monospace family for the linear
+     *   sequence to stay aligned; a proportional family affects letter spacing.
+     * - fw (number | str): font-weight.
+     * Example: font={"ff": "IBM Plex Mono, monospace", "fw": 500}.
+     *
+     * Applied via a scoped style override (seqviz sets its font inline). Font
+     * *size* is not exposed here -- seqviz derives it so bases align with the
+     * ruler and feature blocks; use `zoom` to scale the linear view instead.
+     * `style` remains for the container box (height, width, background).
+     */
+    font: PropTypes.object,
+
+    /**
      * Visual theme. The underlying seqviz library hardcodes dark-gray text,
      * so this prop applies CSS overrides (shipped with dash_seqviz) scoped
      * to a data-dash-seqviz-theme attribute on the wrapper, and — for the

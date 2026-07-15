@@ -118,6 +118,23 @@ def test_uncolored_annotation_gets_palette_swatch(dash_duo):
     assert nums != [136, 136, 136], f"uncolored annotation got the gray fallback swatch: {nums}"
 
 
+def test_font_override_applies_to_viewer(dash_duo):
+    # The `font` prop (dmc-style ff/fw) overrides the viewer's text font via a
+    # scoped !important rule, even though seqviz sets its font inline.
+    app = Dash(__name__)
+    app.layout = html.Div(
+        [
+            SeqViz(id="v", seq=SEQ, name="pDemo", annotations=ANNS, viewer="linear",
+                   font={"ff": "Georgia, serif", "fw": 700},
+                   style={"height": "420px", "width": "900px"}),
+        ]
+    )
+    dash_duo.start_server(app)
+    txt = dash_duo.wait_for_element(".la-vz-seqviz text", timeout=15)
+    assert "Georgia" in txt.value_of_css_property("font-family")
+    assert txt.value_of_css_property("font-weight") in ("700", "bold")
+
+
 def test_user_color_overrides_theme_palette(dash_duo):
     # An explicit element color must win over the theme palette, even under a
     # colorblind-safe theme that would otherwise recolor it.

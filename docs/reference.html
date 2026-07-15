@@ -388,10 +388,29 @@
                         <span class="pill type">dict (CSS)</span>
                     </div>
                     <div class="prop-body">
-                        <p>CSS styles applied to the component's outer container. Almost always used to set <code>height</code> and <code>width</code>.</p>
+                        <p>CSS styles applied to the component's outer container. Almost always used to set <code>height</code> and <code>width</code>. It styles the box only, not the viewer's text: to change the font, use <a href="#font"><code>font</code></a>.</p>
                         <div class="snippet"><pre><code>SeqViz(
     seq="...",
     style={"height": "500px", "width": "100%", "border": "1px solid #e2e8f0"},
+)</code></pre></div>
+                    </div>
+                </article>
+
+                <article class="prop" id="font">
+                    <div class="prop-head">
+                        <h3>font<a class="anchor" href="#font" aria-label="Permalink to font">#</a></h3>
+                        <span class="pill type">dict</span>
+                    </div>
+                    <div class="prop-body">
+                        <p>Viewer typography, using Dash Mantine's font style-prop keys. Applies to the sequence, labels, legend and tooltip:</p>
+                        <ul>
+                            <li><code>ff</code> (str): font-family (a CSS font stack). Use a <strong>monospace</strong> family so the linear sequence stays aligned; a proportional family shifts the per-base spacing.</li>
+                            <li><code>fw</code> (number | str): font-weight.</li>
+                        </ul>
+                        <p>Font <em>size</em> is intentionally not here: seqviz derives it so bases line up with the ruler and feature blocks. To scale the linear view, use <a href="#zoom"><code>zoom</code></a>. (seqviz sets its font inline, so <code>font</code> takes effect via a scoped style override, the same way the <code>xkcd</code> theme swaps its hand-drawn font.)</p>
+                        <div class="snippet"><pre><code>SeqViz(
+    seq="...",
+    font={"ff": "IBM Plex Mono, monospace", "fw": 500},
 )</code></pre></div>
                     </div>
                 </article>
