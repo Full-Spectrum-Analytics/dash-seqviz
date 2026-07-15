@@ -417,6 +417,9 @@
 
     function generatePythonSnippet(s) {
         var lines = [];
+        // Only emit "color" when the element has one; uncolored elements are
+        // colored by the theme palette, so a stray "color": "" would mislead.
+        function colorPart(c) { return c ? ', "color": ' + pyStr(c) : ""; }
         var usesRequests = !!s.accession;
         var lg = s.legend || {};
         var emitAnns = !usesRequests && s.annotations && s.annotations.length;
@@ -440,7 +443,7 @@
                 annDef.push('    {"start": ' + a.start + ', "end": ' + a.end +
                     ', "name": ' + pyStr(a.name || "") +
                     ', "direction": ' + (a.direction || 1) +
-                    ', "color": ' + pyStr(a.color || "") + "},");
+                    colorPart(a.color) + "},");
             });
             annDef.push("]");
             facetDefs.push({ label: "Annotations", varName: "annotations", def: annDef });
@@ -450,7 +453,7 @@
                     "translations = " + inlineList(s.translations, function (t) {
                         return '{"start": ' + t.start + ', "end": ' + t.end +
                             ', "direction": ' + t.direction + ', "name": ' + pyStr(t.name) +
-                            ', "color": ' + pyStr(t.color) + "}";
+                            colorPart(t.color) + "}";
                     })] });
             }
             if (s.showPrimers && s.primers && s.primers.length) {
@@ -458,14 +461,14 @@
                     "primers = " + inlineList(s.primers, function (p) {
                         return '{"start": ' + p.start + ', "end": ' + p.end +
                             ', "direction": ' + (p.direction || 1) + ', "name": ' + pyStr(p.name) +
-                            ', "color": ' + pyStr(p.color) + "}";
+                            colorPart(p.color) + "}";
                     })] });
             }
             if (s.showHighlights && s.highlights && s.highlights.length) {
                 facetDefs.push({ label: "Highlights", varName: "highlights", def: [
                     "highlights = " + inlineList(s.highlights, function (h) {
                         return '{"start": ' + h.start + ', "end": ' + h.end +
-                            ', "color": ' + pyStr(h.color) + "}";
+                            colorPart(h.color) + "}";
                     })] });
             }
 
