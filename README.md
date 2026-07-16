@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Full-Spectrum-Analytics/dash-seqviz/main/docs/assets/favicon-512.png" alt="dash-seqviz" width="120" height="120">
+</p>
+
 # Dash SeqViz
 
 Dash SeqViz is a Dash component library that provides a Python wrapper for the [SeqViz](https://github.com/Lattice-Automation/seqviz) JavaScript library. SeqViz is a powerful DNA, RNA, and protein sequence visualization tool that supports circular and linear viewers, annotations, primers, restriction enzymes, and more.
