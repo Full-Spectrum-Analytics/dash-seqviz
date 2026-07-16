@@ -27,7 +27,7 @@
         var brand = document.createElement("a");
         brand.className = "site-nav-brand";
         brand.href = "./";
-        brand.innerHTML = 'dash-<span>seqviz</span>';
+        brand.innerHTML = '<img class="site-nav-logo" src="./assets/logo-mark.svg" alt="" width="22" height="22" aria-hidden="true"><span class="site-nav-wordmark">dash-<span>seqviz</span></span>';
         inner.appendChild(brand);
 
         var links = document.createElement("div");
