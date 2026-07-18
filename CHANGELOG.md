@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.1](https://github.com/Full-Spectrum-Analytics/dash-seqviz/compare/v0.5.0...v0.5.1) (2026-07-18)
+
+
+### Documentation
+
+* add dash-seqviz brand logo (favicons, nav mark, hero, README) ([ab23d46](https://github.com/Full-Spectrum-Analytics/dash-seqviz/commit/ab23d4603d96931212903dff2c373582770c2541))
+* **integrations:** center the page header to match the Reference page ([3ece8c1](https://github.com/Full-Spectrum-Analytics/dash-seqviz/commit/3ece8c1ba46a073786f329336f712a2980e863fd))
+
 ## [0.5.0](https://github.com/Full-Spectrum-Analytics/dash-seqviz/compare/v0.4.0...v0.5.0) (2026-07-15)
 
 
