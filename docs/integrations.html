@@ -43,28 +43,6 @@
            you get), then the two calls that produce it.
            ============================================================ */
 
-        /* --- Slim page header (matches the explorer) --- */
-        .page-head {
-            position: relative;
-            background: var(--parchment-pale);
-            border-bottom: 1px solid var(--ink-hairline);
-            padding: 22px 0 20px;
-        }
-        .page-head::before {
-            content: ""; position: absolute; left: 0; top: 0;
-            width: 72px; height: 3px; background: var(--tannin);
-        }
-        .page-head .container {
-            display: flex; flex-wrap: wrap; align-items: flex-end;
-            justify-content: space-between; gap: 12px 32px;
-        }
-        .page-head h1 { margin: 0; font-size: clamp(1.5rem, 2.8vw, 1.95rem); line-height: 1.1; }
-        .page-head .lede {
-            margin: 6px 0 0; max-width: 64ch;
-            color: var(--color-text-muted); font-size: 0.95rem;
-        }
-        .page-head .head-actions { display: flex; gap: 10px; flex-shrink: 0; }
-
         /* --- Integration entry --- */
         .integration { padding: 40px 0 8px; }
         .integration + .integration { border-top: 1px solid var(--ink-hairline); }
@@ -155,16 +133,12 @@
 <div id="site-nav-mount"></div>
 
 <!-- Slim page header -->
-<header class="page-head">
-    <div class="container">
-        <div>
-            <h1>Integrations</h1>
-            <p class="lede">Wire <code>dash-seqviz</code> into the rest of your MLOps stack. First up: experiment tracking with MLflow.</p>
-        </div>
-        <div class="head-actions">
-            <a class="btn btn-primary" href="./explorer.html">Component Explorer</a>
-            <a class="btn btn-outline" href="./reference.html">API Reference</a>
-        </div>
+<header class="hero">
+    <h1>Integrations</h1>
+    <p>Wire <code>dash-seqviz</code> into the rest of your MLOps stack. First up: experiment tracking with MLflow.</p>
+    <div class="hero-actions">
+        <a class="btn btn-primary" href="./explorer.html">Component Explorer</a>
+        <a class="btn btn-outline" href="./reference.html">API Reference</a>
     </div>
 </header>
 
